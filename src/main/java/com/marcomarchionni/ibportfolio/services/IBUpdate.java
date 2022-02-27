@@ -33,4 +33,13 @@ public class IBUpdate {
     public void addTrade(Trade trade){
         trades.add(trade);
     }
+
+    public void print(){
+        positions.forEach(System.out::println);
+        trades.forEach(System.out::println);
+    }
+
+    public void saveToDb(){
+
+    }
 }

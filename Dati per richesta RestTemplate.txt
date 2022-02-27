@@ -1,0 +1,28 @@
+Dati per la richiesta RestTemplate
+
+1. Per inoltrare la richiesta
+QueryFormat: https://www.interactivebrokers.com/Universal/servlet/FlexStatementService.SendRequest?t=TOKEN&q=QUERY_ID&v=3
+TOKEN: 111194434495868169435693 (durata massima di un anno)
+QUERY_ID: 503338 (questo è l'id di una query test, poi la cambierò)
+
+Nota: Programmatic access requires the User-Agent HTTP header to be set. Set the value to the Technology/Version used to access the service.
+Examples: Java/1.8, Python/3.4.1, etc.
+
+Esempio di risposta positiva:
+<FlexStatementResponse timestamp="28 August, 2012 10:37 AM EDT">
+<Status>Success</Status>
+<ReferenceCode>1234567890</ReferenceCode>
+<url>https://gdcdyn.interactivebrokers.com/Universal/servlet/FlexStatementService.GetStatement</url>
+</FlexStatementResponse>
+
+Esempio di risposta negativa:
+<FlexStatementResponse timestamp="28 August, 2012 10:37 AM EDT">
+<Status>Fail</Status>
+<ErrorCode>1012</ErrorCode>
+<ErrorMessage>Token has expired.</ErrorMessage>
+</FlexStatementResponse>
+
+2. Richiesta per scaricare l'XML
+QueryFormat: https://ndcdyn.interactivebrokers.com/AccountManagement/FlexWebService/GetStatement?t=TOKEN&q=REF_CODE&v=3
+TOKEN: 111194434495868169435693 (come prima)
+REF_CODE: (da ricavare dalla precedente risposta positiva)

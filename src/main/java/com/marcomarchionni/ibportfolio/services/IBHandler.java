@@ -6,9 +6,6 @@ import com.marcomarchionni.ibportfolio.models.Trade;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class IBHandler extends DefaultHandler {
 
     private IBUpdate ibUpdate;
@@ -16,7 +13,7 @@ public class IBHandler extends DefaultHandler {
     private Trade currentTrade;
 
 
-    public IBUpdate getIbUpdate(){
+    public IBUpdate getUpdate(){
         return ibUpdate;
     }
 

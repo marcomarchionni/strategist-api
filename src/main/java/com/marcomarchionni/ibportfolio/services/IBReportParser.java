@@ -1,7 +1,5 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.Position;
-import com.marcomarchionni.ibportfolio.models.Trade;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -9,7 +7,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 public class IBReportParser {
     IBUpdate ibUpdate;
@@ -30,7 +27,7 @@ public class IBReportParser {
             saxParser.parse(is, handler);
 
             // save all
-            ibUpdate = handler.getIbUpdate();
+            ibUpdate = handler.getUpdate();
 
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();

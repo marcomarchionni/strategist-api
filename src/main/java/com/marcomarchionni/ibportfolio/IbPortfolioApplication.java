@@ -20,8 +20,7 @@ public class IbPortfolioApplication {
 			IBReportParser parser = new IBReportParser();
 			parser.parse("flex.xml");
 			IBUpdate update = parser.getIBUpdate();
-			update.getPositions().forEach(System.out::println);
-			update.getTrades().forEach(System.out::println);
+			update.print();
 		};
 	}
 }
