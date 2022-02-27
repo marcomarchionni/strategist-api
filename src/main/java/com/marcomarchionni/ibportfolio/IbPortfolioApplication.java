@@ -17,13 +17,11 @@ public class IbPortfolioApplication {
 	@Bean
 	public CommandLineRunner demo() {
 		return args -> {
-			//repo.saveAndFlush(pos);
 			IBReportParser parser = new IBReportParser();
 			parser.parse("flex.xml");
 			IBUpdate update = parser.getIBUpdate();
 			update.getPositions().forEach(System.out::println);
 			update.getTrades().forEach(System.out::println);
-
 		};
 	}
 }
