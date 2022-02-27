@@ -12,8 +12,7 @@ import java.io.InputStream;
 import java.util.List;
 
 public class IBReportParser {
-    List<Position> positions;
-    List<Trade> trades;
+    IBUpdate ibUpdate;
 
     public IBReportParser() {}
 
@@ -31,8 +30,7 @@ public class IBReportParser {
             saxParser.parse(is, handler);
 
             // save all
-            positions = handler.getPositions();
-            trades = handler.getTrades();
+            ibUpdate = handler.getIbUpdate();
 
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
@@ -40,9 +38,13 @@ public class IBReportParser {
 
     }
 
-    public void printAll() {
-        positions.forEach(x -> System.out.println(x.toString()));
-        trades.forEach(x -> System.out.println(x.toString()));
+//    public void printAll() {
+//        positions.forEach(x -> System.out.println(x.toString()));
+//        trades.forEach(x -> System.out.println(x.toString()));
+//    }
+
+    public IBUpdate getIBUpdate() {
+        return ibUpdate;
     }
 
     // get XML file from resources folder.

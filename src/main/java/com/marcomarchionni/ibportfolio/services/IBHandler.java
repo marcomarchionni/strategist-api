@@ -11,23 +11,18 @@ import java.util.List;
 
 public class IBHandler extends DefaultHandler {
 
-    private List<Position> positions;
-    private List<Trade> trades;
+    private IBUpdate ibUpdate;
     private Position currentPosition;
     private Trade currentTrade;
 
-    public List<Position> getPositions() {
-        return positions;
-    }
 
-    public List<Trade> getTrades() {
-        return trades;
+    public IBUpdate getIbUpdate(){
+        return ibUpdate;
     }
 
     @Override
     public void startDocument() {
-        positions = new ArrayList<>();
-        trades = new ArrayList<>();
+        ibUpdate = new IBUpdate();
     }
 
     @Override
@@ -63,9 +58,6 @@ public class IBHandler extends DefaultHandler {
             String marketPrice = attributes.getValue("markPrice");
             currentPosition.setMarketPrice(marketPrice);
 
-            /* set PositionValue
-            String positionValue = attributes.getValue("positionValue");
-            currentPosition.setPositionValue(positionValue);*/
         }
         if (qName.equalsIgnoreCase("Trade")) {
 
@@ -126,11 +118,11 @@ public class IBHandler extends DefaultHandler {
 
         // end of loop
         if (qName.equalsIgnoreCase("OpenPosition")) {
-            positions.add(currentPosition);
+            ibUpdate.addPosition(currentPosition);
         }
 
         if (qName.equalsIgnoreCase("Trade")) {
-            trades.add(currentTrade);
+            ibUpdate.addTrade(currentTrade);
         }
 
     }
