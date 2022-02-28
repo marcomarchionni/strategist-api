@@ -15,21 +15,22 @@ public class Position {
     private Integer multiplier;
     //private BigDecimal positionValue;
 
-    public Position() {}
+    public Position() {
+    }
 
     public void setConId(String conId) {
         this.con_id = Long.parseLong(conId);
     }
 
-    public void setTicker(String ticker){
+    public void setTicker(String ticker) {
         this.ticker = ticker;
     }
 
-    public void setQuantity(String quantity){
+    public void setQuantity(String quantity) {
         this.quantity = Integer.parseInt(quantity);
     }
 
-    public void setCostBasisPrice(String costBasisPrice){
+    public void setCostBasisPrice(String costBasisPrice) {
         this.cost_basis_price = new BigDecimal(costBasisPrice);
     }
 
@@ -37,7 +38,7 @@ public class Position {
         this.multiplier = Integer.parseInt(multiplier);
     }
 
-    public void setMarketPrice(String marketPrice){
+    public void setMarketPrice(String marketPrice) {
         this.market_price = new BigDecimal(marketPrice);
     }
 

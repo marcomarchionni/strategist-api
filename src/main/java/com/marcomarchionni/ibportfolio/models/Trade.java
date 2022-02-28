@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-@Entity(name= "trades")
+@Entity(name = "trades")
 public class Trade {
     @Id
     private Long trade_id;
@@ -35,36 +35,84 @@ public class Trade {
         this.putCall = putCall;
     }
 
-    public void setAssetCategory (String assetCategory) {
+    public void setAssetCategory(String assetCategory) {
         this.asset_category = assetCategory;
     }
 
-    public void setTradeId (String tradeId) {
+    public void setTradeId(String tradeId) {
         this.trade_id = Long.parseLong(tradeId);
     }
 
-    public void setMultiplier (String multiplier) {
+    public void setMultiplier(String multiplier) {
         this.multiplier = Integer.parseInt(multiplier);
     }
 
-    public void setStrike (String strike) {
+    public void setStrike(String strike) {
         this.strike = new BigDecimal(strike);
     }
 
-    public void setExpiry (String expiry) {
+    public void setExpiry(String expiry) {
         this.expiry = LocalDate.parse(expiry, formatter);
     }
 
-    public void setTradeDate (String tradeDate) {
+    public void setTradeDate(String tradeDate) {
         this.trade_date = LocalDate.parse(tradeDate, formatter);
     }
 
-    public void setBuySell (String buySell) {
+    public void setBuySell(String buySell) {
         this.buy_sell = buySell;
     }
 
-    public void setTradePrice (String tradePrice) {
+    public void setTradePrice(String tradePrice) {
         this.trade_price = new BigDecimal(tradePrice);
+    }
+
+    public Long getTrade_id() {
+        return trade_id;
+    }
+
+    public String getTicker() {
+        return ticker;
+    }
+
+    public String getAsset_category() {
+        return asset_category;
+    }
+
+    public Integer getMultiplier() {
+        return multiplier;
+    }
+
+    public BigDecimal getStrike() {
+        return strike;
+    }
+
+    public LocalDate getExpiry() {
+        return expiry;
+    }
+
+    public String getPutCall() {
+        return putCall;
+    }
+
+    public LocalDate getTrade_date() {
+        return trade_date;
+    }
+
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public BigDecimal getTrade_price() {
+        return trade_price;
+    }
+
+    public String getBuy_sell() {
+        return buy_sell;
+    }
+
+    public static DateTimeFormatter getFormatter() {
+        return formatter;
     }
 
     public String toString() {

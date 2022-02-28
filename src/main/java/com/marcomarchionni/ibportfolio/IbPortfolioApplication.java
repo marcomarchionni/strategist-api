@@ -1,20 +1,20 @@
 package com.marcomarchionni.ibportfolio;
 
-import com.marcomarchionni.ibportfolio.services.IBReportParser;
-import com.marcomarchionni.ibportfolio.services.IBUpdate;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@ComponentScan("com.marcomarchionni.ibportfolio")
+@EnableScheduling
 public class IbPortfolioApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(IbPortfolioApplication.class, args);
 	}
 	// App
-	@Bean
+	/*@Bean
 	public CommandLineRunner demo() {
 		return args -> {
 			IBReportParser parser = new IBReportParser();
@@ -22,5 +22,5 @@ public class IbPortfolioApplication {
 			IBUpdate update = parser.getIBUpdate();
 			update.print();
 		};
-	}
+	}*/
 }
