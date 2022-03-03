@@ -11,7 +11,8 @@ import java.util.Locale;
 public class Trade {
     @Id
     private Long trade_id;
-    private String ticker;
+    private Long con_id;
+    private String symbol;
     private String asset_category;
     private Integer multiplier;
     private BigDecimal strike;
@@ -20,11 +21,14 @@ public class Trade {
     private LocalDate trade_date;
     private BigDecimal quantity;
     private BigDecimal trade_price;
+    private BigDecimal trade_money;
+    private BigDecimal fifo_pnl_realized;
+    private BigDecimal ib_commission;
     private String buy_sell;
     static private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     public void setQuantity(String quantity) {
@@ -67,12 +71,40 @@ public class Trade {
         this.trade_price = new BigDecimal(tradePrice);
     }
 
+    public void setConid(String conid) {
+        this.con_id = Long.parseLong(conid);
+    }
+
+    public void setTradeMoney(String tradeMoney) {
+        this.trade_money = new BigDecimal(tradeMoney);
+    }
+
+    public void setFifoPnlRealized(String fifoPnlRealized) {
+        this.fifo_pnl_realized = new BigDecimal(fifoPnlRealized);
+    }
+
+    public void setIbCommission(String ibCommission) {
+        this.ib_commission = new BigDecimal(ibCommission);
+    }
+
+    public BigDecimal getTrade_money() {
+        return trade_money;
+    }
+
+    public BigDecimal getFifo_pnl_realized() {
+        return fifo_pnl_realized;
+    }
+
+    public BigDecimal getIb_commission() {
+        return ib_commission;
+    }
+
     public Long getTrade_id() {
         return trade_id;
     }
 
-    public String getTicker() {
-        return ticker;
+    public String getSymbol() {
+        return symbol;
     }
 
     public String getAsset_category() {
@@ -116,6 +148,6 @@ public class Trade {
     }
 
     public String toString() {
-        return trade_id + " " + trade_date + " " + ticker + " " + asset_category + " " + buy_sell + " " + quantity + " " + trade_price;
+        return trade_id + " " + trade_date + " " + symbol + " " + asset_category + " " + buy_sell + " " + quantity + " " + trade_price;
     }
 }

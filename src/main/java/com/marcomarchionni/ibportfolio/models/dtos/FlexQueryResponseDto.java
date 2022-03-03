@@ -23,12 +23,12 @@ public class FlexQueryResponseDto {
     }
 
     @XmlAttribute(name = "queryName")
-    public String getqueryName() {
+    public String getQueryName() {
         return queryName;
     }
 
     @XmlAttribute(name = "type")
-    public String gettype() {
+    public String getType() {
         return type;
     }
 
@@ -38,11 +38,11 @@ public class FlexQueryResponseDto {
         this.FlexStatementsObject = FlexStatementsObject;
     }
 
-    public void setqueryName(String queryName) {
+    public void setQueryName(String queryName) {
         this.queryName = queryName;
     }
 
-    public void settype(String type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -60,7 +60,7 @@ public class FlexQueryResponseDto {
         }
 
         @XmlAttribute(name = "count")
-        public String getcount() {
+        public String getCount() {
             return count;
         }
 
@@ -70,7 +70,7 @@ public class FlexQueryResponseDto {
             this.FlexStatementObject = FlexStatementObject;
         }
 
-        public void setcount(String count) {
+        public void setCount(String count) {
             this.count = count;
         }
     }
@@ -84,7 +84,8 @@ public class FlexQueryResponseDto {
         Trades TradesObject;
         @XmlElement(name = "ChangeInDividendAccruals")
         ChangeInDividendAccruals ChangeInDividendAccrualsObject;
-        private String OpenDividendAccruals;
+        @XmlElement(name="OpenDividendAccruals")
+        OpenDividendAccruals OpenDividendAccrualsObject;
         private String accountId;
         private String fromDate;
         private String toDate;
@@ -110,33 +111,32 @@ public class FlexQueryResponseDto {
             return ChangeInDividendAccrualsObject;
         }
 
-        @XmlAttribute(name = "OpenDividendAccruals")
-        public String getOpenDividendAccruals() {
-            return OpenDividendAccruals;
+        public OpenDividendAccruals getOpenDividendAccruals() {
+            return OpenDividendAccrualsObject;
         }
 
         @XmlAttribute(name = "accountId")
-        public String getaccountId() {
+        public String getAccountId() {
             return accountId;
         }
 
         @XmlAttribute(name = "fromDate")
-        public String getfromDate() {
+        public String getFromDate() {
             return fromDate;
         }
 
         @XmlAttribute(name = "toDate")
-        public String gettoDate() {
+        public String getToDate() {
             return toDate;
         }
 
         @XmlAttribute(name = "period")
-        public String getperiod() {
+        public String getPeriod() {
             return period;
         }
 
         @XmlAttribute(name = "whenGenerated")
-        public String getwhenGenerated() {
+        public String getWhenGenerated() {
             return whenGenerated;
         }
 
@@ -158,381 +158,714 @@ public class FlexQueryResponseDto {
             this.ChangeInDividendAccrualsObject = ChangeInDividendAccrualsObject;
         }
 
-        public void setOpenDividendAccruals(String OpenDividendAccruals) {
-            this.OpenDividendAccruals = OpenDividendAccruals;
+        public void setOpenDividendAccrualsObject(OpenDividendAccruals openDividendAccrualsObject) {
+            OpenDividendAccrualsObject = openDividendAccrualsObject;
         }
 
-        public void setaccountId(String accountId) {
+        public void setAccountId(String accountId) {
             this.accountId = accountId;
         }
 
-        public void setfromDate(String fromDate) {
+        public void setFromDate(String fromDate) {
             this.fromDate = fromDate;
         }
 
-        public void settoDate(String toDate) {
+        public void setToDate(String toDate) {
             this.toDate = toDate;
         }
 
-        public void setperiod(String period) {
+        public void setPeriod(String period) {
             this.period = period;
         }
 
-        public void setwhenGenerated(String whenGenerated) {
+        public void setWhenGenerated(String whenGenerated) {
             this.whenGenerated = whenGenerated;
         }
     }
 
     public static class ChangeInDividendAccruals {
-        ChangeInDividendAccrual ChangeInDividendAccrualObject;
+        @XmlElement(name = "ChangeInDividendAccrual")
+        ArrayList<ChangeInDividendAccrual> ChangeInDividendAccrual = new ArrayList<ChangeInDividendAccrual>();
 
 
         // Getter Methods
-
-        public ChangeInDividendAccrual getChangeInDividendAccrual() {
-            return ChangeInDividendAccrualObject;
+        public ArrayList<FlexQueryResponseDto.ChangeInDividendAccrual> getChangeInDividendAccrual() {
+            return ChangeInDividendAccrual;
         }
 
         // Setter Methods
-
-        public void setChangeInDividendAccrual(ChangeInDividendAccrual ChangeInDividendAccrualObject) {
-            this.ChangeInDividendAccrualObject = ChangeInDividendAccrualObject;
+        public void setChangeInDividendAccrual(ArrayList<FlexQueryResponseDto.ChangeInDividendAccrual> changeInDividendAccrual) {
+            ChangeInDividendAccrual = changeInDividendAccrual;
         }
     }
 
     public static class ChangeInDividendAccrual {
-        private String accountId;
-        private String acctAlias;
-        private String model;
-        private String currency;
-        private String fxRateToBase;
-        private String assetCategory;
-        private String symbol;
-        private String description;
-        private String conid;
-        private String securityID;
-        private String securityIDType;
-        private String cusip;
-        private String isin;
-        private String underlyingConid;
-        private String underlyingSymbol;
-        private String issuer;
-        private String multiplier;
-        private String strike;
-        private String expiry;
-        private String putCall;
-        private String date;
-        private String exDate;
-        private String payDate;
-        private String quantity;
-        private String tax;
-        private String fee;
-        private String grossRate;
-        private String grossAmount;
-        private String netAmount;
-        private String code;
-        private String fromAcct;
-        private String toAcct;
-        private String principalAdjustFactor;
+        private String accountId = "";
+        private String acctAlias = "";
+        private String model = "";
+        private String currency = "";
+        private String fxRateToBase = "";
+        private String assetCategory = "";
+        private String symbol = "";
+        private String description = "";
+        private String conid = "";
+        private String securityID = "";
+        private String securityIDType = "";
+        private String cusip = "";
+        private String isin = "";
+        private String underlyingConid = "";
+        private String underlyingSymbol = "";
+        private String issuer = "";
+        private String multiplier = "";
+        private String strike = "";
+        private String expiry = "";
+        private String putCall = "";
+        private String date = "";
+        private String exDate = "";
+        private String payDate = "";
+        private String quantity = "";
+        private String tax = "";
+        private String fee = "";
+        private String grossRate = "";
+        private String grossAmount = "";
+        private String netAmount = "";
+        private String code = "";
+        private String fromAcct = "";
+        private String toAcct = "";
+        private String principalAdjustFactor = "";
 
 
-        // Getter Methods
-        @XmlAttribute(name = "accountId")
-        public String getaccountId() {
-            return accountId;
-        }
-
-        @XmlAttribute(name = "acctAlias")
-        public String getacctAlias() {
-            return acctAlias;
-        }
-
-        @XmlAttribute(name = "model")
-        public String getmodel() {
-            return model;
-        }
-
-        @XmlAttribute(name = "currency")
-        public String getcurrency() {
-            return currency;
-        }
-
-        @XmlAttribute(name = "fxRateToBase")
-        public String getfxRateToBase() {
-            return fxRateToBase;
-        }
-
-        @XmlAttribute(name = "assetCategory")
-        public String getassetCategory() {
-            return assetCategory;
-        }
-
-        @XmlAttribute(name = "symbol")
-        public String getsymbol() {
-            return symbol;
-        }
-
-        @XmlAttribute(name = "description")
-        public String getdescription() {
-            return description;
-        }
-
-        @XmlAttribute(name = "conid")
-        public String getconid() {
-            return conid;
-        }
-
-        @XmlAttribute(name = "securityID")
-        public String getsecurityID() {
-            return securityID;
-        }
-
-        @XmlAttribute(name = "securityIDType")
-        public String getsecurityIDType() {
-            return securityIDType;
-        }
-
-        @XmlAttribute(name = "cusip")
-        public String getcusip() {
-            return cusip;
-        }
-
-        @XmlAttribute(name = "isin")
-        public String getisin() {
-            return isin;
-        }
-
-        @XmlAttribute(name = "underlyingConid")
-        public String getunderlyingConid() {
-            return underlyingConid;
-        }
-
-        @XmlAttribute(name = "underlyingSymbol")
-        public String getunderlyingSymbol() {
-            return underlyingSymbol;
-        }
-
-        @XmlAttribute(name = "issuer")
-        public String getissuer() {
-            return issuer;
-        }
-
-        @XmlAttribute(name = "multiplier")
-        public String getmultiplier() {
-            return multiplier;
-        }
-
-        @XmlAttribute(name = "strike")
-        public String getstrike() {
-            return strike;
-        }
-
-        @XmlAttribute(name = "expiry")
-        public String getexpiry() {
-            return expiry;
-        }
-
-        @XmlAttribute(name = "putCall")
-        public String getputCall() {
-            return putCall;
-        }
-
-        @XmlAttribute(name = "date")
-        public String getdate() {
-            return date;
-        }
-
-        @XmlAttribute(name = "exDate")
-        public String getexDate() {
-            return exDate;
-        }
-
-        @XmlAttribute(name = "payDate")
-        public String getpayDate() {
-            return payDate;
-        }
-
-        @XmlAttribute(name = "quantity")
-        public String getquantity() {
-            return quantity;
-        }
-
-        @XmlAttribute(name = "tax")
-        public String gettax() {
-            return tax;
-        }
-
-        @XmlAttribute(name = "fee")
-        public String getfee() {
-            return fee;
-        }
-
-        @XmlAttribute(name = "grossRate")
-        public String getgrossRate() {
-            return grossRate;
-        }
-
-        @XmlAttribute(name = "grossAmount")
-        public String getgrossAmount() {
-            return grossAmount;
-        }
-
-        @XmlAttribute(name = "netAmount")
-        public String getnetAmount() {
-            return netAmount;
-        }
-
-        @XmlAttribute(name = "code")
-        public String getcode() {
-            return code;
-        }
-
-        @XmlAttribute(name = "fromAcct")
-        public String getfromAcct() {
-            return fromAcct;
-        }
-
-        @XmlAttribute(name = "toAcct")
-        public String gettoAcct() {
-            return toAcct;
-        }
-
-        @XmlAttribute(name = "principalAdjustFactor")
-        public String getprincipalAdjustFactor() {
-            return principalAdjustFactor;
-        }
-
-        // Setter Methods
-
-        public void setaccountId(String accountId) {
+        public void setAccountId(String accountId) {
             this.accountId = accountId;
         }
 
-        public void setacctAlias(String acctAlias) {
+        @XmlAttribute(name = "accountId")
+        public String getAccountId() {
+            return accountId;
+        }
+
+        public void setAcctAlias(String acctAlias) {
             this.acctAlias = acctAlias;
         }
 
-        public void setmodel(String model) {
+        @XmlAttribute(name = "acctAlias")
+        public String getAcctAlias() {
+            return acctAlias;
+        }
+
+        public void setModel(String model) {
             this.model = model;
         }
 
-        public void setcurrency(String currency) {
+        @XmlAttribute(name = "model")
+        public String getModel() {
+            return model;
+        }
+
+        public void setCurrency(String currency) {
             this.currency = currency;
         }
 
-        public void setfxRateToBase(String fxRateToBase) {
+        @XmlAttribute(name = "currency")
+        public String getCurrency() {
+            return currency;
+        }
+
+        public void setFxRateToBase(String fxRateToBase) {
             this.fxRateToBase = fxRateToBase;
         }
 
-        public void setassetCategory(String assetCategory) {
+        @XmlAttribute(name = "fxRateToBase")
+        public String getFxRateToBase() {
+            return fxRateToBase;
+        }
+
+        public void setAssetCategory(String assetCategory) {
             this.assetCategory = assetCategory;
         }
 
-        public void setsymbol(String symbol) {
+        @XmlAttribute(name = "assetCategory")
+        public String getAssetCategory() {
+            return assetCategory;
+        }
+
+        public void setSymbol(String symbol) {
             this.symbol = symbol;
         }
 
-        public void setdescription(String description) {
+        @XmlAttribute(name = "symbol")
+        public String getSymbol() {
+            return symbol;
+        }
+
+        public void setDescription(String description) {
             this.description = description;
         }
 
-        public void setconid(String conid) {
+        @XmlAttribute(name = "description")
+        public String getDescription() {
+            return description;
+        }
+
+        public void setConid(String conid) {
             this.conid = conid;
         }
 
-        public void setsecurityID(String securityID) {
+        @XmlAttribute(name = "conid")
+        public String getConid() {
+            return conid;
+        }
+
+        public void setSecurityID(String securityID) {
             this.securityID = securityID;
         }
 
-        public void setsecurityIDType(String securityIDType) {
+        @XmlAttribute(name = "securityID")
+        public String getSecurityID() {
+            return securityID;
+        }
+
+        public void setSecurityIDType(String securityIDType) {
             this.securityIDType = securityIDType;
         }
 
-        public void setcusip(String cusip) {
+        @XmlAttribute(name = "securityIDType")
+        public String getSecurityIDType() {
+            return securityIDType;
+        }
+
+        public void setCusip(String cusip) {
             this.cusip = cusip;
         }
 
-        public void setisin(String isin) {
+        @XmlAttribute(name = "cusip")
+        public String getCusip() {
+            return cusip;
+        }
+
+        public void setIsin(String isin) {
             this.isin = isin;
         }
 
-        public void setunderlyingConid(String underlyingConid) {
+        @XmlAttribute(name = "isin")
+        public String getIsin() {
+            return isin;
+        }
+
+        public void setUnderlyingConid(String underlyingConid) {
             this.underlyingConid = underlyingConid;
         }
 
-        public void setunderlyingSymbol(String underlyingSymbol) {
+        @XmlAttribute(name = "underlyingConid")
+        public String getUnderlyingConid() {
+            return underlyingConid;
+        }
+
+        public void setUnderlyingSymbol(String underlyingSymbol) {
             this.underlyingSymbol = underlyingSymbol;
         }
 
-        public void setissuer(String issuer) {
+        @XmlAttribute(name = "underlyingSymbol")
+        public String getUnderlyingSymbol() {
+            return underlyingSymbol;
+        }
+
+        public void setIssuer(String issuer) {
             this.issuer = issuer;
         }
 
-        public void setmultiplier(String multiplier) {
+        @XmlAttribute(name = "issuer")
+        public String getIssuer() {
+            return issuer;
+        }
+
+        public void setMultiplier(String multiplier) {
             this.multiplier = multiplier;
         }
 
-        public void setstrike(String strike) {
+        @XmlAttribute(name = "multiplier")
+        public String getMultiplier() {
+            return multiplier;
+        }
+
+        public void setStrike(String strike) {
             this.strike = strike;
         }
 
-        public void setexpiry(String expiry) {
+        @XmlAttribute(name = "strike")
+        public String getStrike() {
+            return strike;
+        }
+
+        public void setExpiry(String expiry) {
             this.expiry = expiry;
         }
 
-        public void setputCall(String putCall) {
+        @XmlAttribute(name = "expiry")
+        public String getExpiry() {
+            return expiry;
+        }
+
+        public void setPutCall(String putCall) {
             this.putCall = putCall;
         }
 
-        public void setdate(String date) {
+        @XmlAttribute(name = "putCall")
+        public String getPutCall() {
+            return putCall;
+        }
+
+        public void setDate(String date) {
             this.date = date;
         }
 
-        public void setexDate(String exDate) {
+        @XmlAttribute(name = "date")
+        public String getDate() {
+            return date;
+        }
+
+        public void setExDate(String exDate) {
             this.exDate = exDate;
         }
 
-        public void setpayDate(String payDate) {
+        @XmlAttribute(name = "exDate")
+        public String getExDate() {
+            return exDate;
+        }
+
+        public void setPayDate(String payDate) {
             this.payDate = payDate;
         }
 
-        public void setquantity(String quantity) {
+        @XmlAttribute(name = "payDate")
+        public String getPayDate() {
+            return payDate;
+        }
+
+        public void setQuantity(String quantity) {
             this.quantity = quantity;
         }
 
-        public void settax(String tax) {
+        @XmlAttribute(name = "quantity")
+        public String getQuantity() {
+            return quantity;
+        }
+
+        public void setTax(String tax) {
             this.tax = tax;
         }
 
-        public void setfee(String fee) {
+        @XmlAttribute(name = "tax")
+        public String getTax() {
+            return tax;
+        }
+
+        public void setFee(String fee) {
             this.fee = fee;
         }
 
-        public void setgrossRate(String grossRate) {
+        @XmlAttribute(name = "fee")
+        public String getFee() {
+            return fee;
+        }
+
+        public void setGrossRate(String grossRate) {
             this.grossRate = grossRate;
         }
 
-        public void setgrossAmount(String grossAmount) {
+        @XmlAttribute(name = "grossRate")
+        public String getGrossRate() {
+            return grossRate;
+        }
+
+        public void setGrossAmount(String grossAmount) {
             this.grossAmount = grossAmount;
         }
 
-        public void setnetAmount(String netAmount) {
+        @XmlAttribute(name = "grossAmount")
+        public String getGrossAmount() {
+            return grossAmount;
+        }
+
+        public void setNetAmount(String netAmount) {
             this.netAmount = netAmount;
         }
 
-        public void setcode(String code) {
+        @XmlAttribute(name = "netAmount")
+        public String getNetAmount() {
+            return netAmount;
+        }
+
+        public void setCode(String code) {
             this.code = code;
         }
 
-        public void setfromAcct(String fromAcct) {
+        @XmlAttribute(name = "code")
+        public String getCode() {
+            return code;
+        }
+
+        public void setFromAcct(String fromAcct) {
             this.fromAcct = fromAcct;
         }
 
-        public void settoAcct(String toAcct) {
+        @XmlAttribute(name = "fromAcct")
+        public String getFromAcct() {
+            return fromAcct;
+        }
+
+        public void setToAcct(String toAcct) {
             this.toAcct = toAcct;
         }
 
-        public void setprincipalAdjustFactor(String principalAdjustFactor) {
+        @XmlAttribute(name = "toAcct")
+        public String getToAcct() {
+            return toAcct;
+        }
+
+        public void setPrincipalAdjustFactor(String principalAdjustFactor) {
+            this.principalAdjustFactor = principalAdjustFactor;
+        }
+
+        @XmlAttribute(name = "principalAdjustFactor")
+        public String getPrincipalAdjustFactor() {
+            return principalAdjustFactor;
+        }
+
+    }
+
+    public static class OpenDividendAccruals {
+        @XmlElement(name = "OpenDividendAccrual")
+        ArrayList<OpenDividendAccrual> OpenDividendAccrual = new ArrayList<OpenDividendAccrual>();
+
+        public ArrayList<FlexQueryResponseDto.OpenDividendAccrual> getOpenDividendAccrual() {
+            return OpenDividendAccrual;
+        }
+
+        public void setOpenDividendAccrual(ArrayList<FlexQueryResponseDto.OpenDividendAccrual> openDividendAccrual) {
+            OpenDividendAccrual = openDividendAccrual;
+        }
+    }
+
+    public static class OpenDividendAccrual {
+        String accountId = "";
+        String acctAlias = "";
+        String model = "";
+        String currency = "";
+        String fxRateToBase = "";
+        String assetCategory = "";
+        String symbol = "";
+        String description = "";
+        String conid = "";
+        String securityID = "";
+        String securityIDType = "";
+        String cusip = "";
+        String isin = "";
+        String underlyingConid = "";
+        String underlyingSymbol = "";
+        String issuer = "";
+        String multiplier = "";
+        String strike = "";
+        String expiry = "";
+        String putCall = "";
+        String exDate = "";
+        String payDate = "";
+        String quantity = "";
+        String tax = "";
+        String fee = "";
+        String grossRate = "";
+        String grossAmount = "";
+        String netAmount = "";
+        String code = "";
+        String fromAcct = "";
+        String toAcct = "";
+        String principalAdjustFactor = "";
+
+        @XmlAttribute(name = "accountId")
+        public String getAccountId() {
+            return accountId;
+        }
+
+        public void setAccountId(String accountId) {
+            this.accountId = accountId;
+        }
+
+        @XmlAttribute(name = "acctAlias")
+        public String getAcctAlias() {
+            return acctAlias;
+        }
+
+        public void setAcctAlias(String acctAlias) {
+            this.acctAlias = acctAlias;
+        }
+
+        @XmlAttribute(name = "model")
+        public String getModel() {
+            return model;
+        }
+
+        public void setModel(String model) {
+            this.model = model;
+        }
+
+        @XmlAttribute(name = "currency")
+        public String getCurrency() {
+            return currency;
+        }
+
+        public void setCurrency(String currency) {
+            this.currency = currency;
+        }
+
+        @XmlAttribute(name = "fxRateToBase")
+        public String getFxRateToBase() {
+            return fxRateToBase;
+        }
+
+        public void setFxRateToBase(String fxRateToBase) {
+            this.fxRateToBase = fxRateToBase;
+        }
+
+        @XmlAttribute(name = "assetCategory")
+        public String getAssetCategory() {
+            return assetCategory;
+        }
+
+        public void setAssetCategory(String assetCategory) {
+            this.assetCategory = assetCategory;
+        }
+
+        @XmlAttribute(name = "symbol")
+        public String getSymbol() {
+            return symbol;
+        }
+
+        public void setSymbol(String symbol) {
+            this.symbol = symbol;
+        }
+
+        @XmlAttribute(name = "description")
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        @XmlAttribute(name = "conid")
+        public String getConid() {
+            return conid;
+        }
+
+        public void setConid(String conid) {
+            this.conid = conid;
+        }
+
+        @XmlAttribute(name = "securityID")
+        public String getSecurityID() {
+            return securityID;
+        }
+
+        public void setSecurityID(String securityID) {
+            this.securityID = securityID;
+        }
+
+        @XmlAttribute(name = "securityIDType")
+        public String getSecurityIDType() {
+            return securityIDType;
+        }
+
+        public void setSecurityIDType(String securityIDType) {
+            this.securityIDType = securityIDType;
+        }
+
+        @XmlAttribute(name = "cusip")
+        public String getCusip() {
+            return cusip;
+        }
+
+        public void setCusip(String cusip) {
+            this.cusip = cusip;
+        }
+
+        @XmlAttribute(name = "isin")
+        public String getIsin() {
+            return isin;
+        }
+
+        public void setIsin(String isin) {
+            this.isin = isin;
+        }
+
+        @XmlAttribute(name = "underlyingConid")
+        public String getUnderlyingConid() {
+            return underlyingConid;
+        }
+
+        public void setUnderlyingConid(String underlyingConid) {
+            this.underlyingConid = underlyingConid;
+        }
+
+        @XmlAttribute(name = "underlyingSymbol")
+        public String getUnderlyingSymbol() {
+            return underlyingSymbol;
+        }
+
+        public void setUnderlyingSymbol(String underlyingSymbol) {
+            this.underlyingSymbol = underlyingSymbol;
+        }
+
+        @XmlAttribute(name = "issuer")
+        public String getIssuer() {
+            return issuer;
+        }
+
+        public void setIssuer(String issuer) {
+            this.issuer = issuer;
+        }
+
+        @XmlAttribute(name = "multiplier")
+        public String getMultiplier() {
+            return multiplier;
+        }
+
+        public void setMultiplier(String multiplier) {
+            this.multiplier = multiplier;
+        }
+
+        @XmlAttribute(name = "strike")
+        public String getStrike() {
+            return strike;
+        }
+
+        public void setStrike(String strike) {
+            this.strike = strike;
+        }
+
+        @XmlAttribute(name = "expiry")
+        public String getExpiry() {
+            return expiry;
+        }
+
+        public void setExpiry(String expiry) {
+            this.expiry = expiry;
+        }
+
+        @XmlAttribute(name = "putCall")
+        public String getPutCall() {
+            return putCall;
+        }
+
+        public void setPutCall(String putCall) {
+            this.putCall = putCall;
+        }
+
+        @XmlAttribute(name = "exDate")
+        public String getExDate() {
+            return exDate;
+        }
+
+        public void setExDate(String exDate) {
+            this.exDate = exDate;
+        }
+
+        @XmlAttribute(name = "payDate")
+        public String getPayDate() {
+            return payDate;
+        }
+
+        public void setPayDate(String payDate) {
+            this.payDate = payDate;
+        }
+
+        @XmlAttribute(name = "quantity")
+        public String getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(String quantity) {
+            this.quantity = quantity;
+        }
+
+        @XmlAttribute(name = "tax")
+        public String getTax() {
+            return tax;
+        }
+
+        public void setTax(String tax) {
+            this.tax = tax;
+        }
+
+        @XmlAttribute(name = "fee")
+        public String getFee() {
+            return fee;
+        }
+
+        public void setFee(String fee) {
+            this.fee = fee;
+        }
+
+        @XmlAttribute(name = "grossRate")
+        public String getGrossRate() {
+            return grossRate;
+        }
+
+        public void setGrossRate(String grossRate) {
+            this.grossRate = grossRate;
+        }
+
+        @XmlAttribute(name = "grossAmount")
+        public String getGrossAmount() {
+            return grossAmount;
+        }
+
+        public void setGrossAmount(String grossAmount) {
+            this.grossAmount = grossAmount;
+        }
+
+        @XmlAttribute(name = "netAmount")
+        public String getNetAmount() {
+            return netAmount;
+        }
+
+        public void setNetAmount(String netAmount) {
+            this.netAmount = netAmount;
+        }
+
+        @XmlAttribute(name = "code")
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        @XmlAttribute(name = "fromAcct")
+        public String getFromAcct() {
+            return fromAcct;
+        }
+
+        public void setFromAcct(String fromAcct) {
+            this.fromAcct = fromAcct;
+        }
+
+        @XmlAttribute(name = "toAcct")
+        public String getToAcct() {
+            return toAcct;
+        }
+
+        public void setToAcct(String toAcct) {
+            this.toAcct = toAcct;
+        }
+
+        @XmlAttribute(name = "principalAdjustFactor")
+        public String getPrincipalAdjustFactor() {
+            return principalAdjustFactor;
+        }
+
+        public void setPrincipalAdjustFactor(String principalAdjustFactor) {
             this.principalAdjustFactor = principalAdjustFactor;
         }
     }

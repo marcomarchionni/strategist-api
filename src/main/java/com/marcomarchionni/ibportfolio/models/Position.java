@@ -8,26 +8,26 @@ import java.math.BigDecimal;
 public class Position {
     @Id
     private Long con_id;
-    private String ticker;
-    private int quantity;
+    private String symbol;
+    private BigDecimal quantity;
     private BigDecimal cost_basis_price;
     private BigDecimal market_price;
-    private Integer multiplier;
+    private int multiplier;
     //private BigDecimal positionValue;
 
     public Position() {
     }
 
-    public void setConId(String conId) {
-        this.con_id = Long.parseLong(conId);
+    public void setConid(String conid) {
+        this.con_id = Long.parseLong(conid);
     }
 
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     public void setQuantity(String quantity) {
-        this.quantity = Integer.parseInt(quantity);
+        this.quantity = new BigDecimal(quantity);
     }
 
     public void setCostBasisPrice(String costBasisPrice) {
@@ -47,6 +47,6 @@ public class Position {
     }*/
 
     public String toString() {
-        return ticker + " " + quantity + " " + cost_basis_price + " " + market_price;
+        return symbol + " " + quantity + " " + cost_basis_price + " " + market_price + " " + multiplier;
     }
 }

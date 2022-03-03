@@ -1,9 +1,11 @@
 package com.marcomarchionni.ibportfolio.scheduler;
 
+import com.marcomarchionni.ibportfolio.models.Dividend;
 import com.marcomarchionni.ibportfolio.models.Position;
 import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.models.dtos.FlexStatementResponseDto;
+import com.marcomarchionni.ibportfolio.services.DividendService;
 import com.marcomarchionni.ibportfolio.services.PositionService;
 import com.marcomarchionni.ibportfolio.services.ResponseParser;
 import com.marcomarchionni.ibportfolio.services.TradeService;
@@ -47,6 +49,9 @@ public class DataFetch {
 
     @Autowired
     private TradeService tradeService;
+
+    @Autowired
+    private DividendService dividendService;
 
     @Scheduled(cron = "${cron.expression}")
     public void fetchData() {
@@ -97,6 +102,7 @@ public class DataFetch {
          */
         List<Position> positions = responseParser.parse(result.getBody(), "position");
         List<Trade> trades = responseParser.parse(result.getBody(), "trade");
+        List<Dividend> dividends = responseParser.parse(result.getBody(), "dividend");
 
         /**
          * ora che abbiamo le nostre liste, utilizziamo il servizio che ha il compito di gestire la persistenza per salvare i nostri dati sul db
@@ -117,6 +123,13 @@ public class DataFetch {
             log.error("Could not store all the trades on the DB");
         }
 
+        boolean dividendSaved = dividendService.saveDividends(dividends);
+        if (!dividendSaved) {
+            log.error("Could not store all the dividends on the DB");
+        }
+
+
         log.info("Daily alignment completed successfully!");
+        log.info("End");
     }
 }
