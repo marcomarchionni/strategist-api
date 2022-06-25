@@ -100,9 +100,9 @@ public class DataFetch {
         /*
          * usiamo il servizio di parsing iniettato con l'autowired a riga 40 per ottenere la lista delle posizioni e dei trade dalla risposta del server
          */
-        List<Position> positions = responseParser.parse(result.getBody(), "position");
-        List<Trade> trades = responseParser.parse(result.getBody(), "trade");
-        List<Dividend> dividends = responseParser.parse(result.getBody(), "dividend");
+        List<Position> positions = responseParser.parsePositions(result.getBody());
+        List<Trade> trades = responseParser.parseTrades(result.getBody());
+        List<Dividend> dividends = responseParser.parseDividends(result.getBody());
 
         /*
          * ora che abbiamo le nostre liste, utilizziamo il servizio che ha il compito di gestire la persistenza per salvare i nostri dati sul db

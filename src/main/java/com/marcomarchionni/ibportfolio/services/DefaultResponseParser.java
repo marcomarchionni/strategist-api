@@ -16,95 +16,92 @@ import java.util.List;
 public class DefaultResponseParser implements ResponseParser {
 
     /**
-     * questo è un metodo con utilizzo di Generis. vuol dire che la risposta dipende dal chiamante
-     * in particolare a seconda del type restituisce liste di posizioni o di trade
-     * è un po' la copia di quello che avevi fatto tu, ma con tutti i controlli di consistenza sui campi, altrimenti a ogni campo vuoto o nullo hai eccezioni
-     *
-     * @param dto
-     * @param type
-     * @return
+     * Refactoring del parser con 3 metodi, ognuno per il parsing di ciascuna entity
      */
+
+    @Override
+    public List<Trade> parseTrades(FlexQueryResponseDto dto) {
+
+        List<Trade> result = new ArrayList<>();
+
+        for (FlexQueryResponseDto.Trade dtoTrade : dto.getFlexStatements().get(0).getFlexStatement().get(0).getTrades().getTrade()) {
+            Trade trade = new Trade();
+            if (StringUtils.hasText(dtoTrade.getTradeID())) trade.setTradeId(dtoTrade.getTradeID());
+            if (StringUtils.hasText(dtoTrade.getConid())) trade.setConid(dtoTrade.getConid());
+            if (StringUtils.hasText(dtoTrade.getTradeDate())) trade.setTradeDate(dtoTrade.getTradeDate());
+            if (StringUtils.hasText(dtoTrade.getAssetCategory())) trade.setAssetCategory(dtoTrade.getAssetCategory());
+            if (StringUtils.hasText(dtoTrade.getSymbol())) trade.setSymbol(dtoTrade.getSymbol());
+            if (StringUtils.hasText(dtoTrade.getPutCall())) trade.setPutCall(dtoTrade.getPutCall());
+            if (StringUtils.hasText(dtoTrade.getStrike())) trade.setStrike(dtoTrade.getStrike());
+            if (StringUtils.hasText(dtoTrade.getExpiry())) trade.setExpiry(dtoTrade.getExpiry());
+            if (StringUtils.hasText(dtoTrade.getMultiplier())) trade.setMultiplier(dtoTrade.getMultiplier());
+            if (StringUtils.hasText(dtoTrade.getBuySell())) trade.setBuySell(dtoTrade.getBuySell());
+            if (StringUtils.hasText(dtoTrade.getQuantity())) trade.setQuantity(dtoTrade.getQuantity());
+            if (StringUtils.hasText(dtoTrade.getTradePrice())) trade.setTradePrice(dtoTrade.getTradePrice());
+            if (StringUtils.hasText(dtoTrade.getTradeMoney())) trade.setTradeMoney(dtoTrade.getTradeMoney());
+            if (StringUtils.hasText(dtoTrade.getFifoPnlRealized())) trade.setFifoPnlRealized(dtoTrade.getFifoPnlRealized());
+            if (StringUtils.hasText(dtoTrade.getIbCommission())) trade.setIbCommission(dtoTrade.getIbCommission());
+            result.add(trade);
+        }
+        return result;
+    }
 
 
     @Override
-    public List parse(FlexQueryResponseDto dto, String type) {
-        if (type.equalsIgnoreCase("position")) {
-            List<Position> result = new ArrayList<>();
-            for (FlexQueryResponseDto.OpenPosition op : dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenPositions().getOpenPosition()) {
-                Position p = new Position();
-                if (StringUtils.hasText(op.getConid())) p.setConid(op.getConid());
-                if (StringUtils.hasText(op.getSymbol())) p.setSymbol(op.getSymbol());
-                if (StringUtils.hasText(op.getPosition())) p.setQuantity(op.getPosition());
-                if (StringUtils.hasText(op.getCostBasisPrice())) p.setCostBasisPrice(op.getCostBasisPrice());
-                if (StringUtils.hasText(op.getMarkPrice())) p.setMarketPrice(op.getMarkPrice());
-                if (StringUtils.hasText(op.getMultiplier())) p.setMultiplier(op.getMultiplier());
-                result.add(p);
-            }
-            return result;
-        }
-        else if (type.equalsIgnoreCase("trade")) {
-            List<Trade> result = new ArrayList<>();
+    public List<Position> parsePositions(FlexQueryResponseDto dto) {
 
-            for (FlexQueryResponseDto.Trade tr : dto.getFlexStatements().get(0).getFlexStatement().get(0).getTrades().getTrade()) {
-                Trade t = new Trade();
-                if (StringUtils.hasText(tr.getTradeID())) t.setTradeId(tr.getTradeID());
-                if (StringUtils.hasText(tr.getConid())) t.setConid(tr.getConid());
-                if (StringUtils.hasText(tr.getTradeDate())) t.setTradeDate(tr.getTradeDate());
-                if (StringUtils.hasText(tr.getAssetCategory())) t.setAssetCategory(tr.getAssetCategory());
-                if (StringUtils.hasText(tr.getSymbol())) t.setSymbol(tr.getSymbol());
-                if (StringUtils.hasText(tr.getPutCall())) t.setPutCall(tr.getPutCall());
-                if (StringUtils.hasText(tr.getStrike())) t.setStrike(tr.getStrike());
-                if (StringUtils.hasText(tr.getExpiry())) t.setExpiry(tr.getExpiry());
-                if (StringUtils.hasText(tr.getMultiplier())) t.setMultiplier(tr.getMultiplier());
-                if (StringUtils.hasText(tr.getBuySell())) t.setBuySell(tr.getBuySell());
-                if (StringUtils.hasText(tr.getQuantity())) t.setQuantity(tr.getQuantity());
-                if (StringUtils.hasText(tr.getTradePrice())) t.setTradePrice(tr.getTradePrice());
-                if (StringUtils.hasText(tr.getTradeMoney())) t.setTradeMoney(tr.getTradeMoney());
-                if (StringUtils.hasText(tr.getFifoPnlRealized())) t.setFifoPnlRealized(tr.getFifoPnlRealized());
-                if (StringUtils.hasText(tr.getIbCommission())) t.setIbCommission(tr.getIbCommission());
-                result.add(t);
-            }
-            return result;
-        }
-        else if (type.equalsIgnoreCase("dividend")) {
-            List<Dividend> result = new ArrayList<>();
+        List<Position> result = new ArrayList<>();
 
-            for (FlexQueryResponseDto.ChangeInDividendAccrual dv : dto.getFlexStatements().get(0).getFlexStatement().get(0).getChangeInDividendAccruals().getChangeInDividendAccrual()){
-                if (dv.getCode().equalsIgnoreCase("Re") && dv.getDate().equalsIgnoreCase(dv.getPayDate())) {
-                    Dividend d = new Dividend();
-                    if (StringUtils.hasText(dv.getConid())) d.setConid(dv.getConid());
-                    if (StringUtils.hasText(dv.getSymbol())) d.setSymbol(dv.getSymbol());
-                    if (StringUtils.hasText(dv.getExDate())) d.setExDate(dv.getExDate());
-                    if (StringUtils.hasText(dv.getPayDate())) d.setPayDate(dv.getPayDate());
-                    if (StringUtils.hasText(dv.getGrossRate())) d.setGrossRate(dv.getGrossRate());
-                    if (StringUtils.hasText(dv.getQuantity())) d.setQuantity(dv.getQuantity());
-                    if (StringUtils.hasText(dv.getGrossAmount())) d.setGrossAmount(dv.getGrossAmount());
-                    if (StringUtils.hasText(dv.getTax())) d.setTax(dv.getTax());
-                    if (StringUtils.hasText(dv.getNetAmount())) d.setNetAmount(dv.getNetAmount());
-                    d.setDividendId(dv.getConid(), dv.getExDate());
-                    d.setOpenClosed("CLOSED");
-                    result.add(d);
-                }
-            }
-            for (FlexQueryResponseDto.OpenDividendAccrual odv : dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenDividendAccruals().getOpenDividendAccrual()) {
-                Dividend od = new Dividend();
-                if (StringUtils.hasText(odv.getConid())) od.setConid(odv.getConid());
-                if (StringUtils.hasText(odv.getSymbol())) od.setSymbol(odv.getSymbol());
-                if (StringUtils.hasText(odv.getExDate())) od.setExDate(odv.getExDate());
-                if (StringUtils.hasText(odv.getPayDate())) od.setPayDate(odv.getPayDate());
-                if (StringUtils.hasText(odv.getGrossRate())) od.setGrossRate(odv.getGrossRate());
-                if (StringUtils.hasText(odv.getQuantity())) od.setQuantity(odv.getQuantity());
-                if (StringUtils.hasText(odv.getGrossAmount())) od.setGrossAmount(odv.getGrossAmount());
-                if (StringUtils.hasText(odv.getTax())) od.setTax(odv.getTax());
-                if (StringUtils.hasText(odv.getNetAmount())) od.setNetAmount(odv.getNetAmount());
-                od.setDividendId(odv.getConid(), odv.getExDate());
-                od.setOpenClosed("OPEN");
-                result.add(od);
-            }
-            return result;
-        } else {
-            return null;
+        for (FlexQueryResponseDto.OpenPosition dtoPosition : dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenPositions().getOpenPosition()) {
+            Position position = new Position();
+            if (StringUtils.hasText(dtoPosition.getConid())) position.setConid(dtoPosition.getConid());
+            if (StringUtils.hasText(dtoPosition.getSymbol())) position.setSymbol(dtoPosition.getSymbol());
+            if (StringUtils.hasText(dtoPosition.getPosition())) position.setQuantity(dtoPosition.getPosition());
+            if (StringUtils.hasText(dtoPosition.getCostBasisPrice())) position.setCostBasisPrice(dtoPosition.getCostBasisPrice());
+            if (StringUtils.hasText(dtoPosition.getMarkPrice())) position.setMarketPrice(dtoPosition.getMarkPrice());
+            if (StringUtils.hasText(dtoPosition.getMultiplier())) position.setMultiplier(dtoPosition.getMultiplier());
+            result.add(position);
         }
+        return result;
+    }
 
+    @Override
+    public List<Dividend> parseDividends(FlexQueryResponseDto dto) {
+
+        List<Dividend> result = new ArrayList<>();
+
+        for (FlexQueryResponseDto.ChangeInDividendAccrual dtoDividend : dto.getFlexStatements().get(0).getFlexStatement().get(0).getChangeInDividendAccruals().getChangeInDividendAccrual()){
+            if (dtoDividend.getCode().equalsIgnoreCase("Re") && dtoDividend.getDate().equalsIgnoreCase(dtoDividend.getPayDate())) {
+                Dividend dividend = new Dividend();
+                if (StringUtils.hasText(dtoDividend.getConid())) dividend.setConid(dtoDividend.getConid());
+                if (StringUtils.hasText(dtoDividend.getSymbol())) dividend.setSymbol(dtoDividend.getSymbol());
+                if (StringUtils.hasText(dtoDividend.getExDate())) dividend.setExDate(dtoDividend.getExDate());
+                if (StringUtils.hasText(dtoDividend.getPayDate())) dividend.setPayDate(dtoDividend.getPayDate());
+                if (StringUtils.hasText(dtoDividend.getGrossRate())) dividend.setGrossRate(dtoDividend.getGrossRate());
+                if (StringUtils.hasText(dtoDividend.getQuantity())) dividend.setQuantity(dtoDividend.getQuantity());
+                if (StringUtils.hasText(dtoDividend.getGrossAmount())) dividend.setGrossAmount(dtoDividend.getGrossAmount());
+                if (StringUtils.hasText(dtoDividend.getTax())) dividend.setTax(dtoDividend.getTax());
+                if (StringUtils.hasText(dtoDividend.getNetAmount())) dividend.setNetAmount(dtoDividend.getNetAmount());
+                dividend.setDividendId(dtoDividend.getConid(), dtoDividend.getExDate());
+                dividend.setOpenClosed("CLOSED");
+                result.add(dividend);
+            }
+        }
+        for (FlexQueryResponseDto.OpenDividendAccrual dtoOpenDividend : dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenDividendAccruals().getOpenDividendAccrual()) {
+            Dividend openDividend = new Dividend();
+            if (StringUtils.hasText(dtoOpenDividend.getConid())) openDividend.setConid(dtoOpenDividend.getConid());
+            if (StringUtils.hasText(dtoOpenDividend.getSymbol())) openDividend.setSymbol(dtoOpenDividend.getSymbol());
+            if (StringUtils.hasText(dtoOpenDividend.getExDate())) openDividend.setExDate(dtoOpenDividend.getExDate());
+            if (StringUtils.hasText(dtoOpenDividend.getPayDate())) openDividend.setPayDate(dtoOpenDividend.getPayDate());
+            if (StringUtils.hasText(dtoOpenDividend.getGrossRate())) openDividend.setGrossRate(dtoOpenDividend.getGrossRate());
+            if (StringUtils.hasText(dtoOpenDividend.getQuantity())) openDividend.setQuantity(dtoOpenDividend.getQuantity());
+            if (StringUtils.hasText(dtoOpenDividend.getGrossAmount())) openDividend.setGrossAmount(dtoOpenDividend.getGrossAmount());
+            if (StringUtils.hasText(dtoOpenDividend.getTax())) openDividend.setTax(dtoOpenDividend.getTax());
+            if (StringUtils.hasText(dtoOpenDividend.getNetAmount())) openDividend.setNetAmount(dtoOpenDividend.getNetAmount());
+            openDividend.setDividendId(dtoOpenDividend.getConid(), dtoOpenDividend.getExDate());
+            openDividend.setOpenClosed("OPEN");
+            result.add(openDividend);
+        }
+        return result;
     }
 }
