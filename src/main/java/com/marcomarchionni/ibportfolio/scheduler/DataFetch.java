@@ -53,23 +53,23 @@ public class DataFetch {
     @Autowired
     private DividendService dividendService;
 
-    @Scheduled(cron = "${cron.expression}")
+    //@Scheduled(cron = "${cron.expression}")
     public void fetchData() {
 
-        /**
+        /*
          * istanziamo un restTemplate per comporre le chiamate in sequenza
          */
         ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClients.createDefault());
         RestTemplate restTemplate = new RestTemplate(requestFactory);
 
-        /**
+        /*
          * settiamo gli header come da documentazione
          */
         HttpHeaders headers = new HttpHeaders();
         headers.set("User-Agent", "Technology/Version");
         HttpEntity request = new HttpEntity(headers);
 
-        /**
+        /*
          * eseguiamo la chiamata indicando anche la risposta che ci attendiamo dal servizio, che ho mappato in una classe apposita con le annotation per XML
          * inseriamo anche i parametri che sono il tuo token e il query id, che ho messo nelle properties
          */
@@ -82,7 +82,7 @@ public class DataFetch {
 
         log.info("Performing second API call with reference code: {}", response.getBody().getReferenceCode());
 
-        /**
+        /*
          * eseguiamo la seconda chiamata utilizzando l'url e il codice restituiti nella prima
          * la risposta, come nel caso precedente, è stata mappata in una classe a parte
          * ora hai tutti i dati della risposta, senza semplificazioni
@@ -97,14 +97,14 @@ public class DataFetch {
 
         log.info("Data retrieved, dispatching to parser");
 
-        /**
+        /*
          * usiamo il servizio di parsing iniettato con l'autowired a riga 40 per ottenere la lista delle posizioni e dei trade dalla risposta del server
          */
         List<Position> positions = responseParser.parse(result.getBody(), "position");
         List<Trade> trades = responseParser.parse(result.getBody(), "trade");
         List<Dividend> dividends = responseParser.parse(result.getBody(), "dividend");
 
-        /**
+        /*
          * ora che abbiamo le nostre liste, utilizziamo il servizio che ha il compito di gestire la persistenza per salvare i nostri dati sul db
          * controlliamo che i servizi non abbiano errore, così possiamo essere certi di aver salvato tutto
          */
@@ -129,7 +129,7 @@ public class DataFetch {
         }
 
 
-        log.info("Daily alignment completed successfully!");
-        log.info("End");
+        log.info("End update. Daily alignment completed successfully!");
+        log.info("End update");
     }
 }
