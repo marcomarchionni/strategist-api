@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio;
 
-import com.marcomarchionni.ibportfolio.scheduler.DataFetch;
+import com.marcomarchionni.ibportfolio.update.Updater;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -9,16 +9,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class StartupRunner implements CommandLineRunner {
 
-    private final DataFetch dataFetch;
+    private final Updater updater;
 
-    public StartupRunner(DataFetch dataFetch) {
-        this.dataFetch = dataFetch;
+    public StartupRunner(Updater updater) {
+        this.updater = updater;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        log.info(">>> Starting method dataFetch in class FetchData");
-        dataFetch.fetchData();
+        log.info(">>> Starting updating from file");
+        //updater.updateFromFile();
+        updater.updateFromServer();
 
     }
 }

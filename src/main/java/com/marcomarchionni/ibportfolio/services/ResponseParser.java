@@ -4,14 +4,13 @@ import com.marcomarchionni.ibportfolio.models.Dividend;
 import com.marcomarchionni.ibportfolio.models.Position;
 import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.update.FlexQueryData;
 
 import java.util.List;
 
 
 public interface ResponseParser {
 
-    List<Trade> parseTrades (FlexQueryResponseDto dto);
-    List<Position> parsePositions (FlexQueryResponseDto dto);
-    List<Dividend> parseDividends (FlexQueryResponseDto dto);
+    FlexQueryData parse (FlexQueryResponseDto dto);
 
 }

@@ -17,6 +17,7 @@ public class FlexQueryResponseDto {
 
 
     // Getter Methods
+
     @XmlElement(name = "FlexStatements")
     public ArrayList<FlexStatements> getFlexStatements() {
         return FlexStatementsObject;
@@ -46,7 +47,6 @@ public class FlexQueryResponseDto {
         this.type = type;
     }
 
-
     public static class FlexStatements {
         @XmlElement(name = "FlexStatement")
         ArrayList<FlexStatement> FlexStatementObject;
@@ -65,7 +65,6 @@ public class FlexQueryResponseDto {
         }
 
         // Setter Methods
-
         public void setFlexStatement(ArrayList<FlexStatement> FlexStatementObject) {
             this.FlexStatementObject = FlexStatementObject;
         }
@@ -185,7 +184,7 @@ public class FlexQueryResponseDto {
 
     public static class ChangeInDividendAccruals {
         @XmlElement(name = "ChangeInDividendAccrual")
-        ArrayList<ChangeInDividendAccrual> ChangeInDividendAccrual = new ArrayList<ChangeInDividendAccrual>();
+        ArrayList<ChangeInDividendAccrual> ChangeInDividendAccrual = new ArrayList<>();
 
 
         // Getter Methods
@@ -536,7 +535,7 @@ public class FlexQueryResponseDto {
 
     public static class OpenDividendAccruals {
         @XmlElement(name = "OpenDividendAccrual")
-        ArrayList<OpenDividendAccrual> OpenDividendAccrual = new ArrayList<OpenDividendAccrual>();
+        ArrayList<OpenDividendAccrual> OpenDividendAccrual = new ArrayList<>();
 
         public ArrayList<FlexQueryResponseDto.OpenDividendAccrual> getOpenDividendAccrual() {
             return OpenDividendAccrual;
@@ -872,7 +871,7 @@ public class FlexQueryResponseDto {
 
     public static class Trades {
         @XmlElement(name = "Trade")
-        ArrayList<Trade> Trade = new ArrayList<Trade>();
+        ArrayList<Trade> Trade = new ArrayList<>();
 
         // Getter Methods
 
@@ -1563,7 +1562,7 @@ public class FlexQueryResponseDto {
 
     public static class OpenPositions {
         @XmlElement(name = "OpenPosition")
-        ArrayList<OpenPosition> OpenPosition = new ArrayList<OpenPosition>();
+        ArrayList<OpenPosition> OpenPosition = new ArrayList<>();
 
 
         // Getter Methods

@@ -1,9 +1,11 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.models.Dividend;
+import com.marcomarchionni.ibportfolio.models.FlexStatement;
 import com.marcomarchionni.ibportfolio.models.Position;
 import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.update.FlexQueryData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -15,16 +17,36 @@ import java.util.List;
 @Service
 public class DefaultResponseParser implements ResponseParser {
 
-    /**
-     * Refactoring del parser con 3 metodi, ognuno per il parsing di ciascuna entity
-     */
-
     @Override
-    public List<Trade> parseTrades(FlexQueryResponseDto dto) {
+    public FlexQueryData parse(FlexQueryResponseDto dto) {
 
-        List<Trade> result = new ArrayList<>();
+        FlexQueryData flexQueryData = new FlexQueryData();
+        flexQueryData.setFlexStatement(parseFlexStatement(dto));
+        flexQueryData.setTrades(parseTrades(dto));
+        flexQueryData.setPositions(parsePositions(dto));
+        flexQueryData.setTrades(parseTrades(dto));
+        flexQueryData.setDividends(parseDividends(dto));
+        return flexQueryData;
+    }
 
-        for (FlexQueryResponseDto.Trade dtoTrade : dto.getFlexStatements().get(0).getFlexStatement().get(0).getTrades().getTrade()) {
+
+    private FlexStatement parseFlexStatement (FlexQueryResponseDto dto) {
+        // TODO: set fields in FlexStatement
+        return new FlexStatement();
+    }
+
+    /**
+     * extract trades from dto
+     * @param dto map of FlexQueryResponse
+     * @return list of trades
+     */
+    private List<Trade> parseTrades(FlexQueryResponseDto dto) {
+
+        List<Trade> trades = new ArrayList<>();
+        List<FlexQueryResponseDto.Trade> dtoTrades =
+                dto.getFlexStatements().get(0).getFlexStatement().get(0).getTrades().getTrade();
+
+        for (FlexQueryResponseDto.Trade dtoTrade : dtoTrades) {
             Trade trade = new Trade();
             if (StringUtils.hasText(dtoTrade.getTradeID())) trade.setTradeId(dtoTrade.getTradeID());
             if (StringUtils.hasText(dtoTrade.getConid())) trade.setConid(dtoTrade.getConid());
@@ -41,18 +63,25 @@ public class DefaultResponseParser implements ResponseParser {
             if (StringUtils.hasText(dtoTrade.getTradeMoney())) trade.setTradeMoney(dtoTrade.getTradeMoney());
             if (StringUtils.hasText(dtoTrade.getFifoPnlRealized())) trade.setFifoPnlRealized(dtoTrade.getFifoPnlRealized());
             if (StringUtils.hasText(dtoTrade.getIbCommission())) trade.setIbCommission(dtoTrade.getIbCommission());
-            result.add(trade);
+            trades.add(trade);
         }
-        return result;
+        log.info("Parsed " + dtoTrades.size() + " trade(s)");
+
+        return trades;
     }
 
+    /**
+     * extract positions from dto
+     * @param dto map of FlexQueryResponse
+     * @return list of positions
+     */
+    private List<Position> parsePositions(FlexQueryResponseDto dto) {
 
-    @Override
-    public List<Position> parsePositions(FlexQueryResponseDto dto) {
+        List<Position> positions = new ArrayList<>();
+        List<FlexQueryResponseDto.OpenPosition> dtoPositions =
+                dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenPositions().getOpenPosition();
 
-        List<Position> result = new ArrayList<>();
-
-        for (FlexQueryResponseDto.OpenPosition dtoPosition : dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenPositions().getOpenPosition()) {
+        for (FlexQueryResponseDto.OpenPosition dtoPosition : dtoPositions) {
             Position position = new Position();
             if (StringUtils.hasText(dtoPosition.getConid())) position.setConid(dtoPosition.getConid());
             if (StringUtils.hasText(dtoPosition.getSymbol())) position.setSymbol(dtoPosition.getSymbol());
@@ -60,17 +89,25 @@ public class DefaultResponseParser implements ResponseParser {
             if (StringUtils.hasText(dtoPosition.getCostBasisPrice())) position.setCostBasisPrice(dtoPosition.getCostBasisPrice());
             if (StringUtils.hasText(dtoPosition.getMarkPrice())) position.setMarketPrice(dtoPosition.getMarkPrice());
             if (StringUtils.hasText(dtoPosition.getMultiplier())) position.setMultiplier(dtoPosition.getMultiplier());
-            result.add(position);
+            positions.add(position);
         }
-        return result;
+        log.info("Parsed " + dtoPositions.size() + " position(s)");
+
+        return positions;
     }
 
-    @Override
-    public List<Dividend> parseDividends(FlexQueryResponseDto dto) {
+    /**
+     * extract dividends and open dividends from dto
+     * @param dto map of FlexQueryResponse
+     * @return list of dividends
+     */
+    private List<Dividend> parseDividends(FlexQueryResponseDto dto) {
 
-        List<Dividend> result = new ArrayList<>();
+        List<Dividend> dividends = new ArrayList<>();
+        List<FlexQueryResponseDto.ChangeInDividendAccrual> dtoDividends =
+                dto.getFlexStatements().get(0).getFlexStatement().get(0).getChangeInDividendAccruals().getChangeInDividendAccrual();
 
-        for (FlexQueryResponseDto.ChangeInDividendAccrual dtoDividend : dto.getFlexStatements().get(0).getFlexStatement().get(0).getChangeInDividendAccruals().getChangeInDividendAccrual()){
+        for (FlexQueryResponseDto.ChangeInDividendAccrual dtoDividend : dtoDividends) {
             if (dtoDividend.getCode().equalsIgnoreCase("Re") && dtoDividend.getDate().equalsIgnoreCase(dtoDividend.getPayDate())) {
                 Dividend dividend = new Dividend();
                 if (StringUtils.hasText(dtoDividend.getConid())) dividend.setConid(dtoDividend.getConid());
@@ -84,10 +121,16 @@ public class DefaultResponseParser implements ResponseParser {
                 if (StringUtils.hasText(dtoDividend.getNetAmount())) dividend.setNetAmount(dtoDividend.getNetAmount());
                 dividend.setDividendId(dtoDividend.getConid(), dtoDividend.getExDate());
                 dividend.setOpenClosed("CLOSED");
-                result.add(dividend);
+                dividends.add(dividend);
             }
+
         }
-        for (FlexQueryResponseDto.OpenDividendAccrual dtoOpenDividend : dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenDividendAccruals().getOpenDividendAccrual()) {
+        log.info("Parsed " + dtoDividends.size() + " dividend(s)");
+
+        List<FlexQueryResponseDto.OpenDividendAccrual> dtoOpenDividends =
+                dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenDividendAccruals().getOpenDividendAccrual();
+
+        for (FlexQueryResponseDto.OpenDividendAccrual dtoOpenDividend : dtoOpenDividends) {
             Dividend openDividend = new Dividend();
             if (StringUtils.hasText(dtoOpenDividend.getConid())) openDividend.setConid(dtoOpenDividend.getConid());
             if (StringUtils.hasText(dtoOpenDividend.getSymbol())) openDividend.setSymbol(dtoOpenDividend.getSymbol());
@@ -100,8 +143,10 @@ public class DefaultResponseParser implements ResponseParser {
             if (StringUtils.hasText(dtoOpenDividend.getNetAmount())) openDividend.setNetAmount(dtoOpenDividend.getNetAmount());
             openDividend.setDividendId(dtoOpenDividend.getConid(), dtoOpenDividend.getExDate());
             openDividend.setOpenClosed("OPEN");
-            result.add(openDividend);
+            dividends.add(openDividend);
         }
-        return result;
+        log.info("Parsed " + dtoOpenDividends.size() + " open dividend(s)");
+
+        return dividends;
     }
 }
