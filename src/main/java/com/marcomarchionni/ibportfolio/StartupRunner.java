@@ -18,8 +18,8 @@ public class StartupRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         log.info(">>> Starting updating from file");
-        //updater.updateFromFile();
-        updater.updateFromServer();
+        updater.updateFromFile();
+//        updater.updateFromServer();
 
     }
 }
