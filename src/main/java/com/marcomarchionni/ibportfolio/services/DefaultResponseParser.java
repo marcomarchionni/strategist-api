@@ -196,13 +196,13 @@ public class DefaultResponseParser implements ResponseParser {
                     dividend.setQuantity(new BigDecimal(dtoDividend.getQuantity()));
                 }
                 if (StringUtils.hasText(dtoDividend.getGrossAmount())) {
-                    dividend.setGrossAmount(new BigDecimal(dtoDividend.getGrossAmount()));
+                    dividend.setGrossAmount(new BigDecimal(dtoDividend.getGrossAmount()).abs());
                 }
                 if (StringUtils.hasText(dtoDividend.getTax())) {
-                    dividend.setTax(new BigDecimal(dtoDividend.getTax()));
+                    dividend.setTax(new BigDecimal(dtoDividend.getTax()).abs());
                 }
                 if (StringUtils.hasText(dtoDividend.getNetAmount())) {
-                    dividend.setNetAmount(new BigDecimal(dtoDividend.getNetAmount()));
+                    dividend.setNetAmount(new BigDecimal(dtoDividend.getNetAmount()).abs());
                 }
                 dividend.setDividendId(Long.parseLong(dtoDividend.getConid() + dtoDividend.getExDate()));
                 dividend.setOpenClosed("CLOSED");
