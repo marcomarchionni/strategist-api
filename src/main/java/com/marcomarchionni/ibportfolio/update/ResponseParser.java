@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.services;
+package com.marcomarchionni.ibportfolio.update;
 
 import com.marcomarchionni.ibportfolio.models.Dividend;
 import com.marcomarchionni.ibportfolio.models.Position;

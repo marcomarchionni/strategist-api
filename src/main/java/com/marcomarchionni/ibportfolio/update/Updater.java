@@ -1,14 +1,13 @@
 package com.marcomarchionni.ibportfolio.update;
 
 import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
-import com.marcomarchionni.ibportfolio.services.DividendService;
-import com.marcomarchionni.ibportfolio.services.PositionService;
-import com.marcomarchionni.ibportfolio.services.ResponseParser;
-import com.marcomarchionni.ibportfolio.services.TradeService;
+import com.marcomarchionni.ibportfolio.services.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Component
 @Slf4j
@@ -18,6 +17,8 @@ public class Updater {
 
     private final ResponseParser responseParser;
 
+    private final FlexStatementService flexStatementService;
+
     private final PositionService positionService;
 
     private final TradeService tradeService;
@@ -25,9 +26,10 @@ public class Updater {
     private final DividendService dividendService;
 
     @Autowired
-    public Updater(DataFetcher dataFetcher, ResponseParser responseParser, PositionService positionService, TradeService tradeService, DividendService dividendService) {
+    public Updater(DataFetcher dataFetcher, ResponseParser responseParser, FlexStatementService flexStatementService, PositionService positionService, TradeService tradeService, DividendService dividendService) {
         this.dataFetcher = dataFetcher;
         this.responseParser = responseParser;
+        this.flexStatementService = flexStatementService;
         this.positionService = positionService;
         this.tradeService = tradeService;
         this.dividendService = dividendService;
@@ -77,22 +79,65 @@ public class Updater {
     private void persistFlexQueryData (FlexQueryData flexQueryData) {
         // utilizziamo il servizio che ha il compito di gestire la persistenza per salvare i nostri dati sul db
 
-        log.info("Dispatching data to persistence layer");
+        // get last reportDate from db
+        LocalDate lastReportDateInDb = flexStatementService.getLastReportDate();
+        LocalDate flexReportDate = flexQueryData.getFlexStatement().getToDate();
 
-        boolean positionSaved = positionService.savePositions(flexQueryData.getPositions());
-        if (!positionSaved) {
-            log.error("Could not store all the positions on the DB");
+        boolean flexIsNew = flexReportDate.isAfter(lastReportDateInDb);
+
+        if (flexIsNew) {
+            log.info(">>> Flex is new >>>>");
+            // delete old positions from db and add new positions
+            boolean oldPositionsDeleted = positionService.deleteAllPositions();
+
+            if (!oldPositionsDeleted) {
+                log.error("Could not delete old positions on the DB");
+            } else {
+                log.info("Old positions deleted...");
+            }
+            boolean positionSaved = positionService.savePositions(flexQueryData.getPositions());
+            if (!positionSaved) {
+                log.error("Could not store all the positions on the DB");
+            } else {
+                log.info("New positions saved...");
+            }
+        } else {
+            log.info(">>> Flex is old >>>>");
         }
 
         boolean tradeSaved = tradeService.saveTrades(flexQueryData.getTrades());
         if (!tradeSaved) {
             log.error("Could not store all the trades on the DB");
+        } else {
+            log.info("New trades saved...");
         }
 
-        boolean dividendSaved = dividendService.saveDividends(flexQueryData.getDividends());
-        if (!dividendSaved) {
-            log.error("Could not store all the dividends on the DB");
+        if (flexIsNew) {
+            // delete old open dividends
+            boolean deletedOpenDividends = dividendService.deleteOpenDividends();
+            if (!deletedOpenDividends) {
+                log.error("Could not delete open dividends from the DB");
+            } else {
+                log.info("Old open dividends deleted...");
+            }
+            // save new dividends and opendividends
+            boolean dividendSaved = dividendService.saveDividends(flexQueryData.getDividends());
+            boolean openDividendSaved = dividendService.saveDividends(flexQueryData.getOpenDividends());
+            if (!dividendSaved || !openDividendSaved) {
+                log.error("Could not store all the dividends on the DB");
+            } else {
+                log.info("New dividends and opendividends saved...");
+            }
+        } else {
+            // save dividends only
+            boolean dividendSaved = dividendService.saveDividends(flexQueryData.getDividends());
+            if (!dividendSaved) {
+                log.error("Could not store all the dividends on the DB");
+            } else {
+                log.info("New dividends saved...");
+            }
         }
+
 
         log.info("End update. Daily alignment completed successfully!");
         log.info("End update");
