@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.services;
+package com.marcomarchionni.ibportfolio.update;
 
 import com.marcomarchionni.ibportfolio.models.Dividend;
 import com.marcomarchionni.ibportfolio.models.FlexStatement;
@@ -6,6 +6,7 @@ import com.marcomarchionni.ibportfolio.models.Position;
 import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.update.FlexQueryData;
+import com.marcomarchionni.ibportfolio.update.ResponseParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -33,6 +34,7 @@ public class DefaultResponseParser implements ResponseParser {
         flexQueryData.setPositions(parsePositions(dto));
         flexQueryData.setTrades(parseTrades(dto));
         flexQueryData.setDividends(parseDividends(dto));
+        flexQueryData.setOpenDividends(parseOpenDividends(dto));
         return flexQueryData;
     }
 
@@ -141,6 +143,9 @@ public class DefaultResponseParser implements ResponseParser {
             if (StringUtils.hasText(dtoPosition.getConid())) {
                 position.setConId(Long.parseLong(dtoPosition.getConid()));
             }
+            if (StringUtils.hasText(dtoPosition.getReportDate())) {
+                position.setReportDate(LocalDate.parse(dtoPosition.getReportDate(), dateFormatter));
+            }
             if (StringUtils.hasText(dtoPosition.getSymbol())) {
                 position.setSymbol(dtoPosition.getSymbol());
             }
@@ -211,7 +216,17 @@ public class DefaultResponseParser implements ResponseParser {
 
         }
         log.info("Parsed " + dtoDividends.size() + " dividend(s)");
+        return dividends;
+    }
 
+    /**
+     * extract open dividends from dto
+     * @param dto map of FlexQueryResponse
+     * @return list of open dividends
+     */
+    private List<Dividend> parseOpenDividends(FlexQueryResponseDto dto) {
+
+        List<Dividend> openDividends = new ArrayList<>();
         List<FlexQueryResponseDto.OpenDividendAccrual> dtoOpenDividends =
                 dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenDividendAccruals().getOpenDividendAccrual();
 
@@ -246,10 +261,9 @@ public class DefaultResponseParser implements ResponseParser {
             }
             openDividend.setDividendId(Long.parseLong(dtoOpenDividend.getConid() + dtoOpenDividend.getExDate()));
             openDividend.setOpenClosed("OPEN");
-            dividends.add(openDividend);
+            openDividends.add(openDividend);
         }
         log.info("Parsed " + dtoOpenDividends.size() + " open dividend(s)");
-
-        return dividends;
+        return openDividends;
     }
 }

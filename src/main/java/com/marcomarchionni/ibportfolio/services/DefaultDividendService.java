@@ -26,4 +26,15 @@ public class DefaultDividendService implements DividendService {
             return false;
         }
     }
+
+    @Override
+    public boolean deleteOpenDividends() {
+        try {
+            dividendRepository.deleteByOpenClosed("OPEN");
+            return true;
+        } catch (Exception e) {
+            log.error("Exception of some kind: {}", e.getMessage());
+            return false;
+        }
+    }
 }

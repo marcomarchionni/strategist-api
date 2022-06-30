@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @Entity(name = "position")
@@ -14,6 +15,9 @@ public class Position {
     @Id
     @Column(name="con_id")
     private Long conId;
+
+    @Column(name="report_date")
+    private LocalDate reportDate;
 
     @Column(name="symbol")
     private String symbol;

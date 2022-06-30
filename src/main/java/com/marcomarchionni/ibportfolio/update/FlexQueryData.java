@@ -13,6 +13,7 @@ public class FlexQueryData {
     private List<Position> positions;
     private List<Trade> trades;
     private List<Dividend> dividends;
+    private List<Dividend> openDividends;
 
     public FlexStatement getFlexStatement() {
         return flexStatement;
@@ -44,5 +45,13 @@ public class FlexQueryData {
 
     public void setDividends(List<Dividend> dividends) {
         this.dividends = dividends;
+    }
+
+    public List<Dividend> getOpenDividends() {
+        return openDividends;
+    }
+
+    public void setOpenDividends(List<Dividend> openDividends) {
+        this.openDividends = openDividends;
     }
 }
