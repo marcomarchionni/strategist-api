@@ -1,12 +1,18 @@
 package com.marcomarchionni.ibportfolio.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity(name="flex_statement")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FlexStatement {
     @Id
     @Column(name="flex_statement_id")
