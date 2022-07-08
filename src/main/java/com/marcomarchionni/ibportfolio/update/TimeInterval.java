@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
-public class Gap {
+public class TimeInterval {
 
     private LocalDate fromDate;
     private LocalDate toDate;

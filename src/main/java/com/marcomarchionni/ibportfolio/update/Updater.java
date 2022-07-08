@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @Slf4j
+@Transactional
 public class Updater {
 
     private final DataFetcher dataFetcher;
@@ -22,155 +24,135 @@ public class Updater {
 
     private final FlexStatementService flexStatementService;
 
-    private final PositionService positionService;
-
     private final TradeService tradeService;
+
+    private final PositionService positionService;
 
     private final DividendService dividendService;
 
     @Autowired
-    public Updater(DataFetcher dataFetcher, ResponseParser responseParser, FlexStatementService flexStatementService, PositionService positionService, TradeService tradeService, DividendService dividendService) {
+    public Updater(DataFetcher dataFetcher, ResponseParser responseParser, FlexStatementService FlexStatementService, TradeService tradeService, PositionService positionService, DividendService dividendService) {
         this.dataFetcher = dataFetcher;
         this.responseParser = responseParser;
-        this.flexStatementService = flexStatementService;
-        this.positionService = positionService;
+        this.flexStatementService = FlexStatementService;
         this.tradeService = tradeService;
+        this.positionService = positionService;
         this.dividendService = dividendService;
     }
 
-    @Transactional
     public void updateFromServer() {
 
-        FlexQueryResponseDto flexQueryResponseDto = dataFetcher.fetchFromServer();
+        FlexQueryResponseDto dto = dataFetcher.fetchFromServer();
 
-        if (flexQueryResponseDto == null) {
-            log.info("Exception: Invalid response from server...");
+        if (dto == null) {
+            log.warn("Exception: Invalid response from server...");
             return;
         }
+        // salviamo o aggiorniamo i dati sul db
+        saveOrUpdate(dto);
 
-        // usiamo il servizio di parsing per ottenere le entity da aggiungere al db
-        log.info("Data retrieved, dispatching to parser");
-        FlexQueryData flexQueryData = responseParser.parse(flexQueryResponseDto);
-
-        // utilizziamo il servizio che ha il compito di gestire la persistenza per salvare i nostri dati sul db
-
-        log.info("Data parsed, dispatching to persistence layer");
-        persistFlexQueryData(flexQueryData);
-
+        // segnaliamo eventuali intervalli temporali senza dati nel db
+        List<TimeInterval> dataGaps = detectDataGaps();
+        if (dataGaps.size() > 0) {
+            log.warn(">>> Data gaps detected: " + dataGaps);
+        }
     }
 
-    @Transactional
-    public void updateFromFile() {
 
-        FlexQueryResponseDto flexQueryResponseDto = dataFetcher.fetchFromFile();
+    public void updateFromFile(File xmlFile) throws Exception {
 
-        if (flexQueryResponseDto == null) {
+        FlexQueryResponseDto dto = dataFetcher.fetchFromFile(xmlFile);
+
+        if (dto == null) {
             log.info("Exception: Invalid file...");
             return;
         }
 
-        // usiamo il servizio di parsing per ottenere le entity da aggiungere al db
-        log.info("Data retrieved, dispatching to parser");
-        FlexQueryData flexQueryData = responseParser.parse(flexQueryResponseDto);
+        // salviamo o aggiorniamo i dati sul db
+        saveOrUpdate(dto);
 
-        // utilizziamo il servizio che ha il compito di gestire la persistenza per salvare i nostri dati sul db
-        log.info("Data parsed, dispatching to persistence layer");
-        persistFlexQueryData(flexQueryData);
-
+        // segnaliamo eventuali intervalli temporali senza dati nel db
+        List<TimeInterval> dataGaps = detectDataGaps();
+        if (dataGaps.size() > 0) {
+            log.warn(">>> Data gaps detected: " + dataGaps);
+        }
     }
 
-    private void persistFlexQueryData(FlexQueryData flexQueryData) {
-        // utilizziamo il servizio che ha il compito di gestire la persistenza per salvare i nostri dati sul db
 
-        // get last reportDate from db
-        LocalDate lastReportDateInDb = flexStatementService.getLastReportDate();
-        LocalDate flexReportDate = flexQueryData.getFlexStatement().getToDate();
+    private void saveOrUpdate(FlexQueryResponseDto dto) {
 
-        boolean flexIsNew = flexReportDate.isAfter(lastReportDateInDb);
+        // check if dto has the latest data
+        FlexStatement flexStatement = responseParser.parseFlexStatement(dto);
+        LocalDate flexQueryDate = flexStatement.getToDate();
 
-        // save flexStatement
-        flexStatementService.saveFlexStatement(flexQueryData.getFlexStatement());
+        LocalDate latestDateInDb = flexStatementService.getLatestDateInDb();
+        boolean dtoHasTheLatestData = flexQueryDate.isAfter(latestDateInDb);
 
-        if (flexIsNew) {
-            log.info(">>> Flex is new >>>>");
+        // save FlexInfo
+        flexStatementService.save(flexStatement);
+
+        if (dtoHasTheLatestData) {
+            log.info(">>> Dto has the latest data >>>>");
+
             // delete old positions from db and add new positions
-            boolean oldPositionsDeleted = positionService.deleteAllPositions();
+            log.info("Delete old positions from db and add new positions");
+            positionService.deleteAllPositions();
+            positionService.savePositions(responseParser.parsePositions(dto));
 
-            if (!oldPositionsDeleted) {
-                log.error("Could not delete old positions on the DB");
-            } else {
-                log.info("Old positions deleted...");
-            }
-            boolean positionSaved = positionService.savePositions(flexQueryData.getPositions());
-            if (!positionSaved) {
-                log.error("Could not store all the positions on the DB");
-            } else {
-                log.info("New positions saved...");
-            }
+            // delete old open dividends, save new open dividends
+            log.info("Delete old open dividends, save new open dividends");
+            dividendService.deleteOpenDividends();
+            dividendService.saveDividends(responseParser.parseOpenDividends(dto));
+
         } else {
-            log.info(">>> Flex is old >>>>");
+            log.info(">>> Dto contains archive data >>>>");
         }
 
-        //save trades
-        boolean tradeSaved = tradeService.saveTrades(flexQueryData.getTrades());
-        if (!tradeSaved) {
-            log.error("Could not store all the trades on the DB");
-        } else {
-            log.info("New trades saved...");
-        }
+        // Trades and Closed Dividends should be saved in both cases
+        // save trades
+        log.info("Save trades");
+        tradeService.saveTrades(responseParser.parseTrades(dto));
 
-        if (flexIsNew) {
-            // delete old open dividends
-            boolean deletedOpenDividends = dividendService.deleteOpenDividends();
-            if (!deletedOpenDividends) {
-                log.error("Could not delete open dividends from the DB");
-            } else {
-                log.info("Old open dividends deleted...");
-            }
-            // save new dividends and open dividends
-            boolean dividendSaved = dividendService.saveDividends(flexQueryData.getDividends());
-            boolean openDividendSaved = dividendService.saveDividends(flexQueryData.getOpenDividends());
-            if (!dividendSaved || !openDividendSaved) {
-                log.error("Could not store all the dividends on the DB");
-            } else {
-                log.info("New dividends and open dividends saved...");
-            }
-        } else {
-            // save dividends only
-            boolean dividendSaved = dividendService.saveDividends(flexQueryData.getDividends());
-            if (!dividendSaved) {
-                log.error("Could not store all the dividends on the DB");
-            } else {
-                log.info("New dividends saved...");
-            }
-        }
+        // save closed dividends
+        log.info("Save closed dividends");
+        dividendService.saveDividends(responseParser.parseDividends(dto));
 
-        log.info("End update. Daily alignment completed successfully!");
-        log.info("End update");
+        log.info(">>> Dto data saved in db >>>");
     }
 
-    public List<Gap> detectGaps() {
 
-        List<Gap> gaps = new ArrayList<>();
+    private List<TimeInterval> detectDataGaps() {
 
-        List<FlexStatement> orderedFlexStatements = flexStatementService.getAllOrderedByFromDateAsc();
+        List<TimeInterval> dataGaps = new ArrayList<>();
 
-        if (orderedFlexStatements.size() > 1) {
-            LocalDate newStart;
-            LocalDate newEnd;
-            LocalDate prevEnd = orderedFlexStatements.get(0).getToDate().plusDays(1);
+        List<FlexStatement> orderedFlexStatements = flexStatementService.findAllOrderedByFromDateAsc();
+
+        if (orderedFlexStatements.size() <= 1) {
+
+            // No data gaps with 1 or 0 updates, return empty list
+            return dataGaps;
+
+        } else {
+
+            // search for possible data gaps
+            LocalDate prevToDate = orderedFlexStatements.get(0).getToDate().plusDays(1);
+            LocalDate fromDate, toDate, gapStart, gapEnd;
 
             for (int i = 1; i < orderedFlexStatements.size(); i++) {
 
-                newStart = orderedFlexStatements.get(i).getFromDate();
-                newEnd = orderedFlexStatements.get(i).getToDate();
+                fromDate = orderedFlexStatements.get(i).getFromDate();
+                toDate = orderedFlexStatements.get(i).getToDate();
 
-                if (newStart.isAfter(prevEnd)) {
-                    gaps.add(new Gap(prevEnd, newStart));
+                if (fromDate.isAfter(prevToDate.plusDays(1))) {
+
+                    // save data interval if >= 1 day
+                    gapStart = prevToDate.plusDays(1);
+                    gapEnd = fromDate.minusDays(1);
+                    dataGaps.add(new TimeInterval(gapStart, gapEnd));
                 }
-                if (newEnd.isAfter(prevEnd)) prevEnd = newEnd;
+                if (toDate.isAfter(prevToDate)) prevToDate = toDate;
             }
         }
-        return gaps;
+        return dataGaps;
     }
 }

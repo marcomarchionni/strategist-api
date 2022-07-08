@@ -10,12 +10,12 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class DefaultPositionService implements PositionService{
+public class PositionServiceImpl implements PositionService{
 
     private final PositionRepository positionRepository;
 
     @Autowired
-    public DefaultPositionService(PositionRepository positionRepository) {
+    public PositionServiceImpl(PositionRepository positionRepository) {
         this.positionRepository = positionRepository;
     }
 

@@ -11,28 +11,27 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class DefaultFlexStatementService implements FlexStatementService {
+public class FlexStatementServiceImpl implements FlexStatementService {
 
     private final FlexStatementRepository flexStatementRepository;
 
-    public DefaultFlexStatementService(FlexStatementRepository flexStatementRepository) {
+    public FlexStatementServiceImpl(FlexStatementRepository flexStatementRepository) {
         this.flexStatementRepository = flexStatementRepository;
     }
 
     @Override
-    public LocalDate getLastReportDate() {
+    public LocalDate getLatestDateInDb() {
 
         Optional<FlexStatement> optionalLastFlex = flexStatementRepository.findFirstByOrderByToDateDesc();
         return optionalLastFlex.map(FlexStatement::getToDate).orElse(LocalDate.MIN);
     }
 
     @Override
-    public FlexStatement saveFlexStatement(FlexStatement flexStatement) {
-        return flexStatementRepository.save(flexStatement);
+    public void save(FlexStatement flexStatement) {
+        flexStatementRepository.save(flexStatement);
     }
 
-    @Override
-    public List<FlexStatement> getAllOrderedByFromDateAsc() {
+    public List<FlexStatement> findAllOrderedByFromDateAsc() {
         return flexStatementRepository.findByOrderByFromDateAsc();
     }
 }

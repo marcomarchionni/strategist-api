@@ -10,14 +10,11 @@ import java.time.LocalDate;
 
 @Entity(name="flex_statement")
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class FlexStatement {
     @Id
-    @Column(name="flex_statement_id")
+    @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long flexStatementId;
+    private Long id;
 
     @Column(name="account_id")
     private String accountId;

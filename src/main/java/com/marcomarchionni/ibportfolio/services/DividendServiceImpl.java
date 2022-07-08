@@ -2,7 +2,6 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.models.Dividend;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
-import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class DefaultDividendService implements DividendService {
+public class DividendServiceImpl implements DividendService {
 
     @Autowired
     private DividendRepository dividendRepository;

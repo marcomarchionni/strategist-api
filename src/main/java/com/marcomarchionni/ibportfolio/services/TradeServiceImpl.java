@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class DefaultTradeService implements TradeService{
+public class TradeServiceImpl implements TradeService{
 
     @Autowired
     private TradeRepository tradeRepository;
@@ -18,7 +18,7 @@ public class DefaultTradeService implements TradeService{
     @Override
     public boolean saveTrades(List<Trade> trades) {
 
-        /**
+        /*
          * la versione più semplice possibile di un servizio di persistenza: utilizzi la repo iniettata con autowired e fai un saveAll sulla lista
          * questo crea le entità nuove o aggiorna le entità esistenti, vedi se fa al caso tuo, altrimenti ne riparliamo
          *

@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 
+//TODO: update Dto to include all level of detail
 @XmlRootElement(name = "FlexQueryResponse")
 public class FlexQueryResponseDto {
 

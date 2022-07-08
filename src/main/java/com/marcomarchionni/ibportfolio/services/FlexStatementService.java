@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface FlexStatementService {
 
-    LocalDate getLastReportDate();
+    LocalDate getLatestDateInDb();
 
-    FlexStatement saveFlexStatement(FlexStatement flexStatement);
+    void save(FlexStatement flexStatement);
 
-    List<FlexStatement> getAllOrderedByFromDateAsc();
+    List<FlexStatement> findAllOrderedByFromDateAsc();
 }
 

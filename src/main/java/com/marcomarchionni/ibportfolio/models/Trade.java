@@ -12,14 +12,23 @@ import java.time.LocalDate;
 @Entity(name = "trade")
 public class Trade {
     @Id
+    @Column(name="id")
+    private Long id;
+
     @Column(name="trade_id")
     private Long tradeId;
 
     @Column(name="con_id")
     private Long conId;
 
+    @Column(name="trade_strategy_id")
+    private Long strategy_id;
+
     @Column(name="symbol")
     private String symbol;
+
+    @Column(name="description")
+    private String description;
 
     @Column(name="asset_category")
     private String assetCategory;

@@ -13,6 +13,9 @@ import java.time.LocalDate;
 public class Position {
 
     @Id
+    @Column(name="id")
+    private Long id;
+
     @Column(name="con_id")
     private Long conId;
 
@@ -21,6 +24,21 @@ public class Position {
 
     @Column(name="symbol")
     private String symbol;
+
+    @Column(name="description")
+    private String description;
+
+    @Column(name = "asset_category")
+    private String assetCategory;
+
+    @Column(name = "put_call")
+    private String putCall;
+
+    @Column(name= "strike")
+    private BigDecimal strike;
+
+    @Column(name = "expiry")
+    private LocalDate expiry;
 
     @Column(name="quantity")
     private BigDecimal quantity;
@@ -33,7 +51,4 @@ public class Position {
 
     @Column(name="multiplier")
     private int multiplier;
-
-    public Position() {
-    }
 }
