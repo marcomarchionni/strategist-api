@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface FlexStatementService {
 
-    LocalDate getLatestDateInDb();
+    LocalDate getLatestDateWithDataInDb();
 
     void save(FlexStatement flexStatement);
 

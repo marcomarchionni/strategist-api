@@ -22,7 +22,7 @@ public class Trade {
     private Long conId;
 
     @Column(name="trade_strategy_id")
-    private Long strategy_id;
+    private Long strategyId;
 
     @Column(name="symbol")
     private String symbol;

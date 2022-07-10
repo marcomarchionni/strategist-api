@@ -20,7 +20,7 @@ public class FlexStatementServiceImpl implements FlexStatementService {
     }
 
     @Override
-    public LocalDate getLatestDateInDb() {
+    public LocalDate getLatestDateWithDataInDb() {
 
         Optional<FlexStatement> optionalLastFlex = flexStatementRepository.findFirstByOrderByToDateDesc();
         return optionalLastFlex.map(FlexStatement::getToDate).orElse(LocalDate.MIN);

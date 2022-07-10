@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `flex_statement`, `portfolio`, `strategy`, `trade`, `positi
 
 CREATE TABLE `flex_statement`
 (
-    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `account_id` VARCHAR(50) NOT NULL,
     `from_date`	DATE NOT NULL,
     `to_date` DATE NOT NULL,
@@ -15,16 +15,16 @@ CREATE TABLE `flex_statement`
 
 CREATE TABLE `portfolio`
 (
-    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `portfolio_name` VARCHAR(50) NOT NULL,
     UNIQUE (`portfolio_name`)
-) AUTO_INCREMENT=9000000;
+);
 
 CREATE TABLE `strategy`
 (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `strategy_name` VARCHAR(50) NOT NULL UNIQUE,
-    `strategy_portfolio_id` INT NOT NULL,
+    `strategy_portfolio_id` BIGINT NOT NULL,
     CONSTRAINT `FK_strategy_portfolio` FOREIGN KEY (`strategy_portfolio_id`)
         REFERENCES `portfolio` (`id`)
         ON DELETE CASCADE

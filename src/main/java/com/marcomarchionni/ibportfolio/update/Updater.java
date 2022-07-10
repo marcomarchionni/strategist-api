@@ -42,16 +42,17 @@ public class Updater {
 
     public void updateFromServer() {
 
+        // get data from server
         FlexQueryResponseDto dto = dataFetcher.fetchFromServer();
-
         if (dto == null) {
             log.warn("Exception: Invalid response from server...");
             return;
         }
-        // salviamo o aggiorniamo i dati sul db
+
+        // save or update data on db
         saveOrUpdate(dto);
 
-        // segnaliamo eventuali intervalli temporali senza dati nel db
+        // warn if there are time intervals without data in db
         List<TimeInterval> dataGaps = detectDataGaps();
         if (dataGaps.size() > 0) {
             log.warn(">>> Data gaps detected: " + dataGaps);
@@ -61,8 +62,8 @@ public class Updater {
 
     public void updateFromFile(File xmlFile) throws Exception {
 
+        // preleviamo i dati dal file
         FlexQueryResponseDto dto = dataFetcher.fetchFromFile(xmlFile);
-
         if (dto == null) {
             log.info("Exception: Invalid file...");
             return;
@@ -81,25 +82,17 @@ public class Updater {
 
     private void saveOrUpdate(FlexQueryResponseDto dto) {
 
-        // check if dto has the latest data
-        FlexStatement flexStatement = responseParser.parseFlexStatement(dto);
-        LocalDate flexQueryDate = flexStatement.getToDate();
-
-        LocalDate latestDateInDb = flexStatementService.getLatestDateInDb();
-        boolean dtoHasTheLatestData = flexQueryDate.isAfter(latestDateInDb);
-
-        // save FlexInfo
-        flexStatementService.save(flexStatement);
+        boolean dtoHasTheLatestData = checkIfDtoHasTheLatestData(dto);
 
         if (dtoHasTheLatestData) {
             log.info(">>> Dto has the latest data >>>>");
 
-            // delete old positions from db and add new positions
-            log.info("Delete old positions from db and add new positions");
+            // For new data only: delete old positions and save new positions,
+            // delete old open dividends and save new open dividends in db
+            log.info("Delete old positions from db and save new positions");
             positionService.deleteAllPositions();
             positionService.savePositions(responseParser.parsePositions(dto));
 
-            // delete old open dividends, save new open dividends
             log.info("Delete old open dividends, save new open dividends");
             dividendService.deleteOpenDividends();
             dividendService.saveDividends(responseParser.parseOpenDividends(dto));
@@ -108,23 +101,31 @@ public class Updater {
             log.info(">>> Dto contains archive data >>>>");
         }
 
-        // Trades and Closed Dividends should be saved in both cases
-        // save trades
+        // For new and archive data: save flexInfo, save or update trades and closed dividends in db
+        log.info("Save flexInfo");
+        flexStatementService.save(responseParser.parseFlexStatement(dto));
+
         log.info("Save trades");
         tradeService.saveTrades(responseParser.parseTrades(dto));
 
-        // save closed dividends
         log.info("Save closed dividends");
         dividendService.saveDividends(responseParser.parseDividends(dto));
 
         log.info(">>> Dto data saved in db >>>");
     }
 
+    private boolean checkIfDtoHasTheLatestData(FlexQueryResponseDto dto) {
+
+        FlexStatement flexStatement = responseParser.parseFlexStatement(dto);
+        LocalDate dtoLatestDateWithData = flexStatement.getToDate();
+
+        LocalDate dbLatestDateWithData = flexStatementService.getLatestDateWithDataInDb();
+        return dtoLatestDateWithData.isAfter(dbLatestDateWithData);
+    }
 
     private List<TimeInterval> detectDataGaps() {
 
         List<TimeInterval> dataGaps = new ArrayList<>();
-
         List<FlexStatement> orderedFlexStatements = flexStatementService.findAllOrderedByFromDateAsc();
 
         if (orderedFlexStatements.size() <= 1) {
@@ -135,7 +136,7 @@ public class Updater {
         } else {
 
             // search for possible data gaps
-            LocalDate prevToDate = orderedFlexStatements.get(0).getToDate().plusDays(1);
+            LocalDate firstDayWithoutData = orderedFlexStatements.get(0).getToDate().plusDays(1);
             LocalDate fromDate, toDate, gapStart, gapEnd;
 
             for (int i = 1; i < orderedFlexStatements.size(); i++) {
@@ -143,14 +144,14 @@ public class Updater {
                 fromDate = orderedFlexStatements.get(i).getFromDate();
                 toDate = orderedFlexStatements.get(i).getToDate();
 
-                if (fromDate.isAfter(prevToDate.plusDays(1))) {
+                if (fromDate.isAfter(firstDayWithoutData)) {
 
                     // save data interval if >= 1 day
-                    gapStart = prevToDate.plusDays(1);
+                    gapStart = firstDayWithoutData.plusDays(1);
                     gapEnd = fromDate.minusDays(1);
                     dataGaps.add(new TimeInterval(gapStart, gapEnd));
                 }
-                if (toDate.isAfter(prevToDate)) prevToDate = toDate;
+                if (toDate.isAfter(firstDayWithoutData)) firstDayWithoutData = toDate;
             }
         }
         return dataGaps;

@@ -23,18 +23,18 @@ public class UpdateController {
         this.updater = updater;
     }
 
-    @Value("/flex/LastMonth.xml")
+    @Value("classpath:/flex/LastMonth.xml")
     Resource resource;
 
     @GetMapping("/file")
     public String updateFromFile() throws Exception{
 
         // TODO: Post Xml file via Http request
-        File xmlFlexQuery = resource.getFile();
+        File flexQuery = resource.getFile();
 
-        updater.updateFromFile(xmlFlexQuery);
-        log.info(">>> Update from file started...");
-        return "Update from file started...";
+        updater.updateFromFile(flexQuery);
+
+        return "Update from file completed";
     }
 
     @GetMapping("/server")
@@ -43,5 +43,4 @@ public class UpdateController {
         log.info(">>> Update from server started...");
         return "Update from server started...";
     }
-
 }
