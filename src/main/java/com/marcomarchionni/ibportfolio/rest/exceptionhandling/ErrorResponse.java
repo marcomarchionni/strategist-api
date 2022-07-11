@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EntityNotFoundErrorResponse {
+public class ErrorResponse {
 
         private int status;
         private String message;

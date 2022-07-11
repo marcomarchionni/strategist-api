@@ -6,6 +6,7 @@ import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import com.marcomarchionni.ibportfolio.rest.exceptionhandling.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -41,12 +42,6 @@ public class TradeServiceImpl implements TradeService{
     }
 
     @Override
-    public List<Trade> findAll() {
-
-        return tradeRepository.findAll();
-    }
-
-    @Override
     public Trade updateStrategyId(Trade trade) {
 
         Trade tradeToUpdate = tradeRepository.findById(trade.getId()).orElseThrow(
@@ -59,11 +54,6 @@ public class TradeServiceImpl implements TradeService{
 
         tradeToUpdate.setStrategyId(strategyToAssign.getId());
         return tradeRepository.save(tradeToUpdate);
-    }
-
-    @Override
-    public boolean tradeDoesNotExist(Long id) {
-        return tradeRepository.findById(id).isEmpty();
     }
 
     @Override

@@ -9,11 +9,7 @@ public interface TradeService {
 
     boolean saveAll(List<Trade> trades);
 
-    List<Trade> findAll();
-
     Trade updateStrategyId(Trade trade);
-
-    boolean tradeDoesNotExist(Long id);
 
     List<Trade> findWithParameters(LocalDate startDate, LocalDate endDate, Boolean tagged, String symbol, String assetCategory);
 }

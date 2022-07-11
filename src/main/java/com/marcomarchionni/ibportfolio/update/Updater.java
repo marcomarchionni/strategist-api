@@ -137,7 +137,7 @@ public class Updater {
 
             // search for possible data gaps
             LocalDate firstDayWithoutData = orderedFlexStatements.get(0).getToDate().plusDays(1);
-            LocalDate fromDate, toDate, gapStart, gapEnd;
+            LocalDate fromDate, toDate, lastDayWithoutData;
 
             for (int i = 1; i < orderedFlexStatements.size(); i++) {
 
@@ -147,11 +147,10 @@ public class Updater {
                 if (fromDate.isAfter(firstDayWithoutData)) {
 
                     // save data interval if >= 1 day
-                    gapStart = firstDayWithoutData.plusDays(1);
-                    gapEnd = fromDate.minusDays(1);
-                    dataGaps.add(new TimeInterval(gapStart, gapEnd));
+                    lastDayWithoutData = fromDate.minusDays(1);
+                    dataGaps.add(new TimeInterval(firstDayWithoutData, lastDayWithoutData));
                 }
-                if (toDate.isAfter(firstDayWithoutData)) firstDayWithoutData = toDate;
+                if (toDate.isAfter(firstDayWithoutData)) firstDayWithoutData = toDate.plusDays(1);
             }
         }
         return dataGaps;

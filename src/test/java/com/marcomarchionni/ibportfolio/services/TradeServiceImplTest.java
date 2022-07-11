@@ -28,15 +28,6 @@ class TradeServiceImplTest {
     TradeRepository tradeRepository;
 
     @Test
-    void findAllTest() {
-
-        List<Trade> trades = tradeService.findAll();
-
-        assertTrue(trades.size() > 0);
-        assertEquals(7, trades.size());
-    }
-
-    @Test
     void updateStrategyIdTest() {
 
         Optional<Trade> optTrade = tradeRepository.findById(1180780161L);

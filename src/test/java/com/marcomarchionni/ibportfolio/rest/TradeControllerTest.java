@@ -78,6 +78,21 @@ class TradeControllerTest {
                 .andExpect(jsonPath("$", hasSize(expectedSize)));
     }
 
+    @ParameterizedTest
+    @CsvSource({"pippo,,,",",,farse,ZM"})
+    void getTradesWithParametersBadRequest(String startDate, String endDate, String tagged, String symbol) throws Exception {
+
+        mockMvc.perform(get("/trades")
+                        .param("symbol", symbol)
+                        .param("startDate", startDate)
+                        .param("endDate", endDate)
+                        .param("tagged", tagged))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status", is(400)));
+    }
+
     @Test
     void updateStrategyIdTest() throws Exception {
 
@@ -98,8 +113,10 @@ class TradeControllerTest {
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(trade)))
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status", is(404)))
                 .andExpect(jsonPath("$.message", is("Strategy with id: 20 not found")));
     }
 
