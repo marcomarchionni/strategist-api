@@ -106,7 +106,7 @@ public class Updater {
         flexStatementService.save(responseParser.parseFlexStatement(dto));
 
         log.info("Save trades");
-        tradeService.saveTrades(responseParser.parseTrades(dto));
+        tradeService.saveAll(responseParser.parseTrades(dto));
 
         log.info("Save closed dividends");
         dividendService.saveDividends(responseParser.parseDividends(dto));

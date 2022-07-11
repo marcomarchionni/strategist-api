@@ -4,10 +4,12 @@ import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.rest.exceptionhandling.EntityNotFoundErrorResponse;
 import com.marcomarchionni.ibportfolio.rest.exceptionhandling.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.services.TradeService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -20,9 +22,15 @@ public class TradeController {
     }
 
     @GetMapping("/trades")
-    public List<Trade> getTrades() {
+    public List<Trade> getTrades(@RequestParam (value = "startDate", required = false) LocalDate startDate,
+                                 @RequestParam (value = "endDate", required = false) LocalDate endDate,
+                                 @RequestParam (value = "tagged", required = false) Boolean tagged,
+                                 @RequestParam (value = "symbol", required = false) String symbol,
+                                 @RequestParam (value = "assetCategory", required = false) String assetCategory
+                                 ) {
 
-        return tradeService.findAll();
+
+        return tradeService.findWithParameters(startDate, endDate, tagged, symbol, assetCategory);
     }
 
     @PutMapping("/trades")
