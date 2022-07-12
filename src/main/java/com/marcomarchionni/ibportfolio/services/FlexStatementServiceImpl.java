@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.FlexStatement;
-import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
+import com.marcomarchionni.ibportfolio.models.FlexInfo;
+import com.marcomarchionni.ibportfolio.repositories.FlexInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,25 +13,25 @@ import java.util.Optional;
 @Slf4j
 public class FlexStatementServiceImpl implements FlexStatementService {
 
-    private final FlexStatementRepository flexStatementRepository;
+    private final FlexInfoRepository flexInfoRepository;
 
-    public FlexStatementServiceImpl(FlexStatementRepository flexStatementRepository) {
-        this.flexStatementRepository = flexStatementRepository;
+    public FlexStatementServiceImpl(FlexInfoRepository flexInfoRepository) {
+        this.flexInfoRepository = flexInfoRepository;
     }
 
     @Override
     public LocalDate getLatestDateWithDataInDb() {
 
-        Optional<FlexStatement> optionalLastFlex = flexStatementRepository.findFirstByOrderByToDateDesc();
-        return optionalLastFlex.map(FlexStatement::getToDate).orElse(LocalDate.MIN);
+        Optional<FlexInfo> optionalLastFlex = flexInfoRepository.findFirstByOrderByToDateDesc();
+        return optionalLastFlex.map(FlexInfo::getToDate).orElse(LocalDate.MIN);
     }
 
     @Override
-    public void save(FlexStatement flexStatement) {
-        flexStatementRepository.save(flexStatement);
+    public void save(FlexInfo flexInfo) {
+        flexInfoRepository.save(flexInfo);
     }
 
-    public List<FlexStatement> findAllOrderedByFromDateAsc() {
-        return flexStatementRepository.findByOrderByFromDateAsc();
+    public List<FlexInfo> findAllOrderedByFromDateAsc() {
+        return flexInfoRepository.findByOrderByFromDateAsc();
     }
 }

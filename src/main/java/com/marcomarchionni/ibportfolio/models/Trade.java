@@ -1,6 +1,9 @@
 package com.marcomarchionni.ibportfolio.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +13,9 @@ import java.time.LocalDate;
 
 @Data
 @Entity(name = "trade")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Trade {
     @Id
     @Column(name="id")

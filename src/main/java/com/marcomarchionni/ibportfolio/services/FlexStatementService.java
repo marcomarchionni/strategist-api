@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.FlexStatement;
+import com.marcomarchionni.ibportfolio.models.FlexInfo;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,8 +9,8 @@ public interface FlexStatementService {
 
     LocalDate getLatestDateWithDataInDb();
 
-    void save(FlexStatement flexStatement);
+    void save(FlexInfo flexInfo);
 
-    List<FlexStatement> findAllOrderedByFromDateAsc();
+    List<FlexInfo> findAllOrderedByFromDateAsc();
 }
 

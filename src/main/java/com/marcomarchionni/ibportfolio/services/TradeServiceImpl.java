@@ -4,15 +4,14 @@ import com.marcomarchionni.ibportfolio.models.Strategy;
 import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
-import com.marcomarchionni.ibportfolio.rest.exceptionhandling.EntityNotFoundException;
+import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.EntityNotFoundException;
+import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.UnableToSaveEntityException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -30,27 +29,27 @@ public class TradeServiceImpl implements TradeService{
     }
 
     @Override
-    public boolean saveAll(List<Trade> trades) {
-
+    public void saveAll(List<Trade> trades) {
         try {
             tradeRepository.saveAll(trades);
-            return true;
-        } catch (Exception e) {
-            log.error("Exception of some kind: {}", e.getMessage());
-            return false;
+        }
+        catch (Exception exc) {
+            throw new UnableToSaveEntityException(exc.getMessage());
         }
     }
 
     @Override
     public Trade updateStrategyId(Trade trade) {
 
-        Trade tradeToUpdate = tradeRepository.findById(trade.getId()).orElseThrow(
-                ()-> new EntityNotFoundException("Trade with id: " + trade.getId() + " not found")
-        );
+        if ( trade.getId() == null ||  tradeRepository.findById(trade.getId()).isEmpty()) {
+            throw new EntityNotFoundException("Trade with id: " + trade.getId() + " not found");
+        }
+        Trade tradeToUpdate = tradeRepository.findById(trade.getId()).get();
 
-        Strategy strategyToAssign = strategyRepository.findById(trade.getStrategyId()).orElseThrow(
-                ()-> new EntityNotFoundException("Strategy with id: " + trade.getStrategyId() + " not found")
-        );
+        if ( trade.getStrategyId() == null || strategyRepository.findById(trade.getStrategyId()).isEmpty() ) {
+            throw new EntityNotFoundException("Strategy with id: " + trade.getStrategyId() + " not found");
+        }
+        Strategy strategyToAssign = strategyRepository.findById(trade.getStrategyId()).get();
 
         tradeToUpdate.setStrategyId(strategyToAssign.getId());
         return tradeRepository.save(tradeToUpdate);

@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.update;
 
-import com.marcomarchionni.ibportfolio.models.FlexStatement;
+import com.marcomarchionni.ibportfolio.models.FlexInfo;
 import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.services.*;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class Updater {
 
     private final ResponseParser responseParser;
 
-    private final FlexStatementService flexStatementService;
+    private final FlexStatementService flexInfoService;
 
     private final TradeService tradeService;
 
@@ -31,10 +31,10 @@ public class Updater {
     private final DividendService dividendService;
 
     @Autowired
-    public Updater(DataFetcher dataFetcher, ResponseParser responseParser, FlexStatementService FlexStatementService, TradeService tradeService, PositionService positionService, DividendService dividendService) {
+    public Updater(DataFetcher dataFetcher, ResponseParser responseParser, FlexStatementService flexInfoService, TradeService tradeService, PositionService positionService, DividendService dividendService) {
         this.dataFetcher = dataFetcher;
         this.responseParser = responseParser;
-        this.flexStatementService = FlexStatementService;
+        this.flexInfoService = flexInfoService;
         this.tradeService = tradeService;
         this.positionService = positionService;
         this.dividendService = dividendService;
@@ -53,7 +53,7 @@ public class Updater {
         saveOrUpdate(dto);
 
         // warn if there are time intervals without data in db
-        List<TimeInterval> dataGaps = detectDataGaps();
+        List<TimeInterval> dataGaps = detectUndocumentedTimeIntervals();
         if (dataGaps.size() > 0) {
             log.warn(">>> Data gaps detected: " + dataGaps);
         }
@@ -73,7 +73,7 @@ public class Updater {
         saveOrUpdate(dto);
 
         // segnaliamo eventuali intervalli temporali senza dati nel db
-        List<TimeInterval> dataGaps = detectDataGaps();
+        List<TimeInterval> dataGaps = detectUndocumentedTimeIntervals();
         if (dataGaps.size() > 0) {
             log.warn(">>> Data gaps detected: " + dataGaps);
         }
@@ -103,7 +103,7 @@ public class Updater {
 
         // For new and archive data: save flexInfo, save or update trades and closed dividends in db
         log.info("Save flexInfo");
-        flexStatementService.save(responseParser.parseFlexStatement(dto));
+        flexInfoService.save(responseParser.parseFlexStatement(dto));
 
         log.info("Save trades");
         tradeService.saveAll(responseParser.parseTrades(dto));
@@ -114,45 +114,46 @@ public class Updater {
         log.info(">>> Dto data saved in db >>>");
     }
 
+
     private boolean checkIfDtoHasTheLatestData(FlexQueryResponseDto dto) {
 
-        FlexStatement flexStatement = responseParser.parseFlexStatement(dto);
-        LocalDate dtoLatestDateWithData = flexStatement.getToDate();
+        FlexInfo flexInfo = responseParser.parseFlexStatement(dto);
+        LocalDate dtoLatestDateWithData = flexInfo.getToDate();
 
-        LocalDate dbLatestDateWithData = flexStatementService.getLatestDateWithDataInDb();
+        LocalDate dbLatestDateWithData = flexInfoService.getLatestDateWithDataInDb();
         return dtoLatestDateWithData.isAfter(dbLatestDateWithData);
     }
 
-    private List<TimeInterval> detectDataGaps() {
+    // Detects if the sequence of updates has left undocumented time intervals
+    private List<TimeInterval> detectUndocumentedTimeIntervals() {
 
-        List<TimeInterval> dataGaps = new ArrayList<>();
-        List<FlexStatement> orderedFlexStatements = flexStatementService.findAllOrderedByFromDateAsc();
+        List<TimeInterval> undocumentedTimeIntervals = new ArrayList<>();
+        List<FlexInfo> orderedFlexInfos = flexInfoService.findAllOrderedByFromDateAsc();
 
-        if (orderedFlexStatements.size() <= 1) {
+        if (orderedFlexInfos.size() <= 1) {
 
-            // No data gaps with 1 or 0 updates, return empty list
-            return dataGaps;
+            // No possible gap in documentation with 1 or 0 updates
+            return undocumentedTimeIntervals;
 
         } else {
 
-            // search for possible data gaps
-            LocalDate firstDayWithoutData = orderedFlexStatements.get(0).getToDate().plusDays(1);
+            LocalDate firstDayWithoutData = orderedFlexInfos.get(0).getToDate().plusDays(1);
             LocalDate fromDate, toDate, lastDayWithoutData;
 
-            for (int i = 1; i < orderedFlexStatements.size(); i++) {
+            for (int i = 1; i < orderedFlexInfos.size(); i++) {
 
-                fromDate = orderedFlexStatements.get(i).getFromDate();
-                toDate = orderedFlexStatements.get(i).getToDate();
+                fromDate = orderedFlexInfos.get(i).getFromDate();
+                toDate = orderedFlexInfos.get(i).getToDate();
 
                 if (fromDate.isAfter(firstDayWithoutData)) {
 
                     // save data interval if >= 1 day
                     lastDayWithoutData = fromDate.minusDays(1);
-                    dataGaps.add(new TimeInterval(firstDayWithoutData, lastDayWithoutData));
+                    undocumentedTimeIntervals.add(new TimeInterval(firstDayWithoutData, lastDayWithoutData));
                 }
                 if (toDate.isAfter(firstDayWithoutData)) firstDayWithoutData = toDate.plusDays(1);
             }
         }
-        return dataGaps;
+        return undocumentedTimeIntervals;
     }
 }

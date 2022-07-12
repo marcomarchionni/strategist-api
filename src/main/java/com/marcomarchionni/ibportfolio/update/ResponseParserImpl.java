@@ -21,29 +21,29 @@ public class ResponseParserImpl implements ResponseParser {
     static private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd;hhmmss", Locale.ENGLISH);
 
     @Override
-    public FlexStatement parseFlexStatement(FlexQueryResponseDto dto) {
+    public FlexInfo parseFlexStatement(FlexQueryResponseDto dto) {
 
         FlexQueryResponseDto.FlexStatement flexDto = dto.getFlexStatements().get(0).getFlexStatement().get(0);
-        FlexStatement flexStatement = new FlexStatement();
+        FlexInfo flexInfo = new FlexInfo();
 
         if (StringUtils.hasText(flexDto.getAccountId())) {
-            flexStatement.setAccountId(flexDto.getAccountId());
+            flexInfo.setAccountId(flexDto.getAccountId());
         }
         if (StringUtils.hasText(flexDto.getFromDate())) {
-            flexStatement.setFromDate(LocalDate.parse(flexDto.getFromDate(), dateFormatter));
+            flexInfo.setFromDate(LocalDate.parse(flexDto.getFromDate(), dateFormatter));
         }
         if (StringUtils.hasText(flexDto.getToDate())) {
-            flexStatement.setToDate(LocalDate.parse(flexDto.getToDate(), dateFormatter));
+            flexInfo.setToDate(LocalDate.parse(flexDto.getToDate(), dateFormatter));
         }
         if (StringUtils.hasText(flexDto.getPeriod())) {
-            flexStatement.setPeriod(flexDto.getPeriod());
+            flexInfo.setPeriod(flexDto.getPeriod());
         }
         if (StringUtils.hasText(flexDto.getWhenGenerated())) {
-            flexStatement.setWhenGenerated(LocalDate.parse(flexDto.getWhenGenerated(), dateTimeFormatter));
+            flexInfo.setWhenGenerated(LocalDate.parse(flexDto.getWhenGenerated(), dateTimeFormatter));
         }
         log.info("Parsed 1 flex statement");
 
-        return flexStatement;
+        return flexInfo;
     }
 
     /**

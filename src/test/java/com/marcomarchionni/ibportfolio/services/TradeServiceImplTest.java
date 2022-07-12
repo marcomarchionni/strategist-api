@@ -2,7 +2,8 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
-import com.marcomarchionni.ibportfolio.rest.exceptionhandling.EntityNotFoundException;
+import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.EntityNotFoundException;
+import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.UnableToSaveEntityException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -10,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +29,45 @@ class TradeServiceImplTest {
 
     @Autowired
     TradeRepository tradeRepository;
+
+    @Test
+    void saveAllTest() {
+        Trade trade1 = Trade.builder()
+                .id(1L).conId(2222L).symbol("ZM").tradeDate(LocalDate.of(2022,5, 4))
+                .multiplier(1).buySell("BUY").quantity(new BigDecimal(10)).tradePrice(new BigDecimal(2500))
+                .tradeMoney(new BigDecimal(2500*10)).build();
+        Trade trade2 = Trade.builder().id(2L).conId(1122233L).symbol("AAPL")
+                .tradeDate(LocalDate.of(2020, 1, 1)).multiplier(1).buySell("BUY")
+                .quantity(new BigDecimal(20)).tradePrice(new BigDecimal(2500))
+                .tradeMoney(new BigDecimal(2500*20)).build();
+        List<Trade> trades = new ArrayList<>();
+        trades.add(trade1);
+        trades.add(trade2);
+
+        assertDoesNotThrow(() -> tradeService.saveAll(trades));
+
+        Optional<Trade> optSavedTrade1 = tradeRepository.findById(1L);
+        Optional<Trade> optSavedTrade2 = tradeRepository.findById(2L);
+        assertTrue(optSavedTrade1.isPresent());
+        assertTrue(optSavedTrade2.isPresent());
+    }
+
+    @Test
+    void saveAllTestException() {
+        Trade trade1 = Trade.builder()
+                .id(1L).conId(2222L).tradeDate(LocalDate.of(2022,5, 4))
+                .multiplier(1).buySell("BUY").quantity(new BigDecimal(10)).tradePrice(new BigDecimal(2500))
+                .tradeMoney(new BigDecimal(2500*10)).build();
+        Trade trade2 = Trade.builder().id(2L).conId(1122233L).symbol("AAPL")
+                .tradeDate(LocalDate.of(2020, 1, 1)).multiplier(1).buySell("BUY")
+                .quantity(new BigDecimal(20)).tradePrice(new BigDecimal(2500))
+                .tradeMoney(new BigDecimal(2500*20)).build();
+        List<Trade> trades = new ArrayList<>();
+        trades.add(trade1);
+        trades.add(trade2);
+
+        assertThrows(UnableToSaveEntityException.class, () -> tradeService.saveAll(trades));
+    }
 
     @Test
     void updateStrategyIdTest() {

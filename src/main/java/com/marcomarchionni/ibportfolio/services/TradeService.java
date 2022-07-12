@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TradeService {
 
-    boolean saveAll(List<Trade> trades);
+    void saveAll(List<Trade> trades);
 
     Trade updateStrategyId(Trade trade);
 

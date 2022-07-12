@@ -1,5 +1,6 @@
 package com.marcomarchionni.ibportfolio.rest.exceptionhandling;
 
+import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

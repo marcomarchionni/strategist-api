@@ -1,16 +1,13 @@
 package com.marcomarchionni.ibportfolio.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Entity(name="flex_statement")
+@Entity(name="flex_info")
 @Data
-public class FlexStatement {
+public class FlexInfo {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

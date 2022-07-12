@@ -1,11 +1,11 @@
 package com.marcomarchionni.ibportfolio.update;
 
 import com.marcomarchionni.ibportfolio.models.Dividend;
-import com.marcomarchionni.ibportfolio.models.FlexStatement;
+import com.marcomarchionni.ibportfolio.models.FlexInfo;
 import com.marcomarchionni.ibportfolio.models.Position;
 import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
-import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
+import com.marcomarchionni.ibportfolio.repositories.FlexInfoRepository;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ public class UpdaterIntegrationTest {
     DividendRepository dividendRepository;
 
     @Autowired
-    FlexStatementRepository flexStatementRepository;
+    FlexInfoRepository flexInfoRepository;
 
     @Value("classpath:/flex/LastMonth.xml")
     Resource lastMonthResource;
@@ -62,7 +62,9 @@ public class UpdaterIntegrationTest {
         trade.setTradePrice(new BigDecimal(2500));
         trade.setTradeMoney(new BigDecimal(2500*20));
         tradeRepository.save(trade);
+
         List<Trade> trades = tradeRepository.findAll();
+
         assertNotNull(trades);
         assertTrue(trades.size() > 0);
     }
@@ -79,16 +81,16 @@ public class UpdaterIntegrationTest {
         List<Trade> trades = tradeRepository.findAll();
         List<Position> positions = positionRepository.findAll();
         List<Dividend> dividends =dividendRepository.findAll();
-        List<FlexStatement> flexStatements = flexStatementRepository.findAll();
+        List<FlexInfo> flexInfos = flexInfoRepository.findAll();
 
         assertTrue(trades.size() > 0);
         assertTrue(positions.size() > 0);
         assertTrue(dividends.size() > 0);
-        assertTrue(flexStatements.size() > 0);
+        assertTrue(flexInfos.size() > 0);
         assertEquals(8, trades.size());
         assertEquals(94, positions.size());
         assertEquals(6, dividends.size());
-        assertEquals(1, flexStatements.size());
+        assertEquals(1, flexInfos.size());
     }
 
     @Test
@@ -104,13 +106,13 @@ public class UpdaterIntegrationTest {
         List<Trade> trades = tradeRepository.findAll();
         List<Position> positions = positionRepository.findAll();
         List<Dividend> dividends = dividendRepository.findAll();
-        List<FlexStatement> flexStatements = flexStatementRepository.findAll();
+        List<FlexInfo> flexInfos = flexInfoRepository.findAll();
 
         assertTrue(trades.size() > 0);
         assertTrue(positions.size() > 0);
         assertTrue(dividends.size() > 0);
-        assertTrue(flexStatements.size() > 0);
-        assertEquals(1, flexStatements.size());
+        assertTrue(flexInfos.size() > 0);
+        assertEquals(1, flexInfos.size());
         assertEquals(10, trades.size());
         assertEquals(94, positions.size());
         assertEquals(6, dividends.size());
@@ -131,13 +133,13 @@ public class UpdaterIntegrationTest {
         List<Trade> trades = tradeRepository.findAll();
         List<Position> positions = positionRepository.findAll();
         List<Dividend> dividends = dividendRepository.findAll();
-        List<FlexStatement> flexStatements = flexStatementRepository.findAll();
+        List<FlexInfo> flexInfos = flexInfoRepository.findAll();
 
         assertTrue(trades.size() > 0);
         assertTrue(positions.size() > 0);
         assertTrue(dividends.size() > 0);
-        assertTrue(flexStatements.size() > 0);
-        assertEquals(1, flexStatements.size());
+        assertTrue(flexInfos.size() > 0);
+        assertEquals(1, flexInfos.size());
         assertEquals(10, trades.size());
         assertEquals(94, positions.size());
         assertEquals(6, dividends.size());
@@ -147,12 +149,12 @@ public class UpdaterIntegrationTest {
         trades = tradeRepository.findAll();
         positions = positionRepository.findAll();
         dividends = dividendRepository.findAll();
-        flexStatements = flexStatementRepository.findAll();
+        flexInfos = flexInfoRepository.findAll();
         assertTrue(trades.size() > 0);
         assertTrue(positions.size() > 0);
         assertTrue(dividends.size() > 0);
-        assertTrue(flexStatements.size() > 0);
-        assertEquals(2, flexStatements.size());
+        assertTrue(flexInfos.size() > 0);
+        assertEquals(2, flexInfos.size());
         assertEquals(14, trades.size());
         assertEquals(94, positions.size());
         assertEquals(7, dividends.size());

@@ -1,9 +1,9 @@
 CREATE DATABASE IF NOT EXISTS `ibtest`;
 -- Init Datatabase
 USE `ibtest`;
-DROP TABLE IF EXISTS `flex_statement`, `portfolio`, `strategy`, `trade`, `position`, `dividend`;
+DROP TABLE IF EXISTS `flex_info`, `portfolio`, `strategy`, `trade`, `position`, `dividend`;
 
-CREATE TABLE `flex_statement`
+CREATE TABLE `flex_info`
 (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `account_id` VARCHAR(50) NOT NULL,

@@ -23,7 +23,7 @@ public class UpdateController {
         this.updater = updater;
     }
 
-    @Value("classpath:/flex/LastMonth.xml")
+    @Value("classpath:/flex/Last30Days.xml")
     Resource resource;
 
     @GetMapping("/file")

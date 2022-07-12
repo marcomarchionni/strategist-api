@@ -1,11 +1,10 @@
 package com.marcomarchionni.ibportfolio.update;
 
-import com.marcomarchionni.ibportfolio.models.FlexStatement;
+import com.marcomarchionni.ibportfolio.models.FlexInfo;
 import com.marcomarchionni.ibportfolio.services.FlexStatementService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -31,14 +30,14 @@ class UpdaterTest {
     void detectGapIfGapTest() {
 
         //setup
-        List<FlexStatement> fls = new ArrayList<>();
-        FlexStatement fl1 = new FlexStatement();
+        List<FlexInfo> fls = new ArrayList<>();
+        FlexInfo fl1 = new FlexInfo();
         fl1.setFromDate(LocalDate.of(2020, 1, 1));
         fl1.setToDate(LocalDate.of(2020,2,1));
-        FlexStatement fl2 = new FlexStatement();
+        FlexInfo fl2 = new FlexInfo();
         fl2.setFromDate(LocalDate.of(2020, 1, 15));
         fl2.setToDate(LocalDate.of(2020,3,15));
-        FlexStatement fl3 = new FlexStatement();
+        FlexInfo fl3 = new FlexInfo();
         fl3.setFromDate(LocalDate.of(2020, 6, 15));
         fl3.setToDate(LocalDate.of(2020,8,15));
         fls.add(fl1);
@@ -47,7 +46,7 @@ class UpdaterTest {
 
         when(flexStatementServiceMock.findAllOrderedByFromDateAsc()).thenReturn(fls);
 
-        List<TimeInterval> timeIntervals = ReflectionTestUtils.invokeMethod(updater, "detectDataGaps");
+        List<TimeInterval> timeIntervals = ReflectionTestUtils.invokeMethod(updater, "detectUndocumentedTimeIntervals");
 
         verify(flexStatementServiceMock).findAllOrderedByFromDateAsc();
 
@@ -63,14 +62,14 @@ class UpdaterTest {
     void detectGapIfNoGapTest() {
 
         //setup
-        List<FlexStatement> fls = new ArrayList<>();
-        FlexStatement fl1 = new FlexStatement();
+        List<FlexInfo> fls = new ArrayList<>();
+        FlexInfo fl1 = new FlexInfo();
         fl1.setFromDate(LocalDate.of(2020, 1, 1));
         fl1.setToDate(LocalDate.of(2020,2,1));
-        FlexStatement fl2 = new FlexStatement();
+        FlexInfo fl2 = new FlexInfo();
         fl2.setFromDate(LocalDate.of(2020, 1, 15));
         fl2.setToDate(LocalDate.of(2020,2,15));
-        FlexStatement fl3 = new FlexStatement();
+        FlexInfo fl3 = new FlexInfo();
         fl3.setFromDate(LocalDate.of(2020, 2, 16));
         fl3.setToDate(LocalDate.of(2020,4,15));
         fls.add(fl1);
@@ -79,7 +78,7 @@ class UpdaterTest {
 
         when(flexStatementServiceMock.findAllOrderedByFromDateAsc()).thenReturn(fls);
 
-        List<TimeInterval> timeIntervals = ReflectionTestUtils.invokeMethod(updater, "detectDataGaps");
+        List<TimeInterval> timeIntervals = ReflectionTestUtils.invokeMethod(updater, "detectUndocumentedTimeIntervals");
 
         verify(flexStatementServiceMock).findAllOrderedByFromDateAsc();
         assertNotNull(timeIntervals);
