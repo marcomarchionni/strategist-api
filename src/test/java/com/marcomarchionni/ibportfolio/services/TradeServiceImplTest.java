@@ -4,6 +4,7 @@ import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.UnableToSaveEntityException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -30,16 +31,24 @@ class TradeServiceImplTest {
     @Autowired
     TradeRepository tradeRepository;
 
-    @Test
-    void saveAllTest() {
-        Trade trade1 = Trade.builder()
+    Trade trade1;
+
+    Trade trade2;
+
+    @BeforeEach
+    public void setUp() {
+        trade1 = Trade.builder()
                 .id(1L).conId(2222L).symbol("ZM").tradeDate(LocalDate.of(2022,5, 4))
                 .multiplier(1).buySell("BUY").quantity(new BigDecimal(10)).tradePrice(new BigDecimal(2500))
                 .tradeMoney(new BigDecimal(2500*10)).build();
-        Trade trade2 = Trade.builder().id(2L).conId(1122233L).symbol("AAPL")
+        trade2 = Trade.builder().id(2L).conId(1122233L).symbol("AAPL")
                 .tradeDate(LocalDate.of(2020, 1, 1)).multiplier(1).buySell("BUY")
                 .quantity(new BigDecimal(20)).tradePrice(new BigDecimal(2500))
                 .tradeMoney(new BigDecimal(2500*20)).build();
+    }
+
+    @Test
+    void saveAllTest() {
         List<Trade> trades = new ArrayList<>();
         trades.add(trade1);
         trades.add(trade2);
@@ -54,14 +63,6 @@ class TradeServiceImplTest {
 
     @Test
     void saveAllTestException() {
-        Trade trade1 = Trade.builder()
-                .id(1L).conId(2222L).tradeDate(LocalDate.of(2022,5, 4))
-                .multiplier(1).buySell("BUY").quantity(new BigDecimal(10)).tradePrice(new BigDecimal(2500))
-                .tradeMoney(new BigDecimal(2500*10)).build();
-        Trade trade2 = Trade.builder().id(2L).conId(1122233L).symbol("AAPL")
-                .tradeDate(LocalDate.of(2020, 1, 1)).multiplier(1).buySell("BUY")
-                .quantity(new BigDecimal(20)).tradePrice(new BigDecimal(2500))
-                .tradeMoney(new BigDecimal(2500*20)).build();
         List<Trade> trades = new ArrayList<>();
         trades.add(trade1);
         trades.add(trade2);

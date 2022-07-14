@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface PositionService {
 
-    boolean savePositions(List<Position> positions);
+    void saveAll(List<Position> positions);
     boolean deleteAllPositions();
 }

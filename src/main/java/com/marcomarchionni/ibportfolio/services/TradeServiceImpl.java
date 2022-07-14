@@ -30,6 +30,7 @@ public class TradeServiceImpl implements TradeService{
 
     @Override
     public void saveAll(List<Trade> trades) {
+
         try {
             tradeRepository.saveAll(trades);
         }

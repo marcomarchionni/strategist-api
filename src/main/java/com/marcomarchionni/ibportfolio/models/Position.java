@@ -1,6 +1,9 @@
 package com.marcomarchionni.ibportfolio.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +12,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "position")
 public class Position {
 

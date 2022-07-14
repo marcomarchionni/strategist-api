@@ -10,8 +10,7 @@ import java.util.Optional;
 @Repository
 public interface FlexInfoRepository extends JpaRepository<FlexInfo, Long> {
 
-    // find last report day
     Optional<FlexInfo> findFirstByOrderByToDateDesc();
-    Optional<FlexInfo> findFirstByOrderByFromDateAsc();
+
     List<FlexInfo> findByOrderByFromDateAsc();
 }

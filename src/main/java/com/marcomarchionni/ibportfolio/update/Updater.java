@@ -91,7 +91,7 @@ public class Updater {
             // delete old open dividends and save new open dividends in db
             log.info("Delete old positions from db and save new positions");
             positionService.deleteAllPositions();
-            positionService.savePositions(responseParser.parsePositions(dto));
+            positionService.saveAll(responseParser.parsePositions(dto));
 
             log.info("Delete old open dividends, save new open dividends");
             dividendService.deleteOpenDividends();
