@@ -5,7 +5,7 @@ import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.UnableToProcessQueryException;
+import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.FailingQueryException;
 import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.UnableToSaveEntitiesException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -75,7 +75,7 @@ public class TradeServiceImpl implements TradeService{
             return tradeRepository.findWithParameters(startDate, endDate, tagged, symbol, assetCategory);
         }
         catch (Exception exception) {
-            throw new UnableToProcessQueryException(exception.getMessage());
+            throw new FailingQueryException(exception.getMessage());
         }
     }
 }
