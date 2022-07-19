@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.update;
+package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.models.*;
 import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
@@ -21,7 +21,7 @@ public class ResponseParserImpl implements ResponseParser {
     static private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd;hhmmss", Locale.ENGLISH);
 
     @Override
-    public FlexInfo parseFlexStatement(FlexQueryResponseDto dto) {
+    public FlexInfo parseFlexInfo(FlexQueryResponseDto dto) {
 
         FlexQueryResponseDto.FlexStatement flexDto = dto.getFlexStatements().get(0).getFlexStatement().get(0);
         FlexInfo flexInfo = new FlexInfo();
@@ -41,8 +41,6 @@ public class ResponseParserImpl implements ResponseParser {
         if (StringUtils.hasText(flexDto.getWhenGenerated())) {
             flexInfo.setWhenGenerated(LocalDate.parse(flexDto.getWhenGenerated(), dateTimeFormatter));
         }
-        log.info("Parsed 1 flex statement");
-
         return flexInfo;
     }
 
@@ -115,8 +113,6 @@ public class ResponseParserImpl implements ResponseParser {
             }
             trades.add(trade);
         }
-        log.info("Parsed " + trades.size() + " trade(s)");
-
         return trades;
     }
 
@@ -168,7 +164,7 @@ public class ResponseParserImpl implements ResponseParser {
                 position.setCostBasisPrice(new BigDecimal(p.getCostBasisPrice()));
             }
             if (StringUtils.hasText(p.getMarkPrice())) {
-                position.setMarketPrice(new BigDecimal(p.getMarkPrice()));
+                position.setMarkPrice(new BigDecimal(p.getMarkPrice()));
             }
             if (StringUtils.hasText(p.getMultiplier())) {
                 position.setMultiplier(Integer.parseInt(p.getMultiplier()));
@@ -186,54 +182,51 @@ public class ResponseParserImpl implements ResponseParser {
      * @return list of dividends
      */
     @Override
-    public List<Dividend> parseDividends(FlexQueryResponseDto dto) {
+    public List<Dividend> parseClosedDividends(FlexQueryResponseDto dto) {
 
-        List<Dividend> dividends = new ArrayList<>();
+        List<Dividend> closedDividends = new ArrayList<>();
         List<FlexQueryResponseDto.ChangeInDividendAccrual> dividendsDto =
                 dto.getFlexStatements().get(0).getFlexStatement().get(0).getChangeInDividendAccruals().getChangeInDividendAccrual();
 
         // TODO: change to levelOfDetail=SUMMARY and ignore code
         for (FlexQueryResponseDto.ChangeInDividendAccrual d : dividendsDto) {
             if (d.getCode().equalsIgnoreCase("Re") && d.getDate().equalsIgnoreCase(d.getPayDate())) {
-                Dividend dividend = new Dividend();
+                Dividend closedDividend = new ClosedDividend();
                 if (StringUtils.hasText(d.getConid())) {
-                    dividend.setConId(Long.parseLong(d.getConid()));
+                    closedDividend.setConId(Long.parseLong(d.getConid()));
                 }
                 if (StringUtils.hasText(d.getSymbol())) {
-                    dividend.setSymbol(d.getSymbol());
+                    closedDividend.setSymbol(d.getSymbol());
                 }
                 if (StringUtils.hasText(d.getDescription())) {
-                    dividend.setDescription(d.getDescription());
+                    closedDividend.setDescription(d.getDescription());
                 }
                 if (StringUtils.hasText(d.getExDate())) {
-                    dividend.setExDate(LocalDate.parse(d.getExDate(), dateFormatter));
+                    closedDividend.setExDate(LocalDate.parse(d.getExDate(), dateFormatter));
                 }
                 if (StringUtils.hasText(d.getPayDate())) {
-                    dividend.setPayDate(LocalDate.parse(d.getPayDate(), dateFormatter));
+                    closedDividend.setPayDate(LocalDate.parse(d.getPayDate(), dateFormatter));
                 }
                 if (StringUtils.hasText(d.getGrossRate())) {
-                    dividend.setGrossRate(new BigDecimal(d.getGrossRate()));
+                    closedDividend.setGrossRate(new BigDecimal(d.getGrossRate()));
                 }
                 if (StringUtils.hasText(d.getQuantity())) {
-                    dividend.setQuantity(new BigDecimal(d.getQuantity()));
+                    closedDividend.setQuantity(new BigDecimal(d.getQuantity()));
                 }
                 if (StringUtils.hasText(d.getGrossAmount())) {
-                    dividend.setGrossAmount(new BigDecimal(d.getGrossAmount()).abs());
+                    closedDividend.setGrossAmount(new BigDecimal(d.getGrossAmount()).abs());
                 }
                 if (StringUtils.hasText(d.getTax())) {
-                    dividend.setTax(new BigDecimal(d.getTax()).abs());
+                    closedDividend.setTax(new BigDecimal(d.getTax()).abs());
                 }
                 if (StringUtils.hasText(d.getNetAmount())) {
-                    dividend.setNetAmount(new BigDecimal(d.getNetAmount()).abs());
+                    closedDividend.setNetAmount(new BigDecimal(d.getNetAmount()).abs());
                 }
-                dividend.setId(Long.parseLong(d.getConid() + d.getExDate()));
-                dividend.setOpenClosed("CLOSED");
-                dividends.add(dividend);
+                closedDividend.setId(Long.parseLong(d.getConid() + d.getExDate()));
+                closedDividends.add(closedDividend);
             }
-
         }
-        log.info("Parsed " + dividends.size() + " dividend(s)");
-        return dividends;
+        return closedDividends;
     }
 
     /**
@@ -249,7 +242,7 @@ public class ResponseParserImpl implements ResponseParser {
                 dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenDividendAccruals().getOpenDividendAccrual();
 
         for (FlexQueryResponseDto.OpenDividendAccrual od : openDividendsDto) {
-            Dividend openDividend = new Dividend();
+            Dividend openDividend = new OpenDividend();
             if (StringUtils.hasText(od.getConid())) {
                 openDividend.setConId(Long.parseLong(od.getConid()));
             }
@@ -281,10 +274,8 @@ public class ResponseParserImpl implements ResponseParser {
                 openDividend.setNetAmount(new BigDecimal(od.getNetAmount()));
             }
             openDividend.setId(Long.parseLong(od.getConid() + od.getExDate()));
-            openDividend.setOpenClosed("OPEN");
             openDividends.add(openDividend);
         }
-        log.info("Parsed " + openDividendsDto.size() + " open dividend(s)");
         return openDividends;
     }
 }

@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.update;
 
 import com.marcomarchionni.ibportfolio.models.FlexInfo;
-import com.marcomarchionni.ibportfolio.services.FlexStatementService;
+import com.marcomarchionni.ibportfolio.services.FlexInfoService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,7 +21,7 @@ class UpdaterTest {
 
 
     @Mock
-    FlexStatementService flexStatementServiceMock;
+    FlexInfoService flexInfoServiceMock;
 
     @InjectMocks
     Updater updater;
@@ -44,11 +44,11 @@ class UpdaterTest {
         fls.add(fl2);
         fls.add(fl3);
 
-        when(flexStatementServiceMock.findAllOrderedByFromDateAsc()).thenReturn(fls);
+        when(flexInfoServiceMock.findAllOrderedByFromDateAsc()).thenReturn(fls);
 
         List<TimeInterval> timeIntervals = ReflectionTestUtils.invokeMethod(updater, "detectUndocumentedTimeIntervals");
 
-        verify(flexStatementServiceMock).findAllOrderedByFromDateAsc();
+        verify(flexInfoServiceMock).findAllOrderedByFromDateAsc();
 
         assertNotNull(timeIntervals);
         assertTrue(timeIntervals.size() > 0);
@@ -76,11 +76,11 @@ class UpdaterTest {
         fls.add(fl2);
         fls.add(fl3);
 
-        when(flexStatementServiceMock.findAllOrderedByFromDateAsc()).thenReturn(fls);
+        when(flexInfoServiceMock.findAllOrderedByFromDateAsc()).thenReturn(fls);
 
         List<TimeInterval> timeIntervals = ReflectionTestUtils.invokeMethod(updater, "detectUndocumentedTimeIntervals");
 
-        verify(flexStatementServiceMock).findAllOrderedByFromDateAsc();
+        verify(flexInfoServiceMock).findAllOrderedByFromDateAsc();
         assertNotNull(timeIntervals);
         assertFalse(timeIntervals.size() > 0);
     }

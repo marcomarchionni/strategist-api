@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.update;
+package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.models.Dividend;
 import com.marcomarchionni.ibportfolio.models.FlexInfo;
@@ -11,13 +11,13 @@ import java.util.List;
 
 public interface ResponseParser {
 
-    FlexInfo parseFlexStatement(FlexQueryResponseDto dto);
+    FlexInfo parseFlexInfo(FlexQueryResponseDto dto);
 
     List<Trade> parseTrades(FlexQueryResponseDto dto);
 
     List<Position> parsePositions(FlexQueryResponseDto dto);
 
-    List<Dividend> parseDividends(FlexQueryResponseDto dto);
+    List<Dividend> parseClosedDividends(FlexQueryResponseDto dto);
 
     List<Dividend> parseOpenDividends(FlexQueryResponseDto dto);
 }

@@ -27,8 +27,6 @@ CREATE TABLE `strategy`
     `strategy_portfolio_id` BIGINT NOT NULL,
     CONSTRAINT `FK_strategy_portfolio` FOREIGN KEY (`strategy_portfolio_id`)
         REFERENCES `portfolio` (`id`)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 ) AUTO_INCREMENT=8000000;
 
 CREATE TABLE `trade`
@@ -53,7 +51,6 @@ CREATE TABLE `trade`
     `ib_commission` DECIMAL(15,4),
     CONSTRAINT `FK_trade_strategy` FOREIGN KEY (`trade_strategy_id`)
         REFERENCES `strategy` (`id`)
-        ON UPDATE CASCADE
 );
 
 CREATE TABLE `position`
@@ -70,14 +67,13 @@ CREATE TABLE `position`
     `expiry` DATE,
     `quantity` INT NOT NULL,
     `cost_basis_price` DECIMAL(15,4) NOT NULL,
-    `market_price` DECIMAL(15,4) NOT NULL,
+    `mark_price` DECIMAL(15,4) NOT NULL,
     `multiplier` INT NOT NULL,
-    `cost_basis` DECIMAL(15,4) AS (`cost_basis_price` * `quantity` * `multiplier`) STORED,
-    `market_value` DECIMAL(15,4) AS (`market_price` * `quantity` * `multiplier`) STORED,
-    `unrealized_PnL` DECIMAL(15,4) AS ((`market_price` - `cost_basis_price`) * `quantity` * `multiplier`) STORED,
+    `cost_basis_money` DECIMAL(15,4),
+    `position_value` DECIMAL(15,4),
+    `fifo_pnl_unrealized` DECIMAL(15,4),
     CONSTRAINT `FK_position_strategy` FOREIGN KEY (`position_strategy_id`)
         REFERENCES `strategy` (`id`)
-        ON UPDATE CASCADE
 );
 
 CREATE TABLE `dividend`
@@ -97,5 +93,4 @@ CREATE TABLE `dividend`
     `open_closed` VARCHAR(50) NOT NULL,
     CONSTRAINT `FK_dividend_strategy` FOREIGN KEY (`dividend_strategy_id`)
         REFERENCES `strategy` (`id`)
-        ON UPDATE CASCADE
 );

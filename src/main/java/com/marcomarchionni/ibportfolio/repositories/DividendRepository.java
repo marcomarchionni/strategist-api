@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DividendRepository extends JpaRepository<Dividend, Long> {
 
-    void deleteByOpenClosed(String openClosed);
+  void deleteByOpenClosed(String openClosed);
 }

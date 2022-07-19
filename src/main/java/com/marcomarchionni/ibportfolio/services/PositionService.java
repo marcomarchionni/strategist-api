@@ -7,5 +7,5 @@ import java.util.List;
 public interface PositionService {
 
     void saveAll(List<Position> positions);
-    boolean deleteAllPositions();
+    void deleteAll();
 }

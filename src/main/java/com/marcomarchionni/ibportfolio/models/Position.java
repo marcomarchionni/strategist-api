@@ -52,9 +52,18 @@ public class Position {
     @Column(name="cost_basis_price")
     private BigDecimal costBasisPrice;
 
-    @Column(name="market_price")
-    private BigDecimal marketPrice;
+    @Column(name="cost_basis_money")
+    private BigDecimal costBasisMoney;
+
+    @Column(name="mark_price")
+    private BigDecimal markPrice;
 
     @Column(name="multiplier")
     private int multiplier;
+
+    @Column(name="position_value")
+    private BigDecimal positionValue;
+
+    @Column(name="fifo_pnl_unrealized")
+    private BigDecimal fifoPnlUnrealized;
 }

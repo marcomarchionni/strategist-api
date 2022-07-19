@@ -16,24 +16,20 @@ public class DividendServiceImpl implements DividendService {
     private DividendRepository dividendRepository;
 
     @Override
-    public boolean saveDividends(List<Dividend> dividends) {
+    public void saveDividends(List<Dividend> openOrClosedDividends) {
         try {
-            dividendRepository.saveAll(dividends);
-            return true;
+            dividendRepository.saveAll(openOrClosedDividends);
         } catch (Exception e) {
             log.error("Exception of some kind: {}", e.getMessage());
-            return false;
         }
     }
 
     @Override
-    public boolean deleteOpenDividends() {
+    public void deleteAllOpenDividends() {
         try {
             dividendRepository.deleteByOpenClosed("OPEN");
-            return true;
         } catch (Exception e) {
             log.error("Exception of some kind: {}", e.getMessage());
-            return false;
         }
     }
 }

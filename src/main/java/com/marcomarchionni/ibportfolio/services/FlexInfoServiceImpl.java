@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class FlexStatementServiceImpl implements FlexStatementService {
+public class FlexInfoServiceImpl implements FlexInfoService {
 
     private final FlexInfoRepository flexInfoRepository;
 
-    public FlexStatementServiceImpl(FlexInfoRepository flexInfoRepository) {
+    public FlexInfoServiceImpl(FlexInfoRepository flexInfoRepository) {
         this.flexInfoRepository = flexInfoRepository;
     }
 

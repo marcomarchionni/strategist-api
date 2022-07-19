@@ -8,6 +8,7 @@ import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.FlexInfoRepository;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
+import com.marcomarchionni.ibportfolio.services.ResponseParser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,30 +45,10 @@ public class UpdaterIntegrationTest {
     Resource last30DaysResource;
 
     @Autowired
+    ResponseParser responseParser;
+
+    @Autowired
     Updater updater;
-
-    @Test
-    @Sql("/initIbTestDb.sql")
-    public void saveToh2Db() {
-
-        Trade trade = new Trade();
-        trade.setId(11111L);
-        trade.setConId(1122233L);
-        trade.setTradeId(11111L);
-        trade.setSymbol("AAPL");
-        trade.setTradeDate(LocalDate.of(2020, 1, 1));
-        trade.setMultiplier(1);
-        trade.setBuySell("BUY");
-        trade.setQuantity(new BigDecimal(20));
-        trade.setTradePrice(new BigDecimal(2500));
-        trade.setTradeMoney(new BigDecimal(2500*20));
-        tradeRepository.save(trade);
-
-        List<Trade> trades = tradeRepository.findAll();
-
-        assertNotNull(trades);
-        assertTrue(trades.size() > 0);
-    }
 
     @Test
     @Sql("/initIbTestDb.sql")
@@ -80,7 +61,7 @@ public class UpdaterIntegrationTest {
 
         List<Trade> trades = tradeRepository.findAll();
         List<Position> positions = positionRepository.findAll();
-        List<Dividend> dividends =dividendRepository.findAll();
+        List<Dividend> dividends = dividendRepository.findAll();
         List<FlexInfo> flexInfos = flexInfoRepository.findAll();
 
         assertTrue(trades.size() > 0);

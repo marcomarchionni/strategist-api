@@ -5,13 +5,14 @@ import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.UnableToSaveEntityException;
+import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.UnableToProcessQueryException;
+import com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions.UnableToSaveEntitiesException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Slf4j
@@ -30,12 +31,11 @@ public class TradeServiceImpl implements TradeService{
 
     @Override
     public void saveAll(List<Trade> trades) {
-
         try {
             tradeRepository.saveAll(trades);
         }
         catch (Exception exc) {
-            throw new UnableToSaveEntityException(exc.getMessage());
+            throw new UnableToSaveEntitiesException(exc.getMessage());
         }
     }
 
@@ -59,18 +59,23 @@ public class TradeServiceImpl implements TradeService{
     @Override
     public List<Trade> findWithParameters(LocalDate startDate, LocalDate endDate, Boolean tagged, String symbol, String assetCategory) {
 
-        if (symbol != null && Objects.equals(symbol, "")) {
+        if (!StringUtils.hasText(symbol)) {
             symbol = null;
         }
-        if (assetCategory != null && Objects.equals(assetCategory, "")) {
+        if (!StringUtils.hasText(assetCategory)) {
             assetCategory = null;
         }
         if (startDate != null && startDate.isBefore(MIN_DATE)) {
-            startDate = MIN_DATE;
+            startDate = null;
         }
         if (endDate != null && endDate.isAfter(MAX_DATE)) {
-            endDate = MAX_DATE;
+            endDate = null;
         }
-        return tradeRepository.findWithParameters(startDate, endDate, tagged, symbol, assetCategory);
+        try {
+            return tradeRepository.findWithParameters(startDate, endDate, tagged, symbol, assetCategory);
+        }
+        catch (Exception exception) {
+            throw new UnableToProcessQueryException(exception.getMessage());
+        }
     }
 }

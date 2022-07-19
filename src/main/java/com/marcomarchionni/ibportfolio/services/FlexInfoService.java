@@ -5,7 +5,7 @@ import com.marcomarchionni.ibportfolio.models.FlexInfo;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface FlexStatementService {
+public interface FlexInfoService {
 
     LocalDate getLatestDateWithDataInDb();
 

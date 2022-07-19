@@ -52,9 +52,9 @@ class LoggingAspectTest {
         trades = new ArrayList<>(Arrays.asList(trade1, trade2));
 
         position1 = Position.builder().id(1L).conId(333L).symbol("ZM").quantity(new BigDecimal(43)).costBasisPrice(new BigDecimal(500))
-                .marketPrice(new BigDecimal(600)).multiplier(1).build();
+                .markPrice(new BigDecimal(600)).multiplier(1).build();
         position2 = Position.builder().id(2L).conId(344L).symbol("AAPL").quantity(new BigDecimal(15)).costBasisPrice(new BigDecimal(300))
-                .marketPrice(new BigDecimal(500)).multiplier(1).build();
+                .markPrice(new BigDecimal(500)).multiplier(1).build();
         positions = new ArrayList<>(Arrays.asList(position1, position2));
     }
 

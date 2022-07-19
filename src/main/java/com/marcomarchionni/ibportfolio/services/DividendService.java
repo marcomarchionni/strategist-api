@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface DividendService {
 
-    boolean saveDividends(List<Dividend> dividends);
-    boolean deleteOpenDividends();
+    void saveDividends(List<Dividend> dividends);
+    void deleteAllOpenDividends();
 }

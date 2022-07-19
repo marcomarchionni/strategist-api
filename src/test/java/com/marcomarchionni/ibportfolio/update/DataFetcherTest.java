@@ -33,6 +33,6 @@ class DataFetcherTest {
 
         assertNotNull(dto);
         String accountId = dto.getFlexStatements().get(0).getFlexStatement().get(0).getAccountId();
-        assertEquals(accountId, "U7169936");
+        assertEquals("U7169936", accountId);
     }
 }

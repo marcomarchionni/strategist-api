@@ -1,15 +1,23 @@
 package com.marcomarchionni.ibportfolio.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Data
+
 @Entity(name="dividend")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="open_closed",
+        discriminatorType = DiscriminatorType.STRING)
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Dividend {
 
     @Id
@@ -46,6 +54,6 @@ public class Dividend {
     @Column(name="net_amount")
     private BigDecimal netAmount;
 
-    @Column(name="open_closed")
+    @Column(name="open_closed", insertable = false, updatable = false)
     private String openClosed;
 }

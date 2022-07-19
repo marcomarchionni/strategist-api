@@ -1,12 +1,13 @@
 package com.marcomarchionni.ibportfolio.update;
 
+import com.marcomarchionni.ibportfolio.models.Dividend;
 import com.marcomarchionni.ibportfolio.models.FlexInfo;
+import com.marcomarchionni.ibportfolio.models.Position;
 import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.services.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -15,14 +16,14 @@ import java.util.List;
 
 @Component
 @Slf4j
-@Transactional
+//@Transactional
 public class Updater {
 
     private final DataFetcher dataFetcher;
 
     private final ResponseParser responseParser;
 
-    private final FlexStatementService flexInfoService;
+    private final FlexInfoService flexInfoService;
 
     private final TradeService tradeService;
 
@@ -31,7 +32,7 @@ public class Updater {
     private final DividendService dividendService;
 
     @Autowired
-    public Updater(DataFetcher dataFetcher, ResponseParser responseParser, FlexStatementService flexInfoService, TradeService tradeService, PositionService positionService, DividendService dividendService) {
+    public Updater(DataFetcher dataFetcher, ResponseParser responseParser, FlexInfoService flexInfoService, TradeService tradeService, PositionService positionService, DividendService dividendService) {
         this.dataFetcher = dataFetcher;
         this.responseParser = responseParser;
         this.flexInfoService = flexInfoService;
@@ -85,17 +86,18 @@ public class Updater {
         boolean dtoHasTheLatestData = checkIfDtoHasTheLatestData(dto);
 
         if (dtoHasTheLatestData) {
-            log.info(">>> Dto has the latest data >>>>");
 
             // For new data only: delete old positions and save new positions,
             // delete old open dividends and save new open dividends in db
             log.info("Delete old positions from db and save new positions");
-            positionService.deleteAllPositions();
-            positionService.saveAll(responseParser.parsePositions(dto));
+            positionService.deleteAll();
+            List<Position> updatedPositions = responseParser.parsePositions(dto);
+            positionService.saveAll(updatedPositions);
 
             log.info("Delete old open dividends, save new open dividends");
-            dividendService.deleteOpenDividends();
-            dividendService.saveDividends(responseParser.parseOpenDividends(dto));
+            dividendService.deleteAllOpenDividends();
+            List<Dividend> openDividends = responseParser.parseOpenDividends(dto);
+            dividendService.saveDividends(openDividends);
 
         } else {
             log.info(">>> Dto contains archive data >>>>");
@@ -103,13 +105,13 @@ public class Updater {
 
         // For new and archive data: save flexInfo, save or update trades and closed dividends in db
         log.info("Save flexInfo");
-        flexInfoService.save(responseParser.parseFlexStatement(dto));
+        flexInfoService.save(responseParser.parseFlexInfo(dto));
 
         log.info("Save trades");
         tradeService.saveAll(responseParser.parseTrades(dto));
 
         log.info("Save closed dividends");
-        dividendService.saveDividends(responseParser.parseDividends(dto));
+        dividendService.saveDividends(responseParser.parseClosedDividends(dto));
 
         log.info(">>> Dto data saved in db >>>");
     }
@@ -117,7 +119,7 @@ public class Updater {
 
     private boolean checkIfDtoHasTheLatestData(FlexQueryResponseDto dto) {
 
-        FlexInfo flexInfo = responseParser.parseFlexStatement(dto);
+        FlexInfo flexInfo = responseParser.parseFlexInfo(dto);
         LocalDate dtoLatestDateWithData = flexInfo.getToDate();
 
         LocalDate dbLatestDateWithData = flexInfoService.getLatestDateWithDataInDb();
