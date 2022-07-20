@@ -5,60 +5,53 @@ import com.marcomarchionni.ibportfolio.models.FlexInfo;
 import com.marcomarchionni.ibportfolio.models.Position;
 import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
-import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
-import com.marcomarchionni.ibportfolio.update.DataFetcher;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ResponseParserImplTest {
 
-    private FlexQueryResponseDto dto;
+    FlexQueryResponseDto dto;
 
-    @Value("classpath:/flex/LastMonth.xml")
-    private Resource resource;
-
-    @Autowired
-    DataFetcher dataFetcher;
-
-    @Autowired
     ResponseParser responseParser;
 
-    @Autowired
-    DividendRepository dividendRepository;
+    @BeforeEach
+    void setUp() throws JAXBException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File xmlFile = new File(Objects.requireNonNull(classLoader.getResource("flex/LastMonth.xml")).getFile());
 
-    @BeforeAll
-    public void setup() throws Exception {
-        dto = dataFetcher.fetchFromFile(resource.getFile());
+        Unmarshaller jaxbUnmarshaller = JAXBContext.newInstance(FlexQueryResponseDto.class).createUnmarshaller();
+        dto = (FlexQueryResponseDto) jaxbUnmarshaller.unmarshal(xmlFile);
+        responseParser = new ResponseParserImpl();
     }
 
     @Test
     void parseFlexInfo() {
-        LocalDate dtoFromDate = LocalDate.of(2022, 6, 1);
-        LocalDate dtoToDate = LocalDate.of(2022, 6, 30);
+
         FlexInfo flexInfo = responseParser.parseFlexInfo(dto);
 
         assertNotNull(flexInfo);
         assertEquals("U7169936", flexInfo.getAccountId());
-        assertEquals(dtoFromDate, flexInfo.getFromDate());
-        assertEquals(dtoToDate, flexInfo.getToDate());
+        assertEquals(LocalDate.of(2022, 6, 1), flexInfo.getFromDate());
+        assertEquals(LocalDate.of(2022, 6, 30), flexInfo.getToDate());
     }
 
     @Test
     void parseTrades() {
         List<Trade> trades = responseParser.parseTrades(dto);
+
         assertNotNull(trades);
         assertTrue(trades.size() > 0);
         assertEquals(10, trades.size());
