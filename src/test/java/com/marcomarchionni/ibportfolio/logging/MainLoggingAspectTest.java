@@ -19,7 +19,7 @@ import java.util.List;
 @SpringBootTest
 @Sql("/initIbTestDb.sql")
 @Sql("/insertSampleData.sql")
-class LoggingAspectTest {
+class MainLoggingAspectTest {
 
     @Autowired
     TradeService tradeService;

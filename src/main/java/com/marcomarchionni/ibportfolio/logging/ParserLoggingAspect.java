@@ -11,7 +11,7 @@ import java.util.List;
 @Aspect
 @Component
 @Slf4j
-public class serviceParserLoggingAspect {
+public class ParserLoggingAspect {
 
     @Pointcut("execution(java.util.List com.marcomarchionni.ibportfolio.services.ResponseParser.parse*(*))")
     private void responseParseReturnList() {}

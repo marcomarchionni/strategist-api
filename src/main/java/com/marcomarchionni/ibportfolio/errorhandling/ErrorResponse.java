@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.rest.exceptionhandling;
+package com.marcomarchionni.ibportfolio.errorhandling;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

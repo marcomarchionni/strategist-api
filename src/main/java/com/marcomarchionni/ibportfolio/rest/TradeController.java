@@ -18,15 +18,14 @@ public class TradeController {
     }
 
     @GetMapping("/trades")
-    public List<Trade> getTrades(@RequestParam (value = "startDate", required = false)
-                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                 @RequestParam (value = "endDate", required = false)
-                                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                                 @RequestParam (value = "tagged", required = false) Boolean tagged,
-                                 @RequestParam (value = "symbol", required = false) String symbol,
-                                 @RequestParam (value = "assetCategory", required = false) String assetCategory
+    public List<Trade> findWithParameters(@RequestParam (value = "startDate", required = false)
+                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                          @RequestParam (value = "endDate", required = false)
+                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                          @RequestParam (value = "tagged", required = false) Boolean tagged,
+                                          @RequestParam (value = "symbol", required = false) String symbol,
+                                          @RequestParam (value = "assetCategory", required = false) String assetCategory
                                  ) {
-
 
         return tradeService.findWithParameters(startDate, endDate, tagged, symbol, assetCategory);
     }

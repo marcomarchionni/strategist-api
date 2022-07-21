@@ -8,6 +8,7 @@ import com.marcomarchionni.ibportfolio.services.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-//@Transactional
+@Transactional
 public class Updater {
 
     private final DataFetcher dataFetcher;

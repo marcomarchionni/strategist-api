@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.rest.exceptionhandling.exceptions;
+package com.marcomarchionni.ibportfolio.errorhandling.exceptions;
 
 public class UnableToDeleteEntitiesException extends RuntimeException {
 
