@@ -25,7 +25,7 @@ class TradeRepositoryTest {
         LocalDate min = LocalDate.of(1000, 1, 1);
         LocalDate max = LocalDate.of(9999, 12, 31);
 
-        List<Trade> trades = tradeRepository.findWithParameters(min, max);
+        List<Trade> trades = tradeRepository.findWithParameters(min, max, null, null, null);
 
         assertEquals(7, trades.size());
     }

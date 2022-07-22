@@ -53,14 +53,15 @@ class TradeControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({",,,ZM,1",",,,TTWO,2",",2022-06-14,true,,1"})
-    void getTradesWithParameters(String startDate, String endDate, String tagged, String symbol, int expectedSize) throws Exception {
+    @CsvSource({",,,ZM,,1",",,,TTWO,STK,2",",2022-06-14,true,,,1"})
+    void getTradesWithParameters(String startDate, String endDate, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/trades")
                         .param("symbol", symbol)
                         .param("startDate", startDate)
                         .param("endDate", endDate)
-                        .param("tagged", tagged))
+                        .param("tagged", tagged)
+                        .param("assetCategory", assetCategory))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -68,14 +69,15 @@ class TradeControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"pippo,,,",",,farse,ZM"})
-    void getTradesWithParametersBadRequest(String startDate, String endDate, String tagged, String symbol) throws Exception {
+    @CsvSource({"pippo,,,,STK",",,farse,ZM,"})
+    void getTradesWithParametersBadRequest(String startDate, String endDate, String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/trades")
                         .param("symbol", symbol)
                         .param("startDate", startDate)
                         .param("endDate", endDate)
-                        .param("tagged", tagged))
+                        .param("tagged", tagged)
+                        .param("assetCategory", assetCategory))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -137,5 +139,38 @@ class TradeControllerIT {
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message", is("Trade with id: 20 not found")));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1180780161, 20", "20, 1", ",,"})
+    void updateStrategyIdExceptions(Long tradeId, Long strategyId) throws Exception {
+
+        Long invalidTradeId = 20L;
+        assertFalse(tradeRepository.findById(invalidTradeId).isPresent());
+        Long validStrategyId = getSampleStrategy().getId();
+        assertTrue(strategyRepository.findById(validStrategyId).isPresent());
+
+        Trade requestTrade = Trade.builder()
+                .id(invalidTradeId)
+                .strategyId(validStrategyId)
+                .build();
+
+        mockMvc.perform(put("/trades")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(requestTrade)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").isNotEmpty());
+    }
+
+    @Test
+    void updateStrategyIdEmptyBody() throws Exception {
+
+        mockMvc.perform(put("/trades")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }

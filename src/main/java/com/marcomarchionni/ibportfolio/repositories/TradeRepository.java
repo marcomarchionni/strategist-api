@@ -13,12 +13,6 @@ import java.util.List;
 public interface TradeRepository extends JpaRepository<Trade, Long> {
 
     @Query("SELECT t FROM trade t WHERE " +
-            "(t.tradeDate > :startDate) and" +
-            "(t.tradeDate < :endDate)")
-    List<Trade> findWithParameters(@Param("startDate") LocalDate startDate,
-                                   @Param ("endDate") LocalDate endDate);
-
-    @Query("SELECT t FROM trade t WHERE " +
             "(:startDate is null or t.tradeDate > :startDate) and" +
             "(:endDate is null or t.tradeDate < :endDate) and" +
             "(:symbol is null or t.symbol = :symbol) and" +

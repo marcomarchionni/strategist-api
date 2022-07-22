@@ -1,11 +1,11 @@
 package com.marcomarchionni.ibportfolio.update;
 
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
 import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.models.dtos.FlexStatementResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -43,26 +43,28 @@ public class DataFetcher {
         headers.set("User-Agent", "Technology/Version");
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        // eseguiamo la chiamata indicando anche la risposta che ci attendiamo dal servizio, mappata nella classe FlexStatementResponseDto
-        // inseriamo come parametri che sono il token e il query id prelevati dalle properties
-        log.info("Performing first API call with token: " + token + ", queryId: " + queryId);
-
-        ResponseEntity<FlexStatementResponseDto> response = restTemplate.exchange(authUrl, HttpMethod.GET, request, FlexStatementResponseDto.class, token, queryId);
+        // eseguiamo la chiamata indicando anche la risposta che ci attendiamo dal servizio, mappata nella classe FlexStatementResponseDt
+        ResponseEntity<FlexStatementResponseDto> response = restTemplate.exchange(
+                authUrl, HttpMethod.GET, request, FlexStatementResponseDto.class, token, queryId);
 
         if (response.getBody() == null || response.getStatusCode() != HttpStatus.OK) {
-            log.error("Error while invoking external services");
-            return null;
+            throw new IbServerErrorException("Error while invoking external services");
         }
 
         // eseguiamo la seconda chiamata utilizzando l'url e il codice restituiti nella prima
         log.info("Performing second API call with reference code: {}", response.getBody().getReferenceCode());
 
         ResponseEntity<FlexQueryResponseDto> result =
-                restTemplate.exchange(response.getBody().getUrl() + reqPath, HttpMethod.GET, request, FlexQueryResponseDto.class, token, response.getBody().getReferenceCode());
+                restTemplate.exchange(
+                        response.getBody().getUrl() + reqPath,
+                        HttpMethod.GET,
+                        request,
+                        FlexQueryResponseDto.class,
+                        token,
+                        response.getBody().getReferenceCode());
 
         if (result.getBody() == null || result.getStatusCode() != HttpStatus.OK) {
-            log.error("Error while invoking external services");
-            return null;
+            throw new IbServerErrorException("Error while invoking external services");
         }
 
         return result.getBody();

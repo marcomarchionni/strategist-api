@@ -25,6 +25,9 @@ public class Position {
     @Column(name="con_id")
     private Long conId;
 
+    @Column (name = "position_strategy_id")
+    private Long strategyId;
+
     @Column(name="report_date")
     private LocalDate reportDate;
 
