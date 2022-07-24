@@ -17,14 +17,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.io.File;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class UpdaterIntegrationTest {
+public class UpdaterIT {
 
     @Autowired
     TradeRepository tradeRepository;

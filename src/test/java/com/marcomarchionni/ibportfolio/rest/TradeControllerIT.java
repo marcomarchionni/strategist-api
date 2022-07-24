@@ -43,15 +43,6 @@ class TradeControllerIT {
     @Autowired
     StrategyRepository strategyRepository;
 
-    @Test
-    void getTrades() throws Exception {
-
-        mockMvc.perform(get("/trades"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(7)));
-    }
-
     @ParameterizedTest
     @CsvSource({",,,ZM,,1",",,,TTWO,STK,2",",2022-06-14,true,,,1"})
     void getTradesWithParameters(String startDate, String endDate, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {

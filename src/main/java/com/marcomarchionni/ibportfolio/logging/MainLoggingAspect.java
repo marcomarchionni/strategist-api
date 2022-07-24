@@ -15,7 +15,7 @@ import static com.marcomarchionni.ibportfolio.logging.LoggingUtils.*;
 @Component
 public class MainLoggingAspect {
 
-    @Before("com.marcomarchionni.ibportfolio.logging.Pointcuts.servicesAndControllersMethods()")
+    @Before("com.marcomarchionni.ibportfolio.logging.Pointcuts.serviceAndControllerClasses()")
     public void beforeControllersAndServicesMethods(JoinPoint joinPoint) {
         logClassAndMethodNameHeader(joinPoint);
 
@@ -23,7 +23,7 @@ public class MainLoggingAspect {
         logBody("Params: " + parameterNamesAndValues);
     }
 
-    @AfterThrowing(value = "com.marcomarchionni.ibportfolio.logging.Pointcuts.allServicesMethods()", throwing = "ex")
+    @AfterThrowing(value = "com.marcomarchionni.ibportfolio.logging.Pointcuts.serviceClasses()", throwing = "ex")
     public void afterThrowingSaveAll(Exception ex) {
         logException("Service throws Exception, message: " + ex.getMessage());
     }
@@ -34,27 +34,26 @@ public class MainLoggingAspect {
         logReturn("Saved " + getEntitiesNumberAndName(entityList));
     }
 
-    @AfterReturning(pointcut = "com.marcomarchionni.ibportfolio.logging.Pointcuts.serviceUpdateStrategyId()", returning = "result")
-    public void afterReturningServiceUpdateStrategyId(JoinPoint joinPoint, Object result) {
-        logReturn("Service updated StrategyId on: " + result);
+    @AfterReturning(pointcut = "com.marcomarchionni.ibportfolio.logging.Pointcuts.serviceClassesReturningEntities()", returning = "result")
+    public void afterReturningServiceUpdateStrategyId(Object result) {
+        logReturn("Service returning: " + result);
     }
 
     @AfterReturning(pointcut = "com.marcomarchionni.ibportfolio.logging.Pointcuts.controllerUpdateStrategyId()", returning = "result")
-    public void afterReturningControllerUpdateStrategyId(JoinPoint joinPoint, Object result) {
-        logReturn("API Response: " + result);
+    public void afterReturningControllerUpdateStrategyId(Object result) {
+        logReturn("Controller Response: " + result);
     }
 
-    @AfterReturning(pointcut = "com.marcomarchionni.ibportfolio.logging.Pointcuts.serviceFind()", returning = "resultEntities")
+    @AfterReturning(pointcut = "com.marcomarchionni.ibportfolio.logging.Pointcuts.serviceClassesReturningList()", returning = "resultEntities")
     public void afterReturningServicesFind(List<?> resultEntities) {
         String resultEntitiesNumberAndName = getEntitiesNumberAndName(resultEntities);
         logReturn("Service returning " + resultEntitiesNumberAndName);
     }
 
-    @AfterReturning(pointcut = "com.marcomarchionni.ibportfolio.logging.Pointcuts.controllerFind()", returning = "resultEntities")
+    @AfterReturning(pointcut = "com.marcomarchionni.ibportfolio.logging.Pointcuts.controllerClassesReturningList()", returning = "resultEntities")
     public void afterReturningControllersFind(List<?> resultEntities) {
-
         String resultEntitiesNumberAndName = getEntitiesNumberAndName(resultEntities);
-        logReturn("API Response: " + resultEntitiesNumberAndName);
+        logReturn("Controller Response: " + resultEntitiesNumberAndName);
     }
 }
 

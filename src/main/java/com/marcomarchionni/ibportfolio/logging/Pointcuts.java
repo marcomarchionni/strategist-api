@@ -7,26 +7,38 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class Pointcuts {
-    @Pointcut("execution(* com.marcomarchionni.ibportfolio.services.*.*(..))")
-    public void allServicesMethods() {}
+    @Pointcut("within(com.marcomarchionni.ibportfolio.services.*)")
+    public void serviceClasses() {}
 
-    @Pointcut("execution(* com.marcomarchionni.ibportfolio.rest.*.*(..))")
-    public void allControllersMethods() {}
+    @Pointcut("within(com.marcomarchionni.ibportfolio.rest.*)")
+    public void controllerClasses() {}
 
-    @Pointcut("allServicesMethods() || allControllersMethods()")
-    public void servicesAndControllersMethods() {}
+    @Pointcut("execution(java.util.List com.marcomarchionni.ibportfolio.*.*.*(..)))")
+    public void returningList() {}
+
+    @Pointcut("execution(com.marcomarchionni.ibportfolio.models.* com.marcomarchionni.ibportfolio.*.*.*(..)))")
+    public void returningEntities() {}
+
+    @Pointcut("serviceClasses() || controllerClasses()")
+    public void serviceAndControllerClasses() {}
+
+    @Pointcut("controllerClasses() && returningList()")
+    public void controllerClassesReturningList() {}
+
+    @Pointcut("serviceClasses() && returningList()")
+    public void serviceClassesReturningList() {}
+
+    @Pointcut("controllerClasses() && returningEntities()")
+    public void controllerClassesReturningEntities() {}
+
+    @Pointcut("serviceClasses() && returningEntities()")
+    public void serviceClassesReturningEntities() {}
 
     @Pointcut("execution(* com.marcomarchionni.ibportfolio.services.*.save*(java.util.List))")
     public void serviceSave() {}
 
     @Pointcut("execution(* com.marcomarchionni.ibportfolio.services.*.updateStrategyId(..))")
     public void serviceUpdateStrategyId() {}
-
-    @Pointcut("execution(java.util.List com.marcomarchionni.ibportfolio.services.*.find*(..))")
-    public void serviceFind() {}
-
-    @Pointcut("execution(java.util.List com.marcomarchionni.ibportfolio.rest.*.find*(..))")
-    public void controllerFind() {}
 
     @Pointcut("execution(* com.marcomarchionni.ibportfolio.rest.*.updateStrategyId(..))")
     public void controllerUpdateStrategyId() {}

@@ -16,9 +16,9 @@ public class PositionController {
     }
 
     @GetMapping("/positions")
-    public List<Position> getPositions(@RequestParam (value = "tagged", required = false) Boolean tagged,
-                                       @RequestParam (value = "symbol", required = false) String symbol,
-                                       @RequestParam (value = "assetCategory", required = false) String assetCategory ) {
+    public List<Position> findWithParameters(@RequestParam (value = "tagged", required = false) Boolean tagged,
+                                             @RequestParam (value = "symbol", required = false) String symbol,
+                                             @RequestParam (value = "assetCategory", required = false) String assetCategory ) {
 
         return positionService.findWithParameters(tagged, symbol, assetCategory);
     }
