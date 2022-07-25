@@ -27,6 +27,9 @@ public class Dividend {
     @Column(name="con_id")
     private Long conId;
 
+    @Column(name="dividend_strategy_id")
+    private Long strategyId;
+
     @Column(name="symbol")
     private String symbol;
 

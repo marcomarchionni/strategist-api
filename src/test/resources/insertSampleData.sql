@@ -8,6 +8,7 @@ INSERT INTO `strategy` (`id`,`strategy_name`,`strategy_portfolio_id`) VALUES (1,
 INSERT INTO `strategy` (`id`,`strategy_name`,`strategy_portfolio_id`) VALUES (2,'IBKR put',2);
 INSERT INTO `strategy` (`id`,`strategy_name`,`strategy_portfolio_id`) VALUES (3,'DIS long',1);
 INSERT INTO `strategy` (`id`,`strategy_name`,`strategy_portfolio_id`) VALUES (4,'NKE long',1);
+INSERT INTO `strategy` (`id`,`strategy_name`,`strategy_portfolio_id`) VALUES (5,'EBAY coveredCall',2);
 
 
 INSERT INTO `trade` (`id`,`trade_id`,`con_id`,`trade_strategy_id`,`trade_date`,`symbol`,`description`,`asset_category`,`multiplier`,`put_call`,`strike`,`expiry`,`buy_sell`,`quantity`,`trade_price`,`trade_money`,`fifo_pnl_realized`,`ib_commission`) VALUES (1180780161,387679436,361181057,1,'2022-06-07','ZM','ZOOM VIDEO COMMUNICATIONS-A','STK',1,NULL,NULL,NULL,'BUY',15.0000,111.3300,1669.9500,0.0000,-1.0000);
@@ -32,7 +33,7 @@ INSERT INTO `position` (`id`,`con_id`,`report_date`,`position_strategy_id`,`symb
 
 INSERT INTO `dividend` (`id`,`con_id`,`dividend_strategy_id`,`symbol`,`description`,`ex_date`,`pay_date`,`gross_rate`,`quantity`,`gross_amount`,`tax`,`net_amount`,`open_closed`) VALUES (1029120220603,10291,NULL,'NKE','NIKE INC -CL B','2022-06-03','2022-07-01',0.3050,84,25.6200,3.8400,21.7800,'OPEN');
 INSERT INTO `dividend` (`id`,`con_id`,`dividend_strategy_id`,`symbol`,`description`,`ex_date`,`pay_date`,`gross_rate`,`quantity`,`gross_amount`,`tax`,`net_amount`,`open_closed`) VALUES (26754720220519,267547,NULL,'CGNX','COGNEX CORP','2022-05-19','2022-06-03',0.0650,44,2.8600,0.4300,2.4300,'CLOSED');
-INSERT INTO `dividend` (`id`,`con_id`,`dividend_strategy_id`,`symbol`,`description`,`ex_date`,`pay_date`,`gross_rate`,`quantity`,`gross_amount`,`tax`,`net_amount`,`open_closed`) VALUES (434708620220531,4347086,NULL,'EBAY','EBAY INC','2022-05-31','2022-06-17',0.2200,100,22.0000,3.3000,18.7000,'CLOSED');
+INSERT INTO `dividend` (`id`,`con_id`,`dividend_strategy_id`,`symbol`,`description`,`ex_date`,`pay_date`,`gross_rate`,`quantity`,`gross_amount`,`tax`,`net_amount`,`open_closed`) VALUES (434708620220531,4347086,5,'EBAY','EBAY INC','2022-05-31','2022-06-17',0.2200,100,22.0000,3.3000,18.7000,'CLOSED');
 INSERT INTO `dividend` (`id`,`con_id`,`dividend_strategy_id`,`symbol`,`description`,`ex_date`,`pay_date`,`gross_rate`,`quantity`,`gross_amount`,`tax`,`net_amount`,`open_closed`) VALUES (481574720220608,4815747,NULL,'NVDA','NVIDIA CORP','2022-06-08','2022-07-01',0.0400,64,2.5600,0.3800,2.1800,'OPEN');
 INSERT INTO `dividend` (`id`,`con_id`,`dividend_strategy_id`,`symbol`,`description`,`ex_date`,`pay_date`,`gross_rate`,`quantity`,`gross_amount`,`tax`,`net_amount`,`open_closed`) VALUES (510058320220624,5100583,NULL,'FDX','FEDEX CORPORATION','2022-06-24','2022-07-11',1.1500,47,54.0500,8.1100,45.9400,'OPEN');
 INSERT INTO `dividend` (`id`,`con_id`,`dividend_strategy_id`,`symbol`,`description`,`ex_date`,`pay_date`,`gross_rate`,`quantity`,`gross_amount`,`tax`,`net_amount`,`open_closed`) VALUES (4512773920220609,45127739,NULL,'CME','CME GROUP INC','2022-06-09','2022-06-27',1.0000,10,10.0000,1.5000,8.5000,'CLOSED');

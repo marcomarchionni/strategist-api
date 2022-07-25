@@ -1,12 +1,11 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.models.Strategy;
 import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.FailingQueryException;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -20,9 +19,6 @@ public class TradeServiceImpl implements TradeService{
 
     private final TradeRepository tradeRepository;
     private final StrategyRepository strategyRepository;
-
-    private final LocalDate MIN_DATE = LocalDate.of(1000, 1, 1);
-    private final LocalDate MAX_DATE = LocalDate.of(9999, 12, 31);
 
     public TradeServiceImpl(TradeRepository tradeRepository, StrategyRepository strategyRepository) {
         this.tradeRepository = tradeRepository;
@@ -61,17 +57,6 @@ public class TradeServiceImpl implements TradeService{
         if (!StringUtils.hasText(assetCategory)) {
             assetCategory = null;
         }
-        if (startDate != null && startDate.isBefore(MIN_DATE)) {
-            startDate = null;
-        }
-        if (endDate != null && endDate.isAfter(MAX_DATE)) {
-            endDate = null;
-        }
-        try {
-            return tradeRepository.findWithParameters(startDate, endDate, tagged, symbol, assetCategory);
-        }
-        catch (Exception exception) {
-            throw new FailingQueryException(exception.getMessage());
-        }
+        return tradeRepository.findWithParameters(startDate, endDate, tagged, symbol, assetCategory);
     }
 }

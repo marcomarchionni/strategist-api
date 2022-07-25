@@ -100,13 +100,4 @@ class TradeServiceImplTest {
 
         assertEquals(expectedSize, actualTrades.size());
     }
-
-    @Test
-    void findWithParametersException(){
-        when(tradeRepository.findWithParameters(any(),any(),any(),any(),any())).thenThrow(new RuntimeException());
-
-        assertThrows(
-                FailingQueryException.class,
-                ()-> tradeService.findWithParameters(null, null, null, null, null));
-    }
 }

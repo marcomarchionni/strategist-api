@@ -43,16 +43,23 @@ public class TestUtils {
         return getFDXOpenDividend();
     }
 
+    public static List<Dividend> getSampleDividends() {
+        List<Dividend> dividends = new ArrayList<>();
+        dividends.add(getEBAYClosedDividend());
+        dividends.add(getFDXOpenDividend());
+        return dividends;
+    }
+
+    public static Strategy getSampleStrategy() {
+        return Strategy.builder().id(1L).strategyName("ZM long").build();
+    }
+
     private static Dividend getFDXOpenDividend() {
         return Dividend.builder().id(Long.parseLong("510058320220624")).conId(5100583L)
                 .symbol("FDX").description("FEDEX CORPORATION").exDate(LocalDate.of(2022, 6, 24))
                 .payDate(LocalDate.of(2022,7,11)).quantity(new BigDecimal(47))
                 .grossRate(new BigDecimal("1.15")).grossAmount(new BigDecimal("54.05"))
                 .netAmount(new BigDecimal("45.94")).tax(new BigDecimal("8.11")).build();
-    }
-
-    public static Strategy getSampleStrategy() {
-        return Strategy.builder().id(1L).strategyName("ZM long").build();
     }
 
     private static Dividend getEBAYClosedDividend() {

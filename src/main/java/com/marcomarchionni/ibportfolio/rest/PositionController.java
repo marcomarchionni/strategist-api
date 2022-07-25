@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/positions")
 public class PositionController {
 
     PositionService positionService;
@@ -15,7 +16,7 @@ public class PositionController {
         this.positionService = positionService;
     }
 
-    @GetMapping("/positions")
+    @GetMapping
     public List<Position> findWithParameters(@RequestParam (value = "tagged", required = false) Boolean tagged,
                                              @RequestParam (value = "symbol", required = false) String symbol,
                                              @RequestParam (value = "assetCategory", required = false) String assetCategory ) {
@@ -23,7 +24,7 @@ public class PositionController {
         return positionService.findWithParameters(tagged, symbol, assetCategory);
     }
 
-    @PutMapping("/positions")
+    @PutMapping
     public Position updateStrategyId(@RequestBody Position position) {
         return positionService.updateStrategyId(position);
     }

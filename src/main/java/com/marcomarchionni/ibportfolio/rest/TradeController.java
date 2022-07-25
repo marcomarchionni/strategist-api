@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@RequestMapping("/trades")
 public class TradeController {
 
     TradeService tradeService;
@@ -17,7 +18,7 @@ public class TradeController {
         this.tradeService = tradeService;
     }
 
-    @GetMapping("/trades")
+    @GetMapping
     public List<Trade> findWithParameters(@RequestParam (value = "startDate", required = false)
                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                           @RequestParam (value = "endDate", required = false)
@@ -30,7 +31,7 @@ public class TradeController {
         return tradeService.findWithParameters(startDate, endDate, tagged, symbol, assetCategory);
     }
 
-    @PutMapping("/trades")
+    @PutMapping
     public Trade updateStrategyId(@RequestBody Trade trade) {
         return tradeService.updateStrategyId(trade);
     }

@@ -15,7 +15,6 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 @Service
-@Slf4j
 public class PositionServiceImpl implements PositionService{
 
     private final PositionRepository positionRepository;
@@ -59,7 +58,7 @@ public class PositionServiceImpl implements PositionService{
     @Override
     public Position updateStrategyId(Position position) {
         Position positionToUpdate = positionRepository.findById(position.getId()).orElseThrow(
-                ()-> new EntityNotFoundException("Trade with id: " + position.getId() + " not found")
+                ()-> new EntityNotFoundException("Position with id: " + position.getId() + " not found")
         );
         Strategy strategyToAssign = strategyRepository.findById(position.getStrategyId()).orElseThrow(
                 ()-> new EntityNotFoundException("Strategy with id: " + position.getStrategyId() + " not found")
