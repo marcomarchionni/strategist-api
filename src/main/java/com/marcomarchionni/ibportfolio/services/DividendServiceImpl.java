@@ -36,17 +36,17 @@ public class DividendServiceImpl implements DividendService {
 
 
     @Override
-    public List<Dividend> findWithParameters(LocalDate fromExDate,
-                                             LocalDate toExDate,
-                                             LocalDate fromPayDate,
-                                             LocalDate toPayDate,
+    public List<Dividend> findWithParameters(LocalDate exDateFrom,
+                                             LocalDate exDateTo,
+                                             LocalDate payDateFrom,
+                                             LocalDate payDateTo,
                                              Boolean tagged,
                                              String symbol) {
 
         if (!StringUtils.hasText(symbol)) {
             symbol = null;
         }
-        return dividendRepository.findWithParameters(fromExDate, toExDate, fromPayDate, toPayDate, tagged, symbol);
+        return dividendRepository.findWithParameters(exDateFrom, exDateTo, payDateFrom, payDateTo, tagged, symbol);
     }
 
     @Override

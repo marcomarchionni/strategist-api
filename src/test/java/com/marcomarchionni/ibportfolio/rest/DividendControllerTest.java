@@ -60,6 +60,17 @@ class DividendControllerTest {
     }
 
     @Test
+    void getWithParametersException() throws Exception {
+
+        when(dividendService.findWithParameters(any(), any(), any(), any(), any(), any())).thenReturn(dividends);
+
+        mockMvc.perform(get("/dividends"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(dividends.size())));
+    }
+
+    @Test
     void updateStrategyId() throws Exception {
 
         Dividend dividendToUpdate = Dividend.builder().id(dividend.getId()).strategyId(2L).build();

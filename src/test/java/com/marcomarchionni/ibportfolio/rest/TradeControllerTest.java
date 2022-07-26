@@ -61,7 +61,7 @@ class TradeControllerTest {
     }
 
     @ParameterizedTest
-    @CsvSource({",,,ZM,",",,,TTWO,",",2022-06-14,true,,"})
+    @CsvSource({",,,ZM,",",2022-06-14,true,,"})
     void getTradesWithParameters(String startDate, String endDate, String tagged, String symbol, String assetCategory) throws Exception {
 
         List<Trade> resultList = TestUtils.getSampleTrades();
@@ -81,7 +81,7 @@ class TradeControllerTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"pippo,,,,",",,farse,ZM,"})
+    @CsvSource({"pippo,,,,",",,farse,ZM,","1200-01-01,1350-02-12,,,"})
     void getTradesWithParametersBadRequest(String startDate, String endDate, String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/trades")

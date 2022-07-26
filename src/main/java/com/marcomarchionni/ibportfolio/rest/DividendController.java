@@ -21,18 +21,18 @@ public class DividendController {
     }
 
     @GetMapping
-    public List<Dividend> findWithParameters(@RequestParam(value = "fromExDate", required = false)
-                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromExDate,
-                                             @RequestParam (value = "toExDate", required = false)
-                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toExDate,
-                                             @RequestParam(value = "fromPayDate", required = false)
-                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromPayDate,
-                                             @RequestParam (value = "toPayDate", required = false)
-                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toPayDate,
+    public List<Dividend> findWithParameters(@RequestParam(value = "exDeteFrom", required = false)
+                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate exDeteFrom,
+                                             @RequestParam (value = "exDateTo", required = false)
+                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate exDateTo,
+                                             @RequestParam(value = "payDateFrom", required = false)
+                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate payDateFrom,
+                                             @RequestParam (value = "payDateTo", required = false)
+                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate payDateTo,
                                              @RequestParam (value = "tagged", required = false) Boolean tagged,
                                              @RequestParam (value = "symbol", required = false) String symbol
     ) {
-        return dividendService.findWithParameters(fromExDate, toExDate, fromPayDate, toPayDate, tagged, symbol);
+        return dividendService.findWithParameters(exDeteFrom, exDateTo, payDateFrom, payDateTo, tagged, symbol);
     }
 
     @PutMapping

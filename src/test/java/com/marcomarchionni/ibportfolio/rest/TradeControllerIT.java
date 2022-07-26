@@ -1,7 +1,6 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.Dividend;
 import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
@@ -61,14 +60,14 @@ class TradeControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"pippo,,,,STK",",,farse,ZM,"})
-    void getTradesWithParametersBadRequest(String startDate, String endDate, String tagged, String symbol, String assetCategory) throws Exception {
+    @CsvSource({"pippo,,,,STK",",,farse,ZM,","1969-01-01,,,,,"})
+    void getTradesWithParametersBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/trades")
-                        .param("symbol", symbol)
-                        .param("startDate", startDate)
-                        .param("endDate", endDate)
+                        .param("tradeDateFrom", tradeDateFrom)
+                        .param("tradeDateTo", tradeDateTo)
                         .param("tagged", tagged)
+                        .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
