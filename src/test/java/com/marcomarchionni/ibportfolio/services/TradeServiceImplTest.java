@@ -6,7 +6,6 @@ import com.marcomarchionni.ibportfolio.models.dtos.TradeCriteriaDto;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.FailingQueryException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,7 +89,7 @@ class TradeServiceImplTest {
         when(tradeRepository.findWithParameters(any(),any(),any(),any(),any())).thenReturn(trades);
         int expectedSize = trades.size();
 
-        List<Trade> actualTrades = tradeService.findWithParameters(tradeCriteria);
+        List<Trade> actualTrades = tradeService.findWithCriteria(tradeCriteria);
 
         assertEquals(expectedSize, actualTrades.size());
     }

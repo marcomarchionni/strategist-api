@@ -12,10 +12,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target( {ElementType.FIELD})
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = NullOrNotBlankValidator.class)
-public @interface NullOrNotBlank {
-    String message() default "Value must be null or not blank";
+@Constraint(validatedBy = AssetCategoryValidator.class)
+public @interface AssetCategory {
+    String message() default "Not a valid asset category";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default {};
 }
-

@@ -1,6 +1,8 @@
 package com.marcomarchionni.ibportfolio.util;
 
 import com.marcomarchionni.ibportfolio.models.*;
+import com.marcomarchionni.ibportfolio.models.dtos.DividendCriteriaDto;
+import com.marcomarchionni.ibportfolio.models.dtos.PositionCriteriaDto;
 import com.marcomarchionni.ibportfolio.models.dtos.TradeCriteriaDto;
 
 
@@ -62,6 +64,19 @@ public class TestUtils {
                 .tagged(false)
                 .symbol("AAPL")
                 .assetCategory("STK")
+                .build();
+    }
+
+    public static PositionCriteriaDto getSamplePositionCriteria() {
+        return PositionCriteriaDto.builder()
+                .tagged(true)
+                .symbol("AAPL")
+                .build();
+    }
+
+    public static DividendCriteriaDto getSampleDividendCriteria() {
+        return DividendCriteriaDto.builder()
+                .exDateFrom(LocalDate.of(2022,6,5))
                 .build();
     }
 

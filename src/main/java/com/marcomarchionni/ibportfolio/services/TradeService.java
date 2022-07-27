@@ -3,7 +3,6 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.models.dtos.TradeCriteriaDto;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface TradeService {
@@ -12,5 +11,5 @@ public interface TradeService {
 
     Trade updateStrategyId(Trade trade);
 
-    List<Trade> findWithParameters(TradeCriteriaDto tradeCriteria);
+    List<Trade> findWithCriteria(TradeCriteriaDto tradeCriteria);
 }

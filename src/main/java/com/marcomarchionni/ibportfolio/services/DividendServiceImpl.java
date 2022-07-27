@@ -3,13 +3,12 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.models.Dividend;
 import com.marcomarchionni.ibportfolio.models.Strategy;
+import com.marcomarchionni.ibportfolio.models.dtos.DividendCriteriaDto;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -36,17 +35,14 @@ public class DividendServiceImpl implements DividendService {
 
 
     @Override
-    public List<Dividend> findWithParameters(LocalDate exDateFrom,
-                                             LocalDate exDateTo,
-                                             LocalDate payDateFrom,
-                                             LocalDate payDateTo,
-                                             Boolean tagged,
-                                             String symbol) {
-
-        if (!StringUtils.hasText(symbol)) {
-            symbol = null;
-        }
-        return dividendRepository.findWithParameters(exDateFrom, exDateTo, payDateFrom, payDateTo, tagged, symbol);
+    public List<Dividend> findWithCriteria(DividendCriteriaDto criteria) {
+        return dividendRepository.findWithParameters(
+                criteria.getExDateFrom(),
+                criteria.getExDateTo(),
+                criteria.getPayDateFrom(),
+                criteria.getPayDateTo(),
+                criteria.getTagged(),
+                criteria.getSymbol());
     }
 
     @Override

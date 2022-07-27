@@ -1,12 +1,12 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.marcomarchionni.ibportfolio.models.Dividend;
+import com.marcomarchionni.ibportfolio.models.dtos.DividendCriteriaDto;
 import com.marcomarchionni.ibportfolio.services.DividendService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,18 +21,8 @@ public class DividendController {
     }
 
     @GetMapping
-    public List<Dividend> findWithParameters(@RequestParam(value = "exDateFrom", required = false)
-                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate exDateFrom,
-                                             @RequestParam (value = "exDateTo", required = false)
-                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate exDateTo,
-                                             @RequestParam(value = "payDateFrom", required = false)
-                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate payDateFrom,
-                                             @RequestParam (value = "payDateTo", required = false)
-                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate payDateTo,
-                                             @RequestParam (value = "tagged", required = false) Boolean tagged,
-                                             @RequestParam (value = "symbol", required = false) String symbol
-    ) {
-        return dividendService.findWithParameters(exDateFrom, exDateTo, payDateFrom, payDateTo, tagged, symbol);
+    public List<Dividend> findWithCriteria(@Valid DividendCriteriaDto dividendCriteria) {
+        return dividendService.findWithCriteria(dividendCriteria);
     }
 
     @PutMapping

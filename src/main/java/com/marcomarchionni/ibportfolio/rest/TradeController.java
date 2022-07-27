@@ -7,10 +7,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
-@Validated
 @RequestMapping("/trades")
 public class TradeController {
 
@@ -21,9 +21,9 @@ public class TradeController {
     }
 
     @GetMapping
-    public List<Trade> findWithParameters(@Valid TradeCriteriaDto tradeCriteria) {
+    public List<Trade> findWithCriteria(@Valid TradeCriteriaDto tradeCriteria) {
 
-        return tradeService.findWithParameters(tradeCriteria);
+        return tradeService.findWithCriteria(tradeCriteria);
     }
 
     @PutMapping

@@ -51,7 +51,7 @@ class PositionControllerTest {
     @Test
     void getPositions() throws Exception {
 
-        when(positionService.findWithParameters(any(), any(), any())).thenReturn(positions);
+        when(positionService.findWithCriteria(any())).thenReturn(positions);
 
         mockMvc.perform(get("/positions"))
                 .andExpect(status().isOk())

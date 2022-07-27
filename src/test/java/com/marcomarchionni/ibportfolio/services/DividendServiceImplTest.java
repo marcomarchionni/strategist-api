@@ -2,11 +2,12 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.models.Dividend;
 import com.marcomarchionni.ibportfolio.models.Strategy;
+import com.marcomarchionni.ibportfolio.models.dtos.DividendCriteriaDto;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -28,27 +29,21 @@ class DividendServiceImplTest {
     @Mock
     StrategyRepository strategyRepository;
 
-    DividendService dividendService;
+    @InjectMocks
+    DividendServiceImpl dividendService;
 
-    List<Dividend> dividends;
-    Dividend dividend;
-    Strategy strategy;
-
-    @BeforeEach
-    void setup() {
-        dividends = getSampleDividends();
-        dividend = getSampleClosedDividend();
-        strategy = getSampleStrategy();
-        dividendService = new DividendServiceImpl(dividendRepository, strategyRepository);
-    }
+    final List<Dividend> dividends = getSampleDividends();
+    final Dividend dividend = getSampleClosedDividend();
+    final Strategy strategy = getSampleStrategy();
+    final DividendCriteriaDto dividendCriteria = getSampleDividendCriteria();
 
     @Test
-    void findWithParameters() {
+    void findWithCriteria() {
 
         when(dividendRepository.findWithParameters(any(), any(), any(), any(), any(), any())).thenReturn(dividends);
 
-        List<Dividend> foundDividends = dividendService.findWithParameters(
-                        null, null, null, null, true, "AAPL");
+        List<Dividend> foundDividends = dividendService.findWithCriteria(
+                        dividendCriteria);
 
         assertEquals(dividends.size(), foundDividends.size() );
     }

@@ -65,7 +65,7 @@ class DividendControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"pippo,,,,,",",,,,farse,"})
+    @CsvSource({"pippo,,,,,",",,,,farse,",",,2022-06-02,2022-06-01,,,"})
     void findDividendsBadRequest(String exDateFrom,
                                  String exDateTo,
                                  String payDateFrom,

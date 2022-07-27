@@ -2,7 +2,6 @@ package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.models.Position;
-import com.marcomarchionni.ibportfolio.models.Trade;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleTrade;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -45,7 +43,7 @@ class PositionControllerIT {
 
     @ParameterizedTest
     @CsvSource({",ZM,,0",",DIS,STK,1","true,,,2"})
-    void getTradesWithParameters(String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
+    void findWithCriteriaSuccess(String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/positions")
                         .param("tagged", tagged)
@@ -58,8 +56,8 @@ class PositionControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"farse,,"})
-    void getTradesWithParametersBadRequest(String tagged, String symbol, String assetCategory) throws Exception {
+    @CsvSource({"farse,,",",,GOLD"})
+    void findWithCriteriaBadRequest(String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/positions")
                         .param("tagged", tagged)

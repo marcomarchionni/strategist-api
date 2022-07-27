@@ -3,6 +3,7 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.models.Position;
 import com.marcomarchionni.ibportfolio.models.Strategy;
+import com.marcomarchionni.ibportfolio.models.dtos.PositionCriteriaDto;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
@@ -45,14 +46,11 @@ public class PositionServiceImpl implements PositionService{
     }
 
     @Override
-    public List<Position> findWithParameters(Boolean tagged, String symbol, String assetCategory) {
-        if (!StringUtils.hasText(symbol)) {
-            symbol = null;
-        }
-        if (!StringUtils.hasText(assetCategory)) {
-            assetCategory = null;
-        }
-        return positionRepository.findWithParameters(tagged, symbol, assetCategory);
+    public List<Position> findWithCriteria(PositionCriteriaDto positionCriteria) {
+        return positionRepository.findWithParameters(
+                positionCriteria.getTagged(),
+                positionCriteria.getSymbol(),
+                positionCriteria.getAssetCategory());
     }
 
     @Override

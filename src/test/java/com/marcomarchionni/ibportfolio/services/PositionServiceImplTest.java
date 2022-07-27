@@ -1,16 +1,14 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.Position;
-import com.marcomarchionni.ibportfolio.models.Strategy;
-import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
+import com.marcomarchionni.ibportfolio.models.Position;
+import com.marcomarchionni.ibportfolio.models.Strategy;
+import com.marcomarchionni.ibportfolio.models.dtos.PositionCriteriaDto;
+import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,7 +19,6 @@ import java.util.Optional;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -37,17 +34,10 @@ class PositionServiceImplTest {
     @InjectMocks
     PositionServiceImpl positionService;
 
-    private List<Position> samplePositions;
-    Position samplePosition;
-
-    Strategy sampleStrategy = getSampleStrategy();
-
-    @BeforeEach
-    void setup() {
-        samplePositions = getSamplePositions();
-        samplePosition = getSamplePosition();
-        sampleStrategy = getSampleStrategy();
-    }
+    final List<Position> samplePositions = getSamplePositions();
+    final Position samplePosition = getSamplePosition();
+    final Strategy sampleStrategy = getSampleStrategy();
+    final PositionCriteriaDto positionCriteria = getSamplePositionCriteria();
 
     @Test
     void saveAll() {
@@ -75,9 +65,9 @@ class PositionServiceImplTest {
 
     @Test
     void findWithParameters() {
-        when(positionRepository.findWithParameters(true, null, null)).thenReturn(samplePositions);
+        when(positionRepository.findWithParameters(any(), any(), any())).thenReturn(samplePositions);
 
-        List<Position> positions = positionService.findWithParameters(true, " ", "");
+        List<Position> positions = positionService.findWithCriteria(positionCriteria);
 
         assertNotNull(positions);
         assertEquals(positions.size(), samplePositions.size());

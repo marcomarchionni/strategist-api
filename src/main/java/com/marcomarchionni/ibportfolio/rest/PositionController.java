@@ -1,9 +1,11 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.marcomarchionni.ibportfolio.models.Position;
+import com.marcomarchionni.ibportfolio.models.dtos.PositionCriteriaDto;
 import com.marcomarchionni.ibportfolio.services.PositionService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,11 +19,9 @@ public class PositionController {
     }
 
     @GetMapping
-    public List<Position> findWithParameters(@RequestParam (value = "tagged", required = false) Boolean tagged,
-                                             @RequestParam (value = "symbol", required = false) String symbol,
-                                             @RequestParam (value = "assetCategory", required = false) String assetCategory ) {
+    public List<Position> findWithCriteria(@Valid PositionCriteriaDto positionCriteria) {
 
-        return positionService.findWithParameters(tagged, symbol, assetCategory);
+        return positionService.findWithCriteria(positionCriteria);
     }
 
     @PutMapping

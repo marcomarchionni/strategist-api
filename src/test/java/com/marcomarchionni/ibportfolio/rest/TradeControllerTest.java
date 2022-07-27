@@ -56,7 +56,7 @@ class TradeControllerTest {
     @Test
     void getTrades() throws Exception {
 
-        when(tradeService.findWithParameters(any())).thenReturn(trades);
+        when(tradeService.findWithCriteria(any())).thenReturn(trades);
 
         mockMvc.perform(get("/trades"))
                 .andExpect(status().isOk())
@@ -70,7 +70,7 @@ class TradeControllerTest {
 
         List<Trade> resultList = TestUtils.getSampleTrades();
 
-        when(tradeService.findWithParameters(any())).thenReturn(resultList);
+        when(tradeService.findWithCriteria(any())).thenReturn(resultList);
 
         mockMvc.perform(get("/trades")
                         .param("tradeDateFrom", tradeDateFrom)

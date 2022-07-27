@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "FlexStatementResponse")
 public class FlexStatementResponseDto {
+
     @XmlElement(name = "Status")
     private String status;
 
@@ -25,4 +26,4 @@ public class FlexStatementResponseDto {
 
     @XmlAttribute(name = "timestamp")
     private String timestamp;
-    }
+}

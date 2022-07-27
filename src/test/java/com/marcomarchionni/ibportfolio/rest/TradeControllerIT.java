@@ -44,8 +44,7 @@ class TradeControllerIT {
     StrategyRepository strategyRepository;
 
     @ParameterizedTest
-//    @CsvSource({",,,ZM,,1",",,,TTWO,STK,2",",2022-06-14,true,,,1"})
-    @CsvSource({",2022-06-14,true,,,1"})
+    @CsvSource({",,,ZM,,1",",,,TTWO,STK,2",",2022-06-14,true,,,1"})
     void findTradesSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/trades")
@@ -61,7 +60,7 @@ class TradeControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"pippo,,,,STK",",,farse,ZM,","1969-01-01,,,,,"})
+    @CsvSource({"pippo,,,,STK",",,farse,ZM,","1969-01-01,,,,,","2022-06-14,2022-06-13,,,,"})
     void getTradesWithParametersBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/trades")

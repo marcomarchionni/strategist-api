@@ -48,7 +48,7 @@ public class TradeServiceImpl implements TradeService{
     }
 
     @Override
-    public List<Trade> findWithParameters(TradeCriteriaDto c) {
+    public List<Trade> findWithCriteria(TradeCriteriaDto c) {
 
         return tradeRepository.findWithParameters(
                 c.getTradeDateFrom(), c.getTradeDateTo(), c.getTagged(), c.getSymbol(), c.getAssetCategory());
