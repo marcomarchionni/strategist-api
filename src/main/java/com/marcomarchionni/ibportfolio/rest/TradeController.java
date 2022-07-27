@@ -1,15 +1,12 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.marcomarchionni.ibportfolio.models.Trade;
+import com.marcomarchionni.ibportfolio.models.dtos.TradeCriteriaDto;
 import com.marcomarchionni.ibportfolio.services.TradeService;
-import com.marcomarchionni.ibportfolio.validation.NotBefore1970;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Size;
-import java.time.LocalDate;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,19 +21,9 @@ public class TradeController {
     }
 
     @GetMapping
-    public List<Trade> findWithParameters(
-            @RequestParam (value = "tradeDateFrom", required = false)
-                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                @NotBefore1970 LocalDate tradeDateFrom,
-            @RequestParam (value = "tradeDateTo", required = false)
-                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                @PastOrPresent LocalDate tradeDateTo,
-            @RequestParam (value = "tagged", required = false) Boolean tagged,
-            @RequestParam (value = "symbol", required = false)
-                @Size(max=20) String symbol,
-            @RequestParam (value = "assetCategory", required = false) String assetCategory) {
+    public List<Trade> findWithParameters(@Valid TradeCriteriaDto tradeCriteria) {
 
-        return tradeService.findWithParameters(tradeDateFrom, tradeDateTo, tagged, symbol, assetCategory);
+        return tradeService.findWithParameters(tradeCriteria);
     }
 
     @PutMapping

@@ -13,8 +13,8 @@ import java.util.List;
 public interface TradeRepository extends JpaRepository<Trade, Long> {
 
     @Query("SELECT t FROM trade t WHERE " +
-            "(:startDate is null or t.tradeDate > :startDate) and" +
-            "(:endDate is null or t.tradeDate < :endDate) and" +
+            "(:startDate is null or t.tradeDate >= :startDate) and" +
+            "(:endDate is null or t.tradeDate <= :endDate) and" +
             "(:symbol is null or t.symbol = :symbol) and" +
             "(:assetCategory is null or t.assetCategory = :assetCategory) and" +
             "(:tagged is null or ((:tagged is true and t.strategyId is not null ) or (:tagged is false and t.strategyId is null)))")

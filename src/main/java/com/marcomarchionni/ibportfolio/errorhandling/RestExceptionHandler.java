@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -18,49 +19,42 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException exc) {
-
-        ErrorResponse error = new ErrorResponse();
-
-        error.setStatus(HttpStatus.NOT_FOUND.value());
-        error.setMessage(exc.getMessage());
-        error.setTimeStamp(System.currentTimeMillis());
-
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        return getResponseEntityWithErrorResponse(exc.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
     public ResponseEntity<ErrorResponse> handleBadRequestException(Exception exc) {
-
-        ErrorResponse error = new ErrorResponse();
-
-        error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setMessage(exc.getMessage());
-        error.setTimeStamp(System.currentTimeMillis());
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        ErrorResponse error = new ErrorResponse();
-
-        error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setMessage(ex.getMessage());
-        error.setTimeStamp(System.currentTimeMillis());
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return getResponseEntityWithErrorResponse(exc.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exc) {
+        return getResponseEntityWithErrorResponse(exc.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return getResponseEntityWithErrorObject(ex.getMessage(), status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return getResponseEntityWithErrorObject(ex.getMessage(), status);
+    }
+
+    private ResponseEntity<ErrorResponse> getResponseEntityWithErrorResponse(String message, HttpStatus httpStatus) {
         ErrorResponse error = new ErrorResponse();
-
-        error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setMessage(exc.getMessage());
+        error.setStatus(httpStatus.value());
+        error.setMessage(message);
         error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, httpStatus);
+    }
 
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    private ResponseEntity<Object> getResponseEntityWithErrorObject(String message, HttpStatus httpStatus) {
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(httpStatus.value());
+        error.setMessage(message);
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, httpStatus);
     }
 }

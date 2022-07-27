@@ -4,13 +4,12 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundEx
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.models.Strategy;
 import com.marcomarchionni.ibportfolio.models.Trade;
+import com.marcomarchionni.ibportfolio.models.dtos.TradeCriteriaDto;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -49,14 +48,9 @@ public class TradeServiceImpl implements TradeService{
     }
 
     @Override
-    public List<Trade> findWithParameters(LocalDate startDate, LocalDate endDate, Boolean tagged, String symbol, String assetCategory) {
+    public List<Trade> findWithParameters(TradeCriteriaDto c) {
 
-        if (!StringUtils.hasText(symbol)) {
-            symbol = null;
-        }
-        if (!StringUtils.hasText(assetCategory)) {
-            assetCategory = null;
-        }
-        return tradeRepository.findWithParameters(startDate, endDate, tagged, symbol, assetCategory);
+        return tradeRepository.findWithParameters(
+                c.getTradeDateFrom(), c.getTradeDateTo(), c.getTagged(), c.getSymbol(), c.getAssetCategory());
     }
 }

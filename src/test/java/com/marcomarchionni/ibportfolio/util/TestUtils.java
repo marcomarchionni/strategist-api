@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.util;
 
 import com.marcomarchionni.ibportfolio.models.*;
+import com.marcomarchionni.ibportfolio.models.dtos.TradeCriteriaDto;
 
 
 import java.math.BigDecimal;
@@ -52,6 +53,16 @@ public class TestUtils {
 
     public static Strategy getSampleStrategy() {
         return Strategy.builder().id(1L).strategyName("ZM long").build();
+    }
+
+    public static TradeCriteriaDto getSampleTradeCriteria() {
+        return TradeCriteriaDto.builder()
+                .tradeDateFrom(LocalDate.of(2022, 6, 5))
+                .tradeDateTo(LocalDate.of(2022, 6, 25))
+                .tagged(false)
+                .symbol("AAPL")
+                .assetCategory("STK")
+                .build();
     }
 
     private static Dividend getFDXOpenDividend() {

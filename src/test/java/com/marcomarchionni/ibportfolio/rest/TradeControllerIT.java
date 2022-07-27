@@ -44,14 +44,15 @@ class TradeControllerIT {
     StrategyRepository strategyRepository;
 
     @ParameterizedTest
-    @CsvSource({",,,ZM,,1",",,,TTWO,STK,2",",2022-06-14,true,,,1"})
-    void getTradesWithParameters(String startDate, String endDate, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
+//    @CsvSource({",,,ZM,,1",",,,TTWO,STK,2",",2022-06-14,true,,,1"})
+    @CsvSource({",2022-06-14,true,,,1"})
+    void findTradesSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/trades")
-                        .param("symbol", symbol)
-                        .param("startDate", startDate)
-                        .param("endDate", endDate)
+                        .param("tradeDateFrom", tradeDateFrom)
+                        .param("tradeDateTo", tradeDateTo)
                         .param("tagged", tagged)
+                        .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
                 .andDo(print())
                 .andExpect(status().isOk())

@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.models.Strategy;
 import com.marcomarchionni.ibportfolio.models.Trade;
+import com.marcomarchionni.ibportfolio.models.dtos.TradeCriteriaDto;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
@@ -39,6 +40,7 @@ class TradeServiceImplTest {
     private Trade trade;
     private Strategy strategy;
     private Trade requestTrade;
+    private TradeCriteriaDto tradeCriteria;
 
     @BeforeEach
     void setup() {
@@ -46,6 +48,7 @@ class TradeServiceImplTest {
         trade = getSampleTrade();
         strategy = getSampleStrategy();
         requestTrade = Trade.builder().id(trade.getId()).strategyId(strategy.getId()).build();
+        tradeCriteria = getSampleTradeCriteria();
     }
 
     @Test
@@ -88,15 +91,7 @@ class TradeServiceImplTest {
         when(tradeRepository.findWithParameters(any(),any(),any(),any(),any())).thenReturn(trades);
         int expectedSize = trades.size();
 
-        LocalDate startDate = LocalDate.of(2022, 6, 5);
-        LocalDate endDate = LocalDate.of(2022, 6, 25);
-
-        List<Trade> actualTrades = tradeService.findWithParameters(
-                LocalDate.of(2022, 6, 5),
-                LocalDate.of(2022, 6, 25),
-                false,
-                "AAPL",
-                "STK");
+        List<Trade> actualTrades = tradeService.findWithParameters(tradeCriteria);
 
         assertEquals(expectedSize, actualTrades.size());
     }

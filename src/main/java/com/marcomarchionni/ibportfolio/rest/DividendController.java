@@ -21,8 +21,8 @@ public class DividendController {
     }
 
     @GetMapping
-    public List<Dividend> findWithParameters(@RequestParam(value = "exDeteFrom", required = false)
-                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate exDeteFrom,
+    public List<Dividend> findWithParameters(@RequestParam(value = "exDateFrom", required = false)
+                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate exDateFrom,
                                              @RequestParam (value = "exDateTo", required = false)
                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate exDateTo,
                                              @RequestParam(value = "payDateFrom", required = false)
@@ -32,7 +32,7 @@ public class DividendController {
                                              @RequestParam (value = "tagged", required = false) Boolean tagged,
                                              @RequestParam (value = "symbol", required = false) String symbol
     ) {
-        return dividendService.findWithParameters(exDeteFrom, exDateTo, payDateFrom, payDateTo, tagged, symbol);
+        return dividendService.findWithParameters(exDateFrom, exDateTo, payDateFrom, payDateTo, tagged, symbol);
     }
 
     @PutMapping

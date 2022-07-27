@@ -2,7 +2,6 @@ package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.models.Dividend;
-import com.marcomarchionni.ibportfolio.models.Position;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.Test;
@@ -44,19 +43,19 @@ class DividendControllerIT {
 
     @ParameterizedTest
     @CsvSource({"2022-06-01,,,,,,4",",,2022-07-01,2022-07-15,,FDX,1",",,,,true,,1"})
-    void findTradesWithParameters(String fromExDate,
-                                  String toExDate,
-                                  String fromPayDate,
-                                  String toPayDate,
-                                  String tagged,
-                                  String symbol,
-                                  int expectedSize) throws Exception {
+    void findDividendsSuccess(String exDateFrom,
+                              String exDateTo,
+                              String payDateFrom,
+                              String payDateTo,
+                              String tagged,
+                              String symbol,
+                              int expectedSize) throws Exception {
 
         mockMvc.perform(get("/dividends")
-                        .param("fromExDate", fromExDate)
-                        .param("toExDate", toExDate)
-                        .param("fromPayDate", fromPayDate)
-                        .param("toPayDate", toPayDate)
+                        .param("exDateFrom", exDateFrom)
+                        .param("exDateTo", exDateTo)
+                        .param("payDateFrom", payDateFrom)
+                        .param("payDateTo", payDateTo)
                         .param("tagged", tagged)
                         .param("symbol", symbol))
                 .andDo(print())
@@ -67,18 +66,18 @@ class DividendControllerIT {
 
     @ParameterizedTest
     @CsvSource({"pippo,,,,,",",,,,farse,"})
-    void getTradesWithParametersBadRequest(String fromExDate,
-                                           String toExDate,
-                                           String fromPayDate,
-                                           String toPayDate,
-                                           String tagged,
-                                           String symbol) throws Exception {
+    void findDividendsBadRequest(String exDateFrom,
+                                 String exDateTo,
+                                 String payDateFrom,
+                                 String payDateTo,
+                                 String tagged,
+                                 String symbol) throws Exception {
 
         mockMvc.perform(get("/dividends")
-                        .param("fromExDate", fromExDate)
-                        .param("toExDate", toExDate)
-                        .param("fromPayDate", fromPayDate)
-                        .param("toPayDate", toPayDate)
+                        .param("exDateFrom", exDateFrom)
+                        .param("exDateTo", exDateTo)
+                        .param("payDateFrom", payDateFrom)
+                        .param("payDateTo", payDateTo)
                         .param("tagged", tagged)
                         .param("symbol", symbol))
                 .andDo(print())

@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
+import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,6 +42,10 @@ class TradeControllerTest {
 
     MockMvc mockMvc;
 
+    static final List<Trade> trades = getSampleTrades();
+
+    static final Trade trade = getSampleTrade();
+
     @BeforeEach
     void setUp() {
         mapper = new ObjectMapper();
@@ -50,9 +55,8 @@ class TradeControllerTest {
 
     @Test
     void getTrades() throws Exception {
-        List<Trade> trades = TestUtils.getSampleTrades();
 
-        when(tradeService.findWithParameters(any(), any(), any(), any(), any())).thenReturn(trades);
+        when(tradeService.findWithParameters(any())).thenReturn(trades);
 
         mockMvc.perform(get("/trades"))
                 .andExpect(status().isOk())
@@ -62,15 +66,15 @@ class TradeControllerTest {
 
     @ParameterizedTest
     @CsvSource({",,,ZM,",",2022-06-14,true,,"})
-    void getTradesWithParameters(String startDate, String endDate, String tagged, String symbol, String assetCategory) throws Exception {
+    void findTradesSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
         List<Trade> resultList = TestUtils.getSampleTrades();
 
-        when(tradeService.findWithParameters(any(),any(),any(),any(),any())).thenReturn(resultList);
+        when(tradeService.findWithParameters(any())).thenReturn(resultList);
 
         mockMvc.perform(get("/trades")
-                        .param("startDate", startDate)
-                        .param("endDate", endDate)
+                        .param("tradeDateFrom", tradeDateFrom)
+                        .param("tradeDateTo", tradeDateTo)
                         .param("tagged", tagged)
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
@@ -82,11 +86,11 @@ class TradeControllerTest {
 
     @ParameterizedTest
     @CsvSource({"pippo,,,,",",,farse,ZM,","1200-01-01,1350-02-12,,,"})
-    void getTradesWithParametersBadRequest(String startDate, String endDate, String tagged, String symbol, String assetCategory) throws Exception {
+    void findTradesBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/trades")
-                        .param("startDate", startDate)
-                        .param("endDate", endDate)
+                        .param("tradeDateFrom", tradeDateFrom)
+                        .param("tradeDateTo", tradeDateTo)
                         .param("tagged", tagged)
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
@@ -97,7 +101,7 @@ class TradeControllerTest {
     @Test
     void updateStrategyIdTest() throws Exception {
 
-        Trade trade = TestUtils.getSampleTrade();
+        Trade trade = getSampleTrade();
 
         when(tradeService.updateStrategyId(trade)).thenReturn(trade);
 
