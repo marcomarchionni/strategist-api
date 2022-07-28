@@ -2,6 +2,7 @@
 
 INSERT INTO `portfolio` (`id`,`portfolio_name`) VALUES (1,'Saver Portfolio');
 INSERT INTO `portfolio` (`id`,`portfolio_name`) VALUES (2,'Trader Portfolio');
+INSERT INTO `portfolio` (`id`,`portfolio_name`) VALUES (3,'Millionaire Portfolio');
 
 
 INSERT INTO `strategy` (`id`,`strategy_name`,`strategy_portfolio_id`) VALUES (1,'ZM long',1);

@@ -1,5 +1,6 @@
 package com.marcomarchionni.ibportfolio.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,8 +20,10 @@ public class Strategy {
     @Column(name= "id")
     private Long id;
 
-    @Column(name= "strategy_portfolio_id")
-    private Integer portfolioId;
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name= "strategy_portfolio_id")
+    private Portfolio portfolio;
 
     @Column(name = "strategy_name")
     private String strategyName;

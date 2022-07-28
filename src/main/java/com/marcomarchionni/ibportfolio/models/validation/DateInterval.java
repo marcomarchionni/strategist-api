@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface DateInterval {
 
-        String message() default "{com.marcomarchionni.ibportfolio.models.validation.DateInterval.message}";
+        String message() default "dateFrom, dateTo should be within Min and Max date. dateFrom should be equal or before dateTo";
         Class <?> [] groups() default {};
         Class <? extends Payload> [] payload() default {};
 

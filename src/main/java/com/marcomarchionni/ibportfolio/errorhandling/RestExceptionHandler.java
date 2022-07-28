@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.errorhandling;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +23,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return getResponseEntityWithErrorResponse(exc.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
-    public ResponseEntity<ErrorResponse> handleBadRequestException(Exception exc) {
-        return getResponseEntityWithErrorResponse(exc.getMessage(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(UnableToDeleteEntitiesException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(UnableToDeleteEntitiesException exc) {
+        return getResponseEntityWithErrorResponse(exc.getMessage(), HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exc) {
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class, IllegalArgumentException.class, ConstraintViolationException.class})
+    public ResponseEntity<ErrorResponse> handleBadRequestException(Exception exc) {
         return getResponseEntityWithErrorResponse(exc.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

@@ -57,6 +57,17 @@ public class TestUtils {
         return Strategy.builder().id(1L).strategyName("ZM long").build();
     }
 
+    public static List<Portfolio> getSamplePortfolios() {
+        List<Portfolio> portfolios = new ArrayList<>();
+        portfolios.add(getSamplePortfolio("MFStockAdvisor"));
+        portfolios.add(getSamplePortfolio("MFOptions"));
+        return portfolios;
+    }
+
+    public static Portfolio getSamplePortfolio(String portfolioName) {
+        return Portfolio.builder().portfolioName(portfolioName).build();
+    }
+
     public static TradeCriteriaDto getSampleTradeCriteria() {
         return TradeCriteriaDto.builder()
                 .tradeDateFrom(LocalDate.of(2022, 6, 5))

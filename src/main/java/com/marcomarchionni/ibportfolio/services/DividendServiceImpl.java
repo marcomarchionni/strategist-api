@@ -33,7 +33,6 @@ public class DividendServiceImpl implements DividendService {
         dividendRepository.deleteByOpenClosed("OPEN");
     }
 
-
     @Override
     public List<Dividend> findWithCriteria(DividendCriteriaDto criteria) {
         return dividendRepository.findWithParameters(

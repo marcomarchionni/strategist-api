@@ -8,6 +8,7 @@ import com.marcomarchionni.ibportfolio.models.dtos.TradeCriteriaDto;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class TradeServiceImpl implements TradeService{
     private final TradeRepository tradeRepository;
     private final StrategyRepository strategyRepository;
 
+    @Autowired
     public TradeServiceImpl(TradeRepository tradeRepository, StrategyRepository strategyRepository) {
         this.tradeRepository = tradeRepository;
         this.strategyRepository = strategyRepository;
@@ -49,7 +51,6 @@ public class TradeServiceImpl implements TradeService{
 
     @Override
     public List<Trade> findWithCriteria(TradeCriteriaDto c) {
-
         return tradeRepository.findWithParameters(
                 c.getTradeDateFrom(), c.getTradeDateTo(), c.getTagged(), c.getSymbol(), c.getAssetCategory());
     }
