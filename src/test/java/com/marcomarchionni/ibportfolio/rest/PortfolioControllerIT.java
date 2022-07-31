@@ -84,20 +84,21 @@ class PortfolioControllerIT {
     @ParameterizedTest
     @ValueSource(strings = {"Saver Portfolio",","})
     void createPortfolioException(String portfolioName) throws Exception {
-        Portfolio badPortfolio = Portfolio.builder().name(portfolioName).build();
+        UpdateNameDto badUpdateName = UpdateNameDto.builder().name(portfolioName).build();
 
         mockMvc.perform(post("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(badPortfolio)))
+                        .content(mapper.writeValueAsString(badUpdateName)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
-    @Test
-    void updatePortfolioNameSuccess() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"Super Portfolio","Marco's Portfolio","Zipp"})
+    void updatePortfolioNameSuccess(String portfolioName) throws Exception {
 
-        UpdateNameDto updateName = UpdateNameDto.builder().id(1L).name("SuperSaver").build();
+        UpdateNameDto updateName = UpdateNameDto.builder().id(1L).name(portfolioName).build();
 
         mockMvc.perform(put("/portfolios")
                 .contentType(MediaType.APPLICATION_JSON)

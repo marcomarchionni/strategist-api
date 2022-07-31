@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.marcomarchionni.ibportfolio.models.validation.Name;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Strategy {
     @JoinColumn(name= "strategy_portfolio_id")
     private Portfolio portfolio;
 
+    @Name
     @Column(name = "name", unique = true)
     private String name;
 
