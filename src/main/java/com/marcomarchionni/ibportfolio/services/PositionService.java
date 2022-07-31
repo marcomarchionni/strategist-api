@@ -1,7 +1,8 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.models.Position;
-import com.marcomarchionni.ibportfolio.models.dtos.PositionCriteriaDto;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.PositionFindDto;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface PositionService {
 
     void deleteAll();
 
-    Position updateStrategyId(Position position);
+    Position updateStrategyId(UpdateStrategyDto position);
 
-    List<Position> findWithCriteria(PositionCriteriaDto positionCriteria);
+    List<Position> findByParams(PositionFindDto positionCriteria);
 }

@@ -1,23 +1,25 @@
 package com.marcomarchionni.ibportfolio.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 
 @Entity(name="dividend")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="open_closed",
         discriminatorType = DiscriminatorType.STRING)
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Dividend {
 
     @Id
@@ -27,8 +29,11 @@ public class Dividend {
     @Column(name="con_id")
     private Long conId;
 
-    @Column(name="dividend_strategy_id")
-    private Long strategyId;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    @JoinColumn(name= "dividend_strategy_id")
+    private Strategy strategy;
 
     @Column(name="symbol")
     private String symbol;

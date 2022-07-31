@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.marcomarchionni.ibportfolio.models.Portfolio;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +36,10 @@ public class PortfolioController {
     }
 
     @PutMapping
-    public Portfolio updatePortfolioName(@RequestBody @Valid Portfolio portfolio) {
-        return portfolioService.updatePortfolioName(portfolio);
+    public Portfolio updatePortfolioName(@RequestBody @Valid UpdateNameDto updateName) {
+        return portfolioService.updateName(updateName);
     }
+
 
     @DeleteMapping("/{id}")
     public void deletePortfolio(@PathVariable Long id) {

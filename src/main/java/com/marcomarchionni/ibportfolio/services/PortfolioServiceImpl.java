@@ -4,6 +4,7 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundEx
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.models.Portfolio;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,11 +44,11 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Portfolio updatePortfolioName(Portfolio portfolio) {
-        Portfolio targetPortfolio = portfolioRepository.findById(portfolio.getId()).orElseThrow(
-                ()->new EntityNotFoundException("Portfolio with id: " + portfolio.getId() + " not found.")
+    public Portfolio updateName(UpdateNameDto dto) {
+        Portfolio targetPortfolio = portfolioRepository.findById(dto.getId()).orElseThrow(
+                ()->new EntityNotFoundException("Portfolio with id: " + dto.getId() + " not found.")
         );
-        targetPortfolio.setPortfolioName(portfolio.getPortfolioName());
+        targetPortfolio.setName(dto.getName());
         return this.save(targetPortfolio);
     }
 
@@ -61,6 +62,5 @@ public class PortfolioServiceImpl implements PortfolioService {
         } else {
             throw new UnableToDeleteEntitiesException("Portfolio contains strategies and cannot be deleted");
         }
-
     }
 }

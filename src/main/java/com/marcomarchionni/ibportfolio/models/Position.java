@@ -1,13 +1,10 @@
 package com.marcomarchionni.ibportfolio.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -15,7 +12,11 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 @Entity(name = "position")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Position {
 
     @Id
@@ -25,8 +26,11 @@ public class Position {
     @Column(name="con_id")
     private Long conId;
 
-    @Column (name = "position_strategy_id")
-    private Long strategyId;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    @JoinColumn(name= "position_strategy_id")
+    private Strategy strategy;
 
     @Column(name="report_date")
     private LocalDate reportDate;

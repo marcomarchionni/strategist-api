@@ -1,15 +1,15 @@
 -- Insert sample data in ibTestDb
 
-INSERT INTO `portfolio` (`id`,`portfolio_name`) VALUES (1,'Saver Portfolio');
-INSERT INTO `portfolio` (`id`,`portfolio_name`) VALUES (2,'Trader Portfolio');
-INSERT INTO `portfolio` (`id`,`portfolio_name`) VALUES (3,'Millionaire Portfolio');
+INSERT INTO `portfolio` (`id`,`name`) VALUES (1,'Saver Portfolio');
+INSERT INTO `portfolio` (`id`,`name`) VALUES (2,'Trader Portfolio');
+INSERT INTO `portfolio` (`id`,`name`) VALUES (3,'Millionaire Portfolio');
 
 
-INSERT INTO `strategy` (`id`,`strategy_name`,`strategy_portfolio_id`) VALUES (1,'ZM long',1);
-INSERT INTO `strategy` (`id`,`strategy_name`,`strategy_portfolio_id`) VALUES (2,'IBKR put',2);
-INSERT INTO `strategy` (`id`,`strategy_name`,`strategy_portfolio_id`) VALUES (3,'DIS long',1);
-INSERT INTO `strategy` (`id`,`strategy_name`,`strategy_portfolio_id`) VALUES (4,'NKE long',1);
-INSERT INTO `strategy` (`id`,`strategy_name`,`strategy_portfolio_id`) VALUES (5,'EBAY coveredCall',2);
+INSERT INTO `strategy` (`id`,`name`,`strategy_portfolio_id`) VALUES (1,'ZM long',1);
+INSERT INTO `strategy` (`id`,`name`,`strategy_portfolio_id`) VALUES (2,'IBKR put',2);
+INSERT INTO `strategy` (`id`,`name`,`strategy_portfolio_id`) VALUES (3,'DIS long',1);
+INSERT INTO `strategy` (`id`,`name`,`strategy_portfolio_id`) VALUES (4,'NKE long',1);
+INSERT INTO `strategy` (`id`,`name`,`strategy_portfolio_id`) VALUES (5,'EBAY coveredCall',2);
 
 
 INSERT INTO `trade` (`id`,`trade_id`,`con_id`,`trade_strategy_id`,`trade_date`,`symbol`,`description`,`asset_category`,`multiplier`,`put_call`,`strike`,`expiry`,`buy_sell`,`quantity`,`trade_price`,`trade_money`,`fifo_pnl_realized`,`ib_commission`) VALUES (1180780161,387679436,361181057,1,'2022-06-07','ZM','ZOOM VIDEO COMMUNICATIONS-A','STK',1,NULL,NULL,NULL,'BUY',15.0000,111.3300,1669.9500,0.0000,-1.0000);

@@ -2,11 +2,13 @@ package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.models.Portfolio;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,7 +48,7 @@ class PortfolioControllerIT {
     }
 
     @Test
-    void findPortfolios() throws Exception {
+    void findAllSuccess() throws Exception {
         int expectedSize = portfolioRepository.findAll().size();
 
         mockMvc.perform(get("/portfolios"))
@@ -57,7 +59,7 @@ class PortfolioControllerIT {
 
     @ParameterizedTest
     @CsvSource({"1,3","2,2"})
-    void findPortfolioSuccess(Long id, int expectedSize) throws Exception {
+    void findByIdSuccess(Long id, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/portfolios/{id}", id))
                 .andDo(print())
@@ -79,17 +81,30 @@ class PortfolioControllerIT {
                 .andExpect(jsonPath("$.id", notNullValue()));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"Saver Portfolio",","})
+    void createPortfolioException(String portfolioName) throws Exception {
+        Portfolio badPortfolio = Portfolio.builder().name(portfolioName).build();
+
+        mockMvc.perform(post("/portfolios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(badPortfolio)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
     @Test
     void updatePortfolioNameSuccess() throws Exception {
 
-        Portfolio commandPortfolio = Portfolio.builder().id(1L).portfolioName("SuperSaver").build();
+        UpdateNameDto updateName = UpdateNameDto.builder().id(1L).name("SuperSaver").build();
 
         mockMvc.perform(put("/portfolios")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(commandPortfolio)))
+                .content(mapper.writeValueAsString(updateName)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.portfolioName", is(commandPortfolio.getPortfolioName())));
+                .andExpect(jsonPath("$.name", is(updateName.getName())));
     }
 
     @Test

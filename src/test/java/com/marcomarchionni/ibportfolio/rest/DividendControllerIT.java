@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.Dividend;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.Test;
@@ -16,8 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -90,30 +88,27 @@ class DividendControllerIT {
     @CsvSource({"1029120220603,3,NKE","26754720220519,4,CGNX"})
     void updateStrategyIdSuccess(Long dividendId, Long strategyId, String expectedSymbol) throws Exception {
 
-        Dividend dividendCommand = Dividend.builder().id(dividendId).strategyId(strategyId).build();
+        UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/dividends")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(dividendCommand)))
+                        .content(mapper.writeValueAsString(dividendUpdate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.symbol", is(expectedSymbol)))
-                .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategyId))));
+                .andExpect(jsonPath("$.strategy.id", is(Math.toIntExact(strategyId))));
     }
 
     @ParameterizedTest
     @CsvSource({"1029120220603, 20", "20, 1", ",,"})
     void updateStrategyIdExceptions(Long dividendId, Long strategyId) throws Exception {
 
-        Dividend dividendCommand = Dividend.builder()
-                .id(dividendId)
-                .strategyId(strategyId)
-                .build();
+        UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/dividends")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(dividendCommand)))
+                        .content(mapper.writeValueAsString(dividendUpdate)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

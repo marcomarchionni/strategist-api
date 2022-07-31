@@ -3,15 +3,14 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.models.Position;
 import com.marcomarchionni.ibportfolio.models.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.PositionCriteriaDto;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.PositionFindDto;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class PositionServiceImpl implements PositionService{
     }
 
     @Override
-    public List<Position> findWithCriteria(PositionCriteriaDto positionCriteria) {
+    public List<Position> findByParams(PositionFindDto positionCriteria) {
         return positionRepository.findWithParameters(
                 positionCriteria.getTagged(),
                 positionCriteria.getSymbol(),
@@ -54,14 +53,14 @@ public class PositionServiceImpl implements PositionService{
     }
 
     @Override
-    public Position updateStrategyId(Position position) {
-        Position positionToUpdate = positionRepository.findById(position.getId()).orElseThrow(
-                ()-> new EntityNotFoundException("Position with id: " + position.getId() + " not found")
+    public Position updateStrategyId(UpdateStrategyDto positionUpdate) {
+        Position position = positionRepository.findById(positionUpdate.getId()).orElseThrow(
+                ()-> new EntityNotFoundException("Position with id: " + positionUpdate.getId() + " not found")
         );
-        Strategy strategyToAssign = strategyRepository.findById(position.getStrategyId()).orElseThrow(
-                ()-> new EntityNotFoundException("Strategy with id: " + position.getStrategyId() + " not found")
+        Strategy strategyToAssign = strategyRepository.findById(positionUpdate.getStrategyId()).orElseThrow(
+                ()-> new EntityNotFoundException("Strategy with id: " + positionUpdate.getStrategyId() + " not found")
         );
-        positionToUpdate.setStrategyId(strategyToAssign.getId());
-        return positionRepository.save(positionToUpdate);
+        position.setStrategy(strategyToAssign);
+        return positionRepository.save(position);
     }
 }

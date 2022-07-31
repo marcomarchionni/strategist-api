@@ -1,5 +1,6 @@
 package com.marcomarchionni.ibportfolio.models.dtos;
 
+import com.marcomarchionni.ibportfolio.models.validation.AssetCategory;
 import com.marcomarchionni.ibportfolio.models.validation.DateInterval;
 import com.marcomarchionni.ibportfolio.models.validation.NullOrNotBlank;
 import lombok.Builder;
@@ -13,25 +14,21 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Builder
-@DateInterval(dateFrom = "exDateFrom", dateTo = "exDateTo")
-@DateInterval(dateFrom = "payDateFrom", dateTo = "payDateTo")
-public class DividendCriteriaDto {
+@DateInterval(dateFrom = "tradeDateFrom", dateTo = "tradeDateTo")
+public class TradeFindDto {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate exDateFrom;
+    private LocalDate tradeDateFrom;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate exDateTo;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate payDateFrom;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate payDateTo;
+    private LocalDate tradeDateTo;
 
     private Boolean tagged;
 
+    @Size(max = 20)
     @NullOrNotBlank
-    @Size(max=20)
     private String symbol;
+
+    @AssetCategory
+    private String assetCategory;
 }

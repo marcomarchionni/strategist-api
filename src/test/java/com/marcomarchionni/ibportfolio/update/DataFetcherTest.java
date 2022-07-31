@@ -1,33 +1,31 @@
 package com.marcomarchionni.ibportfolio.update;
 
 import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
-import org.springframework.test.context.TestPropertySource;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
 class DataFetcherTest {
 
-    @Value("classpath:/flex/LastMonth.xml")
-    Resource flexQueryResource;
-
-    @Autowired
     DataFetcher dataFetcher;
+    File flexQuery;
+
+    @BeforeEach
+    void setup() {
+        dataFetcher = new DataFetcher();
+        ClassLoader classLoader = getClass().getClassLoader();
+        flexQuery = new File(Objects.requireNonNull(classLoader.getResource("flex/LastMonth.xml")).getFile());
+    }
 
     @Test
     void fetchFromFile() throws Exception {
 
-        File flexQuery = flexQueryResource.getFile();
         assertNotNull(flexQuery);
-        assertTrue(flexQuery.isFile());
 
         FlexQueryResponseDto dto = dataFetcher.fetchFromFile(flexQuery);
 

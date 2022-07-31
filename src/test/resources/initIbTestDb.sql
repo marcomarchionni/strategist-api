@@ -16,18 +16,18 @@ CREATE TABLE `flex_info`
 CREATE TABLE `portfolio`
 (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `portfolio_name` VARCHAR(50) NOT NULL,
-    UNIQUE (`portfolio_name`)
+    `name` VARCHAR(50) NOT NULL,
+    UNIQUE (`name`)
 );
 
 CREATE TABLE `strategy`
 (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `strategy_name` VARCHAR(50) NOT NULL UNIQUE,
+    `name` VARCHAR(50) NOT NULL UNIQUE,
     `strategy_portfolio_id` BIGINT NOT NULL,
     CONSTRAINT `FK_strategy_portfolio` FOREIGN KEY (`strategy_portfolio_id`)
         REFERENCES `portfolio` (`id`)
-) AUTO_INCREMENT=8000000;
+);
 
 CREATE TABLE `trade`
 (

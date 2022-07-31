@@ -3,7 +3,8 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.models.Dividend;
 import com.marcomarchionni.ibportfolio.models.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.DividendCriteriaDto;
+import com.marcomarchionni.ibportfolio.models.dtos.DividendFindDto;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public List<Dividend> findWithCriteria(DividendCriteriaDto criteria) {
+    public List<Dividend> findWithCriteria(DividendFindDto criteria) {
         return dividendRepository.findWithParameters(
                 criteria.getExDateFrom(),
                 criteria.getExDateTo(),
@@ -45,15 +46,15 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public Dividend updateStrategyId(Dividend dividend) {
+    public Dividend updateStrategyId(UpdateStrategyDto dividendUpdate) {
 
-        Dividend dividendToUpdate = dividendRepository.findById(dividend.getId()).orElseThrow(
-                ()-> new EntityNotFoundException("Dividend with id: " + dividend.getId() + " not found")
+        Dividend dividend = dividendRepository.findById(dividendUpdate.getId()).orElseThrow(
+                ()-> new EntityNotFoundException("Dividend with id: " + dividendUpdate.getId() + " not found")
         );
-        Strategy strategyToAssign = strategyRepository.findById(dividend.getStrategyId()).orElseThrow(
-                ()-> new EntityNotFoundException("Strategy with id: " + dividend.getStrategyId() + " not found")
+        Strategy strategyToAssign = strategyRepository.findById(dividendUpdate.getStrategyId()).orElseThrow(
+                ()-> new EntityNotFoundException("Strategy with id: " + dividendUpdate.getStrategyId() + " not found")
         );
-        dividendToUpdate.setStrategyId(strategyToAssign.getId());
-        return dividendRepository.save(dividendToUpdate);
+        dividend.setStrategy(strategyToAssign);
+        return dividendRepository.save(dividend);
     }
 }

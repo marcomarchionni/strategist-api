@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.models.Portfolio;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,7 +67,7 @@ class PortfolioControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.portfolioName", is(portfolio.getPortfolioName())));
+                .andExpect(jsonPath("$.name", is(portfolio.getName())));
     }
 
     @Test
@@ -79,23 +80,23 @@ class PortfolioControllerTest {
                 .content(mapper.writeValueAsString(portfolio)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.portfolioName", is(portfolio.getPortfolioName())));
+                .andExpect(jsonPath("$.name", is(portfolio.getName())));
     }
 
 
     @Test
     void updatePortfolioName() throws Exception {
 
-        Portfolio portfolioCommand = Portfolio.builder().id(1L).portfolioName("MFStockAdvisor").build();
+        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("MFStockAdvisor").build();
 
-        when(portfolioService.updatePortfolioName(any())).thenReturn(portfolio);
+        when(portfolioService.updateName(any())).thenReturn(portfolio);
 
         mockMvc.perform(put("/portfolios")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(portfolioCommand)))
+                .content(mapper.writeValueAsString(updateNameDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.portfolioName", is(portfolio.getPortfolioName())));
+                .andExpect(jsonPath("$.name", is(portfolio.getName())));
     }
 
     @Test

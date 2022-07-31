@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.Trade;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import org.junit.jupiter.api.Test;
@@ -75,30 +75,27 @@ class TradeControllerIT {
     @CsvSource({"1180780161,3,ZM","1180785204,4,FVRR"})
     void updateStrategyIdSuccess(Long tradeId, Long strategyId, String expectedSymbol) throws Exception {
 
-        Trade tradeCommand = Trade.builder().id(tradeId).strategyId(strategyId).build();
+        UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(tradeId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(tradeCommand)))
+                        .content(mapper.writeValueAsString(tradeUpdate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.symbol", is(expectedSymbol)))
-                .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategyId))));
+                .andExpect(jsonPath("$.strategy.id", is(Math.toIntExact(strategyId))));
     }
 
     @ParameterizedTest
     @CsvSource({"1180780161, 20", "20, 1", ",,"})
     void updateStrategyIdExceptions(Long tradeId, Long strategyId) throws Exception {
 
-        Trade tradeCommand = Trade.builder()
-                .id(tradeId)
-                .strategyId(strategyId)
-                .build();
+        UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(tradeId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(tradeCommand)))
+                        .content(mapper.writeValueAsString(tradeUpdate)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

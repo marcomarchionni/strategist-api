@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.util;
 
 import com.marcomarchionni.ibportfolio.models.*;
-import com.marcomarchionni.ibportfolio.models.dtos.DividendCriteriaDto;
-import com.marcomarchionni.ibportfolio.models.dtos.PositionCriteriaDto;
-import com.marcomarchionni.ibportfolio.models.dtos.TradeCriteriaDto;
+import com.marcomarchionni.ibportfolio.models.dtos.DividendFindDto;
+import com.marcomarchionni.ibportfolio.models.dtos.PositionFindDto;
+import com.marcomarchionni.ibportfolio.models.dtos.TradeFindDto;
 
 
 import java.math.BigDecimal;
@@ -54,7 +54,7 @@ public class TestUtils {
     }
 
     public static Strategy getSampleStrategy() {
-        return Strategy.builder().id(1L).strategyName("ZM long").build();
+        return Strategy.builder().id(1L).name("ZM long").build();
     }
 
     public static List<Portfolio> getSamplePortfolios() {
@@ -65,11 +65,11 @@ public class TestUtils {
     }
 
     public static Portfolio getSamplePortfolio(String portfolioName) {
-        return Portfolio.builder().portfolioName(portfolioName).build();
+        return Portfolio.builder().name(portfolioName).build();
     }
 
-    public static TradeCriteriaDto getSampleTradeCriteria() {
-        return TradeCriteriaDto.builder()
+    public static TradeFindDto getSampleTradeCriteria() {
+        return TradeFindDto.builder()
                 .tradeDateFrom(LocalDate.of(2022, 6, 5))
                 .tradeDateTo(LocalDate.of(2022, 6, 25))
                 .tagged(false)
@@ -78,15 +78,15 @@ public class TestUtils {
                 .build();
     }
 
-    public static PositionCriteriaDto getSamplePositionCriteria() {
-        return PositionCriteriaDto.builder()
+    public static PositionFindDto getSamplePositionCriteria() {
+        return PositionFindDto.builder()
                 .tagged(true)
                 .symbol("AAPL")
                 .build();
     }
 
-    public static DividendCriteriaDto getSampleDividendCriteria() {
-        return DividendCriteriaDto.builder()
+    public static DividendFindDto getSampleDividendCriteria() {
+        return DividendFindDto.builder()
                 .exDateFrom(LocalDate.of(2022,6,5))
                 .build();
     }
@@ -128,7 +128,7 @@ public class TestUtils {
                 .id(1180780161L)
                 .tradeId(387679436L)
                 .conId(361181057L)
-                .strategyId(2L)
+                .strategy(getSampleStrategy())
                 .tradeDate(LocalDate.of(2022, 6, 7))
                 .symbol("ZM")
                 .assetCategory("STK")
@@ -145,7 +145,7 @@ public class TestUtils {
                 .id(1180785204L)
                 .tradeId(387681643L)
                 .conId(370695082L)
-                .strategyId(2L)
+                .strategy(getSampleStrategy())
                 .tradeDate(LocalDate.of(2022, 6, 7))
                 .symbol("FVRR")
                 .assetCategory("STK")

@@ -1,17 +1,23 @@
 package com.marcomarchionni.ibportfolio.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 @Entity(name="portfolio")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Portfolio {
 
     @Id
@@ -20,12 +26,11 @@ public class Portfolio {
     private Long id;
 
     @NotBlank(message = "Portfolio name should not be blank")
-    @Column(name="portfolio_name")
-    private String portfolioName;
+    @Column(name="name", unique = true)
+    private String name;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonManagedReference
-    @OneToMany(mappedBy = "portfolio")
+    @OneToMany(mappedBy = "portfolio", fetch = FetchType.LAZY)
     private List<Strategy> strategies;
 }

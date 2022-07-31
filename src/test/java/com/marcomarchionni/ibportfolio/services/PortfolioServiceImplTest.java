@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.models.Portfolio;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,15 +64,18 @@ class PortfolioServiceImplTest {
 
     @Test
     void updatePortfolioNameSuccess() {
-        Portfolio commandPortfolio = Portfolio.builder().id(1L).portfolioName("NewName").build();
-        Portfolio savedPortfolio = Portfolio.builder().id(1L).portfolioName("OldName").build();
+        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("NewName").build();
+        Portfolio expectedPortfolio = Portfolio.builder().id(1L).name("NewName").build();
+        Portfolio originalPortfolio = Portfolio.builder().id(1L).name("OldName").build();
 
-        when(portfolioRepository.findById(any())).thenReturn(Optional.of(savedPortfolio));
-        when(portfolioRepository.save(commandPortfolio)).thenReturn(commandPortfolio);
+        when(portfolioRepository.findById(any())).thenReturn(Optional.of(originalPortfolio));
+        when(portfolioRepository.save(expectedPortfolio)).thenReturn(expectedPortfolio);
 
-        Portfolio updatedPortfolio = portfolioService.updatePortfolioName(commandPortfolio);
-        assertEquals(updatedPortfolio.getId(), commandPortfolio.getId());
-        assertEquals(updatedPortfolio.getPortfolioName(), commandPortfolio.getPortfolioName());
+        Portfolio actualPortfolio = portfolioService.updateName(updateNameDto);
+
+        assertNotNull(actualPortfolio);
+        assertEquals(actualPortfolio.getId(), updateNameDto.getId());
+        assertEquals(actualPortfolio.getName(), updateNameDto.getName());
     }
 
     @Test

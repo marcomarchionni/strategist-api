@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.models.Position;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.services.PositionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,22 +37,23 @@ class PositionControllerTest {
     PositionController positionController;
 
     MockMvc mockMvc;
+    ObjectMapper mapper;
 
     List<Position> positions;
-
-    ObjectMapper mapper;
+    Position position;
 
     @BeforeEach
     void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(positionController).build();
         mapper = new ObjectMapper();
         positions = getSamplePositions();
+        position = getSamplePosition();
     }
 
     @Test
     void getPositions() throws Exception {
 
-        when(positionService.findWithCriteria(any())).thenReturn(positions);
+        when(positionService.findByParams(any())).thenReturn(positions);
 
         mockMvc.perform(get("/positions"))
                 .andExpect(status().isOk())
@@ -62,17 +64,15 @@ class PositionControllerTest {
     @Test
     void updateStrategy() throws Exception {
 
-        Position position = getSamplePosition();
-        Long positionId = position.getId();
-        Position commandPosition = Position.builder().id(positionId).strategyId(2L).build();
+        UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(position.getId()).strategyId(2L).build();
         when(positionService.updateStrategyId(any())).thenReturn(position);
 
         mockMvc.perform(put("/positions")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(commandPosition)))
+                .content(mapper.writeValueAsString(positionUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(positionId.intValue())));
+                .andExpect(jsonPath("$.id", is(Math.toIntExact(position.getId()))));
     }
 
     @Test

@@ -20,7 +20,7 @@ public interface DividendRepository extends JpaRepository<Dividend, Long> {
           "(:payDateFrom is null or d.payDate > :payDateFrom) and" +
           "(:payDateTo is null or d.payDate < :payDateTo) and" +
           "(:symbol is null or d.symbol = :symbol) and" +
-          "(:tagged is null or ((:tagged is true and d.strategyId is not null ) or (:tagged is false and d.strategyId is null)))")
+          "(:tagged is null or ((:tagged is true and d.strategy is not null ) or (:tagged is false and d.strategy is null)))")
   List<Dividend> findWithParameters(@Param("exDateFrom") LocalDate exDateFrom,
                                     @Param ("exDateTo") LocalDate exDateTo,
                                     @Param ("payDateFrom") LocalDate payDateFrom,

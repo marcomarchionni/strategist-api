@@ -2,7 +2,9 @@ package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.marcomarchionni.ibportfolio.models.Strategy;
 import com.marcomarchionni.ibportfolio.models.Trade;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.services.TradeService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,9 +44,9 @@ class TradeControllerTest {
 
     MockMvc mockMvc;
 
-    static final List<Trade> trades = getSampleTrades();
-
-    static final Trade trade = getSampleTrade();
+    final List<Trade> trades = getSampleTrades();
+    final Trade trade = getSampleTrade();
+    final Strategy strategy = getSampleStrategy();
 
     @BeforeEach
     void setUp() {
@@ -101,15 +103,16 @@ class TradeControllerTest {
     @Test
     void updateStrategyIdTest() throws Exception {
 
-        Trade trade = getSampleTrade();
+        UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(trade.getId()).strategyId(strategy.getId()).build();
 
-        when(tradeService.updateStrategyId(trade)).thenReturn(trade);
+        when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(trade);
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(trade)))
+                        .content(mapper.writeValueAsString(tradeUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.symbol", is(trade.getSymbol())));
+                .andExpect(jsonPath("$.id", is(Math.toIntExact(trade.getId()))))
+                .andExpect(jsonPath("$.strategy.id", is(Math.toIntExact(strategy.getId()))));
     }
 }

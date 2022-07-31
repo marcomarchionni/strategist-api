@@ -2,7 +2,8 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.models.Strategy;
 import com.marcomarchionni.ibportfolio.models.Trade;
-import com.marcomarchionni.ibportfolio.models.dtos.TradeCriteriaDto;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.TradeFindDto;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
@@ -37,15 +38,15 @@ class TradeServiceImplTest {
     private List<Trade> trades;
     private Trade trade;
     private Strategy strategy;
-    private Trade requestTrade;
-    private TradeCriteriaDto tradeCriteria;
+    private UpdateStrategyDto tradeUpdate;
+    private TradeFindDto tradeCriteria;
 
     @BeforeEach
     void setup() {
         trades = getSampleTrades();
         trade = getSampleTrade();
         strategy = getSampleStrategy();
-        requestTrade = Trade.builder().id(trade.getId()).strategyId(strategy.getId()).build();
+        tradeUpdate = UpdateStrategyDto.builder().id(trade.getId()).strategyId(strategy.getId()).build();
         tradeCriteria = getSampleTradeCriteria();
     }
 
@@ -68,7 +69,7 @@ class TradeServiceImplTest {
         when(strategyRepository.findById(strategy.getId())).thenReturn(Optional.of(strategy));
         when(tradeRepository.save(trade)).thenReturn(trade);
 
-        Trade updatedTrade = tradeService.updateStrategyId(requestTrade);
+        Trade updatedTrade = tradeService.updateStrategyId(tradeUpdate);
 
         verify(tradeRepository).save(trade);
         assertEquals(trade, updatedTrade);
@@ -80,7 +81,7 @@ class TradeServiceImplTest {
         when(tradeRepository.findById(trade.getId())).thenReturn(Optional.of(trade));
         when(strategyRepository.findById(strategy.getId())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, ()-> tradeService.updateStrategyId(requestTrade));
+        assertThrows(EntityNotFoundException.class, ()-> tradeService.updateStrategyId(tradeUpdate));
     }
 
     @Test

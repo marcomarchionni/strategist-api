@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @Builder
-public class PositionCriteriaDto {
+public class PositionFindDto {
 
     private Boolean tagged;
 

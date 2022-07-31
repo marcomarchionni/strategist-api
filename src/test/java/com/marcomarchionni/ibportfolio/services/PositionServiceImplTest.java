@@ -4,7 +4,8 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEn
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.models.Position;
 import com.marcomarchionni.ibportfolio.models.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.PositionCriteriaDto;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.PositionFindDto;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ class PositionServiceImplTest {
     final List<Position> samplePositions = getSamplePositions();
     final Position samplePosition = getSamplePosition();
     final Strategy sampleStrategy = getSampleStrategy();
-    final PositionCriteriaDto positionCriteria = getSamplePositionCriteria();
+    final PositionFindDto positionCriteria = getSamplePositionCriteria();
 
     @Test
     void saveAll() {
@@ -67,7 +68,7 @@ class PositionServiceImplTest {
     void findWithParameters() {
         when(positionRepository.findWithParameters(any(), any(), any())).thenReturn(samplePositions);
 
-        List<Position> positions = positionService.findWithCriteria(positionCriteria);
+        List<Position> positions = positionService.findByParams(positionCriteria);
 
         assertNotNull(positions);
         assertEquals(positions.size(), samplePositions.size());
@@ -75,17 +76,18 @@ class PositionServiceImplTest {
 
     @Test
     void updateStrategyId() {
-        Position commandPosition = Position.builder().id(samplePosition.getId()).strategyId(sampleStrategy.getId()).build();
+        UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder()
+                .id(samplePosition.getId()).strategyId(sampleStrategy.getId()).build();
 
         when(positionRepository.findById(any())).thenReturn(Optional.of(samplePosition));
         when(strategyRepository.findById(any())).thenReturn(Optional.of(sampleStrategy));
-        samplePosition.setStrategyId(sampleStrategy.getId());
+        samplePosition.setStrategy(sampleStrategy);
         when(positionRepository.save(any())).thenReturn(samplePosition);
 
-        Position updatedPosition = positionService.updateStrategyId(commandPosition);
+        Position actualPosition = positionService.updateStrategyId(positionUpdate);
 
-        assertNotNull(updatedPosition);
-        assertEquals(samplePosition.getId(), updatedPosition.getId());
-        assertEquals(sampleStrategy.getId(), updatedPosition.getStrategyId());
+        assertNotNull(actualPosition);
+        assertEquals(samplePosition.getId(), actualPosition.getId());
+        assertEquals(sampleStrategy.getId(), actualPosition.getStrategy().getId());
     }
 }

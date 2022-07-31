@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.Position;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.Test;
@@ -16,8 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,7 +41,7 @@ class PositionControllerIT {
 
     @ParameterizedTest
     @CsvSource({",ZM,,0",",DIS,STK,1","true,,,2"})
-    void findWithCriteriaSuccess(String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
+    void findByParamsSuccess(String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/positions")
                         .param("tagged", tagged)
@@ -57,7 +55,7 @@ class PositionControllerIT {
 
     @ParameterizedTest
     @CsvSource({"farse,,",",,GOLD"})
-    void findWithCriteriaBadRequest(String tagged, String symbol, String assetCategory) throws Exception {
+    void findByParamsBadRequest(String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/positions")
                         .param("tagged", tagged)
@@ -73,16 +71,16 @@ class PositionControllerIT {
     @CsvSource({"265598,3,AAPL","265768,4,ADBE"})
     void updateStrategyIdSuccess(Long positionId, Long strategyId, String expectedSymbol) throws Exception {
 
-        Position requestPosition = Position.builder().id(positionId).strategyId(strategyId).build();
+        UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(positionId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/positions")
                 .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(requestPosition)))
+                        .content(mapper.writeValueAsString(positionUpdate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.symbol", is(expectedSymbol)))
-                .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategyId))));
+                .andExpect(jsonPath("$.strategy.id", is(Math.toIntExact(strategyId))));
     }
 
 
@@ -90,14 +88,11 @@ class PositionControllerIT {
     @CsvSource({"265598, 20", "20, 1", ",,"})
     void updateStrategyIdExceptions(Long positionId, Long strategyId) throws Exception {
 
-        Position requestPosition = Position.builder()
-                .id(positionId)
-                .strategyId(strategyId)
-                .build();
+        UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(positionId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/positions")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(requestPosition)))
+                        .content(mapper.writeValueAsString(positionUpdate)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

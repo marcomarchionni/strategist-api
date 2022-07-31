@@ -2,6 +2,8 @@ package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.models.Dividend;
+import com.marcomarchionni.ibportfolio.models.Strategy;
+import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.services.DividendService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleClosedDividend;
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,12 +42,14 @@ class DividendControllerTest {
     ObjectMapper mapper;
     List<Dividend> dividends;
     Dividend dividend;
+    Strategy strategy;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(dividendController).build();
         dividends = TestUtils.getSampleDividends();
         dividend = getSampleClosedDividend();
+        strategy = getSampleStrategy();
         mapper = new ObjectMapper();
     }
 
@@ -73,18 +78,18 @@ class DividendControllerTest {
     @Test
     void updateStrategyId() throws Exception {
 
-        Dividend dividendToUpdate = Dividend.builder().id(dividend.getId()).strategyId(2L).build();
-        dividend.setStrategyId(dividendToUpdate.getStrategyId());
-
-        when(dividendService.updateStrategyId(dividendToUpdate)).thenReturn(dividend);
+        UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder()
+                .id(dividend.getId()).strategyId(strategy.getId()).build();
+        dividend.setStrategy(strategy);
+        when(dividendService.updateStrategyId(dividendUpdate)).thenReturn(dividend);
 
         mockMvc.perform(put("/dividends")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(dividendToUpdate)))
+                        .content(mapper.writeValueAsString(dividendUpdate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.symbol", is(dividend.getSymbol())))
-                .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(dividendToUpdate.getStrategyId()))));
+                .andExpect(jsonPath("$.strategy.id", is(Math.toIntExact(dividendUpdate.getStrategyId()))));
     }
 }

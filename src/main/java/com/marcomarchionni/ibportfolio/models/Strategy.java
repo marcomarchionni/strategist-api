@@ -1,18 +1,21 @@
 package com.marcomarchionni.ibportfolio.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
-@Entity(name="strategy")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
+@Entity(name="strategy")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Strategy {
 
     @Id
@@ -20,11 +23,27 @@ public class Strategy {
     @Column(name= "id")
     private Long id;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name= "strategy_portfolio_id")
     private Portfolio portfolio;
 
-    @Column(name = "strategy_name")
-    private String strategyName;
+    @Column(name = "name", unique = true)
+    private String name;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "strategy", fetch = FetchType.LAZY)
+    private List<Position> positions;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "strategy", fetch = FetchType.LAZY)
+    private List<Trade> trades;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "strategy", fetch = FetchType.LAZY)
+    private List<Dividend> dividends;
 }

@@ -5,8 +5,8 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Entity(name="flex_info")
 @Data
+@Entity(name="flex_info")
 public class FlexInfo {
     @Id
     @Column(name="id")
