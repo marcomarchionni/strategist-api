@@ -21,22 +21,22 @@ public class PortfolioController {
     }
 
     @GetMapping
-    public List<Portfolio> findPortfolios() {
+    public List<Portfolio> findAll() {
         return portfolioService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Portfolio findPortfolio(@PathVariable Long id) {
+    public Portfolio findById(@PathVariable Long id) {
         return portfolioService.findById(id);
     }
 
     @PostMapping
-    public Portfolio createPortfolio(@RequestBody @Valid Portfolio portfolio) {
+    public Portfolio create(@RequestBody @Valid Portfolio portfolio) {
         return portfolioService.save(portfolio);
     }
 
     @PutMapping
-    public Portfolio updatePortfolioName(@RequestBody @Valid UpdateNameDto updateName) {
+    public Portfolio updateName(@RequestBody @Valid UpdateNameDto updateName) {
         return portfolioService.updateName(updateName);
     }
 

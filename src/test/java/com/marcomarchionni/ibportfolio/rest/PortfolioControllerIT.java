@@ -58,7 +58,7 @@ class PortfolioControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"1,3","2,2"})
+    @CsvSource({"1,4","2,2"})
     void findByIdSuccess(Long id, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/portfolios/{id}", id))

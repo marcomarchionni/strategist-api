@@ -3,9 +3,7 @@ package com.marcomarchionni.ibportfolio.models.dtos;
 import com.marcomarchionni.ibportfolio.models.validation.AssetCategory;
 import com.marcomarchionni.ibportfolio.models.validation.DateInterval;
 import com.marcomarchionni.ibportfolio.models.validation.NullOrNotBlank;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Size;
@@ -14,6 +12,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @DateInterval(dateFrom = "tradeDateFrom", dateTo = "tradeDateTo")
 public class TradeFindDto {
 

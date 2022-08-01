@@ -54,6 +54,21 @@ public class TestUtils {
     }
 
     public static Strategy getSampleStrategy() {
+        return getZMStrategy();
+    }
+
+    public static List<Strategy> getSampleStrategies() {
+        List<Strategy> strategies = new ArrayList<>();
+        strategies.add(getZMStrategy());
+        strategies.add(getEBAYStrategy());
+        return strategies;
+    }
+
+    public static Strategy getEBAYStrategy() {
+        return Strategy.builder().id(2L).name("EBAY covcall").build();
+    }
+
+    public static Strategy getZMStrategy() {
         return Strategy.builder().id(1L).name("ZM long").build();
     }
 

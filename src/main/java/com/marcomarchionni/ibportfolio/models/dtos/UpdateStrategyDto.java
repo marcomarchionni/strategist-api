@@ -4,10 +4,10 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 public class UpdateStrategyDto {
 
     @NotNull

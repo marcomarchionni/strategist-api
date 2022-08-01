@@ -78,10 +78,12 @@ class DividendControllerTest {
     @Test
     void updateStrategyId() throws Exception {
 
+        Dividend expectedDividend = getSampleClosedDividend();
         UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder()
-                .id(dividend.getId()).strategyId(strategy.getId()).build();
-        dividend.setStrategy(strategy);
-        when(dividendService.updateStrategyId(dividendUpdate)).thenReturn(dividend);
+                .id(expectedDividend.getId()).strategyId(strategy.getId()).build();
+        expectedDividend.setStrategy(strategy);
+
+        when(dividendService.updateStrategyId(dividendUpdate)).thenReturn(expectedDividend);
 
         mockMvc.perform(put("/dividends")
                         .contentType(MediaType.APPLICATION_JSON)

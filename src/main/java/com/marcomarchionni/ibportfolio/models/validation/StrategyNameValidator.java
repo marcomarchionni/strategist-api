@@ -3,9 +3,9 @@ package com.marcomarchionni.ibportfolio.models.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class NameValidator implements ConstraintValidator<Name, String> {
+public class StrategyNameValidator implements ConstraintValidator<StrategyName, String> {
 
-    public void initialize(Name parameters) {
+    public void initialize(StrategyName parameters) {
     }
 
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {

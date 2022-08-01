@@ -1,22 +1,19 @@
 package com.marcomarchionni.ibportfolio.models.dtos;
 
-import com.marcomarchionni.ibportfolio.models.validation.Name;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.marcomarchionni.ibportfolio.models.validation.PortfolioName;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 public class UpdateNameDto {
 
     @NotNull
     private Long id;
 
-    @Name
+    @PortfolioName
     private String name;
 }

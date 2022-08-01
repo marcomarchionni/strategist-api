@@ -10,6 +10,7 @@ INSERT INTO `strategy` (`id`,`name`,`strategy_portfolio_id`) VALUES (2,'IBKR put
 INSERT INTO `strategy` (`id`,`name`,`strategy_portfolio_id`) VALUES (3,'DIS long',1);
 INSERT INTO `strategy` (`id`,`name`,`strategy_portfolio_id`) VALUES (4,'NKE long',1);
 INSERT INTO `strategy` (`id`,`name`,`strategy_portfolio_id`) VALUES (5,'EBAY coveredCall',2);
+INSERT INTO `strategy` (`id`,`name`,`strategy_portfolio_id`) VALUES (6,'IRBT long',1);
 
 
 INSERT INTO `trade` (`id`,`trade_id`,`con_id`,`trade_strategy_id`,`trade_date`,`symbol`,`description`,`asset_category`,`multiplier`,`put_call`,`strike`,`expiry`,`buy_sell`,`quantity`,`trade_price`,`trade_money`,`fifo_pnl_realized`,`ib_commission`) VALUES (1180780161,387679436,361181057,1,'2022-06-07','ZM','ZOOM VIDEO COMMUNICATIONS-A','STK',1,NULL,NULL,NULL,'BUY',15.0000,111.3300,1669.9500,0.0000,-1.0000);
