@@ -56,7 +56,7 @@ class DividendControllerTest {
     @Test
     void getWithParameters() throws Exception {
 
-        when(dividendService.findWithCriteria(any())).thenReturn(dividends);
+        when(dividendService.findByParams(any())).thenReturn(dividends);
 
         mockMvc.perform(get("/dividends"))
                 .andExpect(status().isOk())
@@ -67,7 +67,7 @@ class DividendControllerTest {
     @Test
     void getWithParametersException() throws Exception {
 
-        when(dividendService.findWithCriteria(any())).thenReturn(dividends);
+        when(dividendService.findByParams(any())).thenReturn(dividends);
 
         mockMvc.perform(get("/dividends"))
                 .andExpect(status().isOk())

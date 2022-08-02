@@ -13,5 +13,5 @@ public interface DividendService {
 
     Dividend updateStrategyId(UpdateStrategyDto dividendToUpdate);
 
-    List<Dividend> findWithCriteria(DividendFindDto dividendCriteria);
+    List<Dividend> findByParams(DividendFindDto dividendCriteria);
 }

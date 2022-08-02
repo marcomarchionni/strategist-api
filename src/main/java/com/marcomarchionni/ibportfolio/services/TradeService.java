@@ -12,5 +12,5 @@ public interface TradeService {
 
     Trade updateStrategyId(UpdateStrategyDto trade);
 
-    List<Trade> findWithCriteria(TradeFindDto tradeCriteria);
+    List<Trade> findByParams(TradeFindDto tradeCriteria);
 }

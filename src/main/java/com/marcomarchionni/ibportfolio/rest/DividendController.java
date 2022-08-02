@@ -22,8 +22,8 @@ public class DividendController {
     }
 
     @GetMapping
-    public List<Dividend> findWithCriteria(@Valid DividendFindDto dividendCriteria) {
-        return dividendService.findWithCriteria(dividendCriteria);
+    public List<Dividend> findByParams(@Valid DividendFindDto dividendFind) {
+        return dividendService.findByParams(dividendFind);
     }
 
     @PutMapping

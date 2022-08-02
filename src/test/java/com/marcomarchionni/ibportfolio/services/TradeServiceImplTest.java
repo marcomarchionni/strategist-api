@@ -90,7 +90,7 @@ class TradeServiceImplTest {
         when(tradeRepository.findWithParameters(any(),any(),any(),any(),any())).thenReturn(trades);
         int expectedSize = trades.size();
 
-        List<Trade> actualTrades = tradeService.findWithCriteria(tradeCriteria);
+        List<Trade> actualTrades = tradeService.findByParams(tradeCriteria);
 
         assertEquals(expectedSize, actualTrades.size());
     }

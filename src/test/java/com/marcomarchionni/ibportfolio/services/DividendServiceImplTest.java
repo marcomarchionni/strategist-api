@@ -56,7 +56,7 @@ class DividendServiceImplTest {
 
         when(dividendRepository.findWithParameters(any(), any(), any(), any(), any(), any())).thenReturn(dividends);
 
-        List<Dividend> foundDividends = dividendService.findWithCriteria(
+        List<Dividend> foundDividends = dividendService.findByParams(
                         dividendCriteria);
 
         assertEquals(dividends.size(), foundDividends.size() );

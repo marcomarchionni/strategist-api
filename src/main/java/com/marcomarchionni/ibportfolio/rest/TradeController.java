@@ -22,8 +22,8 @@ public class TradeController {
     }
 
     @GetMapping
-    public List<Trade> findWithCriteria(@Valid TradeFindDto tradeCriteria) {
-        return tradeService.findWithCriteria(tradeCriteria);
+    public List<Trade> findByParams(@Valid TradeFindDto tradeCriteria) {
+        return tradeService.findByParams(tradeCriteria);
     }
 
     @PutMapping

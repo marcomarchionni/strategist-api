@@ -35,7 +35,7 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public List<Dividend> findWithCriteria(DividendFindDto criteria) {
+    public List<Dividend> findByParams(DividendFindDto criteria) {
         return dividendRepository.findWithParameters(
                 criteria.getExDateFrom(),
                 criteria.getExDateTo(),
