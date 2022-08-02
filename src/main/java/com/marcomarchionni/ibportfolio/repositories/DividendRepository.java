@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.repositories;
 
-import com.marcomarchionni.ibportfolio.models.Dividend;
+import com.marcomarchionni.ibportfolio.models.domain.Dividend;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -3,8 +3,10 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.ibportfolio.models.Portfolio;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.models.dtos.request.PortfolioCreateDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.mapping.PortfolioMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,12 @@ import java.util.List;
 public class PortfolioServiceImpl implements PortfolioService {
 
     PortfolioRepository portfolioRepository;
+    PortfolioMapperImpl portfolioMapper;
 
     @Autowired
-    public PortfolioServiceImpl(PortfolioRepository portfolioRepository) {
+    public PortfolioServiceImpl(PortfolioRepository portfolioRepository, PortfolioMapperImpl portfolioMapper) {
         this.portfolioRepository = portfolioRepository;
+        this.portfolioMapper = portfolioMapper;
     }
 
     @Override
@@ -34,13 +38,21 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Portfolio save(Portfolio portfolio) {
-        try {
-            return portfolioRepository.save(portfolio);
+    public void deleteById(Long id) {
+        Portfolio portfolioToDelete = portfolioRepository.findById(id).orElseThrow(
+                ()-> new EntityNotFoundException("Portfolio with id: " + id + " not found")
+        );
+        if (portfolioToDelete.getStrategies().isEmpty()) {
+            portfolioRepository.deleteById(id);
+        } else {
+            throw new UnableToDeleteEntitiesException("Portfolio contains strategies and cannot be deleted");
         }
-        catch (Exception exc) {
-            throw new UnableToSaveEntitiesException(exc.getMessage());
-        }
+    }
+
+    @Override
+    public Portfolio create(PortfolioCreateDto portfolioCreateDto) {
+        Portfolio portfolio = portfolioMapper.toEntity(portfolioCreateDto);
+        return this.save(portfolio);
     }
 
     @Override
@@ -52,15 +64,12 @@ public class PortfolioServiceImpl implements PortfolioService {
         return this.save(targetPortfolio);
     }
 
-    @Override
-    public void deleteById(Long id) {
-        Portfolio portfolioToDelete = portfolioRepository.findById(id).orElseThrow(
-                ()-> new EntityNotFoundException("Portfolio with id: " + id + " not found")
-        );
-        if (portfolioToDelete.getStrategies().isEmpty()) {
-            portfolioRepository.deleteById(id);
-        } else {
-            throw new UnableToDeleteEntitiesException("Portfolio contains strategies and cannot be deleted");
+    private Portfolio save(Portfolio portfolio) {
+        try {
+            return portfolioRepository.save(portfolio);
+        }
+        catch (Exception exc) {
+            throw new UnableToSaveEntitiesException(exc.getMessage());
         }
     }
 }

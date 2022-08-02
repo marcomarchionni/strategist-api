@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.Position;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.PositionFindDto;
+import com.marcomarchionni.ibportfolio.models.domain.Position;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.PositionFindDto;
 
 import java.util.List;
 

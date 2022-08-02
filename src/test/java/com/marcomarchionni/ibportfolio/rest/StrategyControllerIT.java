@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.dtos.StrategyCreateDto;
-import com.marcomarchionni.ibportfolio.models.dtos.StrategyFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyCreateDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyFindDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -56,6 +56,18 @@ class StrategyControllerIT {
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1,ZM long","2,IBKR put"})
+    void findByIdSuccess(Long id, String expectedName) throws Exception {
+
+        mockMvc.perform(get("/strategies/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name", is(expectedName)))
+                .andExpect(jsonPath("$.trades", not(empty())));
     }
 
     @Test

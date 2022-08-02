@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.models.dtos;
+package com.marcomarchionni.ibportfolio.models.dtos.request;
 
 import com.marcomarchionni.ibportfolio.models.validation.AssetCategory;
 import com.marcomarchionni.ibportfolio.models.validation.NullOrNotBlank;
@@ -6,8 +6,7 @@ import lombok.*;
 
 import javax.validation.constraints.Size;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

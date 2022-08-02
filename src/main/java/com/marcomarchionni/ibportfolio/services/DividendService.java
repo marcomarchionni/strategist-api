@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.Dividend;
-import com.marcomarchionni.ibportfolio.models.dtos.DividendFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.domain.Dividend;
+import com.marcomarchionni.ibportfolio.models.dtos.request.DividendFindDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
 
 import java.util.List;
 

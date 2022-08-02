@@ -1,10 +1,5 @@
 package com.marcomarchionni.ibportfolio.services.specifications;
 
-import com.marcomarchionni.ibportfolio.models.Trade;
-import org.springframework.data.jpa.domain.Specification;
-
-import java.time.LocalDate;
-
 public class TradeSpecifications {
 
 //    public static Specification<Trade> tradeDateIsAfter(LocalDate tradeDateFrom) {

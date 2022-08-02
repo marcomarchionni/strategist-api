@@ -1,10 +1,15 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.StrategyCreateDto;
-import com.marcomarchionni.ibportfolio.models.dtos.StrategyFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.domain.Strategy;
+import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyCreateDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyFindDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.StrategyDetailDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.models.mapping.StrategyMapper;
+import com.marcomarchionni.ibportfolio.models.mapping.StrategyMapperImpl;
+import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import com.marcomarchionni.ibportfolio.services.StrategyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,14 +17,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategies;
-import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
+import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -39,23 +45,29 @@ class StrategyControllerTest {
     StrategyController strategyController;
 
     ObjectMapper mapper;
+    StrategyMapper strategyMapper;
 
     List<Strategy> strategies;
+    List<StrategyListDto> strategyListDtos;
+    StrategyDetailDto strategyDetailDto;
     Strategy strategy;
 
     @BeforeEach
     void setUp() {
         mapper = new ObjectMapper();
+        strategyMapper = new StrategyMapperImpl(new ModelMapper());
         mockMvc = MockMvcBuilders.standaloneSetup(strategyController).build();
         strategies = getSampleStrategies();
         strategy = getSampleStrategy();
+        strategyListDtos = strategies.stream().map(strategyMapper::toStrategyListDto).collect(Collectors.toList());
+        strategyDetailDto = strategyMapper.toStrategyDetailDto(strategy);
     }
 
     @Test
     void findByParams() throws Exception {
         StrategyFindDto strategyFindDto = StrategyFindDto.builder().build();
 
-        when(strategyService.findByParams(strategyFindDto)).thenReturn(strategies);
+        when(strategyService.findByParams(strategyFindDto)).thenReturn(strategyListDtos);
 
         mockMvc.perform(get("/strategies")
                         .param("name", strategyFindDto.getName()))
@@ -63,6 +75,25 @@ class StrategyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(strategies.size())));
+    }
+
+    @Test
+    void findById() throws Exception {
+        Long id = 1L;
+        Strategy strategy1 = getSampleStrategy();
+        strategy1.getTrades().add(getSampleTrade());
+        strategy1.getPositions().add(getSamplePosition());
+        strategyDetailDto = strategyMapper.toStrategyDetailDto(strategy1);
+        System.out.println(strategyDetailDto);
+
+        when(strategyService.findById(id)).thenReturn(strategyDetailDto);
+
+        mockMvc.perform(get("/strategies/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name", is(strategyDetailDto.getName())))
+                .andExpect(jsonPath("$.trades", hasSize(1)));
     }
 
     @Test

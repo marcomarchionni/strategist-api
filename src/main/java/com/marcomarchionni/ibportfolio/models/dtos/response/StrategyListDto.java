@@ -1,5 +1,6 @@
-package com.marcomarchionni.ibportfolio.models.dtos;
+package com.marcomarchionni.ibportfolio.models.dtos.response;
 
+import com.marcomarchionni.ibportfolio.models.validation.PortfolioName;
 import com.marcomarchionni.ibportfolio.models.validation.StrategyName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,11 +13,17 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StrategyCreateDto {
+public class StrategyListDto {
+
+    @NotNull
+    private Long id;
 
     @StrategyName
     private String name;
 
     @NotNull
     private Long portfolioId;
+
+    @PortfolioName
+    private String portfolioName;
 }

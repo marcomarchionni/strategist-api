@@ -1,8 +1,9 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.Portfolio;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.models.dtos.request.PortfolioCreateDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,14 +72,16 @@ class PortfolioControllerIT {
 
     @Test
     void createPortfolioSuccess() throws Exception {
+        PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name("Super Saver").build();
 
         mockMvc.perform(post("/portfolios")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(portfolio)))
+                .content(mapper.writeValueAsString(portfolioCreateDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", notNullValue()));
+                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect(jsonPath("$.name", is("Super Saver")));
     }
 
     @ParameterizedTest

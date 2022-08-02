@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.Dividend;
-import com.marcomarchionni.ibportfolio.models.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.domain.Dividend;
+import com.marcomarchionni.ibportfolio.models.domain.Strategy;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.services.DividendService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;

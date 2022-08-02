@@ -1,10 +1,10 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.models.Position;
-import com.marcomarchionni.ibportfolio.models.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.PositionFindDto;
+import com.marcomarchionni.ibportfolio.models.domain.Position;
+import com.marcomarchionni.ibportfolio.models.domain.Strategy;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.PositionFindDto;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;

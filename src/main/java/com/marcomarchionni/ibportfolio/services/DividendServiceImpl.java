@@ -1,10 +1,10 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.models.Dividend;
-import com.marcomarchionni.ibportfolio.models.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.DividendFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.domain.Dividend;
+import com.marcomarchionni.ibportfolio.models.domain.Strategy;
+import com.marcomarchionni.ibportfolio.models.dtos.request.DividendFindDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.springframework.beans.factory.annotation.Autowired;

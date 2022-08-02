@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.Portfolio;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,7 +73,7 @@ class PortfolioControllerTest {
     @Test
     void createPortfolioSuccess() throws Exception {
 
-        when(portfolioService.save(any())).thenReturn(portfolio);
+        when(portfolioService.create(any())).thenReturn(portfolio);
 
         mockMvc.perform(post("/portfolios")
                 .contentType(MediaType.APPLICATION_JSON)

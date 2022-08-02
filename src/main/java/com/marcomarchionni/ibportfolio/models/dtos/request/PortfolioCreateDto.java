@@ -1,6 +1,6 @@
-package com.marcomarchionni.ibportfolio.models.dtos;
+package com.marcomarchionni.ibportfolio.models.dtos.request;
 
-import com.marcomarchionni.ibportfolio.models.validation.NullOrNotBlank;
+import com.marcomarchionni.ibportfolio.models.validation.PortfolioName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StrategyFindDto {
+public class PortfolioCreateDto {
 
-    @NullOrNotBlank
+    @PortfolioName
     private String name;
 }

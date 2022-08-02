@@ -1,19 +1,22 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.Strategy;
-import com.marcomarchionni.ibportfolio.models.Trade;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.TradeFindDto;
-import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
-import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
+import com.marcomarchionni.ibportfolio.models.domain.Strategy;
+import com.marcomarchionni.ibportfolio.models.domain.Trade;
+import com.marcomarchionni.ibportfolio.models.dtos.request.TradeFindDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.models.mapping.TradeMapper;
+import com.marcomarchionni.ibportfolio.models.mapping.TradeMapperImpl;
+import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
+import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +35,7 @@ class TradeServiceImplTest {
     @Mock
     StrategyRepository strategyRepository;
 
-    @InjectMocks
-    TradeServiceImpl tradeService;
+    TradeService tradeService;
 
     private List<Trade> trades;
     private Trade trade;
@@ -48,6 +50,8 @@ class TradeServiceImplTest {
         strategy = getSampleStrategy();
         tradeUpdate = UpdateStrategyDto.builder().id(trade.getId()).strategyId(strategy.getId()).build();
         tradeCriteria = getSampleTradeCriteria();
+        TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
+        tradeService = new TradeServiceImpl(tradeRepository, strategyRepository, tradeMapper);
     }
 
     @Test
@@ -90,7 +94,7 @@ class TradeServiceImplTest {
         when(tradeRepository.findWithParameters(any(),any(),any(),any(),any())).thenReturn(trades);
         int expectedSize = trades.size();
 
-        List<Trade> actualTrades = tradeService.findByParams(tradeCriteria);
+        List<TradeListDto> actualTrades = tradeService.findByParams(tradeCriteria);
 
         assertEquals(expectedSize, actualTrades.size());
     }

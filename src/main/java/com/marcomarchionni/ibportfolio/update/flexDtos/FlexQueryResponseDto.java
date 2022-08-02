@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.models.dtos;
+package com.marcomarchionni.ibportfolio.update.flexDtos;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;

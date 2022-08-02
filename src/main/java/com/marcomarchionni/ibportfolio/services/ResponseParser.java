@@ -1,10 +1,10 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.Dividend;
-import com.marcomarchionni.ibportfolio.models.FlexInfo;
-import com.marcomarchionni.ibportfolio.models.Position;
-import com.marcomarchionni.ibportfolio.models.Trade;
-import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.models.domain.Dividend;
+import com.marcomarchionni.ibportfolio.models.domain.FlexInfo;
+import com.marcomarchionni.ibportfolio.models.domain.Position;
+import com.marcomarchionni.ibportfolio.models.domain.Trade;
+import com.marcomarchionni.ibportfolio.update.flexDtos.FlexQueryResponseDto;
 
 import java.util.List;
 

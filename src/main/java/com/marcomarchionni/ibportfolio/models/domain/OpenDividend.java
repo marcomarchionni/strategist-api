@@ -1,11 +1,7 @@
-package com.marcomarchionni.ibportfolio.models;
-
-import lombok.Builder;
+package com.marcomarchionni.ibportfolio.models.domain;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Entity
 @DiscriminatorValue("OPEN")

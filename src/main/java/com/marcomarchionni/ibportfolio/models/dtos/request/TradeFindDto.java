@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.models.dtos;
+package com.marcomarchionni.ibportfolio.models.dtos.request;
 
 import com.marcomarchionni.ibportfolio.models.validation.AssetCategory;
 import com.marcomarchionni.ibportfolio.models.validation.DateInterval;
@@ -9,8 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

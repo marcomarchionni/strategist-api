@@ -1,8 +1,9 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.Trade;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.TradeFindDto;
+import com.marcomarchionni.ibportfolio.models.domain.Trade;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.TradeFindDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.TradeListDto;
 
 import java.util.List;
 
@@ -12,5 +13,5 @@ public interface TradeService {
 
     Trade updateStrategyId(UpdateStrategyDto trade);
 
-    List<Trade> findByParams(TradeFindDto tradeCriteria);
+    List<TradeListDto> findByParams(TradeFindDto tradeCriteria);
 }

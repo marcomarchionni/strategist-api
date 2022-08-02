@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.update;
 
-import com.marcomarchionni.ibportfolio.models.FlexInfo;
+import com.marcomarchionni.ibportfolio.models.domain.FlexInfo;
 import com.marcomarchionni.ibportfolio.services.FlexInfoService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

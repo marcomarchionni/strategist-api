@@ -3,33 +3,40 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.ibportfolio.models.Portfolio;
-import com.marcomarchionni.ibportfolio.models.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.StrategyCreateDto;
-import com.marcomarchionni.ibportfolio.models.dtos.StrategyFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.models.domain.Strategy;
+import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyCreateDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyFindDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.StrategyDetailDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.models.mapping.StrategyMapper;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StrategyServiceImpl implements StrategyService {
 
     private final StrategyRepository strategyRepository;
     private final PortfolioRepository portfolioRepository;
+    private final StrategyMapper strategyMapper;
 
     @Autowired
-    public StrategyServiceImpl(StrategyRepository strategyRepository, PortfolioRepository portfolioRepository) {
+    public StrategyServiceImpl(StrategyRepository strategyRepository, PortfolioRepository portfolioRepository, StrategyMapper strategyMapper) {
         this.strategyRepository = strategyRepository;
         this.portfolioRepository = portfolioRepository;
+        this.strategyMapper = strategyMapper;
     }
 
     @Override
-    public List<Strategy> findByParams(StrategyFindDto strategyFind) {
-        return strategyRepository.findByParams(strategyFind.getName());
+    public List<StrategyListDto> findByParams(StrategyFindDto strategyFind) {
+        List<Strategy> strategies = strategyRepository.findByParams(strategyFind.getName());
+        return strategies.stream().map(strategyMapper::toStrategyListDto).collect(Collectors.toList());
     }
 
     @Override
@@ -46,6 +53,14 @@ public class StrategyServiceImpl implements StrategyService {
     }
 
     @Override
+    public StrategyDetailDto findById(Long id) {
+        Strategy strategy = strategyRepository.findById(id).orElseThrow(
+                ()-> new EntityNotFoundException("Strategy with id: " + id + " not found")
+        );
+        return strategyMapper.toStrategyDetailDto(strategy);
+    }
+
+    @Override
     public Strategy updateName(UpdateNameDto updateNameDto) {
         Strategy strategy = strategyRepository.findById(updateNameDto.getId()).orElseThrow(
                 ()-> new EntityNotFoundException("Strategy with id: " + updateNameDto.getId() + "not found")
@@ -59,8 +74,7 @@ public class StrategyServiceImpl implements StrategyService {
         Portfolio portfolio = portfolioRepository.findById(strategyCreateDto.getPortfolioId()).orElseThrow(
                 ()-> new EntityNotFoundException("Portfolio with id: " + strategyCreateDto.getPortfolioId() + " not found")
         );
-        Strategy strategy = new Strategy();
-        strategy.setName(strategyCreateDto.getName());
+        Strategy strategy = strategyMapper.toEntity(strategyCreateDto);
         strategy.setPortfolio(portfolio);
         return this.save(strategy);
     }

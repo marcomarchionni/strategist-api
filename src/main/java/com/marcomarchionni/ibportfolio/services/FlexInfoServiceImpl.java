@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.FlexInfo;
+import com.marcomarchionni.ibportfolio.models.domain.FlexInfo;
 import com.marcomarchionni.ibportfolio.repositories.FlexInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

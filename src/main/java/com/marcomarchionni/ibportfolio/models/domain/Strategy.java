@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.models;
+package com.marcomarchionni.ibportfolio.models.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;

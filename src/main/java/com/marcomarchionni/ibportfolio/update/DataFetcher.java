@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.update;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
-import com.marcomarchionni.ibportfolio.models.dtos.FlexQueryResponseDto;
-import com.marcomarchionni.ibportfolio.models.dtos.FlexStatementResponseDto;
+import com.marcomarchionni.ibportfolio.update.flexDtos.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.update.flexDtos.FlexStatementResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;

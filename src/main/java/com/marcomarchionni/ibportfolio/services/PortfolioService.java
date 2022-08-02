@@ -1,7 +1,8 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.Portfolio;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.models.dtos.request.PortfolioCreateDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface PortfolioService {
 
     Portfolio findById(Long id);
 
-    Portfolio save(Portfolio portfolio);
+    Portfolio create(PortfolioCreateDto portfolio);
 
     Portfolio updateName(UpdateNameDto updateNameDto);
 

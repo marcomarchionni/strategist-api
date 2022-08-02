@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.models.dtos;
+package com.marcomarchionni.ibportfolio.models.dtos.request;
 
 import com.marcomarchionni.ibportfolio.models.validation.PortfolioName;
 import lombok.*;

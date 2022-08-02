@@ -2,9 +2,12 @@ package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.marcomarchionni.ibportfolio.models.Strategy;
-import com.marcomarchionni.ibportfolio.models.Trade;
-import com.marcomarchionni.ibportfolio.models.dtos.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.domain.Strategy;
+import com.marcomarchionni.ibportfolio.models.domain.Trade;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.models.mapping.TradeMapper;
+import com.marcomarchionni.ibportfolio.models.mapping.TradeMapperImpl;
 import com.marcomarchionni.ibportfolio.services.TradeService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,13 +18,16 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleTrade;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,39 +46,42 @@ class TradeControllerTest {
     @InjectMocks
     TradeController tradeController;
 
-    ObjectMapper mapper;
+    ObjectMapper objectMapper;
+
+    TradeMapper tradeMapper;
 
     MockMvc mockMvc;
 
-    final List<Trade> trades = getSampleTrades();
+    List<TradeListDto> tradeListDtos;
     final Trade trade = getSampleTrade();
     final Strategy strategy = getSampleStrategy();
 
     @BeforeEach
     void setUp() {
-        mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        tradeMapper = new TradeMapperImpl(new ModelMapper());
+        tradeListDtos = TestUtils.getSampleTrades()
+                .stream().map(tradeMapper::toTradeListDto).collect(Collectors.toList());
         mockMvc = MockMvcBuilders.standaloneSetup(tradeController).build();
     }
 
     @Test
     void getTrades() throws Exception {
 
-        when(tradeService.findByParams(any())).thenReturn(trades);
+        when(tradeService.findByParams(any())).thenReturn(tradeListDtos);
 
         mockMvc.perform(get("/trades"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(trades.size())));
+                .andExpect(jsonPath("$", hasSize(tradeListDtos.size())));
     }
 
     @ParameterizedTest
     @CsvSource({",,,ZM,",",2022-06-14,true,,"})
     void findTradesSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
-        List<Trade> resultList = TestUtils.getSampleTrades();
-
-        when(tradeService.findByParams(any())).thenReturn(resultList);
+        when(tradeService.findByParams(any())).thenReturn(tradeListDtos);
 
         mockMvc.perform(get("/trades")
                         .param("tradeDateFrom", tradeDateFrom)
@@ -83,7 +92,7 @@ class TradeControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(resultList.size())));
+                .andExpect(jsonPath("$", hasSize(tradeListDtos.size())));
     }
 
     @ParameterizedTest
@@ -109,7 +118,7 @@ class TradeControllerTest {
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(tradeUpdate)))
+                        .content(objectMapper.writeValueAsString(tradeUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(Math.toIntExact(trade.getId()))))

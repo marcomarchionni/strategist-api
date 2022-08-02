@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.models;
+package com.marcomarchionni.ibportfolio.models.domain;
 
 import lombok.Data;
 

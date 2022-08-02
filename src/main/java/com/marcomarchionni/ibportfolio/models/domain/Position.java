@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.models;
+package com.marcomarchionni.ibportfolio.models.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -13,17 +13,15 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Entity(name = "trade")
+@Entity(name = "position")
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class Trade {
+public class Position {
+
     @Id
     @Column(name="id")
     private Long id;
-
-    @Column(name="trade_id")
-    private Long tradeId;
 
     @Column(name="con_id")
     private Long conId;
@@ -31,8 +29,11 @@ public class Trade {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne
-    @JoinColumn(name= "trade_strategy_id")
+    @JoinColumn(name= "position_strategy_id")
     private Strategy strategy;
+
+    @Column(name="report_date")
+    private LocalDate reportDate;
 
     @Column(name="symbol")
     private String symbol;
@@ -40,39 +41,36 @@ public class Trade {
     @Column(name="description")
     private String description;
 
-    @Column(name="asset_category")
+    @Column(name = "asset_category")
     private String assetCategory;
 
-    @Column(name="multiplier")
-    private Integer multiplier;
-
-    @Column(name="strike")
-    private BigDecimal strike;
-
-    @Column(name="expiry")
-    private LocalDate expiry;
-
-    @Column(name="put_call")
+    @Column(name = "put_call")
     private String putCall;
 
-    @Column(name="trade_date")
-    private LocalDate tradeDate;
+    @Column(name= "strike")
+    private BigDecimal strike;
+
+    @Column(name = "expiry")
+    private LocalDate expiry;
 
     @Column(name="quantity")
     private BigDecimal quantity;
 
-    @Column(name="trade_price")
-    private BigDecimal tradePrice;
+    @Column(name="cost_basis_price")
+    private BigDecimal costBasisPrice;
 
-    @Column(name="trade_money")
-    private BigDecimal tradeMoney;
+    @Column(name="cost_basis_money")
+    private BigDecimal costBasisMoney;
 
-    @Column(name="fifo_pnl_realized")
-    private BigDecimal fifoPnlRealized;
+    @Column(name="mark_price")
+    private BigDecimal markPrice;
 
-    @Column(name="ib_commission")
-    private BigDecimal ibCommission;
+    @Column(name="multiplier")
+    private int multiplier;
 
-    @Column(name="buy_sell")
-    private String buySell;
+    @Column(name="position_value")
+    private BigDecimal positionValue;
+
+    @Column(name="fifo_pnl_unrealized")
+    private BigDecimal fifoPnlUnrealized;
 }

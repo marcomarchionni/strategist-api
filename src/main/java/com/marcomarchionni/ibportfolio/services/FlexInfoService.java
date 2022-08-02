@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.FlexInfo;
+import com.marcomarchionni.ibportfolio.models.domain.FlexInfo;
 
 import java.time.LocalDate;
 import java.util.List;
