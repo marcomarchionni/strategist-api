@@ -1,17 +1,14 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.marcomarchionni.ibportfolio.update.Updater;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.util.Objects;
 
-@Slf4j
 @RestController
 @RequestMapping("/update")
 public class UpdateController {
@@ -23,24 +20,22 @@ public class UpdateController {
         this.updater = updater;
     }
 
-    @Value("classpath:/flex/Last30Days.xml")
-    Resource resource;
-
     @GetMapping("/file")
     public String updateFromFile() throws Exception{
 
-        // TODO: Post Xml file via Http request
-        File flexQuery = resource.getFile();
-
-        updater.updateFromFile(flexQuery);
-
+        // TODO: Where do you get xmlfiles?
+        updater.updateFromFile(getFile());
         return "Update from file completed";
     }
 
     @GetMapping("/server")
     public String updateFromServer() {
         updater.updateFromServer();
-        log.info(">>> Update from server started...");
         return "Update from server started...";
+    }
+
+    private File getFile() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        return new File(Objects.requireNonNull(classLoader.getResource("flex/LastMonth.xml")).getFile());
     }
 }

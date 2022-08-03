@@ -1,31 +1,46 @@
 package com.marcomarchionni.ibportfolio.rest;
 
+import com.marcomarchionni.ibportfolio.update.Updater;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-
-@SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class UpdateControllerTest {
 
-    @Autowired
+    @Mock
+    Updater updater;
+
+    @InjectMocks
+    UpdateController updateController;
+
     MockMvc mockMvc;
 
-    public static final MediaType APPLICATION_JSON_UTF8 = MediaType.APPLICATION_JSON;
+    @BeforeEach
+    void setup(){
+        mockMvc = MockMvcBuilders.standaloneSetup(updateController).build();
+    }
 
     @Test
     void updateFromFile() throws Exception {
 
+        doNothing().when(updater).updateFromFile(any());
+
         mockMvc.perform(get("/update/file"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.valueOf("text/plain;charset=UTF-8")))
+                .andExpect(content().contentType(MediaType.valueOf("text/plain;charset=ISO-8859-1")))
                 .andExpect(content().string("Update from file completed"));
     }
 

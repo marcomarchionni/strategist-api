@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.List;
@@ -22,6 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 public class UpdaterIT {
 
     @Autowired
@@ -49,8 +50,12 @@ public class UpdaterIT {
     Updater updater;
 
     @Test
-    @Sql("/initIbTestDb.sql")
     public void updateFromFileTestEmptyDb() throws Exception {
+
+        tradeRepository.deleteAll();
+        positionRepository.deleteAll();
+        dividendRepository.deleteAll();
+        flexInfoRepository.deleteAll();
 
         File flexQuery = last30DaysResource.getFile();
         assertNotNull(flexQuery);
@@ -73,8 +78,12 @@ public class UpdaterIT {
     }
 
     @Test
-    @Sql("/initIbTestDb.sql")
     public void updateFromFileTestEmptyDb2() throws Exception {
+
+        tradeRepository.deleteAll();
+        positionRepository.deleteAll();
+        dividendRepository.deleteAll();
+        flexInfoRepository.deleteAll();
 
         File flexQuery = lastMonthResource.getFile();
 
@@ -98,8 +107,12 @@ public class UpdaterIT {
     }
 
     @Test
-    @Sql("/initIbTestDb.sql")
     public void updateFromFileTest2Files() throws Exception {
+
+        tradeRepository.deleteAll();
+        positionRepository.deleteAll();
+        dividendRepository.deleteAll();
+        flexInfoRepository.deleteAll();
 
         File lastMonth = lastMonthResource.getFile();
         File last30Days = last30DaysResource.getFile();

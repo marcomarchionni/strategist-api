@@ -11,7 +11,7 @@ INSERT INTO `strategy` (`name`,`strategy_portfolio_id`) VALUES ('ZM long',@Saver
 INSERT INTO `strategy` (`name`,`strategy_portfolio_id`) VALUES ('IBKR put',@TraderId);
 INSERT INTO `strategy` (`name`,`strategy_portfolio_id`) VALUES ('DIS long',@SaverId);
 INSERT INTO `strategy` (`name`,`strategy_portfolio_id`) VALUES ('NKE long',@SaverId);
-INSERT INTO `strategy` (`name`,`strategy_portfolio_id`) VALUES ('EBAY coveredCall',@TraderId);
+INSERT INTO `strategy` (`name`,`strategy_portfolio_id`) VALUES ('EBAY covcall',@TraderId);
 INSERT INTO `strategy` (`name`,`strategy_portfolio_id`) VALUES ('IRBT long',@SaverId);
 
 SELECT @ZMId := id FROM strategy WHERE name = 'ZM long';
