@@ -9,7 +9,6 @@ import com.marcomarchionni.ibportfolio.models.dtos.response.StrategyDetailDto;
 import com.marcomarchionni.ibportfolio.models.dtos.response.StrategyListDto;
 import com.marcomarchionni.ibportfolio.models.mapping.StrategyMapper;
 import com.marcomarchionni.ibportfolio.models.mapping.StrategyMapperImpl;
-import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import com.marcomarchionni.ibportfolio.services.StrategyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -100,7 +100,7 @@ class StrategyControllerTest {
     void updateNameSuccess() throws Exception {
 
         UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("NewName").build();
-        when(strategyService.updateName(updateNameDto)).thenReturn(strategy);
+        when(strategyService.updateName(updateNameDto)).thenReturn(strategyDetailDto);
 
         mockMvc.perform(put("/strategies")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -114,7 +114,8 @@ class StrategyControllerTest {
     @Test
     void createSuccess() throws Exception {
         StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("ZM long").portfolioId(1L).build();
-        when(strategyService.create(strategyCreateDto)).thenReturn(strategy);
+//        StrategyListDto strategyListDto = StrategyListDto.builder().id(1L).name("ZM long").portfolioId(1L).portfolioName("Saver").build();
+        when(strategyService.create(strategyCreateDto)).thenReturn(strategyDetailDto);
 
         mockMvc.perform(post("/strategies")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -4,15 +4,19 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEn
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.models.domain.Position;
 import com.marcomarchionni.ibportfolio.models.domain.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.models.dtos.request.PositionFindDto;
+import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.PositionListDto;
+import com.marcomarchionni.ibportfolio.models.mapping.PositionMapper;
+import com.marcomarchionni.ibportfolio.models.mapping.PositionMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,13 +36,24 @@ class PositionServiceImplTest {
     @Mock
     StrategyRepository strategyRepository;
 
-    @InjectMocks
+    PositionMapper positionMapper;
+
     PositionServiceImpl positionService;
 
-    final List<Position> samplePositions = getSamplePositions();
-    final Position samplePosition = getSamplePosition();
-    final Strategy sampleStrategy = getSampleStrategy();
-    final PositionFindDto positionCriteria = getSamplePositionCriteria();
+    List<Position> samplePositions;
+    Position samplePosition;
+    Strategy sampleStrategy;
+    PositionFindDto positionFind;
+
+    @BeforeEach
+    void setup() {
+        samplePositions = getSamplePositions();
+        samplePosition = getSamplePosition();
+        sampleStrategy = getSampleStrategy();
+        positionFind = getSamplePositionCriteria();
+        positionMapper = new PositionMapperImpl(new ModelMapper());
+        positionService = new PositionServiceImpl(positionRepository, strategyRepository, positionMapper);
+    }
 
     @Test
     void saveAll() {
@@ -49,7 +64,7 @@ class PositionServiceImplTest {
     void saveAllException() {
         doThrow(new RuntimeException()).when(positionRepository).saveAll(any());
 
-        assertThrows(UnableToSaveEntitiesException.class, ()-> positionService.saveAll(samplePositions));
+        assertThrows(UnableToSaveEntitiesException.class, () -> positionService.saveAll(samplePositions));
     }
 
     @Test
@@ -61,14 +76,14 @@ class PositionServiceImplTest {
     void deleteAllPositionsException() {
         doThrow(new RuntimeException()).when(positionRepository).deleteAll();
 
-        assertThrows(UnableToDeleteEntitiesException.class, ()-> positionService.deleteAll());
+        assertThrows(UnableToDeleteEntitiesException.class, () -> positionService.deleteAll());
     }
 
     @Test
     void findWithParameters() {
         when(positionRepository.findWithParameters(any(), any(), any())).thenReturn(samplePositions);
 
-        List<Position> positions = positionService.findByParams(positionCriteria);
+        List<PositionListDto> positions = positionService.findByParams(positionFind);
 
         assertNotNull(positions);
         assertEquals(positions.size(), samplePositions.size());
@@ -84,10 +99,10 @@ class PositionServiceImplTest {
         samplePosition.setStrategy(sampleStrategy);
         when(positionRepository.save(any())).thenReturn(samplePosition);
 
-        Position actualPosition = positionService.updateStrategyId(positionUpdate);
+        PositionListDto actualPositionListDto = positionService.updateStrategyId(positionUpdate);
 
-        assertNotNull(actualPosition);
-        assertEquals(samplePosition.getId(), actualPosition.getId());
-        assertEquals(sampleStrategy.getId(), actualPosition.getStrategy().getId());
+        assertNotNull(actualPositionListDto);
+        assertEquals(samplePosition.getId(), actualPositionListDto.getId());
+        assertEquals(sampleStrategy.getId(), actualPositionListDto.getStrategyId());
     }
 }

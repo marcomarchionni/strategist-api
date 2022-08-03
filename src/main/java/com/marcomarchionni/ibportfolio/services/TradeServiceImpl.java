@@ -43,7 +43,7 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public Trade updateStrategyId(UpdateStrategyDto tradeUpdate) {
+    public TradeListDto updateStrategyId(UpdateStrategyDto tradeUpdate) {
 
         Trade trade = tradeRepository.findById(tradeUpdate.getId()).orElseThrow(
                 ()-> new EntityNotFoundException("Trade with id: " + tradeUpdate.getId() + " not found")
@@ -52,7 +52,7 @@ public class TradeServiceImpl implements TradeService {
                 ()-> new EntityNotFoundException("Strategy with id: " + tradeUpdate.getStrategyId() + " not found")
         );
         trade.setStrategy(strategyToAssign);
-        return tradeRepository.save(trade);
+        return tradeMapper.toTradeListDto(tradeRepository.save(trade));
     }
 
     @Override

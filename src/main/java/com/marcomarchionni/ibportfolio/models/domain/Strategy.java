@@ -1,7 +1,5 @@
 package com.marcomarchionni.ibportfolio.models.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.marcomarchionni.ibportfolio.models.validation.StrategyName;
 import lombok.*;
 
@@ -14,9 +12,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @Entity(name="strategy")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class Strategy {
 
     @Id

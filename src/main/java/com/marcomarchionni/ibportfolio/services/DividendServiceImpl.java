@@ -5,23 +5,28 @@ import com.marcomarchionni.ibportfolio.models.domain.Dividend;
 import com.marcomarchionni.ibportfolio.models.domain.Strategy;
 import com.marcomarchionni.ibportfolio.models.dtos.request.DividendFindDto;
 import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.models.mapping.DividendMapper;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DividendServiceImpl implements DividendService {
 
     private final DividendRepository dividendRepository;
     private final StrategyRepository strategyRepository;
+    private final DividendMapper dividendMapper;
 
     @Autowired
-    DividendServiceImpl(DividendRepository dividendRepository, StrategyRepository strategyRepository) {
+    DividendServiceImpl(DividendRepository dividendRepository, StrategyRepository strategyRepository, DividendMapper dividendMapper) {
         this.dividendRepository = dividendRepository;
         this.strategyRepository = strategyRepository;
+        this.dividendMapper = dividendMapper;
     }
 
     @Override
@@ -35,18 +40,20 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public List<Dividend> findByParams(DividendFindDto criteria) {
-        return dividendRepository.findWithParameters(
+    public List<DividendListDto> findByParams(DividendFindDto criteria) {
+        List<Dividend> dividends = dividendRepository.findWithParameters(
                 criteria.getExDateFrom(),
                 criteria.getExDateTo(),
                 criteria.getPayDateFrom(),
                 criteria.getPayDateTo(),
                 criteria.getTagged(),
-                criteria.getSymbol());
+                criteria.getSymbol()
+        );
+        return dividends.stream().map(dividendMapper::toDividendListDto).collect(Collectors.toList());
     }
 
     @Override
-    public Dividend updateStrategyId(UpdateStrategyDto dividendUpdate) {
+    public DividendListDto updateStrategyId(UpdateStrategyDto dividendUpdate) {
 
         Dividend dividend = dividendRepository.findById(dividendUpdate.getId()).orElseThrow(
                 ()-> new EntityNotFoundException("Dividend with id: " + dividendUpdate.getId() + " not found")
@@ -55,6 +62,6 @@ public class DividendServiceImpl implements DividendService {
                 ()-> new EntityNotFoundException("Strategy with id: " + dividendUpdate.getStrategyId() + " not found")
         );
         dividend.setStrategy(strategyToAssign);
-        return dividendRepository.save(dividend);
+        return dividendMapper.toDividendListDto(dividendRepository.save(dividend));
     }
 }

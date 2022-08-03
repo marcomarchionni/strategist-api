@@ -73,10 +73,11 @@ class TradeServiceImplTest {
         when(strategyRepository.findById(strategy.getId())).thenReturn(Optional.of(strategy));
         when(tradeRepository.save(trade)).thenReturn(trade);
 
-        Trade updatedTrade = tradeService.updateStrategyId(tradeUpdate);
+        TradeListDto updatedTrade = tradeService.updateStrategyId(tradeUpdate);
 
         verify(tradeRepository).save(trade);
-        assertEquals(trade, updatedTrade);
+        assertEquals(tradeUpdate.getId(), updatedTrade.getId());
+        assertEquals(tradeUpdate.getStrategyId(), updatedTrade.getStrategyId());
     }
 
     @Test

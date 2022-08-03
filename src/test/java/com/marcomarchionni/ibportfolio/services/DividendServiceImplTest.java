@@ -4,22 +4,25 @@ import com.marcomarchionni.ibportfolio.models.domain.Dividend;
 import com.marcomarchionni.ibportfolio.models.domain.Strategy;
 import com.marcomarchionni.ibportfolio.models.dtos.request.DividendFindDto;
 import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.models.mapping.DividendMapper;
+import com.marcomarchionni.ibportfolio.models.mapping.DividendMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,50 +34,54 @@ class DividendServiceImplTest {
     @Mock
     StrategyRepository strategyRepository;
 
-    @InjectMocks
-    DividendServiceImpl dividendService;
+    DividendMapper dividendMapper;
+
+    DividendService dividendService;
 
      List<Dividend> dividends;
      Dividend dividend;
-     Dividend expectedDividend;
      Strategy strategy;
-     DividendFindDto dividendCriteria;
+     DividendFindDto dividendFind;
 
     @BeforeEach
     void setup() {
         dividends = getSampleDividends();
         dividend = getSampleClosedDividend();
         strategy = getSampleStrategy();
-        expectedDividend = getSampleClosedDividend();
-        expectedDividend.setStrategy(strategy);
-        dividendCriteria = getSampleDividendCriteria();
+        dividendFind = getSampleDividendCriteria();
+        dividendMapper = new DividendMapperImpl(new ModelMapper());
+        dividendService = new DividendServiceImpl(dividendRepository,strategyRepository,dividendMapper);
     }
 
 
     @Test
-    void findWithCriteria() {
+    void findByParams() {
 
         when(dividendRepository.findWithParameters(any(), any(), any(), any(), any(), any())).thenReturn(dividends);
 
-        List<Dividend> foundDividends = dividendService.findByParams(
-                        dividendCriteria);
+        List<DividendListDto> foundDividends = dividendService.findByParams(
+                dividendFind);
 
         assertEquals(dividends.size(), foundDividends.size() );
     }
 
     @Test
     void updateStrategyId() {
+
+        Dividend expectedDividend = getSampleClosedDividend();
         UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder()
-                .id(dividend.getId()).strategyId(strategy.getId()).build();
+                .id(expectedDividend.getId()).strategyId(strategy.getId()).build();
+        expectedDividend.setStrategy(strategy);
 
-        lenient().when(dividendRepository.findById(dividendUpdate.getId())).thenReturn(Optional.of(dividend));
-        lenient().when(strategyRepository.findById(dividendUpdate.getStrategyId())).thenReturn(Optional.of(strategy));
-        lenient().when(dividendRepository.save(expectedDividend)).thenReturn(expectedDividend);
 
-        Dividend actualDividend = dividendService.updateStrategyId(dividendUpdate);
+        when(dividendRepository.findById(dividendUpdate.getId())).thenReturn(Optional.of(dividend));
+        when(strategyRepository.findById(dividendUpdate.getStrategyId())).thenReturn(Optional.of(strategy));
+        when(dividendRepository.save(expectedDividend)).thenReturn(expectedDividend);
 
-        assertNotNull(actualDividend);
-        assertEquals(dividendUpdate.getId(), actualDividend.getId());
-        assertEquals(dividendUpdate.getStrategyId(), actualDividend.getStrategy().getId());
+        DividendListDto actualDividendDto = dividendService.updateStrategyId(dividendUpdate);
+
+        assertNotNull(actualDividendDto);
+        assertEquals(dividendUpdate.getId(), actualDividendDto.getId());
+        assertEquals(dividendUpdate.getStrategyId(), actualDividendDto.getStrategyId());
     }
 }

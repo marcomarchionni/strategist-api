@@ -3,6 +3,9 @@ package com.marcomarchionni.ibportfolio.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.models.domain.Position;
 import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.PositionListDto;
+import com.marcomarchionni.ibportfolio.models.mapping.PositionMapper;
+import com.marcomarchionni.ibportfolio.models.mapping.PositionMapperImpl;
 import com.marcomarchionni.ibportfolio.services.PositionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,11 +13,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePosition;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePositions;
@@ -38,34 +43,41 @@ class PositionControllerTest {
 
     MockMvc mockMvc;
     ObjectMapper mapper;
+    PositionMapper positionMapper;
 
     List<Position> positions;
+    List<PositionListDto> positionListDtos;
     Position position;
+    PositionListDto positionListDto;
 
     @BeforeEach
     void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(positionController).build();
         mapper = new ObjectMapper();
+        positionMapper = new PositionMapperImpl(new ModelMapper());
         positions = getSamplePositions();
+        positionListDtos = positions.stream().map(positionMapper::toPositionListDto)
+                .collect(Collectors.toList());
         position = getSamplePosition();
+        positionListDto = positionMapper.toPositionListDto(position);
     }
 
     @Test
     void getPositions() throws Exception {
 
-        when(positionService.findByParams(any())).thenReturn(positions);
+        when(positionService.findByParams(any())).thenReturn(positionListDtos);
 
         mockMvc.perform(get("/positions"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(positions.size())));
+                .andExpect(jsonPath("$", hasSize(positionListDtos.size())));
     }
 
     @Test
     void updateStrategy() throws Exception {
 
         UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(position.getId()).strategyId(2L).build();
-        when(positionService.updateStrategyId(any())).thenReturn(position);
+        when(positionService.updateStrategyId(any())).thenReturn(positionListDto);
 
         mockMvc.perform(put("/positions")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -53,8 +53,8 @@ class TradeControllerTest {
     MockMvc mockMvc;
 
     List<TradeListDto> tradeListDtos;
-    final Trade trade = getSampleTrade();
-    final Strategy strategy = getSampleStrategy();
+    Trade trade;
+    Strategy strategy;
 
     @BeforeEach
     void setUp() {
@@ -64,6 +64,8 @@ class TradeControllerTest {
         tradeListDtos = TestUtils.getSampleTrades()
                 .stream().map(tradeMapper::toTradeListDto).collect(Collectors.toList());
         mockMvc = MockMvcBuilders.standaloneSetup(tradeController).build();
+        trade = getSampleTrade();
+        strategy = getSampleStrategy();
     }
 
     @Test
@@ -113,8 +115,10 @@ class TradeControllerTest {
     void updateStrategyIdTest() throws Exception {
 
         UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(trade.getId()).strategyId(strategy.getId()).build();
+        trade.setStrategy(strategy);
+        TradeListDto tradeListDto = tradeMapper.toTradeListDto(trade);
 
-        when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(trade);
+        when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(tradeListDto);
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -122,6 +126,6 @@ class TradeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(Math.toIntExact(trade.getId()))))
-                .andExpect(jsonPath("$.strategy.id", is(Math.toIntExact(strategy.getId()))));
+                .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategy.getId()))));
     }
 }

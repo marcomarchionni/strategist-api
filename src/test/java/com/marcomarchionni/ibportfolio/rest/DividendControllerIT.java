@@ -97,7 +97,7 @@ class DividendControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.symbol", is(expectedSymbol)))
-                .andExpect(jsonPath("$.strategy.id", is(Math.toIntExact(strategyId))));
+                .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategyId))));
     }
 
     @ParameterizedTest

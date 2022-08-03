@@ -1,5 +1,12 @@
--- Insert sample data in ibTestDb
 
+-- Clear db
+DELETE FROM `dividend`;
+DELETE FROM `position`;
+DELETE FROM `trade`;
+DELETE FROM `strategy`;
+DELETE FROM `portfolio`;
+
+-- Insert sample data in ibTestDb
 INSERT INTO `portfolio` (`id`,`name`) VALUES (1,'Saver Portfolio');
 INSERT INTO `portfolio` (`id`,`name`) VALUES (2,'Trader Portfolio');
 INSERT INTO `portfolio` (`id`,`name`) VALUES (3,'Millionaire Portfolio');
@@ -23,7 +30,7 @@ INSERT INTO `trade` (`id`,`trade_id`,`con_id`,`trade_strategy_id`,`trade_date`,`
 
 INSERT INTO `position` (`id`,`con_id`,`report_date`,`position_strategy_id`,`symbol`,`description`,`asset_category`,`put_call`,`strike`,`expiry`,`quantity`,`cost_basis_price`,`mark_price`,`multiplier`,`cost_basis_money`,`position_value`,`fifo_pnl_unrealized`) VALUES (6459,6459,'2022-06-30',3,'DIS','WALT DISNEY CO/THE','STK',NULL,NULL,NULL,202,89.3512,94.4000,1,NULL,NULL,NULL);
 INSERT INTO `position` (`id`,`con_id`,`report_date`,`position_strategy_id`,`symbol`,`description`,`asset_category`,`put_call`,`strike`,`expiry`,`quantity`,`cost_basis_price`,`mark_price`,`multiplier`,`cost_basis_money`,`position_value`,`fifo_pnl_unrealized`) VALUES (10291,10291,'2022-06-30',4,'NKE','NIKE INC -CL B','STK',NULL,NULL,NULL,84,24.5601,102.2000,1,NULL,NULL,NULL);
-INSERT INTO `position` (`id`,`con_id`,`report_date`,`position_strategy_id`,`symbol`,`description`,`asset_category`,`put_call`,`strike`,`expiry`,`quantity`,`cost_basis_price`,`mark_price`,`multiplier`,`cost_basis_money`,`position_value`,`fifo_pnl_unrealized`) VALUES (265598,265598,'2022-06-30',NULL,'AAPL','APPLE INC','STK',NULL,NULL,NULL,540,16.0184,136.7200,1,NULL,NULL,NULL);
+INSERT INTO `position` (`id`,`con_id`,`report_date`,`position_strategy_id`,`symbol`,`description`,`asset_category`,`put_call`,`strike`,`expiry`,`quantity`,`cost_basis_price`,`mark_price`,`multiplier`,`cost_basis_money`,`position_value`,`fifo_pnl_unrealized`) VALUES (265598,265598,'2022-06-30',1,'AAPL','APPLE INC','STK',NULL,NULL,NULL,540,16.0184,136.7200,1,NULL,NULL,NULL);
 INSERT INTO `position` (`id`,`con_id`,`report_date`,`position_strategy_id`,`symbol`,`description`,`asset_category`,`put_call`,`strike`,`expiry`,`quantity`,`cost_basis_price`,`mark_price`,`multiplier`,`cost_basis_money`,`position_value`,`fifo_pnl_unrealized`) VALUES (265768,265768,'2022-06-30',NULL,'ADBE','ADOBE INC','STK',NULL,NULL,NULL,10,434.4900,366.0600,1,NULL,NULL,NULL);
 INSERT INTO `position` (`id`,`con_id`,`report_date`,`position_strategy_id`,`symbol`,`description`,`asset_category`,`put_call`,`strike`,`expiry`,`quantity`,`cost_basis_price`,`mark_price`,`multiplier`,`cost_basis_money`,`position_value`,`fifo_pnl_unrealized`) VALUES (267547,267547,'2022-06-30',NULL,'CGNX','COGNEX CORP','STK',NULL,NULL,NULL,44,46.8727,42.5200,1,NULL,NULL,NULL);
 INSERT INTO `position` (`id`,`con_id`,`report_date`,`position_strategy_id`,`symbol`,`description`,`asset_category`,`put_call`,`strike`,`expiry`,`quantity`,`cost_basis_price`,`mark_price`,`multiplier`,`cost_basis_money`,`position_value`,`fifo_pnl_unrealized`) VALUES (272997,272997,'2022-06-30',NULL,'COST','COSTCO WHOLESALE CORP','STK',NULL,NULL,NULL,20,138.3800,479.2800,1,NULL,NULL,NULL);

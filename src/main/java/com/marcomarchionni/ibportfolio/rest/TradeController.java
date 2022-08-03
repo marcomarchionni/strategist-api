@@ -1,6 +1,5 @@
 package com.marcomarchionni.ibportfolio.rest;
 
-import com.marcomarchionni.ibportfolio.models.domain.Trade;
 import com.marcomarchionni.ibportfolio.models.dtos.request.TradeFindDto;
 import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.models.dtos.response.TradeListDto;
@@ -28,7 +27,7 @@ public class TradeController {
     }
 
     @PutMapping
-    public Trade updateStrategyId(@RequestBody @Valid UpdateStrategyDto tradeUpdate) {
+    public TradeListDto updateStrategyId(@RequestBody @Valid UpdateStrategyDto tradeUpdate) {
         return tradeService.updateStrategyId(tradeUpdate);
     }
 }

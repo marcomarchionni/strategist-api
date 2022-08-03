@@ -82,7 +82,7 @@ class StrategyServiceImplTest {
         when(portfolioRepository.findById(1L)).thenReturn(Optional.ofNullable(portfolio));
         when(strategyRepository.save(createdStrategy)).thenReturn(expectedStrategy);
 
-        Strategy actualStrategy = strategyService.create(strategyCreateDto);
+        StrategyDetailDto actualStrategy = strategyService.create(strategyCreateDto);
 
         assertEquals(expectedStrategy.getName(), actualStrategy.getName());
     }
@@ -95,7 +95,7 @@ class StrategyServiceImplTest {
         when(strategyRepository.findById(updateNameDto.getId())).thenReturn(Optional.of(strategy));
         when(strategyRepository.save(expectedStrategy)).thenReturn(expectedStrategy);
 
-        Strategy actualStrategy = strategyService.updateName(updateNameDto);
+        StrategyDetailDto actualStrategy = strategyService.updateName(updateNameDto);
 
         assertEquals(updateNameDto.getName(), actualStrategy.getName());
     }

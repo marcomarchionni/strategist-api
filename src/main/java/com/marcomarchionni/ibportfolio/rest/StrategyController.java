@@ -1,6 +1,5 @@
 package com.marcomarchionni.ibportfolio.rest;
 
-import com.marcomarchionni.ibportfolio.models.domain.Strategy;
 import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
@@ -35,12 +34,12 @@ public class StrategyController {
     }
 
     @PostMapping
-    public Strategy create(@RequestBody @Valid StrategyCreateDto strategyCreateDto) {
+    public StrategyDetailDto create(@RequestBody @Valid StrategyCreateDto strategyCreateDto) {
         return strategyService.create(strategyCreateDto);
     }
 
     @PutMapping
-    public Strategy updateName(@RequestBody @Valid UpdateNameDto updateNameDto) {
+    public StrategyDetailDto updateName(@RequestBody @Valid UpdateNameDto updateNameDto) {
         return strategyService.updateName(updateNameDto);
     }
 

@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.models.domain.Dividend;
 import com.marcomarchionni.ibportfolio.models.domain.Strategy;
 import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.models.mapping.DividendMapper;
+import com.marcomarchionni.ibportfolio.models.mapping.DividendMapperImpl;
 import com.marcomarchionni.ibportfolio.services.DividendService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,11 +15,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleClosedDividend;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
@@ -38,17 +43,24 @@ class DividendControllerTest {
     @InjectMocks
     DividendController dividendController;
 
+    DividendMapper dividendMapper;
+
     MockMvc mockMvc;
     ObjectMapper mapper;
     List<Dividend> dividends;
+    List<DividendListDto> dividendListDtos;
     Dividend dividend;
+    DividendListDto dividendListDto;
     Strategy strategy;
 
     @BeforeEach
     void setUp() {
+        dividendMapper = new DividendMapperImpl(new ModelMapper());
         mockMvc = MockMvcBuilders.standaloneSetup(dividendController).build();
         dividends = TestUtils.getSampleDividends();
+        dividendListDtos = dividends.stream().map(dividendMapper::toDividendListDto).collect(Collectors.toList());
         dividend = getSampleClosedDividend();
+        dividendListDto = dividendMapper.toDividendListDto(dividend);
         strategy = getSampleStrategy();
         mapper = new ObjectMapper();
     }
@@ -56,34 +68,34 @@ class DividendControllerTest {
     @Test
     void getWithParameters() throws Exception {
 
-        when(dividendService.findByParams(any())).thenReturn(dividends);
+        when(dividendService.findByParams(any())).thenReturn(dividendListDtos);
 
         mockMvc.perform(get("/dividends"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(dividends.size())));
+                .andExpect(jsonPath("$", hasSize(dividendListDtos.size())));
     }
 
     @Test
     void getWithParametersException() throws Exception {
 
-        when(dividendService.findByParams(any())).thenReturn(dividends);
+        when(dividendService.findByParams(any())).thenReturn(dividendListDtos);
 
         mockMvc.perform(get("/dividends"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(dividends.size())));
+                .andExpect(jsonPath("$", hasSize(dividendListDtos.size())));
     }
 
     @Test
     void updateStrategyId() throws Exception {
 
-        Dividend expectedDividend = getSampleClosedDividend();
         UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder()
-                .id(expectedDividend.getId()).strategyId(strategy.getId()).build();
-        expectedDividend.setStrategy(strategy);
+                .id(dividend.getId()).strategyId(strategy.getId()).build();
+        dividend.setStrategy(strategy);
+        DividendListDto expectedDividendListDto = dividendMapper.toDividendListDto(dividend);
 
-        when(dividendService.updateStrategyId(dividendUpdate)).thenReturn(expectedDividend);
+        when(dividendService.updateStrategyId(dividendUpdate)).thenReturn(expectedDividendListDto);
 
         mockMvc.perform(put("/dividends")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -92,6 +104,6 @@ class DividendControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.symbol", is(dividend.getSymbol())))
-                .andExpect(jsonPath("$.strategy.id", is(Math.toIntExact(dividendUpdate.getStrategyId()))));
+                .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(dividendUpdate.getStrategyId()))));
     }
 }

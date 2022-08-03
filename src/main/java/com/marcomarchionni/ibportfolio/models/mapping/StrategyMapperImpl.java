@@ -1,5 +1,6 @@
 package com.marcomarchionni.ibportfolio.models.mapping;
 
+import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.models.domain.Strategy;
 import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.models.dtos.response.StrategyDetailDto;
@@ -18,8 +19,8 @@ public class StrategyMapperImpl implements StrategyMapper {
 
     @Override
     public Strategy toEntity(StrategyCreateDto strategyCreateDto) {
-        Strategy strategy = modelMapper.map(strategyCreateDto, Strategy.class);
-        return strategy;
+        Portfolio portfolio = Portfolio.builder().id(strategyCreateDto.getPortfolioId()).build();
+        return Strategy.builder().name(strategyCreateDto.getName()).portfolio(portfolio).build();
     }
 
     @Override

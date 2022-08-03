@@ -11,7 +11,7 @@ public interface TradeService {
 
     void saveAll(List<Trade> trades);
 
-    Trade updateStrategyId(UpdateStrategyDto trade);
+    TradeListDto updateStrategyId(UpdateStrategyDto trade);
 
     List<TradeListDto> findByParams(TradeFindDto tradeCriteria);
 }

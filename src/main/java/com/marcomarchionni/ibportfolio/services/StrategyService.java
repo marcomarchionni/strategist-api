@@ -1,6 +1,5 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.domain.Strategy;
 import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
@@ -13,9 +12,9 @@ public interface StrategyService {
 
     List<StrategyListDto> findByParams(StrategyFindDto strategyFind);
 
-    Strategy updateName(UpdateNameDto updateNameDto);
+    StrategyDetailDto updateName(UpdateNameDto updateNameDto);
 
-    Strategy create(StrategyCreateDto strategyCreateDto);
+    StrategyDetailDto create(StrategyCreateDto strategyCreateDto);
 
     void deleteById(Long id);
 

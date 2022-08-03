@@ -1,8 +1,9 @@
 package com.marcomarchionni.ibportfolio.rest;
 
-import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.models.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioDetailDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioListDto;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,22 +23,22 @@ public class PortfolioController {
     }
 
     @GetMapping
-    public List<Portfolio> findAll() {
+    public List<PortfolioListDto> findAll() {
         return portfolioService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Portfolio findById(@PathVariable Long id) {
+    public PortfolioDetailDto findById(@PathVariable Long id) {
         return portfolioService.findById(id);
     }
 
     @PostMapping
-    public Portfolio create(@RequestBody @Valid PortfolioCreateDto portfolioCreate) {
+    public PortfolioDetailDto create(@RequestBody @Valid PortfolioCreateDto portfolioCreate) {
         return portfolioService.create(portfolioCreate);
     }
 
     @PutMapping
-    public Portfolio updateName(@RequestBody @Valid UpdateNameDto updateName) {
+    public PortfolioDetailDto updateName(@RequestBody @Valid UpdateNameDto updateName) {
         return portfolioService.updateName(updateName);
     }
 

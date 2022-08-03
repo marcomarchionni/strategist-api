@@ -9,8 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class StrategyMapperTest {
@@ -32,5 +31,6 @@ class StrategyMapperTest {
         System.out.println(strategy);
         assertEquals(strategyCreateDto.getName(), strategy.getName());
         assertEquals(portfolio.getId(), strategy.getPortfolio().getId());
+        assertNull(strategy.getId());
     }
 }

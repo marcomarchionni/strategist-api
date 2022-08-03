@@ -40,7 +40,7 @@ class PositionControllerIT {
     StrategyRepository strategyRepository;
 
     @ParameterizedTest
-    @CsvSource({",ZM,,0",",DIS,STK,1","true,,,2"})
+    @CsvSource({",ZM,,0",",DIS,STK,1","true,,,3"})
     void findByParamsSuccess(String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/positions")
@@ -80,7 +80,7 @@ class PositionControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.symbol", is(expectedSymbol)))
-                .andExpect(jsonPath("$.strategy.id", is(Math.toIntExact(strategyId))));
+                .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategyId))));
     }
 
 

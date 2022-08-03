@@ -6,35 +6,40 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEnti
 import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.models.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
-import com.marcomarchionni.ibportfolio.models.mapping.PortfolioMapperImpl;
+import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioDetailDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioListDto;
+import com.marcomarchionni.ibportfolio.models.mapping.PortfolioMapper;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
 
     PortfolioRepository portfolioRepository;
-    PortfolioMapperImpl portfolioMapper;
+    PortfolioMapper portfolioMapper;
 
     @Autowired
-    public PortfolioServiceImpl(PortfolioRepository portfolioRepository, PortfolioMapperImpl portfolioMapper) {
+    public PortfolioServiceImpl(PortfolioRepository portfolioRepository, PortfolioMapper portfolioMapper) {
         this.portfolioRepository = portfolioRepository;
         this.portfolioMapper = portfolioMapper;
     }
 
     @Override
-    public List<Portfolio> findAll() {
-        return portfolioRepository.findAll();
+    public List<PortfolioListDto> findAll() {
+        List<Portfolio> portfolios = portfolioRepository.findAll();
+        return portfolios.stream().map(portfolioMapper::toPortfolioListDto).collect(Collectors.toList());
     }
 
     @Override
-    public Portfolio findById(Long id) {
-        return portfolioRepository.findById(id).orElseThrow(
+    public PortfolioDetailDto findById(Long id) {
+        Portfolio portfolio = portfolioRepository.findById(id).orElseThrow(
                 ()-> new EntityNotFoundException("Portfolio with id: " + id + " not found")
         );
+        return portfolioMapper.toPortfolioDetailDto(portfolio);
     }
 
     @Override
@@ -50,18 +55,18 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Portfolio create(PortfolioCreateDto portfolioCreateDto) {
+    public PortfolioDetailDto create(PortfolioCreateDto portfolioCreateDto) {
         Portfolio portfolio = portfolioMapper.toEntity(portfolioCreateDto);
-        return this.save(portfolio);
+        return portfolioMapper.toPortfolioDetailDto(this.save(portfolio));
     }
 
     @Override
-    public Portfolio updateName(UpdateNameDto dto) {
-        Portfolio targetPortfolio = portfolioRepository.findById(dto.getId()).orElseThrow(
+    public PortfolioDetailDto updateName(UpdateNameDto dto) {
+        Portfolio portfolio = portfolioRepository.findById(dto.getId()).orElseThrow(
                 ()->new EntityNotFoundException("Portfolio with id: " + dto.getId() + " not found.")
         );
-        targetPortfolio.setName(dto.getName());
-        return this.save(targetPortfolio);
+        portfolio.setName(dto.getName());
+        return portfolioMapper.toPortfolioDetailDto(this.save(portfolio));
     }
 
     private Portfolio save(Portfolio portfolio) {

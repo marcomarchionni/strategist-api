@@ -1,7 +1,5 @@
 package com.marcomarchionni.ibportfolio.models.dtos.response;
 
-import com.marcomarchionni.ibportfolio.models.domain.Dividend;
-import com.marcomarchionni.ibportfolio.models.domain.Position;
 import com.marcomarchionni.ibportfolio.models.validation.PortfolioName;
 import com.marcomarchionni.ibportfolio.models.validation.StrategyName;
 import lombok.AllArgsConstructor;
@@ -34,8 +32,8 @@ public class StrategyDetailDto {
     private List<TradeListDto> trades;
 
     @NotNull
-    private List<Position> positions;
+    private List<PositionListDto> positions;
 
     @NotNull
-    private List<Dividend> dividends;
+    private List<DividendListDto> dividends;
 }

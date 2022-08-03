@@ -61,22 +61,21 @@ public class StrategyServiceImpl implements StrategyService {
     }
 
     @Override
-    public Strategy updateName(UpdateNameDto updateNameDto) {
+    public StrategyDetailDto updateName(UpdateNameDto updateNameDto) {
         Strategy strategy = strategyRepository.findById(updateNameDto.getId()).orElseThrow(
                 ()-> new EntityNotFoundException("Strategy with id: " + updateNameDto.getId() + "not found")
         );
         strategy.setName(updateNameDto.getName());
-        return this.save(strategy);
+        return strategyMapper.toStrategyDetailDto(this.save(strategy));
     }
 
     @Override
-    public Strategy create(StrategyCreateDto strategyCreateDto) {
+    public StrategyDetailDto create(StrategyCreateDto strategyCreateDto) {
         Portfolio portfolio = portfolioRepository.findById(strategyCreateDto.getPortfolioId()).orElseThrow(
                 ()-> new EntityNotFoundException("Portfolio with id: " + strategyCreateDto.getPortfolioId() + " not found")
         );
-        Strategy strategy = strategyMapper.toEntity(strategyCreateDto);
-        strategy.setPortfolio(portfolio);
-        return this.save(strategy);
+        Strategy createdStrategy = Strategy.builder().name(strategyCreateDto.getName()).portfolio(portfolio).build();
+        return strategyMapper.toStrategyDetailDto(this.save(createdStrategy));
     }
 
     private Strategy save(Strategy strategy) {

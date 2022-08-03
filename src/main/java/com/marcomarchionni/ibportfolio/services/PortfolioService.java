@@ -1,20 +1,21 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.models.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioDetailDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioListDto;
 
 import java.util.List;
 
 public interface PortfolioService {
 
-    List<Portfolio> findAll();
+    List<PortfolioListDto> findAll();
 
-    Portfolio findById(Long id);
+    PortfolioDetailDto findById(Long id);
 
-    Portfolio create(PortfolioCreateDto portfolio);
+    PortfolioDetailDto create(PortfolioCreateDto portfolio);
 
-    Portfolio updateName(UpdateNameDto updateNameDto);
+    PortfolioDetailDto updateName(UpdateNameDto updateNameDto);
 
     void deleteById(Long id);
 }

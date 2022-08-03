@@ -3,13 +3,17 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioDetailDto;
+import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioListDto;
+import com.marcomarchionni.ibportfolio.models.mapping.PortfolioMapper;
+import com.marcomarchionni.ibportfolio.models.mapping.PortfolioMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +31,8 @@ class PortfolioServiceImplTest {
     @Mock
     PortfolioRepository portfolioRepository;
 
-    @InjectMocks
-    PortfolioServiceImpl portfolioService;
+    PortfolioMapper portfolioMapper;
+    PortfolioService portfolioService;
 
     List<Portfolio> portfolios;
     Portfolio portfolio;
@@ -37,12 +41,15 @@ class PortfolioServiceImplTest {
     void setup() {
         portfolios = getSamplePortfolios();
         portfolio = getSamplePortfolio("MF StockAdvisor");
+        portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
+        portfolioService = new PortfolioServiceImpl(portfolioRepository, portfolioMapper);
     }
 
     @Test
     void findAll() {
         when(portfolioRepository.findAll()).thenReturn(portfolios);
-        List<Portfolio> actualPortfolios = portfolioService.findAll();
+
+        List<PortfolioListDto> actualPortfolios = portfolioService.findAll();
 
         assertEquals(actualPortfolios.size(), portfolios.size());
     }
@@ -51,8 +58,9 @@ class PortfolioServiceImplTest {
     void findByIdSuccess() {
         when(portfolioRepository.findById(any())).thenReturn(Optional.of(portfolio));
 
-        Portfolio actualPortfolio = portfolioService.findById(1L);
-        assertEquals(actualPortfolio, portfolio);
+        PortfolioDetailDto actualPortfolioDto = portfolioService.findById(1L);
+        assertEquals(actualPortfolioDto.getId(), portfolio.getId());
+        assertEquals(actualPortfolioDto.getName(), portfolio.getName());
     }
 
     @Test
@@ -71,11 +79,11 @@ class PortfolioServiceImplTest {
         when(portfolioRepository.findById(any())).thenReturn(Optional.of(originalPortfolio));
         when(portfolioRepository.save(expectedPortfolio)).thenReturn(expectedPortfolio);
 
-        Portfolio actualPortfolio = portfolioService.updateName(updateNameDto);
+        PortfolioDetailDto actualPortfolioDto = portfolioService.updateName(updateNameDto);
 
-        assertNotNull(actualPortfolio);
-        assertEquals(actualPortfolio.getId(), updateNameDto.getId());
-        assertEquals(actualPortfolio.getName(), updateNameDto.getName());
+        assertNotNull(actualPortfolioDto);
+        assertEquals(actualPortfolioDto.getId(), updateNameDto.getId());
+        assertEquals(actualPortfolioDto.getName(), updateNameDto.getName());
     }
 
     @Test
