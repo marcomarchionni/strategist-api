@@ -1,14 +1,14 @@
 package com.marcomarchionni.ibportfolio.update;
 
-import com.marcomarchionni.ibportfolio.models.domain.Dividend;
-import com.marcomarchionni.ibportfolio.models.domain.FlexInfo;
-import com.marcomarchionni.ibportfolio.models.domain.Position;
-import com.marcomarchionni.ibportfolio.models.domain.Trade;
+import com.marcomarchionni.ibportfolio.model.domain.Dividend;
+import com.marcomarchionni.ibportfolio.model.domain.FlexInfo;
+import com.marcomarchionni.ibportfolio.model.domain.Position;
+import com.marcomarchionni.ibportfolio.model.domain.Trade;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.FlexInfoRepository;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
-import com.marcomarchionni.ibportfolio.services.ResponseParser;
+import com.marcomarchionni.ibportfolio.update.parsing.ResponseParser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

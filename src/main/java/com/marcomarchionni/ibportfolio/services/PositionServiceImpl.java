@@ -1,15 +1,15 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.models.domain.Position;
-import com.marcomarchionni.ibportfolio.models.domain.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.PositionFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.PositionListDto;
-import com.marcomarchionni.ibportfolio.models.mapping.PositionMapper;
-import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
+import com.marcomarchionni.ibportfolio.model.domain.Position;
+import com.marcomarchionni.ibportfolio.model.domain.Strategy;
+import com.marcomarchionni.ibportfolio.model.dtos.request.PositionFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.PositionListDto;
+import com.marcomarchionni.ibportfolio.model.mapping.PositionMapper;
+import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,11 +50,11 @@ public class PositionServiceImpl implements PositionService{
     }
 
     @Override
-    public List<PositionListDto> findByParams(PositionFindDto positionCriteria) {
-        List<Position> positions = positionRepository.findWithParameters(
-                                            positionCriteria.getTagged(),
-                                            positionCriteria.getSymbol(),
-                                            positionCriteria.getAssetCategory()
+    public List<PositionListDto> findByFilter(PositionFindDto positionFind) {
+        List<Position> positions = positionRepository.findByParams(
+                                            positionFind.getTagged(),
+                                            positionFind.getSymbol(),
+                                            positionFind.getAssetCategory()
         );
         return positions.stream().map(positionMapper::toPositionListDto).collect(Collectors.toList());
     }

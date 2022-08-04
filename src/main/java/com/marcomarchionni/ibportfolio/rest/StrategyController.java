@@ -1,10 +1,10 @@
 package com.marcomarchionni.ibportfolio.rest;
 
-import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyCreateDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.StrategyDetailDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.StrategyListDto;
 import com.marcomarchionni.ibportfolio.services.StrategyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +24,8 @@ public class StrategyController {
     }
 
     @GetMapping
-    public List<StrategyListDto> findByParams(@Valid StrategyFindDto strategyFind) {
-        return strategyService.findByParams(strategyFind);
+    public List<StrategyListDto> findByFilter(@Valid StrategyFindDto strategyFind) {
+        return strategyService.findByFilter(strategyFind);
     }
 
     @GetMapping("/{id}")

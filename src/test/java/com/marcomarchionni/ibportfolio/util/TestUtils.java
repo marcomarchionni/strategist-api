@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.util;
 
-import com.marcomarchionni.ibportfolio.models.domain.*;
-import com.marcomarchionni.ibportfolio.models.dtos.request.DividendFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.PositionFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.TradeFindDto;
+import com.marcomarchionni.ibportfolio.model.domain.*;
+import com.marcomarchionni.ibportfolio.model.dtos.request.DividendFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.PositionFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.TradeFindDto;
 
 
 import java.math.BigDecimal;

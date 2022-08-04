@@ -7,20 +7,21 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class Pointcuts {
+
     @Pointcut("within(com.marcomarchionni.ibportfolio.services.*)")
     public void serviceClasses() {}
 
     @Pointcut("within(com.marcomarchionni.ibportfolio.rest.*)")
     public void controllerClasses() {}
 
+    @Pointcut("serviceClasses() || controllerClasses()")
+    public void serviceAndControllerClasses() {}
+
     @Pointcut("execution(java.util.List com.marcomarchionni.ibportfolio.*.*.*(..)))")
     public void returningList() {}
 
-    @Pointcut("execution(com.marcomarchionni.ibportfolio.models.* com.marcomarchionni.ibportfolio.*.*.*(..)))")
+    @Pointcut("execution(com.marcomarchionni.ibportfolio.model.domain.* com.marcomarchionni.ibportfolio.*.*.*(..)))")
     public void returningEntities() {}
-
-    @Pointcut("serviceClasses() || controllerClasses()")
-    public void serviceAndControllerClasses() {}
 
     @Pointcut("controllerClasses() && returningList()")
     public void controllerClassesReturningList() {}

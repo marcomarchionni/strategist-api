@@ -1,12 +1,12 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.models.domain.Dividend;
-import com.marcomarchionni.ibportfolio.models.domain.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.request.DividendFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.DividendListDto;
-import com.marcomarchionni.ibportfolio.models.mapping.DividendMapper;
+import com.marcomarchionni.ibportfolio.model.domain.Dividend;
+import com.marcomarchionni.ibportfolio.model.domain.Strategy;
+import com.marcomarchionni.ibportfolio.model.dtos.request.DividendFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.model.mapping.DividendMapper;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,14 +40,14 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public List<DividendListDto> findByParams(DividendFindDto criteria) {
-        List<Dividend> dividends = dividendRepository.findWithParameters(
-                criteria.getExDateFrom(),
-                criteria.getExDateTo(),
-                criteria.getPayDateFrom(),
-                criteria.getPayDateTo(),
-                criteria.getTagged(),
-                criteria.getSymbol()
+    public List<DividendListDto> findByFilter(DividendFindDto dividendFind) {
+        List<Dividend> dividends = dividendRepository.findByParams(
+                dividendFind.getExDateFrom(),
+                dividendFind.getExDateTo(),
+                dividendFind.getPayDateFrom(),
+                dividendFind.getPayDateTo(),
+                dividendFind.getTagged(),
+                dividendFind.getSymbol()
         );
         return dividends.stream().map(dividendMapper::toDividendListDto).collect(Collectors.toList());
     }

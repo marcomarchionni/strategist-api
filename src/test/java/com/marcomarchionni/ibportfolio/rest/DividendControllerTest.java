@@ -1,12 +1,12 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.domain.Dividend;
-import com.marcomarchionni.ibportfolio.models.domain.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.DividendListDto;
-import com.marcomarchionni.ibportfolio.models.mapping.DividendMapper;
-import com.marcomarchionni.ibportfolio.models.mapping.DividendMapperImpl;
+import com.marcomarchionni.ibportfolio.model.domain.Dividend;
+import com.marcomarchionni.ibportfolio.model.domain.Strategy;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.model.mapping.DividendMapper;
+import com.marcomarchionni.ibportfolio.model.mapping.DividendMapperImpl;
 import com.marcomarchionni.ibportfolio.services.DividendService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +68,7 @@ class DividendControllerTest {
     @Test
     void getWithParameters() throws Exception {
 
-        when(dividendService.findByParams(any())).thenReturn(dividendListDtos);
+        when(dividendService.findByFilter(any())).thenReturn(dividendListDtos);
 
         mockMvc.perform(get("/dividends"))
                 .andExpect(status().isOk())
@@ -79,7 +79,7 @@ class DividendControllerTest {
     @Test
     void getWithParametersException() throws Exception {
 
-        when(dividendService.findByParams(any())).thenReturn(dividendListDtos);
+        when(dividendService.findByFilter(any())).thenReturn(dividendListDtos);
 
         mockMvc.perform(get("/dividends"))
                 .andExpect(status().isOk())

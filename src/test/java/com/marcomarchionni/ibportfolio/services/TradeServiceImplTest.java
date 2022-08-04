@@ -2,13 +2,13 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.ibportfolio.models.domain.Strategy;
-import com.marcomarchionni.ibportfolio.models.domain.Trade;
-import com.marcomarchionni.ibportfolio.models.dtos.request.TradeFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.TradeListDto;
-import com.marcomarchionni.ibportfolio.models.mapping.TradeMapper;
-import com.marcomarchionni.ibportfolio.models.mapping.TradeMapperImpl;
+import com.marcomarchionni.ibportfolio.model.domain.Strategy;
+import com.marcomarchionni.ibportfolio.model.domain.Trade;
+import com.marcomarchionni.ibportfolio.model.dtos.request.TradeFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.model.mapping.TradeMapper;
+import com.marcomarchionni.ibportfolio.model.mapping.TradeMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,10 +92,10 @@ class TradeServiceImplTest {
     @Test
     void findWithParametersSuccess() {
 
-        when(tradeRepository.findWithParameters(any(),any(),any(),any(),any())).thenReturn(trades);
+        when(tradeRepository.findByParams(any(),any(),any(),any(),any())).thenReturn(trades);
         int expectedSize = trades.size();
 
-        List<TradeListDto> actualTrades = tradeService.findByParams(tradeCriteria);
+        List<TradeListDto> actualTrades = tradeService.findByFilter(tradeCriteria);
 
         assertEquals(expectedSize, actualTrades.size());
     }

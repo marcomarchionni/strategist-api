@@ -3,14 +3,14 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
-import com.marcomarchionni.ibportfolio.models.domain.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.StrategyListDto;
-import com.marcomarchionni.ibportfolio.models.mapping.StrategyMapper;
+import com.marcomarchionni.ibportfolio.model.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.model.domain.Strategy;
+import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyCreateDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.StrategyDetailDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.model.mapping.StrategyMapper;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class StrategyServiceImpl implements StrategyService {
     }
 
     @Override
-    public List<StrategyListDto> findByParams(StrategyFindDto strategyFind) {
+    public List<StrategyListDto> findByFilter(StrategyFindDto strategyFind) {
         List<Strategy> strategies = strategyRepository.findByParams(strategyFind.getName());
         return strategies.stream().map(strategyMapper::toStrategyListDto).collect(Collectors.toList());
     }

@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -40,8 +39,7 @@ class TradeControllerIT {
 
     @ParameterizedTest
     @CsvSource({",,,ZM,,1",",,,TTWO,STK,2",",2022-06-14,true,,,1"})
-//    @CsvSource({",,,TTWO,STK,2"})
-    void findWithCriteriaSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
+    void findByFilterSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/trades")
                         .param("tradeDateFrom", tradeDateFrom)
@@ -49,7 +47,6 @@ class TradeControllerIT {
                         .param("tagged", tagged)
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(expectedSize)));
@@ -57,7 +54,7 @@ class TradeControllerIT {
 
     @ParameterizedTest
     @CsvSource({"pippo,,,,STK",",,farse,ZM,","1969-01-01,,,,,","2022-06-14,2022-06-13,,,,"})
-    void findWithCriteriaBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
+    void findByFilterBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/trades")
                         .param("tradeDateFrom", tradeDateFrom)
@@ -65,7 +62,6 @@ class TradeControllerIT {
                         .param("tagged", tagged)
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
-                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is(400)));
@@ -80,7 +76,6 @@ class TradeControllerIT {
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(tradeUpdate)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.symbol", is(expectedSymbol)))
@@ -96,7 +91,6 @@ class TradeControllerIT {
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(tradeUpdate)))
-                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").isNotEmpty());
@@ -107,7 +101,6 @@ class TradeControllerIT {
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }

@@ -1,12 +1,12 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.domain.Dividend;
-import com.marcomarchionni.ibportfolio.models.domain.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.request.DividendFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.DividendListDto;
-import com.marcomarchionni.ibportfolio.models.mapping.DividendMapper;
-import com.marcomarchionni.ibportfolio.models.mapping.DividendMapperImpl;
+import com.marcomarchionni.ibportfolio.model.domain.Dividend;
+import com.marcomarchionni.ibportfolio.model.domain.Strategy;
+import com.marcomarchionni.ibportfolio.model.dtos.request.DividendFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.model.mapping.DividendMapper;
+import com.marcomarchionni.ibportfolio.model.mapping.DividendMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,9 +57,9 @@ class DividendServiceImplTest {
     @Test
     void findByParams() {
 
-        when(dividendRepository.findWithParameters(any(), any(), any(), any(), any(), any())).thenReturn(dividends);
+        when(dividendRepository.findByParams(any(), any(), any(), any(), any(), any())).thenReturn(dividends);
 
-        List<DividendListDto> foundDividends = dividendService.findByParams(
+        List<DividendListDto> foundDividends = dividendService.findByFilter(
                 dividendFind);
 
         assertEquals(dividends.size(), foundDividends.size() );

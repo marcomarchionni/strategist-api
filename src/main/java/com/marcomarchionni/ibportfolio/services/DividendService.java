@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.domain.Dividend;
-import com.marcomarchionni.ibportfolio.models.dtos.request.DividendFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.model.domain.Dividend;
+import com.marcomarchionni.ibportfolio.model.dtos.request.DividendFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.DividendListDto;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public interface DividendService {
 
     DividendListDto updateStrategyId(UpdateStrategyDto dividendToUpdate);
 
-    List<DividendListDto> findByParams(DividendFindDto dividendCriteria);
+    List<DividendListDto> findByFilter(DividendFindDto dividendCriteria);
 }

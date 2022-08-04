@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.dtos.request.PortfolioCreateDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioListDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.PortfolioCreateDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioDetailDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioListDto;
 
 import java.util.List;
 

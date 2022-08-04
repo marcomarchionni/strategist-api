@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.rest;
 
-import com.marcomarchionni.ibportfolio.models.dtos.request.DividendFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.DividendFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.DividendListDto;
 import com.marcomarchionni.ibportfolio.services.DividendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +22,8 @@ public class DividendController {
     }
 
     @GetMapping
-    public List<DividendListDto> findByParams(@Valid DividendFindDto dividendFind) {
-        return dividendService.findByParams(dividendFind);
+    public List<DividendListDto> findByFilter(@Valid DividendFindDto dividendFind) {
+        return dividendService.findByFilter(dividendFind);
     }
 
     @PutMapping

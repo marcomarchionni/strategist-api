@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.domain.FlexInfo;
+import com.marcomarchionni.ibportfolio.model.domain.FlexInfo;
 import com.marcomarchionni.ibportfolio.repositories.FlexInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class FlexInfoServiceImpl implements FlexInfoService {
     }
 
     @Override
-    public LocalDate getLatestDateWithDataInDb() {
+    public LocalDate getLastReportDate() {
         Optional<FlexInfo> optionalLastFlex = flexInfoRepository.findFirstByOrderByToDateDesc();
         return optionalLastFlex.map(FlexInfo::getToDate).orElse(LocalDate.MIN);
     }

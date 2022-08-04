@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.repositories;
 
-import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.model.domain.Portfolio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

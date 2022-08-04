@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
-import com.marcomarchionni.ibportfolio.models.dtos.request.PortfolioCreateDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.model.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.model.dtos.request.PortfolioCreateDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,8 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePortfolio;
 import static org.hamcrest.Matchers.*;
@@ -76,11 +74,24 @@ class PortfolioControllerIT {
         mockMvc.perform(post("/portfolios")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(portfolioCreateDto)))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.name", is("Super Saver")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Super Portfolio","Marco's Portfolio","Zipp"})
+    void updatePortfolioNameSuccess(String portfolioName) throws Exception {
+
+        UpdateNameDto updateName = UpdateNameDto.builder().id(1L).name(portfolioName).build();
+
+        mockMvc.perform(put("/portfolios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(updateName)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name", is(updateName.getName())));
     }
 
     @ParameterizedTest
@@ -96,36 +107,6 @@ class PortfolioControllerIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"Super Portfolio","Marco's Portfolio","Zipp"})
-    void updatePortfolioNameSuccess(String portfolioName) throws Exception {
-
-        UpdateNameDto updateName = UpdateNameDto.builder().id(1L).name(portfolioName).build();
-
-        mockMvc.perform(put("/portfolios")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(updateName)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(updateName.getName())));
-    }
-
-    @Test
-    void findById() {
-        Optional<Portfolio> portfolio = portfolioRepository.findById(1L);
-        assertTrue(portfolio.isPresent());
-    }
-
-    @Test
-    void deleteByIdException() throws Exception {
-        Long portfolioId = 1L;
-        assertTrue(portfolioRepository.findById(portfolioId).isPresent());
-
-        mockMvc.perform(delete("/portfolios/{id}", portfolioId))
-                .andDo(print())
-                .andExpect(status().is4xxClientError());
-    }
-
     @Test
     void deleteByIdSuccess() throws Exception {
         Long portfolioId = 3L;
@@ -136,5 +117,15 @@ class PortfolioControllerIT {
                 .andExpect(status().isOk());
 
         assertTrue(portfolioRepository.findById(portfolioId).isEmpty());
+    }
+
+    @Test
+    void deleteByIdException() throws Exception {
+        Long portfolioId = 1L;
+        assertTrue(portfolioRepository.findById(portfolioId).isPresent());
+
+        mockMvc.perform(delete("/portfolios/{id}", portfolioId))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
     }
 }

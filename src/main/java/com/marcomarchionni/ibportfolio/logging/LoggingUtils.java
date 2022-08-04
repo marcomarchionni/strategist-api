@@ -3,23 +3,22 @@ package com.marcomarchionni.ibportfolio.logging;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.CodeSignature;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Slf4j
-@Component
 public class LoggingUtils {
 
-    public static void logClassAndMethodNameHeader(JoinPoint joinPoint) {
-        logHeader(getClassAndMethodName(joinPoint));
-    }
-
-    private static String getClassAndMethodName(JoinPoint joinPoint) {
+    public static String getClassAndMethodName(JoinPoint joinPoint) {
         return joinPoint.getSignature().toShortString();
     }
 
+    public static String getSimpleClassName(JoinPoint joinPoint) {
+        return joinPoint.getSignature().getDeclaringType().getSimpleName();
+    }
+
     public static String getEntitiesNumberAndName(List<?> resultEntities) {
+
         if (resultEntities.size() == 0) {
             return "0 entities";
         } else {
@@ -39,21 +38,20 @@ public class LoggingUtils {
         return paramNamesAndValues.toString();
     }
 
-    public static void logException(Exception ex) {
-        LoggingUtils.logReturn("Exception thrown, message: " + ex.getMessage());
+    public static void logCall(String string) {
+        log.info(">>>> {}", string);
     }
-
-    public static void logHeader(String string) {
-        log.info(">>>> " + string);
-    }
-    public static void logBody(String string) {
-        log.info("---- " + string);
+    public static void logPlain(String string) {
+        log.info("---- {}", string);
     }
     public static void logReturn(String string) {
-        log.info("<<<< " + string);
+        log.info("<<<< {}", string);
     }
-    public static void logException(String string) {
-        log.info("!!!! " + string);
+    public static void logWarning(String string) {
+        log.warn("!!!! {}", string);
+    }
+    public static void logOk(String string) {
+        log.info("++++ {}", string);
     }
 }
 

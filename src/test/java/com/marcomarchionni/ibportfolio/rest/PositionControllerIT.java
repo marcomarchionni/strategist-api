@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,6 @@ class PositionControllerIT {
                         .param("tagged", tagged)
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(expectedSize)));
@@ -60,7 +59,6 @@ class PositionControllerIT {
                         .param("tagged", tagged)
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
-                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is(400)));

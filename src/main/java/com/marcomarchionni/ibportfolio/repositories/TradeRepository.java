@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.repositories;
 
-import com.marcomarchionni.ibportfolio.models.domain.Trade;
+import com.marcomarchionni.ibportfolio.model.domain.Trade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,9 +18,9 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
             "(:symbol is null or t.symbol = :symbol) and" +
             "(:assetCategory is null or t.assetCategory = :assetCategory) and" +
             "(:tagged is null or ((:tagged is true and t.strategy is not null ) or (:tagged is false and t.strategy is null)))")
-    List<Trade> findWithParameters(@Param("startDate") LocalDate startDate,
-                                   @Param ("endDate") LocalDate endDate,
-                                   @Param("tagged") Boolean tagged,
-                                   @Param("symbol") String symbol,
-                                   @Param("assetCategory") String assetCategory);
+    List<Trade> findByParams(@Param("startDate") LocalDate startDate,
+                             @Param ("endDate") LocalDate endDate,
+                             @Param("tagged") Boolean tagged,
+                             @Param("symbol") String symbol,
+                             @Param("assetCategory") String assetCategory);
 }

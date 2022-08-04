@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.Test;
@@ -39,8 +39,7 @@ class DividendControllerIT {
     StrategyRepository strategyRepository;
 
     @ParameterizedTest
-//    @CsvSource({"2022-06-01,,,,,,4",",,2022-07-01,2022-07-15,,FDX,1",",,,,true,,1"})
-    @CsvSource({"2022-06-01,,,,,,4"})
+    @CsvSource({"2022-06-01,,,,,,4",",,2022-07-01,2022-07-15,,FDX,1",",,,,true,,1"})
     void findDividendsSuccess(String exDateFrom,
                               String exDateTo,
                               String payDateFrom,
@@ -56,7 +55,6 @@ class DividendControllerIT {
                         .param("payDateTo", payDateTo)
                         .param("tagged", tagged)
                         .param("symbol", symbol))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(expectedSize)));

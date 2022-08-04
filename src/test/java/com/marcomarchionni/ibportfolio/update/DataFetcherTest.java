@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.update;
 
-import com.marcomarchionni.ibportfolio.update.flexDtos.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

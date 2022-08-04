@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.rest;
 
-import com.marcomarchionni.ibportfolio.models.dtos.request.TradeFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.TradeFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.TradeListDto;
 import com.marcomarchionni.ibportfolio.services.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +22,8 @@ public class TradeController {
     }
 
     @GetMapping
-    public List<TradeListDto> findByParams(@Valid TradeFindDto tradeFind) {
-        return tradeService.findByParams(tradeFind);
+    public List<TradeListDto> findByFilter(@Valid TradeFindDto tradeFind) {
+        return tradeService.findByFilter(tradeFind);
     }
 
     @PutMapping

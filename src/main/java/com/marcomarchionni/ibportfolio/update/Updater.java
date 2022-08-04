@@ -1,10 +1,12 @@
 package com.marcomarchionni.ibportfolio.update;
 
-import com.marcomarchionni.ibportfolio.models.domain.Dividend;
-import com.marcomarchionni.ibportfolio.models.domain.FlexInfo;
-import com.marcomarchionni.ibportfolio.models.domain.Position;
-import com.marcomarchionni.ibportfolio.update.flexDtos.FlexQueryResponseDto;
-import com.marcomarchionni.ibportfolio.services.*;
+import com.marcomarchionni.ibportfolio.model.domain.FlexInfo;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.services.DividendService;
+import com.marcomarchionni.ibportfolio.services.FlexInfoService;
+import com.marcomarchionni.ibportfolio.services.PositionService;
+import com.marcomarchionni.ibportfolio.services.TradeService;
+import com.marcomarchionni.ibportfolio.update.parsing.ResponseParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -84,47 +86,30 @@ public class Updater {
 
     private void saveOrUpdate(FlexQueryResponseDto dto) {
 
-        boolean dtoHasTheLatestData = checkIfDtoHasTheLatestData(dto);
-
-        if (dtoHasTheLatestData) {
-
-            // For new data only: delete old positions and save new positions,
-            // delete old open dividends and save new open dividends in db
-            log.info("Delete old positions from db and save new positions");
+        // For new data only:
+        // delete old positions and save new positions,
+        // delete old open dividends and save new open dividends
+        if (hasTheLatestData(dto)) {
             positionService.deleteAll();
-            List<Position> updatedPositions = responseParser.parsePositions(dto);
-            positionService.saveAll(updatedPositions);
-
-            log.info("Delete old open dividends, save new open dividends");
             dividendService.deleteAllOpenDividends();
-            List<Dividend> openDividends = responseParser.parseOpenDividends(dto);
-            dividendService.saveDividends(openDividends);
-
-        } else {
-            log.info(">>> Dto contains archive data >>>>");
+            positionService.saveAll(responseParser.parsePositions(dto));
+            dividendService.saveDividends(responseParser.parseOpenDividends(dto));
         }
 
-        // For new and archive data: save flexInfo, save or update trades and closed dividends in db
-        log.info("Save flexInfo");
-        flexInfoService.save(responseParser.parseFlexInfo(dto));
-
-        log.info("Save trades");
+        // For new and archive data:
+        // save or update trades and closed dividends in db
         tradeService.saveAll(responseParser.parseTrades(dto));
-
-        log.info("Save closed dividends");
         dividendService.saveDividends(responseParser.parseClosedDividends(dto));
 
-        log.info(">>> Dto data saved in db >>>");
+        // Save updateInfo
+        flexInfoService.save(responseParser.parseFlexInfo(dto));
     }
 
+    private boolean hasTheLatestData(FlexQueryResponseDto dto) {
 
-    private boolean checkIfDtoHasTheLatestData(FlexQueryResponseDto dto) {
-
-        FlexInfo flexInfo = responseParser.parseFlexInfo(dto);
-        LocalDate dtoLatestDateWithData = flexInfo.getToDate();
-
-        LocalDate dbLatestDateWithData = flexInfoService.getLatestDateWithDataInDb();
-        return dtoLatestDateWithData.isAfter(dbLatestDateWithData);
+        LocalDate dtoLastReportDate = responseParser.parseFlexInfo(dto).getToDate();
+        LocalDate dbLastReportDate = flexInfoService.getLastReportDate();
+        return dtoLastReportDate.isAfter(dbLastReportDate);
     }
 
     // Detects if the sequence of updates has left undocumented time intervals

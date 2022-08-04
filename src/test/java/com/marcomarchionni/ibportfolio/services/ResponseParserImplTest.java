@@ -1,10 +1,12 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.domain.Dividend;
-import com.marcomarchionni.ibportfolio.models.domain.FlexInfo;
-import com.marcomarchionni.ibportfolio.models.domain.Position;
-import com.marcomarchionni.ibportfolio.models.domain.Trade;
-import com.marcomarchionni.ibportfolio.update.flexDtos.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.model.domain.Dividend;
+import com.marcomarchionni.ibportfolio.model.domain.FlexInfo;
+import com.marcomarchionni.ibportfolio.model.domain.Position;
+import com.marcomarchionni.ibportfolio.model.domain.Trade;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.update.parsing.ResponseParser;
+import com.marcomarchionni.ibportfolio.update.parsing.ResponseParserImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

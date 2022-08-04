@@ -1,12 +1,12 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.models.domain.Portfolio;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.PortfolioListDto;
-import com.marcomarchionni.ibportfolio.models.mapping.PortfolioMapper;
-import com.marcomarchionni.ibportfolio.models.mapping.PortfolioMapperImpl;
+import com.marcomarchionni.ibportfolio.model.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioDetailDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioListDto;
+import com.marcomarchionni.ibportfolio.model.mapping.PortfolioMapper;
+import com.marcomarchionni.ibportfolio.model.mapping.PortfolioMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

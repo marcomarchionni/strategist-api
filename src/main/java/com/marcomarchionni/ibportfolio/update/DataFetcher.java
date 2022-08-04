@@ -1,9 +1,8 @@
 package com.marcomarchionni.ibportfolio.update;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
-import com.marcomarchionni.ibportfolio.update.flexDtos.FlexQueryResponseDto;
-import com.marcomarchionni.ibportfolio.update.flexDtos.FlexStatementResponseDto;
-import lombok.extern.slf4j.Slf4j;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexStatementResponseDto;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -17,7 +16,6 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 
 @Component
-@Slf4j
 public class DataFetcher {
 
     @Value("${token}")
@@ -48,11 +46,10 @@ public class DataFetcher {
                 authUrl, HttpMethod.GET, request, FlexStatementResponseDto.class, token, queryId);
 
         if (response.getBody() == null || response.getStatusCode() != HttpStatus.OK) {
-            throw new IbServerErrorException("Error while invoking external services");
+            throw new IbServerErrorException("Error while invoking external parsing");
         }
 
         // eseguiamo la seconda chiamata utilizzando l'url e il codice restituiti nella prima
-        log.info("Performing second API call with reference code: {}", response.getBody().getReferenceCode());
 
         ResponseEntity<FlexQueryResponseDto> result =
                 restTemplate.exchange(
@@ -64,7 +61,7 @@ public class DataFetcher {
                         response.getBody().getReferenceCode());
 
         if (result.getBody() == null || result.getStatusCode() != HttpStatus.OK) {
-            throw new IbServerErrorException("Error while invoking external services");
+            throw new IbServerErrorException("Error while invoking external parsing");
         }
 
         return result.getBody();
@@ -75,9 +72,6 @@ public class DataFetcher {
             JAXBContext jaxbContext = JAXBContext.newInstance(FlexQueryResponseDto.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-            FlexQueryResponseDto dto = (FlexQueryResponseDto) jaxbUnmarshaller.unmarshal(flexQuery);
-
-            log.info(dto.getQueryName());
-            return dto;
+        return (FlexQueryResponseDto) jaxbUnmarshaller.unmarshal(flexQuery);
     }
 }

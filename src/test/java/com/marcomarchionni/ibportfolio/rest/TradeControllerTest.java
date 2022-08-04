@@ -2,12 +2,12 @@ package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.marcomarchionni.ibportfolio.models.domain.Strategy;
-import com.marcomarchionni.ibportfolio.models.domain.Trade;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.TradeListDto;
-import com.marcomarchionni.ibportfolio.models.mapping.TradeMapper;
-import com.marcomarchionni.ibportfolio.models.mapping.TradeMapperImpl;
+import com.marcomarchionni.ibportfolio.model.domain.Strategy;
+import com.marcomarchionni.ibportfolio.model.domain.Trade;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.model.mapping.TradeMapper;
+import com.marcomarchionni.ibportfolio.model.mapping.TradeMapperImpl;
 import com.marcomarchionni.ibportfolio.services.TradeService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,7 +71,7 @@ class TradeControllerTest {
     @Test
     void getTrades() throws Exception {
 
-        when(tradeService.findByParams(any())).thenReturn(tradeListDtos);
+        when(tradeService.findByFilter(any())).thenReturn(tradeListDtos);
 
         mockMvc.perform(get("/trades"))
                 .andExpect(status().isOk())
@@ -83,7 +83,7 @@ class TradeControllerTest {
     @CsvSource({",,,ZM,",",2022-06-14,true,,"})
     void findTradesSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
-        when(tradeService.findByParams(any())).thenReturn(tradeListDtos);
+        when(tradeService.findByFilter(any())).thenReturn(tradeListDtos);
 
         mockMvc.perform(get("/trades")
                         .param("tradeDateFrom", tradeDateFrom)

@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.repositories;
 
-import com.marcomarchionni.ibportfolio.models.domain.Dividend;
+import com.marcomarchionni.ibportfolio.model.domain.Dividend;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,10 +21,10 @@ public interface DividendRepository extends JpaRepository<Dividend, Long> {
           "(:payDateTo is null or d.payDate < :payDateTo) and" +
           "(:symbol is null or d.symbol = :symbol) and" +
           "(:tagged is null or ((:tagged is true and d.strategy is not null ) or (:tagged is false and d.strategy is null)))")
-  List<Dividend> findWithParameters(@Param("exDateFrom") LocalDate exDateFrom,
-                                    @Param ("exDateTo") LocalDate exDateTo,
-                                    @Param ("payDateFrom") LocalDate payDateFrom,
-                                    @Param ("payDateTo") LocalDate payDateTo,
-                                    @Param("tagged") Boolean tagged,
-                                    @Param("symbol") String symbol);
+  List<Dividend> findByParams(@Param("exDateFrom") LocalDate exDateFrom,
+                              @Param ("exDateTo") LocalDate exDateTo,
+                              @Param ("payDateFrom") LocalDate payDateFrom,
+                              @Param ("payDateTo") LocalDate payDateTo,
+                              @Param("tagged") Boolean tagged,
+                              @Param("symbol") String symbol);
 }

@@ -2,13 +2,13 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.ibportfolio.models.domain.Position;
-import com.marcomarchionni.ibportfolio.models.domain.Strategy;
-import com.marcomarchionni.ibportfolio.models.dtos.request.PositionFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.PositionListDto;
-import com.marcomarchionni.ibportfolio.models.mapping.PositionMapper;
-import com.marcomarchionni.ibportfolio.models.mapping.PositionMapperImpl;
+import com.marcomarchionni.ibportfolio.model.domain.Position;
+import com.marcomarchionni.ibportfolio.model.domain.Strategy;
+import com.marcomarchionni.ibportfolio.model.dtos.request.PositionFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.PositionListDto;
+import com.marcomarchionni.ibportfolio.model.mapping.PositionMapper;
+import com.marcomarchionni.ibportfolio.model.mapping.PositionMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,9 +81,9 @@ class PositionServiceImplTest {
 
     @Test
     void findWithParameters() {
-        when(positionRepository.findWithParameters(any(), any(), any())).thenReturn(samplePositions);
+        when(positionRepository.findByParams(any(), any(), any())).thenReturn(samplePositions);
 
-        List<PositionListDto> positions = positionService.findByParams(positionFind);
+        List<PositionListDto> positions = positionService.findByFilter(positionFind);
 
         assertNotNull(positions);
         assertEquals(positions.size(), samplePositions.size());

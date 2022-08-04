@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.rest;
 
-import com.marcomarchionni.ibportfolio.models.dtos.request.PositionFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.PositionListDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.PositionFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.PositionListDto;
 import com.marcomarchionni.ibportfolio.services.PositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +22,8 @@ public class PositionController {
     }
 
     @GetMapping
-    public List<PositionListDto> findByParams(@Valid PositionFindDto positionFind) {
-        return positionService.findByParams(positionFind);
+    public List<PositionListDto> findByFilter(@Valid PositionFindDto positionFind) {
+        return positionService.findByFilter(positionFind);
     }
 
     @PutMapping

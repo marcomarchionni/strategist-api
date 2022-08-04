@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.models.domain.Position;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.PositionFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.PositionListDto;
+import com.marcomarchionni.ibportfolio.model.domain.Position;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.PositionFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.PositionListDto;
 
 import java.util.List;
 
@@ -15,5 +15,5 @@ public interface PositionService {
 
     PositionListDto updateStrategyId(UpdateStrategyDto position);
 
-    List<PositionListDto> findByParams(PositionFindDto positionCriteria);
+    List<PositionListDto> findByFilter(PositionFindDto positionCriteria);
 }

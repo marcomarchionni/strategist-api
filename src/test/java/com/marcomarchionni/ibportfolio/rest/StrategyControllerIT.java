@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.StrategyFindDto;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyCreateDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

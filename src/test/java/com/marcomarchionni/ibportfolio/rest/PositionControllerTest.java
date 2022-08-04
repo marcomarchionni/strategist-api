@@ -1,11 +1,11 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.models.domain.Position;
-import com.marcomarchionni.ibportfolio.models.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.models.dtos.response.PositionListDto;
-import com.marcomarchionni.ibportfolio.models.mapping.PositionMapper;
-import com.marcomarchionni.ibportfolio.models.mapping.PositionMapperImpl;
+import com.marcomarchionni.ibportfolio.model.domain.Position;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.model.dtos.response.PositionListDto;
+import com.marcomarchionni.ibportfolio.model.mapping.PositionMapper;
+import com.marcomarchionni.ibportfolio.model.mapping.PositionMapperImpl;
 import com.marcomarchionni.ibportfolio.services.PositionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,7 +65,7 @@ class PositionControllerTest {
     @Test
     void getPositions() throws Exception {
 
-        when(positionService.findByParams(any())).thenReturn(positionListDtos);
+        when(positionService.findByFilter(any())).thenReturn(positionListDtos);
 
         mockMvc.perform(get("/positions"))
                 .andExpect(status().isOk())
