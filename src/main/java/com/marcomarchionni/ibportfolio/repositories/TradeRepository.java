@@ -17,7 +17,7 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
             "(:endDate is null or t.tradeDate <= :endDate) and" +
             "(:symbol is null or t.symbol = :symbol) and" +
             "(:assetCategory is null or t.assetCategory = :assetCategory) and" +
-            "(:tagged is null or ((:tagged is true and t.strategy is not null ) or (:tagged is false and t.strategy is null)))")
+            "(:tagged is null or ((:tagged = true and t.strategy is not null ) or (:tagged = false and t.strategy is null)))")
     List<Trade> findByParams(@Param("startDate") LocalDate startDate,
                              @Param ("endDate") LocalDate endDate,
                              @Param("tagged") Boolean tagged,

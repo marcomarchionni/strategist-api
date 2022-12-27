@@ -1,9 +1,13 @@
 package com.marcomarchionni.ibportfolio.model.dtos.flex;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @XmlRootElement(name = "FlexStatementResponse")
 public class FlexStatementResponseDto {
 
@@ -15,14 +19,6 @@ public class FlexStatementResponseDto {
 
     @XmlElement(name = "Url")
     private String url;
-
-    public String getUrl() {
-        return url;
-    }
-
-    public String getReferenceCode() {
-        return referenceCode;
-    }
 
     @XmlAttribute(name = "timestamp")
     private String timestamp;

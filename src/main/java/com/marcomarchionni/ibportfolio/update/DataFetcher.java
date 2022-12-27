@@ -3,7 +3,6 @@ package com.marcomarchionni.ibportfolio.update;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
 import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexStatementResponseDto;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -11,8 +10,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
 
 @Component
@@ -33,7 +32,7 @@ public class DataFetcher {
     public FlexQueryResponseDto fetchFromServer() {
 
         // istanziamo un restTemplate per comporre le chiamate in sequenza
-        ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClients.createDefault());
+        ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         RestTemplate restTemplate = new RestTemplate(requestFactory);
 
         // settiamo gli header come da documentazione

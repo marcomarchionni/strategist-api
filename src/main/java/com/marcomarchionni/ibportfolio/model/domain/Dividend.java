@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.model.domain;
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

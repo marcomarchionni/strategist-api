@@ -78,7 +78,7 @@ class DividendControllerIT {
                         .param("symbol", symbol))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.status", is(400)));
     }
 
@@ -109,7 +109,7 @@ class DividendControllerIT {
                         .content(mapper.writeValueAsString(dividendUpdate)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.message").isNotEmpty());
     }
 
@@ -120,6 +120,6 @@ class DividendControllerIT {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 }

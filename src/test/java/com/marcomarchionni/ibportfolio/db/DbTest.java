@@ -33,6 +33,11 @@ public class DbTest {
     StrategyRepository strategyRepository;
 
     @Test
+    void dbTest00() {
+
+    }
+
+    @Test
     void dBTest1() {
         List<Portfolio> portfolios = portfolioRepository.findAll();
         int initialSize = portfolios.size();

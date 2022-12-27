@@ -53,7 +53,8 @@ class TradeControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"pippo,,,,STK",",,farse,ZM,","1969-01-01,,,,,","2022-06-14,2022-06-13,,,,"})
+    @CsvSource({"pippo,,,,STK"})
+//    @CsvSource({"pippo,,,,STK",",,farse,ZM,","1969-01-01,,,,,","2022-06-14,2022-06-13,,,,"})
     void findByFilterBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/trades")
@@ -63,7 +64,7 @@ class TradeControllerIT {
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.status", is(400)));
     }
 
@@ -92,7 +93,7 @@ class TradeControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(tradeUpdate)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.message").isNotEmpty());
     }
 
@@ -102,6 +103,6 @@ class TradeControllerIT {
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 }

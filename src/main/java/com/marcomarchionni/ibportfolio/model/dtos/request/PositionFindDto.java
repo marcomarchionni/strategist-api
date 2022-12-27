@@ -4,7 +4,7 @@ import com.marcomarchionni.ibportfolio.model.validation.AssetCategory;
 import com.marcomarchionni.ibportfolio.model.validation.NullOrNotBlank;
 import lombok.*;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 @Data
 @Builder

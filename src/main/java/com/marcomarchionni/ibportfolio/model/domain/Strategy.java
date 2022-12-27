@@ -3,8 +3,8 @@ package com.marcomarchionni.ibportfolio.model.domain;
 import com.marcomarchionni.ibportfolio.model.validation.StrategyName;
 import lombok.*;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 

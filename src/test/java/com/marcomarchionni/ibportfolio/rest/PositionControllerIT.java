@@ -60,7 +60,7 @@ class PositionControllerIT {
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.status", is(400)));
     }
 
@@ -92,7 +92,7 @@ class PositionControllerIT {
                         .content(mapper.writeValueAsString(positionUpdate)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.message").isNotEmpty());
     }
 
@@ -103,6 +103,6 @@ class PositionControllerIT {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 }

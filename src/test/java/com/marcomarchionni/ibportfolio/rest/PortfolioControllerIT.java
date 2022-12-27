@@ -104,7 +104,7 @@ class PortfolioControllerIT {
                         .content(mapper.writeValueAsString(badUpdateName)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test

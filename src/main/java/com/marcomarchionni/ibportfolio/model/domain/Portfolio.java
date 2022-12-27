@@ -2,7 +2,7 @@ package com.marcomarchionni.ibportfolio.model.domain;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 

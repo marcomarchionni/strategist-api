@@ -3,7 +3,7 @@ package com.marcomarchionni.ibportfolio.model.dtos.request;
 import com.marcomarchionni.ibportfolio.model.validation.PortfolioName;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @Builder

@@ -2,7 +2,7 @@ package com.marcomarchionni.ibportfolio.model.domain;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Data

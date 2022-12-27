@@ -53,7 +53,7 @@ class StrategyControllerIT {
                         .param("name", strategyFindDto.getName()))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @ParameterizedTest
@@ -106,7 +106,7 @@ class StrategyControllerIT {
                         .content(mapper.writeValueAsString(updateNameDto)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test
