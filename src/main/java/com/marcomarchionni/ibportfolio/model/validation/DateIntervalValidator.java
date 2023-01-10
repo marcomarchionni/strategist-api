@@ -2,16 +2,17 @@ package com.marcomarchionni.ibportfolio.model.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 
 public class DateIntervalValidator implements ConstraintValidator<DateInterval, Object> {
 
-    String fromDateFieldName;
-    String toDateFieldName;
-
+    //TODO: get min, max date from application properties
     final LocalDate MIN_DATE = LocalDate.EPOCH;
     final LocalDate MAX_DATE = LocalDate.now().plusYears(5);
+    String fromDateFieldName;
+    String toDateFieldName;
 
     @Override
     public void initialize(DateInterval constraintAnnotation) {

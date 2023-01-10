@@ -4,7 +4,11 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundEx
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,13 +20,18 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException exc) {
-        return getResponseEntity(exc.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+        return createErrorResponse("entity-not-found", ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({UnableToDeleteEntitiesException.class, UnableToSaveEntitiesException.class})
-    public ResponseEntity<Object> handleConstraintViolationException(Exception exc) {
-        return getResponseEntity(exc.getMessage(), HttpStatus.FORBIDDEN);
+    @ExceptionHandler(UnableToDeleteEntitiesException.class)
+    public ResponseEntity<Object> handleUnableToDeleteException(Exception ex) {
+        return createErrorResponse("unable-to-delete-entities", ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(UnableToSaveEntitiesException.class)
+    public ResponseEntity<Object> handleUnableToSaveException(Exception ex) {
+        return createErrorResponse("unable-to-save-entities", ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler({
@@ -30,23 +39,48 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             IllegalArgumentException.class,
             ConstraintViolationException.class
     })
-    public ResponseEntity<Object> handleBadRequestException(Exception exc) {
-        return getResponseEntity(exc.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> handleBadRequestException(Exception ex) {
+        return createErrorResponse("bad-request", ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return createErrorResponse("http-message-body-not-readable", ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        String message = ex.getMessage().isBlank() ? "Invalid query parameters" : ex.getMessage();
-        return getResponseEntity(message, HttpStatus.BAD_REQUEST);
+        return handleCustomBindException(ex);
+    }
+    /*TODO: override BindException*/
+//    @Override
+//    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+//        return handleCustomBindException(ex);
+//    }
+
+    private ResponseEntity<Object> handleCustomBindException(BindException ex) {
+        String detail = ex
+                .getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .findFirst()
+                .orElse(ex.getMessage());
+        return createErrorResponse("argument-not-valid", detail, HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<Object> getResponseEntity(String message, HttpStatus httpStatus) {
-        ErrorResponse error = new ErrorResponse();
-        error.setStatus(httpStatus.value());
-        error.setMessage(message);
-        error.setTimeStamp(System.currentTimeMillis());
+    private ResponseEntity<Object> createErrorResponse(String type, String detail, HttpStatus httpStatus) {
+        String title = StringUtils.capitalize(type.replace("-", " "));
+        ProblemDetails details = ProblemDetails
+                .builder()
+                .type(type)
+                .title(title)
+                .status(httpStatus.value())
+                .detail(detail)
+                .timeStamp(System.currentTimeMillis())
+                .build();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_PROBLEM_JSON);
-        return new ResponseEntity<>(error, httpHeaders, httpStatus);
+        return new ResponseEntity<>(details, httpHeaders, httpStatus);
     }
 }

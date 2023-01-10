@@ -1,18 +1,17 @@
 package com.marcomarchionni.ibportfolio.update;
 
-import com.marcomarchionni.ibportfolio.model.domain.FlexInfo;
+import com.marcomarchionni.ibportfolio.model.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.services.DividendService;
-import com.marcomarchionni.ibportfolio.services.FlexInfoService;
+import com.marcomarchionni.ibportfolio.services.FlexStatementService;
 import com.marcomarchionni.ibportfolio.services.PositionService;
 import com.marcomarchionni.ibportfolio.services.TradeService;
-import com.marcomarchionni.ibportfolio.update.parsing.ResponseParser;
+import com.marcomarchionni.ibportfolio.services.parsing.OldResponseParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +23,9 @@ public class Updater {
 
     private final DataFetcher dataFetcher;
 
-    private final ResponseParser responseParser;
+    private final OldResponseParser oldResponseParser;
 
-    private final FlexInfoService flexInfoService;
+    private final FlexStatementService flexStatementService;
 
     private final TradeService tradeService;
 
@@ -35,10 +34,10 @@ public class Updater {
     private final DividendService dividendService;
 
     @Autowired
-    public Updater(DataFetcher dataFetcher, ResponseParser responseParser, FlexInfoService flexInfoService, TradeService tradeService, PositionService positionService, DividendService dividendService) {
+    public Updater(DataFetcher dataFetcher, OldResponseParser oldResponseParser, FlexStatementService flexStatementService, TradeService tradeService, PositionService positionService, DividendService dividendService) {
         this.dataFetcher = dataFetcher;
-        this.responseParser = responseParser;
-        this.flexInfoService = flexInfoService;
+        this.oldResponseParser = oldResponseParser;
+        this.flexStatementService = flexStatementService;
         this.tradeService = tradeService;
         this.positionService = positionService;
         this.dividendService = dividendService;
@@ -63,27 +62,6 @@ public class Updater {
         }
     }
 
-
-    public void updateFromFile(File xmlFile) throws Exception {
-
-        // preleviamo i dati dal file
-        FlexQueryResponseDto dto = dataFetcher.fetchFromFile(xmlFile);
-        if (dto == null) {
-            log.info("Exception: Invalid file...");
-            return;
-        }
-
-        // salviamo o aggiorniamo i dati sul db
-        saveOrUpdate(dto);
-
-        // segnaliamo eventuali intervalli temporali senza dati nel db
-        List<TimeInterval> dataGaps = detectUndocumentedTimeIntervals();
-        if (dataGaps.size() > 0) {
-            log.warn(">>> Data gaps detected: " + dataGaps);
-        }
-    }
-
-
     private void saveOrUpdate(FlexQueryResponseDto dto) {
 
         // For new data only:
@@ -92,23 +70,23 @@ public class Updater {
         if (hasTheLatestData(dto)) {
             positionService.deleteAll();
             dividendService.deleteAllOpenDividends();
-            positionService.saveAll(responseParser.parsePositions(dto));
-            dividendService.saveDividends(responseParser.parseOpenDividends(dto));
+            positionService.saveAll(oldResponseParser.parsePositions(dto));
+            dividendService.saveDividends(oldResponseParser.parseOpenDividends(dto));
         }
 
         // For new and archive data:
         // save or update trades and closed dividends in db
-        tradeService.saveAll(responseParser.parseTrades(dto));
-        dividendService.saveDividends(responseParser.parseClosedDividends(dto));
+        tradeService.saveAll(oldResponseParser.parseTrades(dto));
+        dividendService.saveDividends(oldResponseParser.parseClosedDividends(dto));
 
         // Save updateInfo
-        flexInfoService.save(responseParser.parseFlexInfo(dto));
+        flexStatementService.save(oldResponseParser.parseFlexStatement(dto));
     }
 
     private boolean hasTheLatestData(FlexQueryResponseDto dto) {
 
-        LocalDate dtoLastReportDate = responseParser.parseFlexInfo(dto).getToDate();
-        LocalDate dbLastReportDate = flexInfoService.getLastReportDate();
+        LocalDate dtoLastReportDate = oldResponseParser.parseFlexStatement(dto).getToDate();
+        LocalDate dbLastReportDate = flexStatementService.getLastReportDate();
         return dtoLastReportDate.isAfter(dbLastReportDate);
     }
 
@@ -116,22 +94,22 @@ public class Updater {
     private List<TimeInterval> detectUndocumentedTimeIntervals() {
 
         List<TimeInterval> undocumentedTimeIntervals = new ArrayList<>();
-        List<FlexInfo> orderedFlexInfos = flexInfoService.findAllOrderedByFromDateAsc();
+        List<FlexStatement> orderedFlexStatements = flexStatementService.findAllOrderedByFromDateAsc();
 
-        if (orderedFlexInfos.size() <= 1) {
+        if (orderedFlexStatements.size() <= 1) {
 
             // No possible gap in documentation with 1 or 0 updates
             return undocumentedTimeIntervals;
 
         } else {
 
-            LocalDate firstDayWithoutData = orderedFlexInfos.get(0).getToDate().plusDays(1);
+            LocalDate firstDayWithoutData = orderedFlexStatements.get(0).getToDate().plusDays(1);
             LocalDate fromDate, toDate, lastDayWithoutData;
 
-            for (int i = 1; i < orderedFlexInfos.size(); i++) {
+            for (int i = 1; i < orderedFlexStatements.size(); i++) {
 
-                fromDate = orderedFlexInfos.get(i).getFromDate();
-                toDate = orderedFlexInfos.get(i).getToDate();
+                fromDate = orderedFlexStatements.get(i).getFromDate();
+                toDate = orderedFlexStatements.get(i).getToDate();
 
                 if (fromDate.isAfter(firstDayWithoutData)) {
 

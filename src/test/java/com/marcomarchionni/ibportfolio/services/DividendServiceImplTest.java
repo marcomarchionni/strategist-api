@@ -30,18 +30,14 @@ class DividendServiceImplTest {
 
     @Mock
     DividendRepository dividendRepository;
-
     @Mock
     StrategyRepository strategyRepository;
-
     DividendMapper dividendMapper;
-
     DividendService dividendService;
-
-     List<Dividend> dividends;
-     Dividend dividend;
-     Strategy strategy;
-     DividendFindDto dividendFind;
+    List<Dividend> dividends;
+    Dividend dividend;
+    Strategy strategy;
+    DividendFindDto dividendFind;
 
     @BeforeEach
     void setup() {
@@ -50,7 +46,7 @@ class DividendServiceImplTest {
         strategy = getSampleStrategy();
         dividendFind = getSampleDividendCriteria();
         dividendMapper = new DividendMapperImpl(new ModelMapper());
-        dividendService = new DividendServiceImpl(dividendRepository,strategyRepository,dividendMapper);
+        dividendService = new DividendServiceImpl(dividendRepository, strategyRepository, dividendMapper);
     }
 
 
@@ -62,7 +58,7 @@ class DividendServiceImplTest {
         List<DividendListDto> foundDividends = dividendService.findByFilter(
                 dividendFind);
 
-        assertEquals(dividends.size(), foundDividends.size() );
+        assertEquals(dividends.size(), foundDividends.size());
     }
 
     @Test

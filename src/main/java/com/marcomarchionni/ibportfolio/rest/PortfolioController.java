@@ -5,10 +5,9 @@ import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioDetailDto;
 import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioListDto;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,7 +16,6 @@ public class PortfolioController {
 
     PortfolioService portfolioService;
 
-    @Autowired
     public PortfolioController(PortfolioService portfolioService) {
         this.portfolioService = portfolioService;
     }

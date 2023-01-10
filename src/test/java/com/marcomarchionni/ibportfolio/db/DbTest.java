@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.db;
 
 
+import com.marcomarchionni.ibportfolio.model.domain.Dividend;
 import com.marcomarchionni.ibportfolio.model.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.model.domain.Strategy;
 import com.marcomarchionni.ibportfolio.repositories.*;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,13 +34,22 @@ public class DbTest {
     @Autowired
     StrategyRepository strategyRepository;
 
+    @Autowired
+    FlexStatementRepository flexStatementRepository;
+
     @Test
     void dbTest00() {
 
     }
 
     @Test
-    void dBTest1() {
+    void dbFindPortfoliosTest() {
+        List<Portfolio> portfolios = portfolioRepository.findAll();
+        assertEquals(3, portfolios.size());
+    }
+
+    @Test
+    void dbSavePortfolioTest() {
         List<Portfolio> portfolios = portfolioRepository.findAll();
         int initialSize = portfolios.size();
 
@@ -51,15 +62,26 @@ public class DbTest {
     }
 
     @Test
-    void dBTest2() {
-        List<Portfolio> portfolios = portfolioRepository.findAll();
-        assertEquals(3, portfolios.size());
-    }
-
-    @Test
-    void dbTest3() {
+    void dbFindStrategiesTest() {
         List<Strategy> strategies = strategyRepository.findAll();
         assertNotNull(strategies);
         assertTrue(strategies.size() >0);
+    }
+
+    @Test
+    void dbDeleteOpenDividendsTest() {
+        dividendRepository.deleteOpenDividends();
+        List<Dividend> closedDividends = dividendRepository.findAll();
+
+        assertEquals(3, closedDividends.size());
+    }
+
+    @Test
+    void findLastReportedDateTest() {
+        LocalDate expectedDate = LocalDate.of(2022, 7, 8);
+
+        LocalDate lastReportedDate = flexStatementRepository.findLastReportedDate();
+
+        assertEquals(expectedDate, lastReportedDate);
     }
 }

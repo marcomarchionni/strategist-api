@@ -4,10 +4,9 @@ import com.marcomarchionni.ibportfolio.model.dtos.request.DividendFindDto;
 import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.model.dtos.response.DividendListDto;
 import com.marcomarchionni.ibportfolio.services.DividendService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -16,7 +15,6 @@ public class DividendController {
 
     DividendService dividendService;
 
-    @Autowired
     public DividendController(DividendService dividendService) {
         this.dividendService = dividendService;
     }

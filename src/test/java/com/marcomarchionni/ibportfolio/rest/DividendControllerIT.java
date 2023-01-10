@@ -39,14 +39,8 @@ class DividendControllerIT {
     StrategyRepository strategyRepository;
 
     @ParameterizedTest
-    @CsvSource({"2022-06-01,,,,,,4",",,2022-07-01,2022-07-15,,FDX,1",",,,,true,,1"})
-    void findDividendsSuccess(String exDateFrom,
-                              String exDateTo,
-                              String payDateFrom,
-                              String payDateTo,
-                              String tagged,
-                              String symbol,
-                              int expectedSize) throws Exception {
+    @CsvSource({"2022-06-01,,,,,,4", ",,2022-07-01,2022-07-15,,FDX,1", ",,,,true,,1"})
+    void findDividendsSuccess(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo, String tagged, String symbol, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/dividends")
                         .param("exDateFrom", exDateFrom)
@@ -55,19 +49,15 @@ class DividendControllerIT {
                         .param("payDateTo", payDateTo)
                         .param("tagged", tagged)
                         .param("symbol", symbol))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(expectedSize)));
     }
 
     @ParameterizedTest
-    @CsvSource({"pippo,,,,,",",,,,farse,",",,2022-06-02,2022-06-01,,,"})
-    void findDividendsBadRequest(String exDateFrom,
-                                 String exDateTo,
-                                 String payDateFrom,
-                                 String payDateTo,
-                                 String tagged,
-                                 String symbol) throws Exception {
+    @CsvSource({"pippo,,,,,", ",,,,farse,", ",,2022-06-02,2022-06-01,,,"})
+    void findDividendsBadRequest(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo, String tagged, String symbol) throws Exception {
 
         mockMvc.perform(get("/dividends")
                         .param("exDateFrom", exDateFrom)
@@ -83,7 +73,7 @@ class DividendControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"1029120220603,3,NKE","26754720220519,4,CGNX"})
+    @CsvSource({"1029120220603,3,NKE", "26754720220519,4,CGNX"})
     void updateStrategyIdSuccess(Long dividendId, Long strategyId, String expectedSymbol) throws Exception {
 
         UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();
@@ -107,10 +97,9 @@ class DividendControllerIT {
         mockMvc.perform(put("/dividends")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(dividendUpdate)))
-                .andDo(print())
-                .andExpect(status().is4xxClientError())
+                .andDo(print()).andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.message").isNotEmpty());
+                .andExpect(jsonPath("$.type").isNotEmpty());
     }
 
     @Test

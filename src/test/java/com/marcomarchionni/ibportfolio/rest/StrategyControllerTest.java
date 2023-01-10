@@ -12,17 +12,14 @@ import com.marcomarchionni.ibportfolio.model.mapping.StrategyMapperImpl;
 import com.marcomarchionni.ibportfolio.services.StrategyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.hamcrest.Matchers.hasSize;
@@ -33,33 +30,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(StrategyController.class)
 class StrategyControllerTest {
 
+    @Autowired
     MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     StrategyService strategyService;
 
-    @InjectMocks
-    StrategyController strategyController;
-
-    ObjectMapper mapper;
-    StrategyMapper strategyMapper;
-
-    List<Strategy> strategies;
+    ObjectMapper mapper = new ObjectMapper();
+    StrategyMapper strategyMapper = new StrategyMapperImpl(new ModelMapper());
+    List<Strategy> strategies = getSampleStrategies();
     List<StrategyListDto> strategyListDtos;
     StrategyDetailDto strategyDetailDto;
-    Strategy strategy;
+    Strategy strategy = getSampleStrategy();
 
     @BeforeEach
     void setUp() {
-        mapper = new ObjectMapper();
-        strategyMapper = new StrategyMapperImpl(new ModelMapper());
-        mockMvc = MockMvcBuilders.standaloneSetup(strategyController).build();
-        strategies = getSampleStrategies();
-        strategy = getSampleStrategy();
-        strategyListDtos = strategies.stream().map(strategyMapper::toStrategyListDto).collect(Collectors.toList());
+        strategyListDtos = strategies.stream().map(strategyMapper::toStrategyListDto).toList();
         strategyDetailDto = strategyMapper.toStrategyDetailDto(strategy);
     }
 
@@ -103,8 +92,8 @@ class StrategyControllerTest {
         when(strategyService.updateName(updateNameDto)).thenReturn(strategyDetailDto);
 
         mockMvc.perform(put("/strategies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(updateNameDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(updateNameDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -118,8 +107,8 @@ class StrategyControllerTest {
         when(strategyService.create(strategyCreateDto)).thenReturn(strategyDetailDto);
 
         mockMvc.perform(post("/strategies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(strategyCreateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(strategyCreateDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

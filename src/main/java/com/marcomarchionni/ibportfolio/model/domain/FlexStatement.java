@@ -1,13 +1,21 @@
 package com.marcomarchionni.ibportfolio.model.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
-@Entity(name="flex_info")
-public class FlexInfo {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name="flex_statement")
+public class FlexStatement {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +34,5 @@ public class FlexInfo {
     private String period;
 
     @Column(name="when_generated")
-    private LocalDate whenGenerated;
+    private LocalDateTime whenGenerated;
 }

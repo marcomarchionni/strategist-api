@@ -56,7 +56,7 @@ class PortfolioControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"1,4","2,2"})
+    @CsvSource({"1,4", "2,2"})
     void findByIdSuccess(Long id, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/portfolios/{id}", id))
@@ -72,8 +72,8 @@ class PortfolioControllerIT {
         PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name("Super Saver").build();
 
         mockMvc.perform(post("/portfolios")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(portfolioCreateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(portfolioCreateDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", notNullValue()))
@@ -81,7 +81,7 @@ class PortfolioControllerIT {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Super Portfolio","Marco's Portfolio","Zipp"})
+    @ValueSource(strings = {"Super Portfolio", "Marco's Portfolio", "Zipp"})
     void updatePortfolioNameSuccess(String portfolioName) throws Exception {
 
         UpdateNameDto updateName = UpdateNameDto.builder().id(1L).name(portfolioName).build();
@@ -95,7 +95,7 @@ class PortfolioControllerIT {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Saver Portfolio",","})
+    @ValueSource(strings = {"Saver Portfolio", ","})
     void createPortfolioException(String portfolioName) throws Exception {
         UpdateNameDto badUpdateName = UpdateNameDto.builder().name(portfolioName).build();
 

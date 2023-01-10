@@ -32,7 +32,7 @@ class StrategyControllerIT {
     ObjectMapper mapper;
 
     @ParameterizedTest
-    @CsvSource({"ZM long,1",",6"})
+    @CsvSource({"ZM long,1", ",6"})
     void findByParamsSuccess(String strategyName, int expectedSize) throws Exception {
         StrategyFindDto strategyFindDto = StrategyFindDto.builder().name(strategyName).build();
 
@@ -45,7 +45,7 @@ class StrategyControllerIT {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"   ",""})
+    @ValueSource(strings = {"   ", ""})
     void findByParamsException(String strategyName) throws Exception {
         StrategyFindDto strategyFindDto = StrategyFindDto.builder().name(strategyName).build();
 
@@ -57,7 +57,7 @@ class StrategyControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"1,ZM long","2,IBKR put"})
+    @CsvSource({"1,ZM long", "2,IBKR put"})
     void findByIdSuccess(Long id, String expectedName) throws Exception {
 
         mockMvc.perform(get("/strategies/{id}", id))
@@ -73,8 +73,8 @@ class StrategyControllerIT {
         StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("AAPL long").portfolioId(1L).build();
 
         mockMvc.perform(post("/strategies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(strategyCreateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(strategyCreateDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -87,8 +87,8 @@ class StrategyControllerIT {
         UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("NewName").build();
 
         mockMvc.perform(put("/strategies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(updateNameDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(updateNameDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

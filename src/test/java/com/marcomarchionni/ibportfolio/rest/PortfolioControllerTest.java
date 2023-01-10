@@ -11,17 +11,14 @@ import com.marcomarchionni.ibportfolio.model.mapping.PortfolioMapperImpl;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePortfolio;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePortfolios;
@@ -34,20 +31,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(PortfolioController.class)
 class PortfolioControllerTest {
 
-    @Mock
+    @MockBean
     PortfolioService portfolioService;
-
-    @InjectMocks
-    PortfolioController portfolioController;
-
+    @Autowired
     MockMvc mockMvc;
     ObjectMapper mapper;
     PortfolioMapper portfolioMapper;
-
-    List<Portfolio> portfolios;
     List<PortfolioListDto> portfolioListDtos;
     Portfolio portfolio;
     PortfolioDetailDto portfolioDetailDto;
@@ -56,9 +48,10 @@ class PortfolioControllerTest {
     void setup() {
         mapper = new ObjectMapper();
         portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
-        mockMvc = MockMvcBuilders.standaloneSetup(portfolioController).build();
-        portfolios = getSamplePortfolios();
-        portfolioListDtos = portfolios.stream().map(portfolioMapper::toPortfolioListDto).collect(Collectors.toList());
+        portfolioListDtos = getSamplePortfolios()
+                .stream()
+                .map(portfolioMapper::toPortfolioListDto)
+                .toList();
         portfolio = getSamplePortfolio("MFStockAdvisor");
         portfolioDetailDto = portfolioMapper.toPortfolioDetailDto(portfolio);
     }
@@ -91,13 +84,12 @@ class PortfolioControllerTest {
         when(portfolioService.create(any())).thenReturn(portfolioDetailDto);
 
         mockMvc.perform(post("/portfolios")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(portfolioCreateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(portfolioCreateDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name", is(portfolio.getName())));
     }
-
 
     @Test
     void updatePortfolioName() throws Exception {
@@ -107,8 +99,8 @@ class PortfolioControllerTest {
         when(portfolioService.updateName(any())).thenReturn(portfolioDetailDto);
 
         mockMvc.perform(put("/portfolios")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(updateNameDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(updateNameDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name", is(portfolioDetailDto.getName())));

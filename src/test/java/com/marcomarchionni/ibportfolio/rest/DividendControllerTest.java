@@ -11,17 +11,14 @@ import com.marcomarchionni.ibportfolio.services.DividendService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleClosedDividend;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
@@ -34,35 +31,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(DividendController.class)
 class DividendControllerTest {
 
-    @Mock
+    @MockBean
     DividendService dividendService;
-
-    @InjectMocks
-    DividendController dividendController;
-
-    DividendMapper dividendMapper;
-
+    @Autowired
     MockMvc mockMvc;
-    ObjectMapper mapper;
-    List<Dividend> dividends;
+    DividendMapper dividendMapper;
     List<DividendListDto> dividendListDtos;
-    Dividend dividend;
     DividendListDto dividendListDto;
-    Strategy strategy;
 
     @BeforeEach
     void setUp() {
         dividendMapper = new DividendMapperImpl(new ModelMapper());
-        mockMvc = MockMvcBuilders.standaloneSetup(dividendController).build();
-        dividends = TestUtils.getSampleDividends();
-        dividendListDtos = dividends.stream().map(dividendMapper::toDividendListDto).collect(Collectors.toList());
-        dividend = getSampleClosedDividend();
-        dividendListDto = dividendMapper.toDividendListDto(dividend);
-        strategy = getSampleStrategy();
-        mapper = new ObjectMapper();
+        dividendListDtos = TestUtils.getSampleDividends()
+                .stream()
+                .map(dividendMapper::toDividendListDto)
+                .toList();
+        dividendListDto = dividendMapper.toDividendListDto(getSampleClosedDividend());
     }
 
     @Test
@@ -90,8 +77,14 @@ class DividendControllerTest {
     @Test
     void updateStrategyId() throws Exception {
 
-        UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder()
-                .id(dividend.getId()).strategyId(strategy.getId()).build();
+        ObjectMapper mapper = new ObjectMapper();
+        Strategy strategy = getSampleStrategy();
+        Dividend dividend = getSampleClosedDividend();
+        UpdateStrategyDto dividendUpdate = UpdateStrategyDto
+                .builder()
+                .id(dividend.getId())
+                .strategyId(strategy.getId())
+                .build();
         dividend.setStrategy(strategy);
         DividendListDto expectedDividendListDto = dividendMapper.toDividendListDto(dividend);
 

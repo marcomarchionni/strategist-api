@@ -12,19 +12,16 @@ import com.marcomarchionni.ibportfolio.services.TradeService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleTrade;
@@ -37,35 +34,27 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(TradeController.class)
 class TradeControllerTest {
 
-    @Mock
+    @MockBean
     TradeService tradeService;
-
-    @InjectMocks
-    TradeController tradeController;
-
-    ObjectMapper objectMapper;
-
-    TradeMapper tradeMapper;
-
+    @Autowired
     MockMvc mockMvc;
-
+    ObjectMapper objectMapper = new ObjectMapper();
+    TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
+    Trade trade = getSampleTrade();
+    Strategy strategy = getSampleStrategy();
     List<TradeListDto> tradeListDtos;
-    Trade trade;
-    Strategy strategy;
 
     @BeforeEach
     void setUp() {
-        objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         tradeMapper = new TradeMapperImpl(new ModelMapper());
         tradeListDtos = TestUtils.getSampleTrades()
-                .stream().map(tradeMapper::toTradeListDto).collect(Collectors.toList());
-        mockMvc = MockMvcBuilders.standaloneSetup(tradeController).build();
-        trade = getSampleTrade();
-        strategy = getSampleStrategy();
+                .stream()
+                .map(tradeMapper::toTradeListDto)
+                .toList();
     }
 
     @Test
@@ -80,7 +69,7 @@ class TradeControllerTest {
     }
 
     @ParameterizedTest
-    @CsvSource({",,,ZM,",",2022-06-14,true,,"})
+    @CsvSource({",,,ZM,", ",2022-06-14,true,,"})
     void findTradesSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
         when(tradeService.findByFilter(any())).thenReturn(tradeListDtos);
@@ -98,7 +87,7 @@ class TradeControllerTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"pippo,,,,",",,farse,ZM,","1200-01-01,1350-02-12,,,"})
+    @CsvSource({"pippo,,,,", ",,farse,ZM,", "1200-01-01,1350-02-12,,,"})
     void findTradesBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/trades")

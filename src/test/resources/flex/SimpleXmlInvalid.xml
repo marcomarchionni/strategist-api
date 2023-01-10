@@ -1,0 +1,6 @@
+<SimpleFlexQueryResponse queryName="TinyFlex2" type="AF">
+<FlexStatements count="1">
+<FlexStatement accountId="U7169936" fromDate="20220601" toDate="20220630" period="LastMonth" whenGenerated="20220708;120433">
+</FlexStatement>
+</FlexStatements>
+</SimpleFlexQueryResponse>

@@ -13,6 +13,9 @@ import java.util.List;
 public interface DividendRepository extends JpaRepository<Dividend, Long> {
 
     void deleteByOpenClosed(String openClosed);
+    default void deleteOpenDividends() {
+        deleteByOpenClosed("OPEN");
+    }
 
   @Query("SELECT d FROM dividend d WHERE " +
           "(:exDateFrom is null or d.exDate > :exDateFrom) and " +

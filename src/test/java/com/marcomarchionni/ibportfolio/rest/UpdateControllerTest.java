@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.rest;
 
-import com.marcomarchionni.ibportfolio.update.Updater;
+import com.marcomarchionni.ibportfolio.update.FileUpdater;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UpdateControllerTest {
 
     @Mock
-    Updater updater;
+    FileUpdater fileUpdater;
 
     @InjectMocks
     UpdateController updateController;
@@ -29,14 +29,14 @@ class UpdateControllerTest {
     MockMvc mockMvc;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(updateController).build();
     }
 
     @Test
     void updateFromFile() throws Exception {
 
-        doNothing().when(updater).updateFromFile(any());
+        doNothing().when(fileUpdater).update(any());
 
         mockMvc.perform(get("/update/file"))
                 .andExpect(status().isOk())

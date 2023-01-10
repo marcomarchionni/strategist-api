@@ -1,49 +1,51 @@
-package com.marcomarchionni.ibportfolio.update.parsing;
+package com.marcomarchionni.ibportfolio.services.parsing;
 
 import com.marcomarchionni.ibportfolio.model.domain.*;
 import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-@Service
-public class ResponseParserImpl implements ResponseParser {
+@Component
+public class OldResponseParserImpl implements OldResponseParser {
 
     static private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
     static private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd;hhmmss", Locale.ENGLISH);
 
     @Override
-    public FlexInfo parseFlexInfo(FlexQueryResponseDto dto) {
+    public FlexStatement parseFlexStatement(FlexQueryResponseDto dto) {
 
         FlexQueryResponseDto.FlexStatement flexDto = dto.getFlexStatements().get(0).getFlexStatement().get(0);
-        FlexInfo flexInfo = new FlexInfo();
+        FlexStatement flexStatement = new FlexStatement();
 
         if (StringUtils.hasText(flexDto.getAccountId())) {
-            flexInfo.setAccountId(flexDto.getAccountId());
+            flexStatement.setAccountId(flexDto.getAccountId());
         }
         if (StringUtils.hasText(flexDto.getFromDate())) {
-            flexInfo.setFromDate(LocalDate.parse(flexDto.getFromDate(), dateFormatter));
+            flexStatement.setFromDate(LocalDate.parse(flexDto.getFromDate(), dateFormatter));
         }
         if (StringUtils.hasText(flexDto.getToDate())) {
-            flexInfo.setToDate(LocalDate.parse(flexDto.getToDate(), dateFormatter));
+            flexStatement.setToDate(LocalDate.parse(flexDto.getToDate(), dateFormatter));
         }
         if (StringUtils.hasText(flexDto.getPeriod())) {
-            flexInfo.setPeriod(flexDto.getPeriod());
+            flexStatement.setPeriod(flexDto.getPeriod());
         }
         if (StringUtils.hasText(flexDto.getWhenGenerated())) {
-            flexInfo.setWhenGenerated(LocalDate.parse(flexDto.getWhenGenerated(), dateTimeFormatter));
+            flexStatement.setWhenGenerated(LocalDateTime.parse(flexDto.getWhenGenerated(), dateTimeFormatter));
         }
-        return flexInfo;
+        return flexStatement;
     }
 
     /**
      * extract trades from dto
+     *
      * @param dto map of FlexQueryResponse
      * @return list of trades
      */
@@ -116,6 +118,7 @@ public class ResponseParserImpl implements ResponseParser {
 
     /**
      * extract positions from dto
+     *
      * @param dto map of FlexQueryResponse
      * @return list of positions
      */
@@ -149,10 +152,10 @@ public class ResponseParserImpl implements ResponseParser {
             if (StringUtils.hasText(p.getPutCall())) {
                 position.setPutCall(p.getPutCall());
             }
-            if(StringUtils.hasText(p.getStrike())) {
+            if (StringUtils.hasText(p.getStrike())) {
                 position.setStrike(new BigDecimal(p.getStrike()));
             }
-            if(StringUtils.hasText(p.getExpiry())) {
+            if (StringUtils.hasText(p.getExpiry())) {
                 position.setExpiry(LocalDate.parse(p.getExpiry(), dateFormatter));
             }
             if (StringUtils.hasText(p.getPosition())) {
@@ -175,6 +178,7 @@ public class ResponseParserImpl implements ResponseParser {
 
     /**
      * extract dividends and open dividends from dto
+     *
      * @param dto map of FlexQueryResponse
      * @return list of dividends
      */
@@ -228,6 +232,7 @@ public class ResponseParserImpl implements ResponseParser {
 
     /**
      * extract open dividends from dto
+     *
      * @param dto map of FlexQueryResponse
      * @return list of open dividends
      */

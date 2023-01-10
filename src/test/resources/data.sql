@@ -1,4 +1,7 @@
 -- Insert sample data in ibTestDb
+INSERT INTO `flex_statement` (`account_id`, `from_date`, `to_date`, `period`, `when_generated`) VALUES ('U7169936', '2022-06-01', '2022-06-30', 'LastMonth', '2022-07-08 12:04:33');
+INSERT INTO `flex_statement` (`account_id`, `from_date`, `to_date`, `period`, `when_generated`) VALUES ('U7169936', '2022-06-01', '2022-07-08', 'Custom', '2022-07-08 13:04:33');
+
 INSERT INTO `portfolio` (`name`) VALUES ('Saver Portfolio');
 INSERT INTO `portfolio` (`name`) VALUES ('Trader Portfolio');
 INSERT INTO `portfolio` (`name`) VALUES ('Millionaire Portfolio');

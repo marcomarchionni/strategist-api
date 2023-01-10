@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.model.domain;
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -10,64 +10,66 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity(name = "trade")
 public class Trade {
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name="trade_id")
+    @Column(name = "trade_id")
     private Long tradeId;
 
-    @Column(name="con_id")
+    @Column(name = "ib_order_id")
+    private Long ibOrderId;
+
+    @Column(name = "con_id")
     private Long conId;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne
-    @JoinColumn(name= "trade_strategy_id")
+    @JoinColumn(name = "trade_strategy_id")
     private Strategy strategy;
 
-    @Column(name="symbol")
+    @Column(name = "symbol")
     private String symbol;
 
-    @Column(name="description")
+    @Column(name = "description")
     private String description;
 
-    @Column(name="asset_category")
+    @Column(name = "asset_category")
     private String assetCategory;
 
-    @Column(name="multiplier")
+    @Column(name = "multiplier")
     private Integer multiplier;
 
-    @Column(name="strike")
+    @Column(name = "strike")
     private BigDecimal strike;
 
-    @Column(name="expiry")
+    @Column(name = "expiry")
     private LocalDate expiry;
 
-    @Column(name="put_call")
+    @Column(name = "put_call")
     private String putCall;
 
-    @Column(name="trade_date")
+    @Column(name = "trade_date")
     private LocalDate tradeDate;
 
-    @Column(name="quantity")
+    @Column(name = "quantity")
     private BigDecimal quantity;
 
-    @Column(name="trade_price")
+    @Column(name = "trade_price")
     private BigDecimal tradePrice;
 
-    @Column(name="trade_money")
+    @Column(name = "trade_money")
     private BigDecimal tradeMoney;
 
-    @Column(name="fifo_pnl_realized")
+    @Column(name = "fifo_pnl_realized")
     private BigDecimal fifoPnlRealized;
 
-    @Column(name="ib_commission")
+    @Column(name = "ib_commission")
     private BigDecimal ibCommission;
 
-    @Column(name="buy_sell")
+    @Column(name = "buy_sell")
     private String buySell;
 }

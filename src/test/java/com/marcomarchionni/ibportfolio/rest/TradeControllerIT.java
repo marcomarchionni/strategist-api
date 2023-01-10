@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -38,7 +39,7 @@ class TradeControllerIT {
     StrategyRepository strategyRepository;
 
     @ParameterizedTest
-    @CsvSource({",,,ZM,,1",",,,TTWO,STK,2",",2022-06-14,true,,,1"})
+    @CsvSource({",,,ZM,,1", ",,,TTWO,STK,2", ",2022-06-14,true,,,1"})
     void findByFilterSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/trades")
@@ -53,8 +54,7 @@ class TradeControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"pippo,,,,STK"})
-//    @CsvSource({"pippo,,,,STK",",,farse,ZM,","1969-01-01,,,,,","2022-06-14,2022-06-13,,,,"})
+    @CsvSource({"pippo,,,,STK", ",,farse,ZM,", "1969-01-01,,,,,", "2022-06-14,2022-06-13,,,,"})
     void findByFilterBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/trades")
@@ -63,13 +63,14 @@ class TradeControllerIT {
                         .param("tagged", tagged)
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.status", is(400)));
     }
 
     @ParameterizedTest
-    @CsvSource({"1180780161,3,ZM","1180785204,4,FVRR"})
+    @CsvSource({"1180780161,3,ZM", "1180785204,4,FVRR"})
     void updateStrategyIdSuccess(Long tradeId, Long strategyId, String expectedSymbol) throws Exception {
 
         UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(tradeId).strategyId(strategyId).build();
@@ -92,9 +93,9 @@ class TradeControllerIT {
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(tradeUpdate)))
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.message").isNotEmpty());
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test

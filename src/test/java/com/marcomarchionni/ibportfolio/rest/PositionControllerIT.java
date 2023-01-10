@@ -39,7 +39,7 @@ class PositionControllerIT {
     StrategyRepository strategyRepository;
 
     @ParameterizedTest
-    @CsvSource({",ZM,,0",",DIS,STK,1","true,,,3"})
+    @CsvSource({",ZM,,0", ",DIS,STK,1", "true,,,3"})
     void findByParamsSuccess(String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/positions")
@@ -52,26 +52,27 @@ class PositionControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"farse,,",",,GOLD"})
+    @CsvSource({"farse,,", ",,GOLD"})
     void findByParamsBadRequest(String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/positions")
                         .param("tagged", tagged)
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
+                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.status", is(400)));
     }
 
     @ParameterizedTest
-    @CsvSource({"265598,3,AAPL","265768,4,ADBE"})
+    @CsvSource({"265598,3,AAPL", "265768,4,ADBE"})
     void updateStrategyIdSuccess(Long positionId, Long strategyId, String expectedSymbol) throws Exception {
 
         UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(positionId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/positions")
-                .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(positionUpdate)))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -93,7 +94,7 @@ class PositionControllerIT {
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.message").isNotEmpty());
+                .andExpect(jsonPath("$.type").isNotEmpty());
     }
 
     @Test
@@ -103,6 +104,7 @@ class PositionControllerIT {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type").isNotEmpty());
     }
 }
