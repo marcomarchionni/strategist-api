@@ -57,7 +57,7 @@ public class Updater {
 
         // warn if there are time intervals without data in db
         List<TimeInterval> dataGaps = detectUndocumentedTimeIntervals();
-        if (dataGaps.size() > 0) {
+        if (!dataGaps.isEmpty()) {
             log.warn(">>> Data gaps detected: " + dataGaps);
         }
     }

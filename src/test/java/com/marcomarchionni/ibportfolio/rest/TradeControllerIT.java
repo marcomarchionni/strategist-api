@@ -1,7 +1,6 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.model.domain.Strategy;
 import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
@@ -15,8 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;

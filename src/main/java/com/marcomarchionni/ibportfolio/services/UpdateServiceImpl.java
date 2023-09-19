@@ -6,7 +6,6 @@ import com.marcomarchionni.ibportfolio.model.domain.Trade;
 import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
-import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import com.marcomarchionni.ibportfolio.services.parsing.ResponseParser;
 import org.springframework.stereotype.Service;
@@ -47,8 +46,6 @@ public class UpdateServiceImpl implements UpdateService {
 
         // update positions and open dividends if flexQuery has the latest data
         if (hasTheLatestData(dto)) {
-            LocalDate reportDate = getLatestReportedDate(dto);
-
             List<Position> positions = parser.getPositions(dto);
             List<Dividend> openDividends = parser.getOpenDividends(dto);
 

@@ -1,11 +1,10 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.model.domain.Position;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.model.dtos.request.PositionFindDto;
+import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.model.dtos.response.PositionListDto;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface PositionService {
