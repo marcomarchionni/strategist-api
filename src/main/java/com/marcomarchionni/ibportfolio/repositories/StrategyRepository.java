@@ -14,4 +14,6 @@ public interface StrategyRepository extends JpaRepository<Strategy, Long> {
             "SELECT s FROM strategy s WHERE" +
             "(:name is null or s.name = :name)")
     List<Strategy> findByParams(@Param("name") String name);
+
+    List<Strategy> findByName(String expectedSymbol);
 }

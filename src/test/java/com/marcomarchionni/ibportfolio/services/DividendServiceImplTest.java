@@ -1,5 +1,6 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.model.domain.ClosedDividend;
 import com.marcomarchionni.ibportfolio.model.domain.Dividend;
 import com.marcomarchionni.ibportfolio.model.domain.Strategy;
 import com.marcomarchionni.ibportfolio.model.dtos.request.DividendFindDto;
@@ -9,6 +10,7 @@ import com.marcomarchionni.ibportfolio.model.mapping.DividendMapper;
 import com.marcomarchionni.ibportfolio.model.mapping.DividendMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
+import com.mysql.cj.x.protobuf.MysqlxCursor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,5 +81,13 @@ class DividendServiceImplTest {
         assertNotNull(actualDividendDto);
         assertEquals(dividendUpdate.getId(), actualDividendDto.getId());
         assertEquals(dividendUpdate.getStrategyId(), actualDividendDto.getStrategyId());
+    }
+
+    @Test
+    void updateDividends() {
+        ClosedDividend existingDividend = getSampleClosedDividend();
+
+        List<Dividend> existingDividends = getSampleDividends();
+
     }
 }

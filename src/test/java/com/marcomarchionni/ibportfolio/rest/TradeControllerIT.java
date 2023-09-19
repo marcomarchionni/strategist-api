@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marcomarchionni.ibportfolio.model.domain.Strategy;
 import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
@@ -11,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -40,6 +44,7 @@ class TradeControllerIT {
 
     @ParameterizedTest
     @CsvSource({",,,ZM,,1", ",,,TTWO,STK,2", ",2022-06-14,true,,,1"})
+    @Sql("classpath:dbScripts/insertSampleData.sql")
     void findByFilterSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/trades")
@@ -69,9 +74,12 @@ class TradeControllerIT {
                 .andExpect(jsonPath("$.status", is(400)));
     }
 
+
+    @Sql("classpath:dbScripts/insertSampleData.sql")
     @ParameterizedTest
-    @CsvSource({"1180780161,3,ZM", "1180785204,4,FVRR"})
-    void updateStrategyIdSuccess(Long tradeId, Long strategyId, String expectedSymbol) throws Exception {
+    @CsvSource({"1180780161,ZM long,ZM","1180785204,IBKR put,FVRR"})
+    void updateStrategyIdSuccess(Long tradeId, String strategyName, String expectedSymbol) throws Exception {
+        Long strategyId = strategyRepository.findByName(strategyName).get(0).getId();
 
         UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(tradeId).strategyId(strategyId).build();
 

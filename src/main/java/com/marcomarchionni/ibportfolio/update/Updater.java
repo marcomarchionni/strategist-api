@@ -68,9 +68,8 @@ public class Updater {
         // delete old positions and save new positions,
         // delete old open dividends and save new open dividends
         if (hasTheLatestData(dto)) {
-            positionService.deleteAll();
             dividendService.deleteAllOpenDividends();
-            positionService.saveAll(oldResponseParser.parsePositions(dto));
+            positionService.updatePositions(oldResponseParser.parsePositions(dto));
             dividendService.saveDividends(oldResponseParser.parseOpenDividends(dto));
         }
 

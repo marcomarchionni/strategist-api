@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@Sql("classpath:dbScripts/insertSampleData.sql")
 class DividendControllerIT {
 
     @Autowired
@@ -73,8 +75,10 @@ class DividendControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"1029120220603,3,NKE", "26754720220519,4,CGNX"})
-    void updateStrategyIdSuccess(Long dividendId, Long strategyId, String expectedSymbol) throws Exception {
+    @CsvSource({"1029120220603,ZM long,NKE", "26754720220519,IBKR put,CGNX"})
+    void updateStrategyIdSuccess(Long dividendId, String strategyName, String expectedSymbol) throws Exception {
+
+        Long strategyId = strategyRepository.findByName(strategyName).get(0).getId();
 
         UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();
 

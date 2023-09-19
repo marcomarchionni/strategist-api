@@ -21,22 +21,25 @@ public class UpdateServiceImpl implements UpdateService {
 
     private final TradeRepository tradeRepository;
 
-    private final PositionRepository positionRepository;
+    private final DividendService dividendService;
 
     private final DividendRepository dividendRepository;
 
     private final FlexStatementRepository flexStatementRepository;
 
+    private final PositionService positionService;
+
     public UpdateServiceImpl(ResponseParser parser,
                              TradeRepository tradeRepository,
-                             PositionRepository positionRepository,
-                             DividendRepository dividendRepository,
-                             FlexStatementRepository flexStatementRepository) {
+                             DividendService dividendService, DividendRepository dividendRepository,
+                             FlexStatementRepository flexStatementRepository,
+                             PositionService positionService) {
         this.parser = parser;
         this.tradeRepository = tradeRepository;
-        this.positionRepository = positionRepository;
+        this.dividendService = dividendService;
         this.dividendRepository = dividendRepository;
         this.flexStatementRepository = flexStatementRepository;
+        this.positionService = positionService;
     }
 
     @Override
@@ -44,10 +47,14 @@ public class UpdateServiceImpl implements UpdateService {
 
         // update positions and open dividends if flexQuery has the latest data
         if (hasTheLatestData(dto)) {
+            LocalDate reportDate = getLatestReportedDate(dto);
+
             List<Position> positions = parser.getPositions(dto);
             List<Dividend> openDividends = parser.getOpenDividends(dto);
-            positionRepository.saveAll(positions);
-            dividendRepository.saveAll(openDividends);
+
+            positionService.updatePositions(positions);
+//            dividendService.saveOrMergeAll(openDividends);
+//            dividendService.deleteOutdated(openDividends);
         }
 
         // update trades and closed dividends
@@ -62,8 +69,12 @@ public class UpdateServiceImpl implements UpdateService {
 
     private boolean hasTheLatestData(FlexQueryResponse dto) {
 
-        LocalDate dtoLastReportedDate = dto.getFlexStatements().getFlexStatement().getToDate();
+        LocalDate dtoLastReportedDate = getLatestReportedDate(dto);
         LocalDate dbLastReportedDate = flexStatementRepository.findLastReportedDate();
         return dbLastReportedDate == null || dtoLastReportedDate.isAfter(dbLastReportedDate);
+    }
+
+    private LocalDate getLatestReportedDate(FlexQueryResponse dto) {
+        return dto.getFlexStatements().getFlexStatement().getToDate();
     }
 }

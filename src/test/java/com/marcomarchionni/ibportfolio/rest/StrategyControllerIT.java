@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
+import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +26,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@Sql("classpath:dbScripts/insertSampleData.sql")
 class StrategyControllerIT {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    StrategyRepository strategyRepository;
+
+    @Autowired
+    PortfolioRepository portfolioRepository;
 
     @Autowired
     ObjectMapper mapper;
@@ -57,10 +67,11 @@ class StrategyControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"1,ZM long", "2,IBKR put"})
-    void findByIdSuccess(Long id, String expectedName) throws Exception {
+    @CsvSource({"ZM long", "IBKR put"})
+    void findByIdSuccess(String expectedName) throws Exception {
+        Long strategyId = strategyRepository.findByName(expectedName).get(0).getId();
 
-        mockMvc.perform(get("/strategies/{id}", id))
+        mockMvc.perform(get("/strategies/{id}", strategyId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -70,7 +81,8 @@ class StrategyControllerIT {
 
     @Test
     void createSuccess() throws Exception {
-        StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("AAPL long").portfolioId(1L).build();
+        Long portfolioId = portfolioRepository.findByName("Saver Portfolio").get(0).getId();
+        StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("AAPL long").portfolioId(portfolioId).build();
 
         mockMvc.perform(post("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -83,8 +95,9 @@ class StrategyControllerIT {
 
     @Test
     void updateNameSuccess() throws Exception {
+        Long strategyId = strategyRepository.findByName("ZM long").get(0).getId();
 
-        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("NewName").build();
+        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(strategyId).name("ZM leap").build();
 
         mockMvc.perform(put("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -111,14 +124,14 @@ class StrategyControllerIT {
 
     @Test
     void deleteSuccess() throws Exception {
-        Long id = 6L;
-        mockMvc.perform(delete("/strategies/{id}", id))
+        Long strategyId = strategyRepository.findByName("IRBT long").get(0).getId();
+        mockMvc.perform(delete("/strategies/{id}", strategyId))
                 .andExpect(status().isOk());
     }
 
     @Test
     void deleteException() throws Exception {
-        Long id = 1L;
+        Long id = 12988347222L;
         mockMvc.perform(delete("/strategies/{id}", id))
                 .andExpect(status().is4xxClientError());
     }

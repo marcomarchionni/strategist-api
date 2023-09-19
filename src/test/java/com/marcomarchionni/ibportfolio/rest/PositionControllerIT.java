@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Sql("classpath:dbScripts/insertSampleData.sql")
 @Transactional
 class PositionControllerIT {
 
@@ -66,8 +68,9 @@ class PositionControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"265598,3,AAPL", "265768,4,ADBE"})
-    void updateStrategyIdSuccess(Long positionId, Long strategyId, String expectedSymbol) throws Exception {
+    @CsvSource({"265598,ZM long,AAPL", "265768,IBKR put,ADBE"})
+    void updateStrategyIdSuccess(Long positionId, String strategyName, String expectedSymbol) throws Exception {
+        Long strategyId = strategyRepository.findByName(strategyName).get(0).getId();
 
         UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(positionId).strategyId(strategyId).build();
 
@@ -83,7 +86,8 @@ class PositionControllerIT {
 
 
     @ParameterizedTest
-    @CsvSource({"265598, 20", "20, 1", ",,"})
+   @CsvSource({"265598, 3455", "20, 1", ",,"})
+//    @CsvSource("265598, 20")
     void updateStrategyIdExceptions(Long positionId, Long strategyId) throws Exception {
 
         UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(positionId).strategyId(strategyId).build();

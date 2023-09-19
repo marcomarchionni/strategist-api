@@ -40,6 +40,11 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
+    public void updateDividends(List<Dividend> dividends) {
+
+    }
+
+    @Override
     public List<DividendListDto> findByFilter(DividendFindDto dividendFind) {
         List<Dividend> dividends = dividendRepository.findByParams(
                 dividendFind.getExDateFrom(),

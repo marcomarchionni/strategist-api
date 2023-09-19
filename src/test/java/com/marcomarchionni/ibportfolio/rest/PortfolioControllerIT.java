@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@Sql("classpath:dbScripts/insertSampleData.sql")
 class PortfolioControllerIT {
 
     @Autowired
@@ -56,14 +58,15 @@ class PortfolioControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"1,4", "2,2"})
-    void findByIdSuccess(Long id, int expectedSize) throws Exception {
+    @CsvSource({"Saver Portfolio,4", "Trader Portfolio,2"})
+    void findByIdSuccess(String portfolioName, int expectedSize) throws Exception {
+        Long portfolioId = portfolioRepository.findByName(portfolioName).get(0).getId();
 
-        mockMvc.perform(get("/portfolios/{id}", id))
+        mockMvc.perform(get("/portfolios/{id}", portfolioId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(Math.toIntExact(id))))
+                .andExpect(jsonPath("$.id", is(Math.toIntExact(portfolioId))))
                 .andExpect(jsonPath("$.strategies", hasSize(expectedSize)));
     }
 
@@ -83,8 +86,8 @@ class PortfolioControllerIT {
     @ParameterizedTest
     @ValueSource(strings = {"Super Portfolio", "Marco's Portfolio", "Zipp"})
     void updatePortfolioNameSuccess(String portfolioName) throws Exception {
-
-        UpdateNameDto updateName = UpdateNameDto.builder().id(1L).name(portfolioName).build();
+        Long portfolioId = portfolioRepository.findByName("Saver Portfolio").get(0).getId();
+        UpdateNameDto updateName = UpdateNameDto.builder().id(portfolioId).name(portfolioName).build();
 
         mockMvc.perform(put("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +112,7 @@ class PortfolioControllerIT {
 
     @Test
     void deleteByIdSuccess() throws Exception {
-        Long portfolioId = 3L;
+        Long portfolioId = portfolioRepository.findByName("Millionaire Portfolio").get(0).getId();
         assertTrue(portfolioRepository.findById(portfolioId).isPresent());
 
         mockMvc.perform(delete("/portfolios/{id}", portfolioId))
@@ -121,7 +124,7 @@ class PortfolioControllerIT {
 
     @Test
     void deleteByIdException() throws Exception {
-        Long portfolioId = 1L;
+        Long portfolioId = portfolioRepository.findByName("Saver Portfolio").get(0).getId();
         assertTrue(portfolioRepository.findById(portfolioId).isPresent());
 
         mockMvc.perform(delete("/portfolios/{id}", portfolioId))

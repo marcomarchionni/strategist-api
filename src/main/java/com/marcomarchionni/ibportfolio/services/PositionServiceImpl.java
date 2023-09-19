@@ -14,7 +14,12 @@ import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,10 +45,31 @@ public class PositionServiceImpl implements PositionService{
         }
     }
 
+    private Position merge(Position newPosition, Position existingPosition) {
+            existingPosition.setConId(newPosition.getConId());
+            existingPosition.setReportDate(newPosition.getReportDate());
+            existingPosition.setSymbol(newPosition.getSymbol());
+            existingPosition.setDescription(newPosition.getDescription());
+            existingPosition.setAssetCategory(newPosition.getAssetCategory());
+            existingPosition.setPutCall(newPosition.getPutCall());
+            existingPosition.setStrike(newPosition.getStrike());
+            existingPosition.setExpiry(newPosition.getExpiry());
+            existingPosition.setQuantity(newPosition.getQuantity());
+            existingPosition.setCostBasisPrice(newPosition.getCostBasisPrice());
+            existingPosition.setCostBasisMoney(newPosition.getCostBasisMoney());
+            existingPosition.setMarkPrice(newPosition.getMarkPrice());
+            existingPosition.setMultiplier(newPosition.getMultiplier());
+            existingPosition.setPositionValue(newPosition.getPositionValue());
+            existingPosition.setFifoPnlUnrealized(newPosition.getFifoPnlUnrealized());
+            return existingPosition;
+        }
+
+
+
     @Override
-    public void deleteAll() {
+    public void deleteAll(List<Position> positions) {
         try {
-            positionRepository.deleteAll();
+            positionRepository.deleteAll(positions);
         } catch (Exception e) {
             throw new UnableToDeleteEntitiesException(e.getMessage());
         }
@@ -59,6 +85,47 @@ public class PositionServiceImpl implements PositionService{
         return positions.stream().map(positionMapper::toPositionListDto).collect(Collectors.toList());
     }
 
+
+    @Override
+    public void updatePositions(List<Position> newPositions) {
+        List<Position> existingPositions = positionRepository.findAll();
+
+        // Create a map of existing positions
+        Map<Long, Position> existingPositionsMap = existingPositions.stream()
+                .collect(Collectors.toMap(Position::getId, Function.identity()));
+
+        // Create a map of new positions
+        Map<Long, Position> newPositionsMap = newPositions.stream()
+                .collect(Collectors.toMap(Position::getId, Function.identity()));
+
+        // List of positions to be saved or deleted
+        List<Position> toSave = new ArrayList<Position>();
+        List<Position> toDelete = new ArrayList<Position>();
+
+        // Select positions to be saved
+        for(Position newPosition : newPositions) {
+            if (existingPositionsMap.containsKey(newPosition.getId())) {
+                // Merge existing position with new position
+                Position existingPosition = existingPositionsMap.get(newPosition.getId());
+                Position mergedPosition = this.merge(newPosition, existingPosition);
+                toSave.add(mergedPosition);
+            } else {
+                toSave.add(newPosition);
+            }
+        }
+
+        // Select positions to be deleted
+        for (Position existingPosition : existingPositions) {
+            if (!newPositionsMap.containsKey(existingPosition.getId())) {
+                toDelete.add(existingPosition);
+            }
+        }
+
+        // Perform database operations
+        this.saveAll(toSave);
+        this.deleteAll(toDelete);
+    }
+
     @Override
     public PositionListDto updateStrategyId(UpdateStrategyDto positionUpdate) {
         Position position = positionRepository.findById(positionUpdate.getId()).orElseThrow(
@@ -71,3 +138,5 @@ public class PositionServiceImpl implements PositionService{
         return positionMapper.toPositionListDto(positionRepository.save(position));
     }
 }
+
+
