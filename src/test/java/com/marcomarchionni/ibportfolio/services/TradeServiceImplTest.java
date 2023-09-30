@@ -103,13 +103,10 @@ class TradeServiceImplTest {
 
     @Test
     void saveOrIgnore() {
-        // setup existing trades
-        List<Trade> existingTrades = List.of(getZMTrade(), getFVRRTrade(), getTTWO1Trade(), getTTWO2Trade());
-
         // setup new trades
         List<Trade> newTrades = List.of(getTTWO1Trade(), getTTWO2Trade(), getEURUSDTrade());
 
-        // setup mock
+        // setup mock, assuming that TTWO1 and TTWO2 already exist in the database
         when(tradeRepository.existsById(getTTWO1Trade().getId())).thenReturn(true);
         when(tradeRepository.existsById(getTTWO2Trade().getId())).thenReturn(true);
         ArgumentCaptor<List<Trade>> captor = ArgumentCaptor.forClass(List.class);
