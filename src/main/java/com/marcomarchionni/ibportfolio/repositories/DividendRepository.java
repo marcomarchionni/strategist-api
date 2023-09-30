@@ -12,6 +12,12 @@ import java.util.List;
 @Repository
 public interface DividendRepository extends JpaRepository<Dividend, Long> {
 
+    List<Dividend> findByOpenClosed(String openClosed);
+
+    default List<Dividend> findOpenDividends() {
+        return findByOpenClosed("OPEN");
+    }
+
     void deleteByOpenClosed(String openClosed);
     default void deleteOpenDividends() {
         deleteByOpenClosed("OPEN");

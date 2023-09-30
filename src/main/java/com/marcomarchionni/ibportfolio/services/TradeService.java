@@ -14,4 +14,6 @@ public interface TradeService {
     TradeListDto updateStrategyId(UpdateStrategyDto trade);
 
     List<TradeListDto> findByFilter(TradeFindDto tradeCriteria);
+
+    List<Trade> saveOrIgnore(List<Trade> trades);
 }

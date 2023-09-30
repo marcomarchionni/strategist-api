@@ -4,9 +4,7 @@ import com.marcomarchionni.ibportfolio.model.domain.Dividend;
 import com.marcomarchionni.ibportfolio.model.domain.Position;
 import com.marcomarchionni.ibportfolio.model.domain.Trade;
 import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
-import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
-import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import com.marcomarchionni.ibportfolio.services.parsing.ResponseParser;
 import org.springframework.stereotype.Service;
 
@@ -18,25 +16,22 @@ public class UpdateServiceImpl implements UpdateService {
 
     private final ResponseParser parser;
 
-    private final TradeRepository tradeRepository;
+    private final TradeService tradeService;
 
     private final DividendService dividendService;
-
-    private final DividendRepository dividendRepository;
 
     private final FlexStatementRepository flexStatementRepository;
 
     private final PositionService positionService;
 
     public UpdateServiceImpl(ResponseParser parser,
-                             TradeRepository tradeRepository,
-                             DividendService dividendService, DividendRepository dividendRepository,
+                             TradeService tradeService,
+                             DividendService dividendService,
                              FlexStatementRepository flexStatementRepository,
                              PositionService positionService) {
         this.parser = parser;
-        this.tradeRepository = tradeRepository;
+        this.tradeService = tradeService;
         this.dividendService = dividendService;
-        this.dividendRepository = dividendRepository;
         this.flexStatementRepository = flexStatementRepository;
         this.positionService = positionService;
     }
@@ -44,21 +39,23 @@ public class UpdateServiceImpl implements UpdateService {
     @Override
     public void save(FlexQueryResponse dto) {
 
+        List<Trade> trades = parser.getTrades(dto);
+        List<Dividend> closedDividends = parser.getClosedDividends(dto);
+
         // update positions and open dividends if flexQuery has the latest data
         if (hasTheLatestData(dto)) {
             List<Position> positions = parser.getPositions(dto);
             List<Dividend> openDividends = parser.getOpenDividends(dto);
 
             positionService.updatePositions(positions);
-//            dividendService.saveOrMergeAll(openDividends);
-//            dividendService.deleteOutdated(openDividends);
+            dividendService.updateDividends(openDividends, closedDividends);
+
+        } else {
+            dividendService.saveOrIgnore(closedDividends);
         }
 
-        // update trades and closed dividends
-        List<Trade> trades = parser.getTrades(dto);
-        List<Dividend> closedDividends = parser.getClosedDividends(dto);
-        tradeRepository.saveAll(trades);
-        dividendRepository.saveAll(closedDividends);
+        // update trades
+        tradeService.saveOrIgnore(trades);
 
         // Save flexStatement
         flexStatementRepository.save(parser.getFlexStatement(dto));

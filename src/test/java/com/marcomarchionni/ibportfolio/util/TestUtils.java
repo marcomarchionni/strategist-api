@@ -106,20 +106,6 @@ public class TestUtils {
                 .build();
     }
 
-    public static ClosedDividend getCGNXClosedDividend() {
-        ClosedDividend closedDividend = new ClosedDividend();
-        closedDividend.setId(26754720220603L);
-        closedDividend.setSymbol("CGNX");
-        closedDividend.setConId(267547L);
-        closedDividend.setExDate(LocalDate.of(2022, 5, 19));
-        closedDividend.setPayDate(LocalDate.of(2022, 6, 3));
-        closedDividend.setQuantity(BigDecimal.valueOf(44));
-        closedDividend.setTax(BigDecimal.valueOf(0.43));
-        closedDividend.setGrossRate(BigDecimal.valueOf(0.065));
-        closedDividend.setGrossAmount(BigDecimal.valueOf(2.86));
-        closedDividend.setNetAmount(BigDecimal.valueOf(2.43));
-        return closedDividend;
-    }
 
     public static OpenDividend getFDXOpenDividend() {
         OpenDividend div = new OpenDividend();
@@ -137,6 +123,38 @@ public class TestUtils {
         return div;
     }
 
+    public static OpenDividend getNKEOpenDividend() {
+        OpenDividend div = new OpenDividend();
+        div.setId(1029120220603L);
+        div.setSymbol("NKE");
+        div.setDescription("NIKE INC -CL B");
+        div.setConId(10291L);
+        div.setExDate(LocalDate.of(2022, 6, 3));
+        div.setPayDate(LocalDate.of(2022, 7, 1));
+        div.setQuantity(BigDecimal.valueOf(84));
+        div.setTax(BigDecimal.valueOf(3.84));
+        div.setGrossRate(BigDecimal.valueOf(0.305));
+        div.setGrossAmount(BigDecimal.valueOf(25.62));
+        div.setNetAmount(BigDecimal.valueOf(21.78));
+        return div;
+    }
+
+    public static ClosedDividend getNKEClosedDividend() {
+        ClosedDividend div = new ClosedDividend();
+        div.setId(1029120220603L);
+        div.setSymbol("NKE");
+        div.setDescription("NIKE INC -CL B");
+        div.setConId(10291L);
+        div.setExDate(LocalDate.of(2022, 6, 3));
+        div.setPayDate(LocalDate.of(2022, 7, 1));
+        div.setQuantity(BigDecimal.valueOf(84));
+        div.setTax(BigDecimal.valueOf(3.84));
+        div.setGrossRate(BigDecimal.valueOf(0.305));
+        div.setGrossAmount(BigDecimal.valueOf(25.62));
+        div.setNetAmount(BigDecimal.valueOf(21.78));
+        return div;
+    }
+
     public static ClosedDividend getEBAYClosedDividend() {
         ClosedDividend div = new ClosedDividend();
         div.setId(434708620220531L);
@@ -151,6 +169,21 @@ public class TestUtils {
         div.setNetAmount(new BigDecimal("18.7"));
         div.setTax(new BigDecimal("3.3"));
         return div;
+    }
+
+    public static ClosedDividend getCGNXClosedDividend() {
+        ClosedDividend closedDividend = new ClosedDividend();
+        closedDividend.setId(26754720220603L);
+        closedDividend.setSymbol("CGNX");
+        closedDividend.setConId(267547L);
+        closedDividend.setExDate(LocalDate.of(2022, 5, 19));
+        closedDividend.setPayDate(LocalDate.of(2022, 6, 3));
+        closedDividend.setQuantity(BigDecimal.valueOf(44));
+        closedDividend.setTax(BigDecimal.valueOf(0.43));
+        closedDividend.setGrossRate(BigDecimal.valueOf(0.065));
+        closedDividend.setGrossAmount(BigDecimal.valueOf(2.86));
+        closedDividend.setNetAmount(BigDecimal.valueOf(2.43));
+        return closedDividend;
     }
 
     public static Position getADYENPosition() {

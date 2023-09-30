@@ -1,6 +1,5 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.model.domain.ClosedDividend;
 import com.marcomarchionni.ibportfolio.model.domain.Dividend;
 import com.marcomarchionni.ibportfolio.model.domain.Strategy;
 import com.marcomarchionni.ibportfolio.model.dtos.request.DividendFindDto;
@@ -10,10 +9,10 @@ import com.marcomarchionni.ibportfolio.model.mapping.DividendMapper;
 import com.marcomarchionni.ibportfolio.model.mapping.DividendMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
-import com.mysql.cj.x.protobuf.MysqlxCursor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -85,9 +84,64 @@ class DividendServiceImplTest {
 
     @Test
     void updateDividends() {
-        ClosedDividend existingDividend = getSampleClosedDividend();
 
-        List<Dividend> existingDividends = getSampleDividends();
+        // setup existing closed dividend
+        Dividend EBAYClosedDividend = getEBAYClosedDividend();
+
+        // setup existing open dividend
+        Dividend NKEOpenDividend = getNKEOpenDividend();
+        NKEOpenDividend.setStrategy(getSampleStrategy());
+        List<Dividend> existingOpenDividends = List.of(NKEOpenDividend);
+
+        // setup new open dividend
+        List<Dividend> newOpenDividends = List.of(getFDXOpenDividend());
+
+        // setup new closed dividends
+        Dividend NKEClosedDividend = getNKEClosedDividend();
+        NKEClosedDividend.setStrategy(getSampleStrategy());
+        List<Dividend> newClosedDividends = List.of(getNKEClosedDividend(), getEBAYClosedDividend());
+
+        // setup mocks
+        when(dividendRepository.findOpenDividends()).thenReturn(existingOpenDividends);
+        when(dividendRepository.existsById(EBAYClosedDividend.getId())).thenReturn(true);
+        ArgumentCaptor<List<Dividend>> captor = ArgumentCaptor.forClass(List.class);
+        when(dividendRepository.saveAll(captor.capture())).thenAnswer(invocation -> captor.getValue());
+
+        // expected result
+        List<Dividend> expectedSavedDividends = List.of(getFDXOpenDividend(), NKEClosedDividend);
+
+        // execute method
+        List<Dividend> actualSavedDividends = dividendService.updateDividends(newOpenDividends, newClosedDividends);
+
+        // assertions
+        assertEquals(expectedSavedDividends.size(), actualSavedDividends.size());
+        assertEquals(expectedSavedDividends.get(0).getSymbol(), actualSavedDividends.get(0).getSymbol());
+        assertEquals(actualSavedDividends.get(1).getStrategy(), getSampleStrategy());
+    }
+
+    @Test
+    void saveOrSkip() {
+        // setup existing closed dividend
+        Dividend EBAYClosedDividend = getEBAYClosedDividend();
+        EBAYClosedDividend.setStrategy(getSampleStrategy());
+
+        // setup new closed dividends
+        Dividend NKEClosedDividend = getNKEClosedDividend();
+        Dividend newEBAYClosedDividend = getEBAYClosedDividend();
+        List<Dividend> newClosedDividends = List.of(NKEClosedDividend, newEBAYClosedDividend);
+
+        // setup mocks
+        when(dividendRepository.existsById(EBAYClosedDividend.getId())).thenReturn(true);
+        when(dividendRepository.existsById(NKEClosedDividend.getId())).thenReturn(false);
+        ArgumentCaptor<List<Dividend>> captor = ArgumentCaptor.forClass(List.class);
+        when(dividendRepository.saveAll(captor.capture())).thenAnswer(invocation -> captor.getValue());
+
+        // execute method
+        List<Dividend> actualSavedDividends = dividendService.saveOrIgnore(newClosedDividends);
+
+        // assertions
+        assertEquals(1, actualSavedDividends.size());
+        assertEquals(NKEClosedDividend.getSymbol(), actualSavedDividends.get(0).getSymbol());
 
     }
 }

@@ -12,7 +12,10 @@ import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,13 +61,58 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
+    public List<Dividend> saveOrIgnore(List<Dividend> closedDividends) {
+        List<Dividend> dividendsToSave = new ArrayList<>();
+        for (Dividend closedDividend : closedDividends) {
+            Long id = closedDividend.getId();
+            if (!dividendRepository.existsById(id)) {
+                dividendsToSave.add(closedDividend);
+            }
+        }
+        return dividendRepository.saveAll(dividendsToSave);
+    }
+
+    @Override
+    public List<Dividend> updateDividends(List<Dividend> openDividends, List<Dividend> closedDividends) {
+        List<Dividend> dividendsToSave = new ArrayList<>();
+
+        // Create a map of open dividends
+        Map<Long, Dividend> openDividendsMap = dividendRepository.findOpenDividends().stream()
+                .collect(Collectors.toMap(Dividend::getId, dividend -> dividend));
+
+        // select new open dividends to save
+        for (Dividend openDividend : openDividends) {
+            if (!openDividendsMap.containsKey(openDividend.getId())) {
+                dividendsToSave.add(openDividend);
+            }
+        }
+
+        // select new closed dividends to save, skip already saved
+        for (Dividend closedDividend : closedDividends) {
+            Long id = closedDividend.getId();
+            if (openDividendsMap.containsKey(id)) {
+                // Merge strategy from existing open dividend, so we don't overwrite it, then save closed dividend
+                Strategy strategy = openDividendsMap.get(closedDividend.getId()).getStrategy();
+                closedDividend.setStrategy(strategy);
+                dividendsToSave.add(closedDividend);
+            } else {
+                if (!dividendRepository.existsById(id)) {
+                    dividendsToSave.add(closedDividend);
+                }
+            }
+        }
+
+        return dividendRepository.saveAll(dividendsToSave);
+    }
+
+    @Override
     public DividendListDto updateStrategyId(UpdateStrategyDto dividendUpdate) {
 
         Dividend dividend = dividendRepository.findById(dividendUpdate.getId()).orElseThrow(
-                ()-> new EntityNotFoundException("Dividend with id: " + dividendUpdate.getId() + " not found")
+                () -> new EntityNotFoundException("Dividend with id: " + dividendUpdate.getId() + " not found")
         );
         Strategy strategyToAssign = strategyRepository.findById(dividendUpdate.getStrategyId()).orElseThrow(
-                ()-> new EntityNotFoundException("Strategy with id: " + dividendUpdate.getStrategyId() + " not found")
+                () -> new EntityNotFoundException("Strategy with id: " + dividendUpdate.getStrategyId() + " not found")
         );
         dividend.setStrategy(strategyToAssign);
         return dividendMapper.toDividendListDto(dividendRepository.save(dividend));
