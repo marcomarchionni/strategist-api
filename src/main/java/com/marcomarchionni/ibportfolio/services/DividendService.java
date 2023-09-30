@@ -12,8 +12,6 @@ public interface DividendService {
     void saveDividends(List<Dividend> dividends);
     void deleteAllOpenDividends();
 
-    void updateDividends(List<Dividend> dividends);
-
     DividendListDto updateStrategyId(UpdateStrategyDto dividendToUpdate);
 
     List<DividendListDto> findByFilter(DividendFindDto dividendCriteria);

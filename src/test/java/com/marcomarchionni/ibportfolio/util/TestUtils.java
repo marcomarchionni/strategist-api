@@ -211,7 +211,7 @@ public class TestUtils {
     }
 
 
-    private static Trade getZMTrade() {
+    public static Trade getZMTrade() {
         return Trade.builder()
                 .id(1180780161L)
                 .tradeId(387679436L)
@@ -228,7 +228,7 @@ public class TestUtils {
                 .build();
     }
 
-    private static Trade getFVRRTrade() {
+    public static Trade getFVRRTrade() {
         return Trade.builder()
                 .id(1180785204L)
                 .tradeId(387681643L)
@@ -245,7 +245,7 @@ public class TestUtils {
                 .build();
     }
 
-    private static Trade getIBKROpt1Trade() {
+    public static Trade getIBKROpt1Trade() {
         return Trade.builder()
                 .id(1198688377L)
                 .tradeId(391765250L)
@@ -265,7 +265,7 @@ public class TestUtils {
                 .build();
     }
 
-    private static Trade getIBKROpt2Trade() {
+    public static Trade getIBKROpt2Trade() {
         return Trade.builder()
                 .id(1198688378L)
                 .tradeId(391765279L)
@@ -285,7 +285,7 @@ public class TestUtils {
                 .build();
     }
 
-    private static Trade getTTWO1Trade() {
+    public static Trade getTTWO1Trade() {
         return Trade.builder()
                 .id(1222538552L)
                 .conId(6478131L)
@@ -301,7 +301,7 @@ public class TestUtils {
                 .build();
     }
 
-    private static Trade getTTWO2Trade() {
+    public static Trade getTTWO2Trade() {
         return Trade.builder()
                 .id(1222538553L)
                 .conId(6478131L)
@@ -317,7 +317,7 @@ public class TestUtils {
                 .build();
     }
 
-    private static Trade getEURUSDTrade() {
+    public static Trade getEURUSDTrade() {
         return Trade.builder()
                 .id(1238155321L)
                 .tradeId(400172483L)

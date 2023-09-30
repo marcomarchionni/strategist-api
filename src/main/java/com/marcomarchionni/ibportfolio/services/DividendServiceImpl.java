@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,11 +39,6 @@ public class DividendServiceImpl implements DividendService {
     @Override
     public void deleteAllOpenDividends() {
         dividendRepository.deleteByOpenClosed("OPEN");
-    }
-
-    @Override
-    public void updateDividends(List<Dividend> dividends) {
-
     }
 
     @Override

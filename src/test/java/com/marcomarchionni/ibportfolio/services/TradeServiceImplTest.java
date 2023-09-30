@@ -14,6 +14,7 @@ import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -98,5 +99,27 @@ class TradeServiceImplTest {
         List<TradeListDto> actualTrades = tradeService.findByFilter(tradeCriteria);
 
         assertEquals(expectedSize, actualTrades.size());
+    }
+
+    @Test
+    void saveOrIgnore() {
+        // setup existing trades
+        List<Trade> existingTrades = List.of(getZMTrade(), getFVRRTrade(), getTTWO1Trade(), getTTWO2Trade());
+
+        // setup new trades
+        List<Trade> newTrades = List.of(getTTWO1Trade(), getTTWO2Trade(), getEURUSDTrade());
+
+        // setup mock
+        when(tradeRepository.existsById(getTTWO1Trade().getId())).thenReturn(true);
+        when(tradeRepository.existsById(getTTWO2Trade().getId())).thenReturn(true);
+        ArgumentCaptor<List<Trade>> captor = ArgumentCaptor.forClass(List.class);
+        when(tradeRepository.saveAll(captor.capture())).thenAnswer(invocation -> captor.getValue());
+
+        // execute method
+        List<Trade> savedTrades = tradeService.saveOrIgnore(newTrades);
+
+        // assertions
+        assertEquals(1, savedTrades.size());
+        assertEquals(getEURUSDTrade().getId(), savedTrades.get(0).getId());
     }
 }
