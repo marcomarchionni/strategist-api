@@ -42,7 +42,7 @@ public class UpdateServiceImpl implements UpdateService {
         List<Trade> trades = parser.getTrades(dto);
         List<Dividend> closedDividends = parser.getClosedDividends(dto);
 
-        // update positions and open dividends if flexQuery has the latest data
+        // update positions and dividends if flexQuery has the latest data
         if (hasTheLatestData(dto)) {
             List<Position> positions = parser.getPositions(dto);
             List<Dividend> openDividends = parser.getOpenDividends(dto);
@@ -51,10 +51,11 @@ public class UpdateServiceImpl implements UpdateService {
             dividendService.updateDividends(openDividends, closedDividends);
 
         } else {
+            // only add missing closed dividends
             dividendService.saveOrIgnore(closedDividends);
         }
 
-        // update trades
+        // add missing trades
         tradeService.saveOrIgnore(trades);
 
         // Save flexStatement

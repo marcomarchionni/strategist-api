@@ -58,7 +58,7 @@ class PortfolioControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"Saver Portfolio,4", "Trader Portfolio,2"})
+    @CsvSource({"Saver Portfolio,5", "Trader Portfolio,2"})
     void findByIdSuccess(String portfolioName, int expectedSize) throws Exception {
         Long portfolioId = portfolioRepository.findByName(portfolioName).get(0).getId();
 

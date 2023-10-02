@@ -8,7 +8,7 @@ import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +40,14 @@ public class FileUpdaterIT {
     @Autowired
     FileUpdater fileUpdater;
 
+    @AfterEach
+    public void cleanDb() {
+        positionRepository.deleteAll();
+        tradeRepository.deleteAll();
+        dividendRepository.deleteAll();
+        flexStatementRepository.deleteAll();
+    }
+
     @Test
     void updateFromFileEmptyDbTest() throws IOException {
 
@@ -58,24 +66,39 @@ public class FileUpdaterIT {
         assertTrue(result.isEmpty());
     }
 
-    //TODO: test position dividend and trade update
     @Test
-    @Disabled
     @Sql("classpath:dbScripts/insertSampleData.sql")
     void updateFromFilePopulatedDbTest() throws IOException {
 
+        List<FlexStatement> existingFlexStatements = flexStatementRepository.findAll();
+        List<Trade> existingTrades = tradeRepository.findAll();
+        long countTradesWithStrategyBefore = existingTrades.stream().filter(trade -> trade.getStrategy() != null).count();
+
         fileUpdater.update(flexQuery);
 
-        List<Trade> trades = tradeRepository.findAll();
-        List<Position> positions = positionRepository.findAll();
-        List<Dividend> dividends = dividendRepository.findAll();
-        List<FlexStatement> flexStatements = flexStatementRepository.findAll();
+        List<Trade> updatedTrades = tradeRepository.findAll();
+        long countTradesWithStrategyAfter = updatedTrades.stream().filter(trade -> trade.getStrategy() != null).count();
 
-        assertFalse(trades.isEmpty());
-        assertFalse(positions.isEmpty());
-        assertFalse(dividends.isEmpty());
-        assertFalse(flexStatements.isEmpty());
-        Optional<Dividend> result = dividends.stream().filter(d -> d.getOpenClosed() == null).findFirst();
-        assertTrue(result.isEmpty());
+        List<Position> updatedPositions = positionRepository.findAll();
+        long countPositionsWithStrategy = updatedPositions.stream().filter(position -> position.getStrategy() != null).count();
+        List<Dividend> updatedDividends = dividendRepository.findAll();
+        List<FlexStatement> updatedFlexStatements = flexStatementRepository.findAll();
+
+        // assert flexStatement is updated
+        assertEquals( existingFlexStatements.size() + 1, updatedFlexStatements.size());
+
+        // assert trades are updated
+        assertTrue(updatedTrades.size() >= existingTrades.size());
+        assertEquals(countTradesWithStrategyBefore, countTradesWithStrategyAfter);
+
+        // assert positions are updated
+        assertEquals(3, updatedPositions.size());
+        assertEquals(1, countPositionsWithStrategy);
+
+        // assert dividends are updated
+        assertEquals(6, updatedDividends.size());
+        Dividend EBAYDividend = updatedDividends.stream().filter(dividend -> dividend.getSymbol().equals("EBAY")).findFirst().orElse(null);
+        assertNotNull(EBAYDividend);
+        assertEquals("CLOSED", EBAYDividend.getOpenClosed());
     }
 }

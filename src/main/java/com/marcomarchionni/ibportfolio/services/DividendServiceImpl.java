@@ -69,6 +69,7 @@ public class DividendServiceImpl implements DividendService {
     @Override
     public List<Dividend> updateDividends(List<Dividend> openDividends, List<Dividend> closedDividends) {
         List<Dividend> dividendsToSave = new ArrayList<>();
+        List<Dividend> dividendsToDelete = new ArrayList<>();
 
         // Create a map of open dividends
         Map<Long, Dividend> openDividendsMap = dividendRepository.findOpenDividends().stream()
@@ -86,8 +87,10 @@ public class DividendServiceImpl implements DividendService {
             Long id = closedDividend.getId();
             if (openDividendsMap.containsKey(id)) {
                 // Merge strategy from existing open dividend, so we don't overwrite it, then save closed dividend
-                Strategy strategy = openDividendsMap.get(closedDividend.getId()).getStrategy();
+                Dividend existingOpenDividend = openDividendsMap.get(id);
+                Strategy strategy = existingOpenDividend.getStrategy();
                 closedDividend.setStrategy(strategy);
+                dividendsToDelete.add(existingOpenDividend);
                 dividendsToSave.add(closedDividend);
             } else {
                 if (!dividendRepository.existsById(id)) {
@@ -95,7 +98,7 @@ public class DividendServiceImpl implements DividendService {
                 }
             }
         }
-
+        dividendRepository.deleteAll(dividendsToDelete);
         return dividendRepository.saveAll(dividendsToSave);
     }
 

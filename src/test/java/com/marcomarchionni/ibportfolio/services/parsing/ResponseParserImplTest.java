@@ -68,7 +68,7 @@ class ResponseParserImplTest {
         List<Position> positions = responseParser.getPositions(flexQueryResponse);
 
         assertNotNull(positions);
-        assertEquals(2, positions.size());
+        assertEquals(3, positions.size());
     }
 
     @Test

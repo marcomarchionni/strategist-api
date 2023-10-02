@@ -41,7 +41,7 @@ class DividendControllerIT {
     StrategyRepository strategyRepository;
 
     @ParameterizedTest
-    @CsvSource({"2022-06-01,,,,,,4", ",,2022-07-01,2022-07-15,,FDX,1", ",,,,true,,1"})
+    @CsvSource({"2022-06-01,,,,,,2", ",,2022-07-01,2022-07-15,,FDX,1", ",,,,true,,1"})
     void findDividendsSuccess(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo, String tagged, String symbol, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/dividends")
@@ -75,7 +75,7 @@ class DividendControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"1029120220603,ZM long,NKE", "26754720220519,IBKR put,CGNX"})
+    @CsvSource({"510058320220711,ZM long,FDX", "26754720220603,IBKR put,CGNX"})
     void updateStrategyIdSuccess(Long dividendId, String strategyName, String expectedSymbol) throws Exception {
 
         Long strategyId = strategyRepository.findByName(strategyName).get(0).getId();

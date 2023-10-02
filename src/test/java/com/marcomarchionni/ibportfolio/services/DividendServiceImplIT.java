@@ -3,6 +3,7 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.model.domain.ClosedDividend;
 import com.marcomarchionni.ibportfolio.model.domain.Dividend;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,10 @@ public class DividendServiceImplIT {
         assertTrue(optDbDividend.isPresent());
         Dividend dbDividend = optDbDividend.get();
         assertEquals("CLOSED", dbDividend.getOpenClosed());
+    }
+
+    @AfterEach
+    void cleanup() {
+        dividendRepository.deleteById(26754720220603L);
     }
 }

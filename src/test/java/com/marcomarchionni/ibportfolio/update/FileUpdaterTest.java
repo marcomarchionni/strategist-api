@@ -42,7 +42,7 @@ class FileUpdaterTest {
         File flexQueryXml = loadFile("flex/SimpleJune2022.xml");
         LocalDate expectedFromDate = LocalDate.of(2022, 6, 1);
         int expectedTradesSize = 10;
-        int expectedPositionsSize = 7;
+        int expectedPositionsSize = 8;
         int expectedClosedDividendsSize = 14;
         int expectedOpenDividendsSize = 3;
 

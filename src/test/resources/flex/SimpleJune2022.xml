@@ -1,6 +1,6 @@
 <FlexQueryResponse queryName="TinyFlex2" type="AF">
     <FlexStatements count="1">
-        <FlexStatement accountId="U7169936" fromDate="20220601" toDate="20220630" period=""
+        <FlexStatement accountId="U7169936" fromDate="20220601" toDate="20220730" period=""
                        whenGenerated="20221228;124835">
             <AccountInformation accountId="U7169936" acctAlias="" model="" currency="EUR" name="Marco Marchionni"
                                 accountType="Individual" customerType="Individual" accountCapabilities="Margin"
@@ -94,6 +94,18 @@
                               accruedInt="" principalAdjustFactor="" listingExchange="BVME" underlyingSecurityID=""
                               underlyingListingExchange="" vestingDate="" serialNumber="" deliveryType=""
                               commodityType="" fineness="0.0" weight="0.0 ()"/>
+                <OpenPosition accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95389"
+                              assetCategory="STK" symbol="AAPL" description="APPLE INC" conid="265598"
+                              securityID="US0378331005" securityIDType="ISIN" cusip="037833100" isin="US0378331005"
+                              underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry=""
+                              putCall="" reportDate="20220630" position="540" markPrice="136.72" positionValue="73828.8"
+                              openPrice="16.018391446" costBasisPrice="16.018391446" costBasisMoney="8649.931381"
+                              percentOfNAV="16.05" fifoPnlUnrealized="65178.868619" side="Long" levelOfDetail="SUMMARY"
+                              openDateTime="" holdingPeriodDateTime="" code="" originatingOrderID=""
+                              originatingTransactionID="" accruedInt="" principalAdjustFactor=""
+                              listingExchange="NASDAQ" underlyingSecurityID="" underlyingListingExchange=""
+                              vestingDate="" serialNumber="" deliveryType="" commodityType="" fineness="0.0"
+                              weight="0.0 ()"/>
             </OpenPositions>
             <Trades>
                 <AssetSummary accountId="U7169936" acctAlias="" model="" currency="" fxRateToBase="" assetCategory="STK"

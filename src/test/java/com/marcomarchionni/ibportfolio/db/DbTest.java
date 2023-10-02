@@ -67,7 +67,7 @@ public class DbTest {
     void dbFindStrategiesTest() {
         List<Strategy> strategies = strategyRepository.findAll();
         assertNotNull(strategies);
-        assertTrue(strategies.size() >0);
+        assertFalse(strategies.isEmpty());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class DbTest {
         dividendRepository.deleteOpenDividends();
         List<Dividend> closedDividends = dividendRepository.findAll();
 
-        assertEquals(3, closedDividends.size());
+        assertEquals(2, closedDividends.size());
     }
 
     @Test

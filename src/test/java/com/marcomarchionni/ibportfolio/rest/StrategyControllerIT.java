@@ -42,7 +42,7 @@ class StrategyControllerIT {
     ObjectMapper mapper;
 
     @ParameterizedTest
-    @CsvSource({"ZM long,1", ",6"})
+    @CsvSource({"ZM long,1", ",7"})
     void findByParamsSuccess(String strategyName, int expectedSize) throws Exception {
         StrategyFindDto strategyFindDto = StrategyFindDto.builder().name(strategyName).build();
 
