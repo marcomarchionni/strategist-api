@@ -38,7 +38,6 @@ public class UpdateController {
 
     private File loadFile() {
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource("flex/SimpleJune2022.xml")).getFile());
-        return file;
+        return new File(Objects.requireNonNull(classLoader.getResource("flex/SimpleJune2022.xml")).getFile());
     }
 }

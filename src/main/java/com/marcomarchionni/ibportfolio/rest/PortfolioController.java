@@ -6,7 +6,6 @@ import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioDetailDto;
 import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioListDto;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
 import jakarta.validation.Valid;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
