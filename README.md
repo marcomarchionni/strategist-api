@@ -29,6 +29,7 @@ The Portfolio Strategist API leverages the following technology stack:
     - Data Validation
     - Advanced Error Handling
     - AOP Logging
+    - 
 
 ### Current Status
 
