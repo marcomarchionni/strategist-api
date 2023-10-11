@@ -12,7 +12,9 @@
 
 - Exposing a rich API to facilitate data querying for the frontend.
 
-## Tech Stack
+## Technology Overview
+
+### Tech Stack
 
 The Portfolio Strategist API leverages the following technology stack:
 
@@ -29,7 +31,14 @@ The Portfolio Strategist API leverages the following technology stack:
     - Data Validation
     - Advanced Error Handling
     - AOP Logging
-    - 
+
+### API Documentation
+
+The API documentation is available [here](https://htmlpreview.github.io/?https://github.com/marcomarchionni/portfolio-strategist-api/blob/main/src/main/resources/static/index.html).
+
+### Database Schema
+
+![Database Schema](assets/dbSchemaDiagram.png)
 
 ### Current Status
 
