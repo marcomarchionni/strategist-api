@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.config;
 
 import com.marcomarchionni.ibportfolio.model.domain.*;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -28,7 +28,7 @@ public class ModelMapperConfig {
         return modelMapper;
     }
 
-    private PropertyMap<FlexQueryResponse.FlexStatement, FlexStatement> getFlexStatementPropertyMap() {
+    private PropertyMap<FlexQueryResponseDto.FlexStatement, FlexStatement> getFlexStatementPropertyMap() {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
@@ -37,7 +37,7 @@ public class ModelMapperConfig {
         };
     }
 
-    private PropertyMap<FlexQueryResponse.Order, Trade> getTradePropertyMap() {
+    private PropertyMap<FlexQueryResponseDto.Order, Trade> getTradePropertyMap() {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
@@ -49,7 +49,7 @@ public class ModelMapperConfig {
 
     }
 
-    private PropertyMap<FlexQueryResponse.OpenPosition, Position> getPositionPropertyMap() {
+    private PropertyMap<FlexQueryResponseDto.OpenPosition, Position> getPositionPropertyMap() {
         return new PropertyMap<>() {
             protected void configure() {
                 map().setId(source.getConid());
@@ -60,12 +60,12 @@ public class ModelMapperConfig {
         };
     }
 
-    private PropertyMap<FlexQueryResponse.ChangeInDividendAccrual, ClosedDividend> getClosedDividendPropertyMap() {
+    private PropertyMap<FlexQueryResponseDto.ChangeInDividendAccrual, ClosedDividend> getClosedDividendPropertyMap() {
         return new PropertyMap<>() {
             protected void configure() {
                 using(ctx -> calculateDividendId(
-                        ((FlexQueryResponse.ChangeInDividendAccrual) ctx.getSource()).getConid(),
-                        ((FlexQueryResponse.ChangeInDividendAccrual) ctx.getSource()).getPayDate()
+                        ((FlexQueryResponseDto.ChangeInDividendAccrual) ctx.getSource()).getConid(),
+                        ((FlexQueryResponseDto.ChangeInDividendAccrual) ctx.getSource()).getPayDate()
                 )).map(source, destination.getId());
                 skip().setStrategy(null);
                 map().setConId(source.getConid());
@@ -78,13 +78,13 @@ public class ModelMapperConfig {
 
     // For Closed Dividends, we need to extract a unique id from the flex query data
     // to avoid duplicates in the update process
-    private PropertyMap<FlexQueryResponse.OpenDividendAccrual, OpenDividend> getOpenDividendPropertyMap() {
+    private PropertyMap<FlexQueryResponseDto.OpenDividendAccrual, OpenDividend> getOpenDividendPropertyMap() {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
                 using(ctx -> calculateDividendId(
-                        ((FlexQueryResponse.OpenDividendAccrual) ctx.getSource()).getConid(),
-                        ((FlexQueryResponse.OpenDividendAccrual) ctx.getSource()).getPayDate()
+                        ((FlexQueryResponseDto.OpenDividendAccrual) ctx.getSource()).getConid(),
+                        ((FlexQueryResponseDto.OpenDividendAccrual) ctx.getSource()).getPayDate()
                 )).map(source, destination.getId());
                 skip().setStrategy(null);
                 map().setConId(source.getConid());

@@ -2,7 +2,7 @@ package com.marcomarchionni.ibportfolio.model.mapping;
 
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.model.domain.Position;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -31,7 +31,7 @@ class PositionMapperImplTest {
     @Test
     void toPosition() {
 
-        FlexQueryResponse.OpenPosition p = new FlexQueryResponse.OpenPosition();
+        FlexQueryResponseDto.OpenPosition p = new FlexQueryResponseDto.OpenPosition();
         p.setAccountId("U7169936");
         p.setCurrency("EUR");
         p.setAssetCategory("STK");

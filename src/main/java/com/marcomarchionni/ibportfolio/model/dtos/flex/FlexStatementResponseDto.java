@@ -1,25 +1,25 @@
 package com.marcomarchionni.ibportfolio.model.dtos.flex;
 
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import jakarta.xml.bind.annotation.*;
+import lombok.Data;
 
-@Getter
-@Setter
-@XmlRootElement(name = "FlexStatementResponse")
+
+@Data
+@JacksonXmlRootElement(localName = "FlexStatementResponse")
 public class FlexStatementResponseDto {
 
-    @XmlElement(name = "Status")
+    @JsonProperty("Status")
     private String status;
 
-    @XmlElement(name = "ReferenceCode")
+    @JsonProperty("ReferenceCode")
     private String referenceCode;
 
-    @XmlElement(name = "Url")
+    @JsonProperty("Url")
     private String url;
 
-    @XmlAttribute(name = "timestamp")
+    @JacksonXmlProperty(isAttribute = true)
     private String timestamp;
 }

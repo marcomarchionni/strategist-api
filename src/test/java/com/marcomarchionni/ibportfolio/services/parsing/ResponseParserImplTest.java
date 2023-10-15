@@ -9,7 +9,7 @@ import com.marcomarchionni.ibportfolio.model.domain.Dividend;
 import com.marcomarchionni.ibportfolio.model.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.model.domain.Position;
 import com.marcomarchionni.ibportfolio.model.domain.Trade;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.model.mapping.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,14 +30,14 @@ class ResponseParserImplTest {
     TradeMapper tradeMapper;
     DividendMapper dividendMapper;
     ResponseParserImpl responseParser;
-    FlexQueryResponse flexQueryResponse;
+    FlexQueryResponseDto flexQueryResponseDto;
 
     @BeforeEach
     void setUp() throws IOException {
         File flexQueryXml = new File(Objects.requireNonNull(
                 getClass().getClassLoader().getResource("flex/SimpleJune2022.xml")
         ).getFile());
-        flexQueryResponse = getXmlMapper().readValue(flexQueryXml, FlexQueryResponse.class);
+        flexQueryResponseDto = getXmlMapper().readValue(flexQueryXml, FlexQueryResponseDto.class);
         ModelMapperConfig config = new ModelMapperConfig();
         ModelMapper modelMapper = config.modelMapper();
         flexStatementMapper = new FlexStatementMapperImpl(modelMapper);
@@ -49,7 +49,7 @@ class ResponseParserImplTest {
 
     @Test
     void parseFlexStatement() {
-        FlexStatement flexStatement = responseParser.getFlexStatement(flexQueryResponse);
+        FlexStatement flexStatement = responseParser.getFlexStatement(flexQueryResponseDto);
 
         assertNotNull(flexStatement);
         assertEquals("U7169936", flexStatement.getAccountId());
@@ -57,7 +57,7 @@ class ResponseParserImplTest {
 
     @Test
     void parseTrades() {
-        List<Trade> trades = responseParser.getTrades(flexQueryResponse);
+        List<Trade> trades = responseParser.getTrades(flexQueryResponseDto);
 
         assertNotNull(trades);
         assertEquals(8, trades.size());
@@ -65,7 +65,7 @@ class ResponseParserImplTest {
 
     @Test
     void parsePositions() {
-        List<Position> positions = responseParser.getPositions(flexQueryResponse);
+        List<Position> positions = responseParser.getPositions(flexQueryResponseDto);
 
         assertNotNull(positions);
         assertEquals(3, positions.size());
@@ -73,7 +73,7 @@ class ResponseParserImplTest {
 
     @Test
     void parseClosedDividends() {
-        List<Dividend> closedDividends = responseParser.getClosedDividends(flexQueryResponse);
+        List<Dividend> closedDividends = responseParser.getClosedDividends(flexQueryResponseDto);
 
         assertNotNull(closedDividends);
         assertEquals(3, closedDividends.size());
@@ -81,7 +81,7 @@ class ResponseParserImplTest {
 
     @Test
     void parseOpenDividends() {
-        List<Dividend> openDividends = responseParser.getOpenDividends(flexQueryResponse);
+        List<Dividend> openDividends = responseParser.getOpenDividends(flexQueryResponseDto);
 
         assertNotNull(openDividends);
         assertEquals(3, openDividends.size());

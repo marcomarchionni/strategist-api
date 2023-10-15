@@ -1,11 +1,13 @@
 package com.marcomarchionni.ibportfolio.update;
 
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.services.UpdateServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -30,26 +32,24 @@ class FileUpdaterTest {
     FileUpdater fileUpdater;
 
     @Captor
-    ArgumentCaptor<FlexQueryResponse> captor;
+    ArgumentCaptor<FlexQueryResponseDto> captor;
 
     @BeforeEach
     void setup() {
         fileUpdater = new FileUpdater(updateService);
     }
 
-    @Test
-    void xmlToDtoSuccess() throws IOException {
-        File flexQueryXml = loadFile("flex/SimpleJune2022.xml");
-        LocalDate expectedFromDate = LocalDate.of(2022, 6, 1);
-        int expectedTradesSize = 10;
-        int expectedPositionsSize = 8;
-        int expectedClosedDividendsSize = 14;
-        int expectedOpenDividendsSize = 3;
+    @ParameterizedTest
+    @CsvSource({"flex/SimpleJune2022.xml, 10, 8, 14, 3, 2022-06-01", "flex/TinyFlex3.xml, 31, 0, 0, 0, 2023-09-01"})
+//    @CsvSource({"flex/TinyFlex3.xml, 31, 0, 0, 0, 2023-09-01"})
+    void xmlToDtoSuccess(String fileName, int expectedTradesSize, int expectedPositionsSize, int expectedClosedDividendsSize, int expectedOpenDividendsSize, String dateString) throws IOException {
+        File flexQueryXml = loadFile(fileName);
+        LocalDate expectedFromDate = LocalDate.parse(dateString);
 
         fileUpdater.update(flexQueryXml);
 
         verify(updateService).save(captor.capture());
-        FlexQueryResponse response = captor.getValue();
+        FlexQueryResponseDto response = captor.getValue();
 
         assertNotNull(response);
         LocalDate actualFromDate = response.getFlexStatement().getFromDate();

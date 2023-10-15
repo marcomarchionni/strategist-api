@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.model.mapping;
 
 import com.marcomarchionni.ibportfolio.model.domain.Position;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.model.dtos.response.PositionListDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class PositionMapperImpl implements PositionMapper {
     }
 
     @Override
-    public Position toPosition(FlexQueryResponse.OpenPosition positionDto) {
+    public Position toPosition(FlexQueryResponseDto.OpenPosition positionDto) {
         return modelMapper.map(positionDto, Position.class);
     }
 }

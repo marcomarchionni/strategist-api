@@ -2,7 +2,7 @@ package com.marcomarchionni.ibportfolio.model.mapping;
 
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.model.domain.FlexStatement;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -29,7 +29,7 @@ class FlexStatementMapperImplTest {
 
     @Test
     void toFlexStatement() {
-        FlexQueryResponse.FlexStatement flexDto = new FlexQueryResponse.FlexStatement();
+        FlexQueryResponseDto.FlexStatement flexDto = new FlexQueryResponseDto.FlexStatement();
         flexDto.setAccountId("U7169936");
         flexDto.setFromDate(LocalDate.of(2022, 6, 1));
         flexDto.setToDate(LocalDate.of(2022, 6, 30));

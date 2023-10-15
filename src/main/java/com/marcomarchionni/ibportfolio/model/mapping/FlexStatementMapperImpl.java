@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.model.mapping;
 
 import com.marcomarchionni.ibportfolio.model.domain.FlexStatement;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ public class FlexStatementMapperImpl implements FlexStatementMapper {
     }
 
     @Override
-    public FlexStatement toFlexStatement(FlexQueryResponse.FlexStatement flexStatementDto) {
+    public FlexStatement toFlexStatement(FlexQueryResponseDto.FlexStatement flexStatementDto) {
         return mapper.map(flexStatementDto, FlexStatement.class);
     }
 }

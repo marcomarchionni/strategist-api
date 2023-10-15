@@ -4,20 +4,20 @@ import com.marcomarchionni.ibportfolio.model.domain.Dividend;
 import com.marcomarchionni.ibportfolio.model.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.model.domain.Position;
 import com.marcomarchionni.ibportfolio.model.domain.Trade;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDtoOld;
 
 import java.util.List;
 
 
 public interface OldResponseParser {
 
-    FlexStatement parseFlexStatement(FlexQueryResponseDto dto);
+    FlexStatement parseFlexStatement(FlexQueryResponseDtoOld dto);
 
-    List<Trade> parseTrades(FlexQueryResponseDto dto);
+    List<Trade> parseTrades(FlexQueryResponseDtoOld dto);
 
-    List<Position> parsePositions(FlexQueryResponseDto dto);
+    List<Position> parsePositions(FlexQueryResponseDtoOld dto);
 
-    List<Dividend> parseClosedDividends(FlexQueryResponseDto dto);
+    List<Dividend> parseClosedDividends(FlexQueryResponseDtoOld dto);
 
-    List<Dividend> parseOpenDividends(FlexQueryResponseDto dto);
+    List<Dividend> parseOpenDividends(FlexQueryResponseDtoOld dto);
 }

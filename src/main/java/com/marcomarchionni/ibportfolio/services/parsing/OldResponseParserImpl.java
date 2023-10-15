@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.services.parsing;
 
 import com.marcomarchionni.ibportfolio.model.domain.*;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDtoOld;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -20,9 +20,9 @@ public class OldResponseParserImpl implements OldResponseParser {
     static private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd;hhmmss", Locale.ENGLISH);
 
     @Override
-    public FlexStatement parseFlexStatement(FlexQueryResponseDto dto) {
+    public FlexStatement parseFlexStatement(FlexQueryResponseDtoOld dto) {
 
-        FlexQueryResponseDto.FlexStatement flexDto = dto.getFlexStatements().get(0).getFlexStatement().get(0);
+        FlexQueryResponseDtoOld.FlexStatement flexDto = dto.getFlexStatements().get(0).getFlexStatement().get(0);
         FlexStatement flexStatement = new FlexStatement();
 
         if (StringUtils.hasText(flexDto.getAccountId())) {
@@ -52,13 +52,13 @@ public class OldResponseParserImpl implements OldResponseParser {
 
     //TODO update Dto and parse ORDER instead of TRADES and use ibOrder to generate Id
     @Override
-    public List<Trade> parseTrades(FlexQueryResponseDto dto) {
+    public List<Trade> parseTrades(FlexQueryResponseDtoOld dto) {
 
         List<Trade> trades = new ArrayList<>();
-        List<FlexQueryResponseDto.Trade> tradesDto =
+        List<FlexQueryResponseDtoOld.Trade> tradesDto =
                 dto.getFlexStatements().get(0).getFlexStatement().get(0).getTrades().getTrade();
 
-        for (FlexQueryResponseDto.Trade t : tradesDto) {
+        for (FlexQueryResponseDtoOld.Trade t : tradesDto) {
             Trade trade = new Trade();
             if (StringUtils.hasText(t.getTransactionID())) {
                 trade.setId(Long.parseLong(t.getTransactionID()));
@@ -123,13 +123,13 @@ public class OldResponseParserImpl implements OldResponseParser {
      * @return list of positions
      */
     @Override
-    public List<Position> parsePositions(FlexQueryResponseDto dto) {
+    public List<Position> parsePositions(FlexQueryResponseDtoOld dto) {
 
         List<Position> positions = new ArrayList<>();
-        List<FlexQueryResponseDto.OpenPosition> positionsDto =
+        List<FlexQueryResponseDtoOld.OpenPosition> positionsDto =
                 dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenPositions().getOpenPosition();
 
-        for (FlexQueryResponseDto.OpenPosition p : positionsDto) {
+        for (FlexQueryResponseDtoOld.OpenPosition p : positionsDto) {
             Position position = new Position();
             if (StringUtils.hasText(p.getConid())) {
                 position.setId(Long.parseLong(p.getConid()));
@@ -183,14 +183,14 @@ public class OldResponseParserImpl implements OldResponseParser {
      * @return list of dividends
      */
     @Override
-    public List<Dividend> parseClosedDividends(FlexQueryResponseDto dto) {
+    public List<Dividend> parseClosedDividends(FlexQueryResponseDtoOld dto) {
 
         List<Dividend> closedDividends = new ArrayList<>();
-        List<FlexQueryResponseDto.ChangeInDividendAccrual> dividendsDto =
+        List<FlexQueryResponseDtoOld.ChangeInDividendAccrual> dividendsDto =
                 dto.getFlexStatements().get(0).getFlexStatement().get(0).getChangeInDividendAccruals().getChangeInDividendAccrual();
 
         // TODO: change to levelOfDetail=SUMMARY and ignore code
-        for (FlexQueryResponseDto.ChangeInDividendAccrual d : dividendsDto) {
+        for (FlexQueryResponseDtoOld.ChangeInDividendAccrual d : dividendsDto) {
             if (d.getCode().equalsIgnoreCase("Re") && d.getDate().equalsIgnoreCase(d.getPayDate())) {
                 Dividend closedDividend = new ClosedDividend();
                 if (StringUtils.hasText(d.getConid())) {
@@ -237,13 +237,13 @@ public class OldResponseParserImpl implements OldResponseParser {
      * @return list of open dividends
      */
     @Override
-    public List<Dividend> parseOpenDividends(FlexQueryResponseDto dto) {
+    public List<Dividend> parseOpenDividends(FlexQueryResponseDtoOld dto) {
 
         List<Dividend> openDividends = new ArrayList<>();
-        List<FlexQueryResponseDto.OpenDividendAccrual> openDividendsDto =
+        List<FlexQueryResponseDtoOld.OpenDividendAccrual> openDividendsDto =
                 dto.getFlexStatements().get(0).getFlexStatement().get(0).getOpenDividendAccruals().getOpenDividendAccrual();
 
-        for (FlexQueryResponseDto.OpenDividendAccrual od : openDividendsDto) {
+        for (FlexQueryResponseDtoOld.OpenDividendAccrual od : openDividendsDto) {
             Dividend openDividend = new OpenDividend();
             if (StringUtils.hasText(od.getConid())) {
                 openDividend.setConId(Long.parseLong(od.getConid()));

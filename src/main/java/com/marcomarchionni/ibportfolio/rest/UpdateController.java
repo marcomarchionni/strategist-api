@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.marcomarchionni.ibportfolio.update.FileUpdater;
-import com.marcomarchionni.ibportfolio.update.Updater;
+import com.marcomarchionni.ibportfolio.update.LiveUpdater;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,12 +13,12 @@ import java.util.Objects;
 @RequestMapping("/update")
 public class UpdateController {
 
-    Updater updater;
+    LiveUpdater liveUpdater;
 
     FileUpdater fileUpdater;
 
-    public UpdateController(Updater updater, FileUpdater fileUpdater) {
-        this.updater = updater;
+    public UpdateController(LiveUpdater liveUpdater, FileUpdater fileUpdater) {
+        this.liveUpdater = liveUpdater;
         this.fileUpdater = fileUpdater;
     }
 
@@ -32,8 +32,8 @@ public class UpdateController {
 
     @GetMapping("/server")
     public String updateFromServer() {
-        updater.updateFromServer();
-        return "Update from server started...";
+        liveUpdater.update();
+        return "Update from server completed";
     }
 
     private File loadFile() {

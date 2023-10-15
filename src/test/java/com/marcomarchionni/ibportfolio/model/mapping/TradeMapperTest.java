@@ -3,7 +3,7 @@ package com.marcomarchionni.ibportfolio.model.mapping;
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.model.domain.Strategy;
 import com.marcomarchionni.ibportfolio.model.domain.Trade;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.model.dtos.response.TradeListDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ class TradeMapperTest {
 
     @Test
     void toTrade() {
-        FlexQueryResponse.Order order = new FlexQueryResponse.Order();
+        FlexQueryResponseDto.Order order = new FlexQueryResponseDto.Order();
         order.setCurrency("USD");
         order.setAssetCategory("STK");
         order.setSymbol("CGNX");

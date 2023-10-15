@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.services.UpdateService;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +23,8 @@ public class FileUpdater {
     public void update(File flexQueryXml) throws IOException {
 
         XmlMapper xmlMapper = getXmlMapper();
-        FlexQueryResponse flexQueryResponse = xmlMapper.readValue(flexQueryXml, FlexQueryResponse.class);
-        updateService.save(flexQueryResponse);
+        FlexQueryResponseDto flexQueryResponseDto = xmlMapper.readValue(flexQueryXml, FlexQueryResponseDto.class);
+        updateService.save(flexQueryResponseDto);
     }
 
     private XmlMapper getXmlMapper() {

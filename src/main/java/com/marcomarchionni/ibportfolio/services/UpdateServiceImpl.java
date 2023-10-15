@@ -3,7 +3,7 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.model.domain.Dividend;
 import com.marcomarchionni.ibportfolio.model.domain.Position;
 import com.marcomarchionni.ibportfolio.model.domain.Trade;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
 import com.marcomarchionni.ibportfolio.services.parsing.ResponseParser;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class UpdateServiceImpl implements UpdateService {
     }
 
     @Override
-    public void save(FlexQueryResponse dto) {
+    public void save(FlexQueryResponseDto dto) {
 
         List<Trade> trades = parser.getTrades(dto);
         List<Dividend> closedDividends = parser.getClosedDividends(dto);
@@ -62,14 +62,14 @@ public class UpdateServiceImpl implements UpdateService {
         flexStatementRepository.save(parser.getFlexStatement(dto));
     }
 
-    private boolean hasTheLatestData(FlexQueryResponse dto) {
+    private boolean hasTheLatestData(FlexQueryResponseDto dto) {
 
         LocalDate dtoLastReportedDate = getLatestReportedDate(dto);
         LocalDate dbLastReportedDate = flexStatementRepository.findLastReportedDate();
         return dbLastReportedDate == null || dtoLastReportedDate.isAfter(dbLastReportedDate);
     }
 
-    private LocalDate getLatestReportedDate(FlexQueryResponse dto) {
+    private LocalDate getLatestReportedDate(FlexQueryResponseDto dto) {
         return dto.getFlexStatements().getFlexStatement().getToDate();
     }
 }

@@ -2,7 +2,7 @@ package com.marcomarchionni.ibportfolio.model.mapping;
 
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.model.domain.Dividend;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponse;
+import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -39,7 +39,7 @@ class DividendMapperImplTest {
 
     @Test
     void toClosedDividend() {
-        FlexQueryResponse.ChangeInDividendAccrual d = new FlexQueryResponse.ChangeInDividendAccrual();
+        FlexQueryResponseDto.ChangeInDividendAccrual d = new FlexQueryResponseDto.ChangeInDividendAccrual();
         d.setCurrency("USD");
         d.setFxRateToBase(BigDecimal.valueOf(0.93292));
         d.setAssetCategory("STK");
@@ -60,7 +60,7 @@ class DividendMapperImplTest {
 
     @Test
     void toOpenDividend() {
-        FlexQueryResponse.OpenDividendAccrual d = new FlexQueryResponse.OpenDividendAccrual();
+        FlexQueryResponseDto.OpenDividendAccrual d = new FlexQueryResponseDto.OpenDividendAccrual();
         d.setCurrency("USD");
         d.setFxRateToBase(BigDecimal.valueOf(0.93292));
         d.setAssetCategory("STK");
