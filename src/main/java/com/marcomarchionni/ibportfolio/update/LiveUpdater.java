@@ -6,12 +6,8 @@ import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.ibportfolio.services.UpdateService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
 
 
 @Component

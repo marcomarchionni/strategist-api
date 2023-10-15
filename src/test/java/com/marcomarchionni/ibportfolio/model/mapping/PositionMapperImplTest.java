@@ -46,7 +46,7 @@ class PositionMapperImplTest {
         PositionMapper positionMapper = new PositionMapperImpl(mapper);
         Position position = positionMapper.toPosition(p);
         assertNotNull(position);
-        assertEquals(p.getMarkPrice(), p.getMarkPrice());
+        assertEquals(p.getMarkPrice(), position.getMarkPrice());
         assertEquals(p.getConid(), position.getId());
         assertEquals(p.getConid(), position.getConId());
     }

@@ -3,7 +3,6 @@ package com.marcomarchionni.ibportfolio.model.dtos.flex;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import jakarta.xml.bind.annotation.*;
 import lombok.Data;
 
 

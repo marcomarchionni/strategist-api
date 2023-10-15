@@ -23,6 +23,7 @@ public class ResponseParserImpl implements ResponseParser {
     private final PositionMapper positionMapper;
     private final DividendMapper dividendMapper;
 
+    // TODO: Move helper methods to get entity collections (es. dto.getOrdersDto()) from dto to responseParserImpl
     public ResponseParserImpl(FlexStatementMapper flexStatementMapper, TradeMapper tradeMapper, PositionMapper positionMapper, DividendMapper dividendMapper) {
         this.flexStatementMapper = flexStatementMapper;
         this.tradeMapper = tradeMapper;
