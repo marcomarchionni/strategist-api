@@ -1,8 +1,6 @@
 package com.marcomarchionni.ibportfolio.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.model.domain.Trade;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
@@ -16,8 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -44,12 +40,9 @@ class TradeControllerIT {
     StrategyRepository strategyRepository;
 
     @ParameterizedTest
-//    @CsvSource({",,,ZM,,1", ",,,TTWO,STK,2", ",2022-06-14,true,,,1"})
-    @CsvSource({",,,ZM,,1"})
+    @CsvSource({",,,ZM,,1", ",,,TTWO,STK,2", ",2022-06-14,true,,,1"})
     @Sql("classpath:dbScripts/insertSampleData.sql")
     void findByFilterSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
-
-        List<Trade> savedTrades = tradeRepository.findAll();
 
         mockMvc.perform(get("/trades")
                         .param("tradeDateFrom", tradeDateFrom)
@@ -81,7 +74,7 @@ class TradeControllerIT {
 
     @Sql("classpath:dbScripts/insertSampleData.sql")
     @ParameterizedTest
-    @CsvSource({"1180780161,ZM long,ZM","1180785204,IBKR put,FVRR"})
+    @CsvSource({"1180780161,ZM long,ZM", "1180785204,IBKR put,FVRR"})
     void updateStrategyIdSuccess(Long tradeId, String strategyName, String expectedSymbol) throws Exception {
         Long strategyId = strategyRepository.findByName(strategyName).get(0).getId();
 
@@ -90,6 +83,7 @@ class TradeControllerIT {
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(tradeUpdate)))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.symbol", is(expectedSymbol)))
