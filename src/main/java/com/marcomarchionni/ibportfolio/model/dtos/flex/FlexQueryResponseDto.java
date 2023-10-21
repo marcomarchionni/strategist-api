@@ -1,7 +1,6 @@
 package com.marcomarchionni.ibportfolio.model.dtos.flex;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,9 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Data
 public class FlexQueryResponseDto {
@@ -20,56 +17,6 @@ public class FlexQueryResponseDto {
     private FlexStatements flexStatements;
     private String queryName;
     private String type;
-
-    @JsonIgnore
-    public List<FlexQueryResponseDto.Trade> getTradesDto() {
-        return Optional.ofNullable(getFlexStatements())
-                .map(FlexStatements::getFlexStatement)
-                .map(FlexStatement::getTrades)
-                .map(Trades::getTradeList).orElse(Collections.emptyList());
-    }
-
-    @JsonIgnore
-    public List<Order> getOrdersDto() {
-        return Optional.ofNullable(getFlexStatements())
-                .map(FlexStatements::getFlexStatement)
-                .map(FlexStatement::getTrades)
-                .map(Trades::getOrderList).orElse(Collections.emptyList());
-    }
-
-    @JsonIgnore
-    public List<FlexQueryResponseDto.OpenPosition> getPositionsDto() {
-        return Optional.ofNullable(getFlexStatements())
-                .map(FlexStatements::getFlexStatement)
-                .map(FlexStatement::getOpenPositions)
-                .map(OpenPositions::getOpenPositionList)
-                .orElse(Collections.emptyList());
-    }
-
-    @JsonIgnore
-    public List<FlexQueryResponseDto.ChangeInDividendAccrual> getClosedDividendsDto() {
-        return Optional.ofNullable(getFlexStatements())
-                .map(FlexStatements::getFlexStatement)
-                .map(FlexStatement::getChangeInDividendAccruals)
-                .map(ChangeInDividendAccruals::getChangeInDividendAccrualList)
-                .orElse(Collections.emptyList());
-    }
-
-    @JsonIgnore
-    public List<FlexQueryResponseDto.OpenDividendAccrual> getOpenDividendsDto() {
-        return Optional.ofNullable(getFlexStatements())
-                .map(FlexStatements::getFlexStatement)
-                .map(FlexStatement::getOpenDividendAccruals)
-                .map(OpenDividendAccruals::getOpenDividendAccrualList)
-                .orElse(Collections.emptyList());
-    }
-
-    @JsonIgnore
-    public FlexQueryResponseDto.FlexStatement getFlexStatement() {
-        return Optional.ofNullable(getFlexStatements())
-                .map(FlexStatements::getFlexStatement)
-                .orElse(null);
-    }
 
     @Data
     public static class FlexStatements {

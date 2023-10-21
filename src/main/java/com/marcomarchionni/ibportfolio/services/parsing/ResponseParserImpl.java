@@ -11,7 +11,9 @@ import com.marcomarchionni.ibportfolio.model.mapping.PositionMapper;
 import com.marcomarchionni.ibportfolio.model.mapping.TradeMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 
@@ -23,7 +25,6 @@ public class ResponseParserImpl implements ResponseParser {
     private final PositionMapper positionMapper;
     private final DividendMapper dividendMapper;
 
-    // TODO: Move helper methods to get entity collections (es. dto.getOrdersDto()) from dto to responseParserImpl
     public ResponseParserImpl(FlexStatementMapper flexStatementMapper, TradeMapper tradeMapper, PositionMapper positionMapper, DividendMapper dividendMapper) {
         this.flexStatementMapper = flexStatementMapper;
         this.tradeMapper = tradeMapper;
@@ -31,7 +32,7 @@ public class ResponseParserImpl implements ResponseParser {
         this.dividendMapper = dividendMapper;
     }
 
-    private static Predicate<FlexQueryResponseDto.OpenPosition> isValidOpenPosition() {
+    private Predicate<FlexQueryResponseDto.OpenPosition> isValidOpenPosition() {
         return p -> p.getLevelOfDetail().equalsIgnoreCase("SUMMARY");
     }
 
@@ -43,19 +44,30 @@ public class ResponseParserImpl implements ResponseParser {
 
     @Override
     public FlexStatement getFlexStatement(FlexQueryResponseDto dto) {
-        FlexQueryResponseDto.FlexStatement fs = dto.getFlexStatement();
+        FlexQueryResponseDto.FlexStatement fs = Optional.ofNullable(dto.getFlexStatements())
+                .map(FlexQueryResponseDto.FlexStatements::getFlexStatement)
+                .orElse(null);
         return flexStatementMapper.toFlexStatement(fs);
     }
 
     @Override
     public List<Trade> getTrades(FlexQueryResponseDto dto) {
-        List<FlexQueryResponseDto.Order> ordersDto = dto.getOrdersDto();
+        List<FlexQueryResponseDto.Order> ordersDto =
+                Optional.ofNullable(dto.getFlexStatements())
+                        .map(FlexQueryResponseDto.FlexStatements::getFlexStatement)
+                        .map(FlexQueryResponseDto.FlexStatement::getTrades)
+                        .map(FlexQueryResponseDto.Trades::getOrderList).orElse(Collections.emptyList());
         return ordersDto.stream().map(tradeMapper::toTrade).toList();
     }
 
     @Override
     public List<Position> getPositions(FlexQueryResponseDto dto) {
-        List<FlexQueryResponseDto.OpenPosition> positionsDto = dto.getPositionsDto();
+        List<FlexQueryResponseDto.OpenPosition> positionsDto = Optional.ofNullable(dto.getFlexStatements())
+                .map(FlexQueryResponseDto.FlexStatements::getFlexStatement)
+                .map(FlexQueryResponseDto.FlexStatement::getOpenPositions)
+                .map(FlexQueryResponseDto.OpenPositions::getOpenPositionList)
+                .orElse(Collections.emptyList());
+
         return positionsDto
                 .stream()
                 .filter(isValidOpenPosition())
@@ -66,7 +78,11 @@ public class ResponseParserImpl implements ResponseParser {
     @Override
     public List<Dividend> getClosedDividends(FlexQueryResponseDto dto) {
 
-        List<FlexQueryResponseDto.ChangeInDividendAccrual> closedDividendsDto = dto.getClosedDividendsDto();
+        List<FlexQueryResponseDto.ChangeInDividendAccrual> closedDividendsDto = Optional.ofNullable(dto.getFlexStatements())
+                .map(FlexQueryResponseDto.FlexStatements::getFlexStatement)
+                .map(FlexQueryResponseDto.FlexStatement::getChangeInDividendAccruals)
+                .map(FlexQueryResponseDto.ChangeInDividendAccruals::getChangeInDividendAccrualList)
+                .orElse(Collections.emptyList());
         return closedDividendsDto
                 .stream()
                 .filter(isValidClosedDividend())
@@ -77,7 +93,11 @@ public class ResponseParserImpl implements ResponseParser {
     @Override
     public List<Dividend> getOpenDividends(FlexQueryResponseDto dto) {
 
-        List<FlexQueryResponseDto.OpenDividendAccrual> openDividendsDto = dto.getOpenDividendsDto();
+        List<FlexQueryResponseDto.OpenDividendAccrual> openDividendsDto = Optional.ofNullable(dto.getFlexStatements())
+                .map(FlexQueryResponseDto.FlexStatements::getFlexStatement)
+                .map(FlexQueryResponseDto.FlexStatement::getOpenDividendAccruals)
+                .map(FlexQueryResponseDto.OpenDividendAccruals::getOpenDividendAccrualList)
+                .orElse(Collections.emptyList());
         return openDividendsDto
                 .stream()
                 .map(dividendMapper::toDividend)

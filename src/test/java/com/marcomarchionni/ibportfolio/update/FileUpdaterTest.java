@@ -16,7 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,7 +43,6 @@ class FileUpdaterTest {
 
     @ParameterizedTest
     @CsvSource({"flex/SimpleJune2022.xml, 10, 8, 14, 3, 2022-06-01", "flex/TinyFlex3.xml, 31, 0, 0, 0, 2023-09-01"})
-//    @CsvSource({"flex/TinyFlex3.xml, 31, 0, 0, 0, 2023-09-01"})
     void xmlToDtoSuccess(String fileName, int expectedTradesSize, int expectedPositionsSize, int expectedClosedDividendsSize, int expectedOpenDividendsSize, String dateString) throws IOException {
         File flexQueryXml = loadFile(fileName);
         LocalDate expectedFromDate = LocalDate.parse(dateString);
@@ -52,13 +53,23 @@ class FileUpdaterTest {
         FlexQueryResponseDto response = captor.getValue();
 
         assertNotNull(response);
-        LocalDate actualFromDate = response.getFlexStatement().getFromDate();
+        FlexQueryResponseDto.FlexStatement flexStatement = response.getFlexStatements().getFlexStatement();
+        LocalDate actualFromDate = flexStatement.getFromDate();
         assertNotNull(actualFromDate);
         assertEquals(expectedFromDate, actualFromDate);
-        assertEquals(expectedTradesSize, response.getTradesDto().size());
-        assertEquals(expectedPositionsSize, response.getPositionsDto().size());
-        assertEquals(expectedClosedDividendsSize, response.getClosedDividendsDto().size());
-        assertEquals(expectedOpenDividendsSize, response.getOpenDividendsDto().size());
+        int actualTradesSize = Optional.ofNullable(flexStatement.getTrades())
+                .map(FlexQueryResponseDto.Trades::getTradeList).map(List::size).orElse(0);
+        int actualPositionsSize = Optional.ofNullable(flexStatement.getOpenPositions())
+                .map(FlexQueryResponseDto.OpenPositions::getOpenPositionList).map(List::size).orElse(0);
+        int actualClosedDividendsSize = Optional.ofNullable(flexStatement.getChangeInDividendAccruals())
+                .map(FlexQueryResponseDto.ChangeInDividendAccruals::getChangeInDividendAccrualList).map(List::size)
+                .orElse(0);
+        int actualOpenDividendsSize = Optional.ofNullable(flexStatement.getOpenDividendAccruals()).map(
+                FlexQueryResponseDto.OpenDividendAccruals::getOpenDividendAccrualList).map(List::size).orElse(0);
+        assertEquals(expectedTradesSize, actualTradesSize);
+        assertEquals(expectedPositionsSize, actualPositionsSize);
+        assertEquals(expectedClosedDividendsSize, actualClosedDividendsSize);
+        assertEquals(expectedOpenDividendsSize, actualOpenDividendsSize);
     }
 
     @Test
