@@ -12,11 +12,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Configuration
@@ -56,12 +59,13 @@ public class XMLConvertersConfig {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
 
-        restTemplate.setInterceptors(Collections.singletonList((request, body, execution) -> {
-            log.debug("Request Headers: {}", request.getHeaders());
-            return execution.execute(request, body);
-        }));
+        // Create a custom list for the message converters
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+        messageConverters.add(mappingJackson2XmlHttpMessageConverter);
+        messageConverters.add(new StringHttpMessageConverter());
 
-        restTemplate.getMessageConverters().add(0, mappingJackson2XmlHttpMessageConverter);
+        restTemplate.setMessageConverters(messageConverters);
+
         log.info("Message Converters: " + restTemplate.getMessageConverters());
         return restTemplate;
     }
