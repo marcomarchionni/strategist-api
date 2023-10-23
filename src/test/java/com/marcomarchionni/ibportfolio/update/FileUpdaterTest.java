@@ -1,10 +1,12 @@
 package com.marcomarchionni.ibportfolio.update;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.services.UpdateServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -22,7 +24,6 @@ import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,7 +39,16 @@ class FileUpdaterTest {
 
     @BeforeEach
     void setup() {
-        fileUpdater = new FileUpdater(updateService);
+
+        // configure xml mapper
+        JacksonXmlModule xmlModule = new JacksonXmlModule();
+        xmlModule.setDefaultUseWrapper(false);
+        XmlMapper xmlMapper = new XmlMapper(xmlModule);
+        xmlMapper.registerModule(new JavaTimeModule());
+        xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        // initialize file updater
+        fileUpdater = new FileUpdater(updateService, xmlMapper);
     }
 
     @ParameterizedTest
@@ -74,14 +84,6 @@ class FileUpdaterTest {
         assertEquals(expectedOpenDividendsSize, actualOpenDividendsSize);
     }
 
-    @Test
-    @Disabled
-        //TODO: xml validation
-    void invalidXml() {
-        File invalidFlexQueryXml = loadFile("flex/InvalidJune2022.xml");
-
-        assertThrows(Exception.class, () -> fileUpdater.update(invalidFlexQueryXml));
-    }
 
     private File loadFile(String filePath) {
         return new File(Objects.requireNonNull(getClass().getClassLoader().getResource(filePath)).getFile());

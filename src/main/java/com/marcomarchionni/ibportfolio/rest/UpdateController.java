@@ -1,12 +1,15 @@
 package com.marcomarchionni.ibportfolio.rest;
 
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UploadedFileException;
 import com.marcomarchionni.ibportfolio.update.FileUpdater;
 import com.marcomarchionni.ibportfolio.update.LiveUpdater;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 @RestController
@@ -20,6 +23,17 @@ public class UpdateController {
     public UpdateController(LiveUpdater liveUpdater, FileUpdater fileUpdater) {
         this.liveUpdater = liveUpdater;
         this.fileUpdater = fileUpdater;
+    }
+
+    @PostMapping("/file")
+    public ResponseEntity<String> updateFromFile(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            throw new UploadedFileException();
+        }
+        InputStream xmlStream = file.getInputStream();
+        fileUpdater.update(xmlStream);
+        return ResponseEntity.ok("Update from file completed");
+
     }
 
     @GetMapping("/file")

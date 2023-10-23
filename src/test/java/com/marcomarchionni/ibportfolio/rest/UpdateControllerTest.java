@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.File;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,7 +38,7 @@ class UpdateControllerTest {
     @Test
     void updateFromFile() throws Exception {
 
-        doNothing().when(fileUpdater).update(any());
+        doNothing().when(fileUpdater).update((File) any());
 
         mockMvc.perform(get("/update/file"))
                 .andExpect(status().isOk())

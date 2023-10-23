@@ -3,6 +3,7 @@ package com.marcomarchionni.ibportfolio.errorhandling;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UploadedFileException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.*;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
@@ -37,7 +39,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({
             MethodArgumentTypeMismatchException.class,
             IllegalArgumentException.class,
-            ConstraintViolationException.class
+            ConstraintViolationException.class,
+            UploadedFileException.class,
+            MaxUploadSizeExceededException.class
+
     })
     public ResponseEntity<Object> handleBadRequestException(Exception ex) {
         return createErrorResponse("bad-request", ex.getMessage(), HttpStatus.BAD_REQUEST);
