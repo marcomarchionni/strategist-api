@@ -1,12 +1,15 @@
 -- Delete any existing data in ibTestDb
 
 -- noinspection SqlWithoutWhereForFile
-DELETE FROM `portfolio`;
-DELETE FROM `strategy`;
+DELETE
+FROM `flex_statement`;
 DELETE FROM `dividend`;
 DELETE FROM `position`;
 DELETE FROM `trade`;
-DELETE FROM `flex_statement`;
+DELETE
+FROM `strategy`;
+DELETE
+FROM `portfolio`;
 
 -- Insert sample data in ibTestDb
 
@@ -39,13 +42,41 @@ SELECT @IRBTId := id FROM `strategy` WHERE name = 'IRBT long';
 SELECT @TTWOId := id FROM `strategy` WHERE name = 'TTWO long';
 
 
-INSERT INTO `trade` (`id`,`trade_id`,`con_id`,`trade_strategy_id`,`trade_date`,`symbol`,`description`,`asset_category`,`multiplier`,`put_call`,`strike`,`expiry`,`buy_sell`,`quantity`,`trade_price`,`trade_money`,`fifo_pnl_realized`,`ib_commission`) VALUES (1180780161,387679436,361181057,@ZMId,'2022-06-07','ZM','ZOOM VIDEO COMMUNICATIONS-A','STK',1,NULL,NULL,NULL,'BUY',15.0000,111.3300,1669.9500,0.0000,-1.0000);
-INSERT INTO `trade` (`id`,`trade_id`,`con_id`,`trade_strategy_id`,`trade_date`,`symbol`,`description`,`asset_category`,`multiplier`,`put_call`,`strike`,`expiry`,`buy_sell`,`quantity`,`trade_price`,`trade_money`,`fifo_pnl_realized`,`ib_commission`) VALUES (1180785204,387681643,370695082,NULL,'2022-06-07','FVRR','FIVERR INTERNATIONAL LTD','STK',1,NULL,NULL,NULL,'BUY',10.0000,40.5450,405.4500,0.0000,0.0000);
-INSERT INTO `trade` (`id`,`trade_id`,`con_id`,`trade_strategy_id`,`trade_date`,`symbol`,`description`,`asset_category`,`multiplier`,`put_call`,`strike`,`expiry`,`buy_sell`,`quantity`,`trade_price`,`trade_money`,`fifo_pnl_realized`,`ib_commission`) VALUES (1198688377,391765250,520934333,@IBKRId,'2022-06-15','IBKR  220617P00055000','IBKR 17JUN22 55 P','OPT',100,'P',55.0000,'2022-06-17','BUY',1.0000,0.5500,55.0000,213.0981,-0.6492);
-INSERT INTO `trade` (`id`,`trade_id`,`con_id`,`trade_strategy_id`,`trade_date`,`symbol`,`description`,`asset_category`,`multiplier`,`put_call`,`strike`,`expiry`,`buy_sell`,`quantity`,`trade_price`,`trade_money`,`fifo_pnl_realized`,`ib_commission`) VALUES (1198688378,391765279,539457903,NULL,'2022-06-15','IBKR  220916P00055000','IBKR 16SEP22 55 P','OPT',100,'P',55.0000,'2022-09-16','SELL',-1.0000,3.7000,-370.0000,0.0000,-0.6598);
-INSERT INTO `trade` (`id`,`trade_id`,`con_id`,`trade_strategy_id`,`trade_date`,`symbol`,`description`,`asset_category`,`multiplier`,`put_call`,`strike`,`expiry`,`buy_sell`,`quantity`,`trade_price`,`trade_money`,`fifo_pnl_realized`,`ib_commission`) VALUES (1222538552,NULL,6478131,@TTWOId,'2022-06-28','TTWO','TAKE-TWO INTERACTIVE SOFTWARE','STK',1,NULL,NULL,NULL,'SELL (Ca.)',0.7440,115.2709,85.7615,0.0000,0.0000);
-INSERT INTO `trade` (`id`,`trade_id`,`con_id`,`trade_strategy_id`,`trade_date`,`symbol`,`description`,`asset_category`,`multiplier`,`put_call`,`strike`,`expiry`,`buy_sell`,`quantity`,`trade_price`,`trade_money`,`fifo_pnl_realized`,`ib_commission`) VALUES (1222538553,NULL,6478131,@TTWOId,'2022-06-28','TTWO','TAKE-TWO INTERACTIVE SOFTWARE','STK',1,NULL,NULL,NULL,'SELL',-0.7440,122.6900,-91.2814,-0.6919,0.0000);
-INSERT INTO `trade` (`id`,`trade_id`,`con_id`,`trade_strategy_id`,`trade_date`,`symbol`,`description`,`asset_category`,`multiplier`,`put_call`,`strike`,`expiry`,`buy_sell`,`quantity`,`trade_price`,`trade_money`,`fifo_pnl_realized`,`ib_commission`) VALUES (1238155321,400172483,12087792,NULL,'2022-07-06','EUR.USD','EUR.USD','CASH',1,NULL,NULL,NULL,'BUY',1.0000,1.0174,1.0174,0.0000,-1.9484);
+INSERT INTO `trade` (`id`, `trade_id`, `con_id`, `ib_order_id`, `trade_strategy_id`, `trade_date`, `symbol`,
+                     `description`, `asset_category`, `multiplier`, `put_call`, `strike`, `expiry`, `buy_sell`,
+                     `quantity`, `trade_price`, `trade_money`, `fifo_pnl_realized`, `ib_commission`)
+VALUES (339578772, 387679436, 361181057, 339578772, @ZMId, '2022-06-07', 'ZM', 'ZOOM VIDEO COMMUNICATIONS-A', 'STK', 1,
+        NULL, NULL, NULL, 'BUY', 15.0000, 111.3300, 1669.9500, 0.0000, -1.0000);
+INSERT INTO `trade` (`id`, `trade_id`, `con_id`, `ib_order_id`, `trade_strategy_id`, `trade_date`, `symbol`,
+                     `description`, `asset_category`, `multiplier`, `put_call`, `strike`, `expiry`, `buy_sell`,
+                     `quantity`, `trade_price`, `trade_money`, `fifo_pnl_realized`, `ib_commission`)
+VALUES (339580463, 387681643, 370695082, 339580463, NULL, '2022-06-07', 'FVRR', 'FIVERR INTERNATIONAL LTD', 'STK', 1,
+        NULL, NULL, NULL, 'BUY', 10.0000, 40.5450, 405.4500, 0.0000, 0.0000);
+INSERT INTO `trade` (`id`, `trade_id`, `con_id`, `ib_order_id`, `trade_strategy_id`, `trade_date`, `symbol`,
+                     `description`, `asset_category`, `multiplier`, `put_call`, `strike`, `expiry`, `buy_sell`,
+                     `quantity`, `trade_price`, `trade_money`, `fifo_pnl_realized`, `ib_commission`)
+VALUES (342799737, 391765250, 520934333, 342799737, @IBKRId, '2022-06-15', 'IBKR  220617P00055000', 'IBKR 17JUN22 55 P',
+        'OPT', 100, 'P', 55.0000, '2022-06-17', 'BUY', 1.0000, 0.5500, 55.0000, 213.0981, -0.6492);
+INSERT INTO `trade` (`id`, `trade_id`, `con_id`, `ib_order_id`, `trade_strategy_id`, `trade_date`, `symbol`,
+                     `description`, `asset_category`, `multiplier`, `put_call`, `strike`, `expiry`, `buy_sell`,
+                     `quantity`, `trade_price`, `trade_money`, `fifo_pnl_realized`, `ib_commission`)
+VALUES (342799754, 391765279, 539457903, 342799754, NULL, '2022-06-15', 'IBKR  220916P00055000', 'IBKR 16SEP22 55 P',
+        'OPT', 100, 'P', 55.0000, '2022-09-16', 'SELL', -1.0000, 3.7000, -370.0000, 0.0000, -0.6598);
+INSERT INTO `trade` (`id`, `trade_id`, `con_id`, `ib_order_id`, `trade_strategy_id`, `trade_date`, `symbol`,
+                     `description`, `asset_category`, `multiplier`, `put_call`, `strike`, `expiry`, `buy_sell`,
+                     `quantity`, `trade_price`, `trade_money`, `fifo_pnl_realized`, `ib_commission`)
+VALUES (1222538552, NULL, 6478131, 1222538552, @TTWOId, '2022-06-28', 'TTWO', 'TAKE-TWO INTERACTIVE SOFTWARE', 'STK', 1,
+        NULL, NULL, NULL, 'BUY', 0.7440, 115.2709, 85.7615, 0.0000, 0.0000);
+INSERT INTO `trade` (`id`, `trade_id`, `con_id`, `ib_order_id`, `trade_strategy_id`, `trade_date`, `symbol`,
+                     `description`, `asset_category`, `multiplier`, `put_call`, `strike`, `expiry`, `buy_sell`,
+                     `quantity`, `trade_price`, `trade_money`, `fifo_pnl_realized`, `ib_commission`)
+VALUES (1222538553, NULL, 6478131, 1222538553, @TTWOId, '2022-06-28', 'TTWO', 'TAKE-TWO INTERACTIVE SOFTWARE', 'STK', 1,
+        NULL, NULL, NULL, 'SELL', -0.7440, 122.6900, -91.2814, -0.6919, 0.0000);
+INSERT INTO `trade` (`id`, `trade_id`, `con_id`, `ib_order_id`, `trade_strategy_id`, `trade_date`, `symbol`,
+                     `description`, `asset_category`, `multiplier`, `put_call`, `strike`, `expiry`, `buy_sell`,
+                     `quantity`, `trade_price`, `trade_money`, `fifo_pnl_realized`, `ib_commission`)
+VALUES (1238155321, 400172483, 12087792, 1238155321, NULL, '2022-05-06', 'EUR.USD', 'EUR.USD', 'CASH', 1, NULL, NULL,
+        NULL, 'BUY', 1.0000, 1.0174, 1.0174, 0.0000, -1.9484);
 
 INSERT INTO `position` (`id`,`con_id`,`report_date`,`position_strategy_id`,`symbol`,`description`,`asset_category`,`put_call`,`strike`,`expiry`,`quantity`,`cost_basis_price`,`mark_price`,`multiplier`,`cost_basis_money`,`position_value`,`fifo_pnl_unrealized`) VALUES (6459,6459,'2022-06-30',@DISId,'DIS','WALT DISNEY CO/THE','STK',NULL,NULL,NULL,202,89.3512,94.4000,1,NULL,NULL,NULL);
 INSERT INTO `position` (`id`,`con_id`,`report_date`,`position_strategy_id`,`symbol`,`description`,`asset_category`,`put_call`,`strike`,`expiry`,`quantity`,`cost_basis_price`,`mark_price`,`multiplier`,`cost_basis_money`,`position_value`,`fifo_pnl_unrealized`) VALUES (10291,10291,'2022-06-30',@NKEId,'NKE','NIKE INC -CL B','STK',NULL,NULL,NULL,84,24.5601,102.2000,1,NULL,NULL,NULL);
