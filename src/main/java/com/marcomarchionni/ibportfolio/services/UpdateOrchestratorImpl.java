@@ -26,7 +26,6 @@ public class UpdateOrchestratorImpl implements UpdateOrchestrator {
         DataFetcher dataFetcher = dataFetcherResolver.resolve(DataSourceType.SERVER);
         FlexQueryResponseDto dto = dataFetcher.fetch(new FetchContext());
         dataSaverService.save(dto);
-
     }
 
     @Override

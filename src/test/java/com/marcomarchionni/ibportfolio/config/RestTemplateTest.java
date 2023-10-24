@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.update;
+package com.marcomarchionni.ibportfolio.config;
 
 import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexStatementResponseDto;
 import org.junit.jupiter.api.Disabled;
@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class LiveUpdaterTest {
+class RestTemplateTest {
 
     @Value("${token}")
     private String token;

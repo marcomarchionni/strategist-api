@@ -40,11 +40,6 @@ public class DbTest {
     FlexStatementRepository flexStatementRepository;
 
     @Test
-    void dbTest00() {
-
-    }
-
-    @Test
     void dbFindPortfoliosTest() {
         List<Portfolio> portfolios = portfolioRepository.findAll();
         assertEquals(3, portfolios.size());

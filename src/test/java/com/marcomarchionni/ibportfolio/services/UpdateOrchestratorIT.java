@@ -1,29 +1,26 @@
-package com.marcomarchionni.ibportfolio.update;
+package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.model.domain.Dividend;
 import com.marcomarchionni.ibportfolio.model.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.model.domain.Position;
 import com.marcomarchionni.ibportfolio.model.domain.Trade;
-import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
-import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
-import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
-import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
+import com.marcomarchionni.ibportfolio.repositories.*;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class FileUpdaterIT {
+public class UpdateOrchestratorIT {
 
     @Autowired
     PositionRepository positionRepository;
@@ -33,12 +30,16 @@ public class FileUpdaterIT {
     DividendRepository dividendRepository;
     @Autowired
     FlexStatementRepository flexStatementRepository;
+    @Autowired
+    StrategyRepository strategyRepository;
+    @Autowired
+    PortfolioRepository portfolioRepository;
 
-    @Value("/flex/SimpleJune2022.xml")
-    File flexQuery;
 
     @Autowired
-    FileUpdater fileUpdater;
+    UpdateOrchestrator updateOrchestrator;
+
+    InputStream flexQueryStream;
 
     @AfterEach
     public void cleanDb() {
@@ -46,13 +47,21 @@ public class FileUpdaterIT {
         tradeRepository.deleteAll();
         dividendRepository.deleteAll();
         flexStatementRepository.deleteAll();
+        strategyRepository.deleteAll();
+        portfolioRepository.deleteAll();
+    }
+
+    @BeforeEach
+    public void setUp() {
+        flexQueryStream = getClass().getResourceAsStream("/flex/SimpleJune2022.xml");
     }
 
     @Test
     void updateFromFileEmptyDbTest() throws IOException {
 
-        fileUpdater.update(flexQuery);
+        updateOrchestrator.updateFromFile(flexQueryStream);
 
+        // assert db is populated
         List<Trade> trades = tradeRepository.findAll();
         List<Position> positions = positionRepository.findAll();
         List<Dividend> dividends = dividendRepository.findAll();
@@ -72,20 +81,22 @@ public class FileUpdaterIT {
 
         List<FlexStatement> existingFlexStatements = flexStatementRepository.findAll();
         List<Trade> existingTrades = tradeRepository.findAll();
-        long countTradesWithStrategyBefore = existingTrades.stream().filter(trade -> trade.getStrategy() != null).count();
+        long countTradesWithStrategyBefore = existingTrades.stream().filter(trade -> trade.getStrategy() != null)
+                .count();
 
-        fileUpdater.update(flexQuery);
+        updateOrchestrator.updateFromFile(flexQueryStream);
 
         List<Trade> updatedTrades = tradeRepository.findAll();
         long countTradesWithStrategyAfter = updatedTrades.stream().filter(trade -> trade.getStrategy() != null).count();
 
         List<Position> updatedPositions = positionRepository.findAll();
-        long countPositionsWithStrategy = updatedPositions.stream().filter(position -> position.getStrategy() != null).count();
+        long countPositionsWithStrategy = updatedPositions.stream().filter(position -> position.getStrategy() != null)
+                .count();
         List<Dividend> updatedDividends = dividendRepository.findAll();
         List<FlexStatement> updatedFlexStatements = flexStatementRepository.findAll();
 
-        // assert flexStatement is updated
-        assertEquals( existingFlexStatements.size() + 1, updatedFlexStatements.size());
+        // assert flexStatement is added
+        assertEquals(existingFlexStatements.size() + 1, updatedFlexStatements.size());
 
         // assert trades are updated
         assertTrue(updatedTrades.size() >= existingTrades.size());
@@ -97,7 +108,8 @@ public class FileUpdaterIT {
 
         // assert dividends are updated
         assertEquals(6, updatedDividends.size());
-        Dividend EBAYDividend = updatedDividends.stream().filter(dividend -> dividend.getSymbol().equals("EBAY")).findFirst().orElse(null);
+        Dividend EBAYDividend = updatedDividends.stream().filter(dividend -> dividend.getSymbol().equals("EBAY"))
+                .findFirst().orElse(null);
         assertNotNull(EBAYDividend);
         assertEquals("CLOSED", EBAYDividend.getOpenClosed());
     }
