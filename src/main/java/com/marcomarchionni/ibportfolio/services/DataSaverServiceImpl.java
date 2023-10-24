@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class UpdateServiceImpl implements UpdateService {
+public class DataSaverServiceImpl implements DataSaverService {
 
     private final ResponseParser parser;
 
@@ -24,11 +24,11 @@ public class UpdateServiceImpl implements UpdateService {
 
     private final PositionService positionService;
 
-    public UpdateServiceImpl(ResponseParser parser,
-                             TradeService tradeService,
-                             DividendService dividendService,
-                             FlexStatementRepository flexStatementRepository,
-                             PositionService positionService) {
+    public DataSaverServiceImpl(ResponseParser parser,
+                                TradeService tradeService,
+                                DividendService dividendService,
+                                FlexStatementRepository flexStatementRepository,
+                                PositionService positionService) {
         this.parser = parser;
         this.tradeService = tradeService;
         this.dividendService = dividendService;

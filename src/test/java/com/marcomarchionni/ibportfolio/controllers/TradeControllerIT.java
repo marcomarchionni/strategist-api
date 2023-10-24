@@ -1,9 +1,9 @@
-package com.marcomarchionni.ibportfolio.rest;
+package com.marcomarchionni.ibportfolio.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
+import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -25,8 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@Sql("classpath:dbScripts/insertSampleData.sql")
-class DividendControllerIT {
+class TradeControllerIT {
 
     @Autowired
     MockMvc mockMvc;
@@ -35,56 +34,55 @@ class DividendControllerIT {
     ObjectMapper mapper;
 
     @Autowired
-    DividendRepository dividendRepository;
+    TradeRepository tradeRepository;
 
     @Autowired
     StrategyRepository strategyRepository;
 
     @ParameterizedTest
-    @CsvSource({"2022-06-01,,,,,,2", ",,2022-07-01,2022-07-15,,FDX,1", ",,,,true,,1"})
-    void findDividendsSuccess(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo, String tagged, String symbol, int expectedSize) throws Exception {
+    @CsvSource({",,,ZM,,1", ",,,TTWO,STK,2", ",2022-06-14,true,,,1"})
+    @Sql("classpath:dbScripts/insertSampleData.sql")
+    void findByFilterSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
-        mockMvc.perform(get("/dividends")
-                        .param("exDateFrom", exDateFrom)
-                        .param("exDateTo", exDateTo)
-                        .param("payDateFrom", payDateFrom)
-                        .param("payDateTo", payDateTo)
+        mockMvc.perform(get("/trades")
+                        .param("tradeDateFrom", tradeDateFrom)
+                        .param("tradeDateTo", tradeDateTo)
                         .param("tagged", tagged)
-                        .param("symbol", symbol))
-                .andDo(print())
+                        .param("symbol", symbol)
+                        .param("assetCategory", assetCategory))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(expectedSize)));
     }
 
     @ParameterizedTest
-    @CsvSource({"pippo,,,,,", ",,,,farse,", ",,2022-06-02,2022-06-01,,,"})
-    void findDividendsBadRequest(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo, String tagged, String symbol) throws Exception {
+    @CsvSource({"pippo,,,,STK", ",,farse,ZM,", "1969-01-01,,,,,", "2022-06-14,2022-06-13,,,,"})
+    void findByFilterBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
-        mockMvc.perform(get("/dividends")
-                        .param("exDateFrom", exDateFrom)
-                        .param("exDateTo", exDateTo)
-                        .param("payDateFrom", payDateFrom)
-                        .param("payDateTo", payDateTo)
+        mockMvc.perform(get("/trades")
+                        .param("tradeDateFrom", tradeDateFrom)
+                        .param("tradeDateTo", tradeDateTo)
                         .param("tagged", tagged)
-                        .param("symbol", symbol))
+                        .param("symbol", symbol)
+                        .param("assetCategory", assetCategory))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.status", is(400)));
     }
 
-    @ParameterizedTest
-    @CsvSource({"510058320220711,ZM long,FDX", "26754720220603,IBKR put,CGNX"})
-    void updateStrategyIdSuccess(Long dividendId, String strategyName, String expectedSymbol) throws Exception {
 
+    @Sql("classpath:dbScripts/insertSampleData.sql")
+    @ParameterizedTest
+    @CsvSource({"1180780161,ZM long,ZM", "1180785204,IBKR put,FVRR"})
+    void updateStrategyIdSuccess(Long tradeId, String strategyName, String expectedSymbol) throws Exception {
         Long strategyId = strategyRepository.findByName(strategyName).get(0).getId();
 
-        UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();
+        UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(tradeId).strategyId(strategyId).build();
 
-        mockMvc.perform(put("/dividends")
+        mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(dividendUpdate)))
+                        .content(mapper.writeValueAsString(tradeUpdate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -93,25 +91,24 @@ class DividendControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"1029120220603, 20", "20, 1", ",,"})
-    void updateStrategyIdExceptions(Long dividendId, Long strategyId) throws Exception {
+    @CsvSource({"1180780161, 20", "20, 1", ",,"})
+    void updateStrategyIdExceptions(Long tradeId, Long strategyId) throws Exception {
 
-        UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();
+        UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(tradeId).strategyId(strategyId).build();
 
-        mockMvc.perform(put("/dividends")
+        mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(dividendUpdate)))
-                .andDo(print()).andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type").isNotEmpty());
+                        .content(mapper.writeValueAsString(tradeUpdate)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test
     void updateStrategyIdEmptyBody() throws Exception {
 
-        mockMvc.perform(put("/dividends")
+        mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }

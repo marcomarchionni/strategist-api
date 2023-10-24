@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.ibportfolio.services.UpdateServiceImpl;
+import com.marcomarchionni.ibportfolio.services.DataSaverServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
 class FileUpdaterTest {
 
     @Mock
-    UpdateServiceImpl updateService;
+    DataSaverServiceImpl updateService;
 
     FileUpdater fileUpdater;
 

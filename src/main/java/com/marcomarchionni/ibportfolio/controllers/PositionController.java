@@ -1,13 +1,13 @@
-package com.marcomarchionni.ibportfolio.rest;
+package com.marcomarchionni.ibportfolio.controllers;
 
 import com.marcomarchionni.ibportfolio.model.dtos.request.PositionFindDto;
 import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.model.dtos.response.PositionListDto;
 import com.marcomarchionni.ibportfolio.services.PositionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController

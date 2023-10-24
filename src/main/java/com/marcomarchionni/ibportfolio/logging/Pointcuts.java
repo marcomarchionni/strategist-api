@@ -11,7 +11,7 @@ public class Pointcuts {
     @Pointcut("within(com.marcomarchionni.ibportfolio.services.*)")
     public void serviceClasses() {}
 
-    @Pointcut("within(com.marcomarchionni.ibportfolio.rest.*)")
+    @Pointcut("within(com.marcomarchionni.ibportfolio.controllers.*)")
     public void controllerClasses() {}
 
     @Pointcut("serviceClasses() || controllerClasses()")
@@ -41,6 +41,6 @@ public class Pointcuts {
     @Pointcut("execution(* com.marcomarchionni.ibportfolio.services.*.updateStrategyId(..))")
     public void serviceUpdateStrategyId() {}
 
-    @Pointcut("execution(* com.marcomarchionni.ibportfolio.rest.*.updateStrategyId(..))")
+    @Pointcut("execution(* com.marcomarchionni.ibportfolio.controllers.*.updateStrategyId(..))")
     public void controllerUpdateStrategyId() {}
 }

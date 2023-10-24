@@ -2,7 +2,7 @@ package com.marcomarchionni.ibportfolio.services;
 
 import org.junit.jupiter.api.Test;
 
-class UpdateServiceImplTest {
+class DataSaverServiceImplTest {
 
     @Test
     void save() {

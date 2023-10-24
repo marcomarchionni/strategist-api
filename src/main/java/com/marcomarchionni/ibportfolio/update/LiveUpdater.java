@@ -3,7 +3,7 @@ package com.marcomarchionni.ibportfolio.update;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
 import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexStatementResponseDto;
-import com.marcomarchionni.ibportfolio.services.UpdateService;
+import com.marcomarchionni.ibportfolio.services.DataSaverService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -24,18 +24,18 @@ public class LiveUpdater {
 
     @Value("${req.path}")
     private String reqPath;
-    private final UpdateService updateService;
+    private final DataSaverService dataSaverService;
 
     private final RestTemplate restTemplate;
 
-    public LiveUpdater(UpdateService updateService, RestTemplate restTemplate) {
-        this.updateService = updateService;
+    public LiveUpdater(DataSaverService dataSaverService, RestTemplate restTemplate) {
+        this.dataSaverService = dataSaverService;
         this.restTemplate = restTemplate;
     }
 
     public void update() {
         FlexQueryResponseDto flexQueryResponseDto = fetchFlexQuery();
-        updateService.save(flexQueryResponseDto);
+        dataSaverService.save(flexQueryResponseDto);
     }
 
     private FlexQueryResponseDto fetchFlexQuery() {

@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.rest;
+package com.marcomarchionni.ibportfolio.controllers;
 
 import com.marcomarchionni.ibportfolio.model.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
