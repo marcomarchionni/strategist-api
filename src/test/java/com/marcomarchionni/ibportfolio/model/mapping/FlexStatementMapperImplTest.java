@@ -1,8 +1,9 @@
 package com.marcomarchionni.ibportfolio.model.mapping;
 
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
-import com.marcomarchionni.ibportfolio.model.domain.FlexStatement;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.domain.FlexStatement;
+import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.mappers.FlexStatementMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;

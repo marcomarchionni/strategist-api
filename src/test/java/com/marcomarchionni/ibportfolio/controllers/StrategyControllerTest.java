@@ -1,14 +1,14 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.model.domain.Strategy;
-import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyFindDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.StrategyListDto;
-import com.marcomarchionni.ibportfolio.model.mapping.StrategyMapper;
-import com.marcomarchionni.ibportfolio.model.mapping.StrategyMapperImpl;
+import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
+import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.dtos.response.StrategyDetailDto;
+import com.marcomarchionni.ibportfolio.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.mappers.StrategyMapper;
+import com.marcomarchionni.ibportfolio.mappers.StrategyMapperImpl;
 import com.marcomarchionni.ibportfolio.services.StrategyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

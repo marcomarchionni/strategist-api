@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.config;
 
-import com.marcomarchionni.ibportfolio.model.domain.*;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.domain.*;
+import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;

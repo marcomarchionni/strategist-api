@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.model.domain.ClosedDividend;
-import com.marcomarchionni.ibportfolio.model.domain.Dividend;
+import com.marcomarchionni.ibportfolio.domain.ClosedDividend;
+import com.marcomarchionni.ibportfolio.domain.Dividend;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

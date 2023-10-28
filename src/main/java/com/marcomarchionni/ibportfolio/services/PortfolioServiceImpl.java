@@ -1,14 +1,14 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PortfolioListDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.ibportfolio.model.domain.Portfolio;
-import com.marcomarchionni.ibportfolio.model.dtos.request.PortfolioCreateDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioListDto;
-import com.marcomarchionni.ibportfolio.model.mapping.PortfolioMapper;
+import com.marcomarchionni.ibportfolio.mappers.PortfolioMapper;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

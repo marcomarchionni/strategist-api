@@ -1,8 +1,10 @@
 package com.marcomarchionni.ibportfolio.model.mapping;
 
-import com.marcomarchionni.ibportfolio.model.domain.Portfolio;
-import com.marcomarchionni.ibportfolio.model.domain.Strategy;
-import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyCreateDto;
+import com.marcomarchionni.ibportfolio.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
+import com.marcomarchionni.ibportfolio.mappers.StrategyMapper;
+import com.marcomarchionni.ibportfolio.mappers.StrategyMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

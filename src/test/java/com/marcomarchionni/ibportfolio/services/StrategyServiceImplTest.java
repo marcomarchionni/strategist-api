@@ -1,14 +1,14 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.model.domain.Portfolio;
-import com.marcomarchionni.ibportfolio.model.domain.Strategy;
-import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.StrategyFindDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.StrategyListDto;
-import com.marcomarchionni.ibportfolio.model.mapping.StrategyMapper;
-import com.marcomarchionni.ibportfolio.model.mapping.StrategyMapperImpl;
+import com.marcomarchionni.ibportfolio.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
+import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.dtos.response.StrategyDetailDto;
+import com.marcomarchionni.ibportfolio.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.mappers.StrategyMapper;
+import com.marcomarchionni.ibportfolio.mappers.StrategyMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

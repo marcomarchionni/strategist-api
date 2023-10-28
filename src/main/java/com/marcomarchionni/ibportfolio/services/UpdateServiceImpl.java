@@ -1,11 +1,11 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.model.domain.Dividend;
-import com.marcomarchionni.ibportfolio.model.domain.Position;
-import com.marcomarchionni.ibportfolio.model.domain.Trade;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.domain.Dividend;
+import com.marcomarchionni.ibportfolio.domain.Position;
+import com.marcomarchionni.ibportfolio.domain.Trade;
+import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
-import com.marcomarchionni.ibportfolio.services.parsing.ResponseParser;
+import com.marcomarchionni.ibportfolio.services.parsers.ResponseParser;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

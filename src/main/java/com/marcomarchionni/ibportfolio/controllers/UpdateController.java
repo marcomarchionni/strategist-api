@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
+import com.marcomarchionni.ibportfolio.dtos.response.ApiResponseDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UploadedFileException;
-import com.marcomarchionni.ibportfolio.model.dtos.response.ApiResponseDto;
 import com.marcomarchionni.ibportfolio.services.UpdateOrchestrator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.services.fetchers;
 
 import com.marcomarchionni.ibportfolio.config.XMLConvertersConfig;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

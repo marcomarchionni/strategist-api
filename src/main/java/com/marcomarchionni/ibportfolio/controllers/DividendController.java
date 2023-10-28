@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
-import com.marcomarchionni.ibportfolio.model.dtos.request.DividendFindDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.dtos.request.DividendFindDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.dtos.response.DividendListDto;
 import com.marcomarchionni.ibportfolio.services.DividendService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

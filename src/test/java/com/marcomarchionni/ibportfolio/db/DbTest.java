@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.db;
 
 
-import com.marcomarchionni.ibportfolio.model.domain.Dividend;
-import com.marcomarchionni.ibportfolio.model.domain.Portfolio;
-import com.marcomarchionni.ibportfolio.model.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.Dividend;
+import com.marcomarchionni.ibportfolio.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.repositories.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

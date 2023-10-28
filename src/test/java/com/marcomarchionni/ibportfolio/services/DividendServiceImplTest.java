@@ -1,12 +1,12 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.model.domain.Dividend;
-import com.marcomarchionni.ibportfolio.model.domain.Strategy;
-import com.marcomarchionni.ibportfolio.model.dtos.request.DividendFindDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.DividendListDto;
-import com.marcomarchionni.ibportfolio.model.mapping.DividendMapper;
-import com.marcomarchionni.ibportfolio.model.mapping.DividendMapperImpl;
+import com.marcomarchionni.ibportfolio.domain.Dividend;
+import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.dtos.request.DividendFindDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.mappers.DividendMapper;
+import com.marcomarchionni.ibportfolio.mappers.DividendMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.BeforeEach;

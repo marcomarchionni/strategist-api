@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
-import com.marcomarchionni.ibportfolio.model.dtos.request.TradeFindDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.dtos.response.TradeListDto;
 import com.marcomarchionni.ibportfolio.services.TradeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

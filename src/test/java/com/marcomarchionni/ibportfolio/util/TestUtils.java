@@ -1,10 +1,9 @@
 package com.marcomarchionni.ibportfolio.util;
 
-import com.marcomarchionni.ibportfolio.model.domain.*;
-import com.marcomarchionni.ibportfolio.model.dtos.request.DividendFindDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.PositionFindDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.TradeFindDto;
-
+import com.marcomarchionni.ibportfolio.domain.*;
+import com.marcomarchionni.ibportfolio.dtos.request.DividendFindDto;
+import com.marcomarchionni.ibportfolio.dtos.request.PositionFindDto;
+import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -42,6 +41,7 @@ public class TestUtils {
         return getEBAYClosedDividend();
     }
 
+    @SuppressWarnings("unused")
     public static OpenDividend getSampleOpenDividend() {
         return getFDXOpenDividend();
     }
@@ -171,6 +171,7 @@ public class TestUtils {
         return div;
     }
 
+    @SuppressWarnings("unused")
     public static ClosedDividend getCGNXClosedDividend() {
         ClosedDividend closedDividend = new ClosedDividend();
         closedDividend.setId(26754720220603L);

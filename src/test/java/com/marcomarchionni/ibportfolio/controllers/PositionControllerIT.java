@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.Test;

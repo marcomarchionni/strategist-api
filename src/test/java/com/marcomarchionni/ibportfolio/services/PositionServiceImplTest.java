@@ -1,14 +1,14 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.domain.Position;
+import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.dtos.request.PositionFindDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PositionListDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.ibportfolio.model.domain.Position;
-import com.marcomarchionni.ibportfolio.model.domain.Strategy;
-import com.marcomarchionni.ibportfolio.model.dtos.request.PositionFindDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.PositionListDto;
-import com.marcomarchionni.ibportfolio.model.mapping.PositionMapper;
-import com.marcomarchionni.ibportfolio.model.mapping.PositionMapperImpl;
+import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
+import com.marcomarchionni.ibportfolio.mappers.PositionMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -130,9 +130,7 @@ class PositionServiceImplTest {
         List<Position> newPositions = List.of(newADYENposition, newAMZNposition);
 
         // init captors
-        @SuppressWarnings("unchecked")
         ArgumentCaptor<List<Position>> saveCaptor = ArgumentCaptor.forClass(List.class);
-        @SuppressWarnings("unchecked")
         ArgumentCaptor<List<Position>> deleteCaptor = ArgumentCaptor.forClass(List.class);
 
         when(positionRepository.findAll()).thenReturn(existingPositions);

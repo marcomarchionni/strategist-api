@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
-import com.marcomarchionni.ibportfolio.model.dtos.request.PortfolioCreateDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateNameDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.PortfolioListDto;
+import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PortfolioListDto;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

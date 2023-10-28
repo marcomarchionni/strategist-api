@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.services.fetchers.DataFetcher;
 import com.marcomarchionni.ibportfolio.services.fetchers.FetchContext;
 import com.marcomarchionni.ibportfolio.services.util.DataFetcherResolver;

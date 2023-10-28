@@ -1,24 +1,22 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.domain.Position;
+import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.dtos.request.PositionFindDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PositionListDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.ibportfolio.model.domain.Position;
-import com.marcomarchionni.ibportfolio.model.domain.Strategy;
-import com.marcomarchionni.ibportfolio.model.dtos.request.PositionFindDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.PositionListDto;
-import com.marcomarchionni.ibportfolio.model.mapping.PositionMapper;
+import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -99,8 +97,8 @@ public class PositionServiceImpl implements PositionService{
                 .collect(Collectors.toMap(Position::getId, Function.identity()));
 
         // List of positions to be saved or deleted
-        List<Position> toSave = new ArrayList<Position>();
-        List<Position> toDelete = new ArrayList<Position>();
+        List<Position> toSave = new ArrayList<>();
+        List<Position> toDelete = new ArrayList<>();
 
         // Select positions to be saved
         for(Position newPosition : newPositions) {

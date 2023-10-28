@@ -2,12 +2,12 @@ package com.marcomarchionni.ibportfolio.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.marcomarchionni.ibportfolio.model.domain.Strategy;
-import com.marcomarchionni.ibportfolio.model.domain.Trade;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.TradeListDto;
-import com.marcomarchionni.ibportfolio.model.mapping.TradeMapper;
-import com.marcomarchionni.ibportfolio.model.mapping.TradeMapperImpl;
+import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.Trade;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.mappers.TradeMapper;
+import com.marcomarchionni.ibportfolio.mappers.TradeMapperImpl;
 import com.marcomarchionni.ibportfolio.services.TradeService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;

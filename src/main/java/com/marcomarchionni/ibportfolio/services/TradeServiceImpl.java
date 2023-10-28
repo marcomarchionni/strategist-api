@@ -1,13 +1,13 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.Trade;
+import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.ibportfolio.dtos.response.TradeListDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.ibportfolio.model.domain.Strategy;
-import com.marcomarchionni.ibportfolio.model.domain.Trade;
-import com.marcomarchionni.ibportfolio.model.dtos.request.TradeFindDto;
-import com.marcomarchionni.ibportfolio.model.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.model.dtos.response.TradeListDto;
-import com.marcomarchionni.ibportfolio.model.mapping.TradeMapper;
+import com.marcomarchionni.ibportfolio.mappers.TradeMapper;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import lombok.extern.slf4j.Slf4j;

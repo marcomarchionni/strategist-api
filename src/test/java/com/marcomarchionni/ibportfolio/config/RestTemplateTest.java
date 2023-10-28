@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.config;
 
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexStatementResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

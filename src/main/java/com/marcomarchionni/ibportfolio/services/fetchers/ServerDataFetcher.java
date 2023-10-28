@@ -1,8 +1,8 @@
 package com.marcomarchionni.ibportfolio.services.fetchers;
 
+import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.ibportfolio.model.dtos.flex.FlexStatementResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -29,6 +29,7 @@ public class ServerDataFetcher implements DataFetcher {
 
     @Override
     public FlexQueryResponseDto fetch(FetchContext context) throws IOException {
+        //TODO remove checked exception from interface
         return fetchFlexQuery();
     }
 
