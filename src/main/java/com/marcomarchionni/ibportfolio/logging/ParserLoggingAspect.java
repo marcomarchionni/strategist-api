@@ -14,7 +14,7 @@ import static com.marcomarchionni.ibportfolio.logging.LoggingUtils.*;
 @Component
 public class ParserLoggingAspect {
 
-    @Pointcut("within(com.marcomarchionni.ibportfolio.update.parsing.*)")
+    @Pointcut("within(com.marcomarchionni.ibportfolio.services.parsing.*)")
     public void responseParser(){}
 
     @AfterReturning(pointcut="responseParser()", returning = "entities")

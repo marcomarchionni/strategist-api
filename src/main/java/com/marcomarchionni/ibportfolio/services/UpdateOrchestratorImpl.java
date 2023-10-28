@@ -14,18 +14,18 @@ import java.io.InputStream;
 public class UpdateOrchestratorImpl implements UpdateOrchestrator {
 
     private final DataFetcherResolver dataFetcherResolver;
-    private final DataSaverService dataSaverService;
+    private final UpdateService updateService;
 
-    public UpdateOrchestratorImpl(DataFetcherResolver dataFetcherResolver, DataSaverService dataSaverService) {
+    public UpdateOrchestratorImpl(DataFetcherResolver dataFetcherResolver, UpdateService updateService) {
         this.dataFetcherResolver = dataFetcherResolver;
-        this.dataSaverService = dataSaverService;
+        this.updateService = updateService;
     }
 
     @Override
     public void updateFromServer() throws IOException {
         DataFetcher dataFetcher = dataFetcherResolver.resolve(DataSourceType.SERVER);
         FlexQueryResponseDto dto = dataFetcher.fetch(new FetchContext());
-        dataSaverService.save(dto);
+        updateService.save(dto);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class UpdateOrchestratorImpl implements UpdateOrchestrator {
         FetchContext context = new FetchContext();
         context.setStream(stream);
         FlexQueryResponseDto dto = dataFetcher.fetch(context);
-        dataSaverService.save(dto);
+        updateService.save(dto);
 
     }
 }

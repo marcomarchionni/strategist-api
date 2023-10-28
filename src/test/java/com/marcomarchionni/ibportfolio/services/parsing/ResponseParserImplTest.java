@@ -15,13 +15,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
-import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ResponseParserImplTest {
 
@@ -34,10 +32,13 @@ class ResponseParserImplTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        File flexQueryXml = new File(Objects.requireNonNull(
-                getClass().getClassLoader().getResource("flex/SimpleJune2022.xml")
-        ).getFile());
-        flexQueryResponseDto = getXmlMapper().readValue(flexQueryXml, FlexQueryResponseDto.class);
+        // get dto
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("flex/SimpleJune2022.xml")) {
+            if (is == null) fail("Resource not found");
+            flexQueryResponseDto = getXmlMapper().readValue(is, FlexQueryResponseDto.class);
+        }
+
+        // config model mapper
         ModelMapperConfig config = new ModelMapperConfig();
         ModelMapper modelMapper = config.modelMapper();
         flexStatementMapper = new FlexStatementMapperImpl(modelMapper);

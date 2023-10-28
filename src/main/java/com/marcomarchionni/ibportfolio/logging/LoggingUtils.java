@@ -19,7 +19,7 @@ public class LoggingUtils {
 
     public static String getEntitiesNumberAndName(List<?> resultEntities) {
 
-        if (resultEntities.size() == 0) {
+        if (resultEntities.isEmpty()) {
             return "0 entities";
         } else {
             int entityNumber = resultEntities.size();
