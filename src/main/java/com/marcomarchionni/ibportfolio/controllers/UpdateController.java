@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
-import com.marcomarchionni.ibportfolio.dtos.response.ApiResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UploadedFileException;
 import com.marcomarchionni.ibportfolio.services.UpdateOrchestrator;
 import org.springframework.http.ResponseEntity;
@@ -24,18 +24,17 @@ public class UpdateController {
     }
 
     @PostMapping("/from-file")
-    public ResponseEntity<ApiResponseDto> updateFromFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public CombinedUpdateReport updateFromFile(@RequestParam("file") MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new UploadedFileException();
         }
         InputStream xmlStream = file.getInputStream();
-        updateOrchestrator.updateFromFile(xmlStream);
-        return ResponseEntity.ok().body(new ApiResponseDto(200, "Upload from file completed"));
+        return updateOrchestrator.updateFromFile(xmlStream);
     }
 
     @PostMapping("/from-server")
-    public ResponseEntity<ApiResponseDto> updateFromFile() throws Exception {
-        updateOrchestrator.updateFromServer();
-        return ResponseEntity.ok(new ApiResponseDto(200, "Upload from server completed"));
+    public ResponseEntity<CombinedUpdateReport> updateFromServer() throws Exception {
+        CombinedUpdateReport report = updateOrchestrator.updateFromServer();
+        return ResponseEntity.ok(report);
     }
 }

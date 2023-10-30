@@ -1,5 +1,8 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
+import com.marcomarchionni.ibportfolio.domain.Trade;
+import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
+import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.services.UpdateOrchestrator;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -17,10 +20,14 @@ import org.springframework.util.StreamUtils;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleTrades;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -45,6 +52,14 @@ class UpdateControllerTest {
                 fileResource.getInputStream() // file content
         );
 
+
+        // setup UpdateOrchestrator mock
+        List<Trade> addedTrades = getSampleTrades();
+        UpdateReport<Trade> tradeReport = UpdateReport.<Trade>builder().added(addedTrades).build();
+        CombinedUpdateReport combinedUpdateReport = CombinedUpdateReport.builder().trades(tradeReport).build();
+        when(updateOrchestrator.updateFromFile(any(InputStream.class))).thenReturn(combinedUpdateReport);
+
+
         ArgumentCaptor<InputStream> inputStreamCaptor = ArgumentCaptor.forClass(InputStream.class);
 
         // Mock the updateFromFile method
@@ -53,8 +68,7 @@ class UpdateControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.status").value("200"))
-                .andExpect(jsonPath("$.message").value("Upload from file completed"));
+                .andExpect(jsonPath("$.trades").exists());
 
 
         // Verify that the method was called with the captured InputStream
@@ -72,12 +86,18 @@ class UpdateControllerTest {
 
     @Test
     void updateFromServer() throws Exception {
+
+        // setup UpdateOrchestrator mock
+        List<Trade> addedTrades = getSampleTrades();
+        UpdateReport<Trade> tradeReport = UpdateReport.<Trade>builder().added(addedTrades).build();
+        CombinedUpdateReport combinedUpdateReport = CombinedUpdateReport.builder().trades(tradeReport).build();
+        when(updateOrchestrator.updateFromServer()).thenReturn(combinedUpdateReport);
+
         mockMvc.perform(MockMvcRequestBuilders.post("/update/from-server"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.status").value("200"))
-                .andExpect(jsonPath("$.message").value("Upload from server completed"));
+                .andExpect(jsonPath("$.trades").exists());
 
         // Verify that the method was called
         verify(updateOrchestrator).updateFromServer();
