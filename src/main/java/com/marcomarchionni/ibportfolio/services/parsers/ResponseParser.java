@@ -6,6 +6,7 @@ import com.marcomarchionni.ibportfolio.domain.Position;
 import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ResponseParser {
@@ -18,4 +19,6 @@ public interface ResponseParser {
     List<Dividend> getClosedDividends(FlexQueryResponseDto dto);
 
     List<Dividend> getOpenDividends(FlexQueryResponseDto dto);
+
+    LocalDate getFlexStatementToDate(FlexQueryResponseDto dto);
 }

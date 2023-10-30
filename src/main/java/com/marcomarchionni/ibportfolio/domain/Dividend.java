@@ -12,9 +12,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 
 @Entity(name = "dividend")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "open_closed",
-        discriminatorType = DiscriminatorType.STRING)
 public class Dividend {
 
     @Id
@@ -56,7 +53,12 @@ public class Dividend {
 
     @Column(name = "net_amount")
     private BigDecimal netAmount;
-    @Setter(AccessLevel.NONE)
-    @Column(name = "open_closed", insertable = false, updatable = false)
-    private String openClosed;
+
+    @Column(name = "open_closed")
+    @Enumerated(EnumType.STRING)
+    private OpenClosed openClosed;
+
+    public enum OpenClosed {
+        OPEN, CLOSED
+    }
 }

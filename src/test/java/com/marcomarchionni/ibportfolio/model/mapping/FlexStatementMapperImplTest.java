@@ -1,12 +1,10 @@
 package com.marcomarchionni.ibportfolio.model.mapping;
 
-import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.mappers.FlexStatementMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,16 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FlexStatementMapperImplTest {
-
-    ModelMapperConfig modelMapperConfig;
-    ModelMapper modelMapper;
     FlexStatementMapperImpl flexStatementMapper;
 
     @BeforeEach
     void init() {
-        modelMapperConfig = new ModelMapperConfig();
-        modelMapper = modelMapperConfig.modelMapper();
-        flexStatementMapper = new FlexStatementMapperImpl(modelMapper);
+        flexStatementMapper = new FlexStatementMapperImpl();
 
     }
 

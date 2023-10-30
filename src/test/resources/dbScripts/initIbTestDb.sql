@@ -1,16 +1,16 @@
 CREATE DATABASE IF NOT EXISTS `ibtest`;
 -- Init Datatabase
 USE `ibtest`;
-DROP TABLE IF EXISTS `flex_info`, `portfolio`, `strategy`, `trade`, `position`, `dividend`;
+DROP TABLE IF EXISTS `flex_statement`, `portfolio`, `strategy`, `trade`, `position`, `dividend`;
 
-CREATE TABLE `flex_info`
+CREATE TABLE `flex_statement`
 (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `account_id` VARCHAR(50) NOT NULL,
     `from_date`	DATE NOT NULL,
     `to_date` DATE NOT NULL,
     `period` VARCHAR(50) NOT NULL,
-    `when_generated` DATE NOT NULL
+    `when_generated` DATETIME NOT NULL
 );
 
 CREATE TABLE `portfolio`
@@ -34,6 +34,7 @@ CREATE TABLE `trade`
     `id` BIGINT NOT NULL PRIMARY KEY, -- Primary Key column
     `trade_id` BIGINT,
     `con_id` BIGINT NOT NULL,
+    `ib_order_id` BIGINT NOT NULL,
     `trade_strategy_id` BIGINT,
     `trade_date` DATE NOT NULL,
     `symbol` VARCHAR(50) NOT NULL,
@@ -85,11 +86,11 @@ CREATE TABLE `dividend`
     `description` VARCHAR(300),
     `ex_date` DATE NOT NULL,
     `pay_date` DATE NOT NULL,
-    `gross_rate` DECIMAL(15,4) NOT NULL,
-    `quantity` INT NOT NULL,
-    `gross_amount` DECIMAL(15,4) NOT NULL,
-    `tax` DECIMAL(15,4),
-    `net_amount` DECIMAL(15,4) NOT NULL,
+    `gross_rate`   DECIMAL(18, 5) NOT NULL,
+    `quantity`     DECIMAL(18, 5) NOT NULL,
+    `gross_amount` DECIMAL(18, 5) NOT NULL,
+    `tax`          DECIMAL(18, 5),
+    `net_amount`   DECIMAL(18, 5) NOT NULL,
     `open_closed` VARCHAR(50) NOT NULL,
     CONSTRAINT `FK_dividend_strategy` FOREIGN KEY (`dividend_strategy_id`)
         REFERENCES `strategy` (`id`)

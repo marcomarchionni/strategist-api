@@ -1,6 +1,5 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.domain.ClosedDividend;
 import com.marcomarchionni.ibportfolio.domain.Dividend;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -31,7 +30,7 @@ public class DividendServiceImplIT {
 
     @BeforeEach
     void setup() {
-        closedDividend = new ClosedDividend();
+        closedDividend = new Dividend();
         closedDividend.setId(26754720220603L);
         closedDividend.setSymbol("CGNX");
         closedDividend.setConId(267547L);
@@ -42,6 +41,7 @@ public class DividendServiceImplIT {
         closedDividend.setGrossRate(BigDecimal.valueOf(0.065));
         closedDividend.setGrossAmount(BigDecimal.valueOf(2.86));
         closedDividend.setNetAmount(BigDecimal.valueOf(2.43));
+        closedDividend.setOpenClosed(Dividend.OpenClosed.CLOSED);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class DividendServiceImplIT {
         Optional<Dividend> optDbDividend = dividendRepository.findById(26754720220603L);
         assertTrue(optDbDividend.isPresent());
         Dividend dbDividend = optDbDividend.get();
-        assertEquals("CLOSED", dbDividend.getOpenClosed());
+        assertEquals(Dividend.OpenClosed.CLOSED, dbDividend.getOpenClosed());
     }
 
     @AfterEach

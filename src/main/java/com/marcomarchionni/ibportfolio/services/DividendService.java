@@ -4,6 +4,7 @@ import com.marcomarchionni.ibportfolio.domain.Dividend;
 import com.marcomarchionni.ibportfolio.dtos.request.DividendFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface DividendService {
 
     List<DividendListDto> findByFilter(DividendFindDto dividendCriteria);
 
-    List<Dividend> saveOrIgnore(List<Dividend> closedDividends);
+    UpdateReport<Dividend> addOrSkip(List<Dividend> closedDividends);
 
-    List<Dividend> updateDividends(List<Dividend> openDividends, List<Dividend> closedDividends);
+    UpdateReport<Dividend> updateDividends(List<Dividend> openDividends, List<Dividend> closedDividends);
 }

@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.services.fetchers.DataFetcher;
 import com.marcomarchionni.ibportfolio.services.fetchers.FetchContext;
 import com.marcomarchionni.ibportfolio.services.util.DataFetcherResolver;
@@ -22,19 +23,19 @@ public class UpdateOrchestratorImpl implements UpdateOrchestrator {
     }
 
     @Override
-    public void updateFromServer() throws IOException {
+    public CombinedUpdateReport updateFromServer() throws IOException {
         DataFetcher dataFetcher = dataFetcherResolver.resolve(DataSourceType.SERVER);
         FlexQueryResponseDto dto = dataFetcher.fetch(new FetchContext());
-        updateService.save(dto);
+        return updateService.save(dto);
     }
 
     @Override
-    public void updateFromFile(InputStream stream) throws IOException {
+    public CombinedUpdateReport updateFromFile(InputStream stream) throws IOException {
         DataFetcher dataFetcher = dataFetcherResolver.resolve(DataSourceType.FILE);
         FetchContext context = new FetchContext();
         context.setStream(stream);
         FlexQueryResponseDto dto = dataFetcher.fetch(context);
-        updateService.save(dto);
+        return updateService.save(dto);
 
     }
 }

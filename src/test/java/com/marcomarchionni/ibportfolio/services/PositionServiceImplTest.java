@@ -5,6 +5,7 @@ import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.dtos.request.PositionFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PositionListDto;
+import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
@@ -14,7 +15,6 @@ import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -78,7 +78,8 @@ class PositionServiceImplTest {
     void deleteAllPositionsException() {
         doThrow(new RuntimeException()).when(positionRepository).deleteAll();
 
-        assertThrows(UnableToDeleteEntitiesException.class, () -> positionService.deleteAll(List.of(getAMZNPosition())));
+        assertThrows(UnableToDeleteEntitiesException.class,
+                () -> positionService.deleteAll(List.of(getAMZNPosition())));
     }
 
     @Test
@@ -129,31 +130,20 @@ class PositionServiceImplTest {
         List<Position> existingPositions = List.of(existingADYENposition, existingADBEposition);
         List<Position> newPositions = List.of(newADYENposition, newAMZNposition);
 
-        // init captors
-        ArgumentCaptor<List<Position>> saveCaptor = ArgumentCaptor.forClass(List.class);
-        ArgumentCaptor<List<Position>> deleteCaptor = ArgumentCaptor.forClass(List.class);
-
+        // mock
         when(positionRepository.findAll()).thenReturn(existingPositions);
+        when(positionRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // test
-        positionService.updatePositions(newPositions);
+        UpdateReport<Position> result = positionService.updatePositions(newPositions);
 
-        verify(positionRepository).saveAll(saveCaptor.capture());
-        verify(positionRepository).deleteAll(deleteCaptor.capture());
-
-        List<Position> saved = saveCaptor.getValue();
-        List<Position> deleted = deleteCaptor.getValue();
-
-        assertEquals(2, saved.size());
-        assertEquals(1, deleted.size());
-        assertEquals(saved.get(0).getSymbol(), "ADYEN");
-        assertEquals(saved.get(0).getReportDate(), LocalDate.of(2022, 7, 7));
-        assertEquals(saved.get(0).getQuantity(), BigDecimal.valueOf(2));
-        assertEquals(saved.get(0).getStrategy(), sampleStrategy);
-
-        assertEquals(saved.get(1).getSymbol(), "AMZN");
-
-        assertEquals(deleted.get(0).getSymbol(), "ADBE");
-        assert deleted.contains(existingADBEposition);
+        // verify
+        assertEquals(1, result.getAdded().size());
+        assertEquals(1, result.getDeleted().size());
+        assertEquals(1, result.getMerged().size());
+        assertEquals(result.getAdded().get(0).getSymbol(), "AMZN");
+        assertEquals(result.getDeleted().get(0).getSymbol(), "ADBE");
+        assertEquals(LocalDate.of(2022, 7, 7), result.getMerged().get(0).getReportDate());
+        assertEquals(sampleStrategy, result.getMerged().get(0).getStrategy());
     }
 }

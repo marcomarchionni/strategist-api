@@ -5,6 +5,7 @@ import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapper;
@@ -14,7 +15,6 @@ import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -102,21 +102,21 @@ class TradeServiceImplTest {
     }
 
     @Test
-    void saveOrIgnore() {
+    void addOrSkip() {
         // setup new trades
         List<Trade> newTrades = List.of(getTTWO1Trade(), getTTWO2Trade(), getEURUSDTrade());
 
         // setup mock, assuming that TTWO1 and TTWO2 already exist in the database
         when(tradeRepository.existsById(getTTWO1Trade().getId())).thenReturn(true);
         when(tradeRepository.existsById(getTTWO2Trade().getId())).thenReturn(true);
-        ArgumentCaptor<List<Trade>> captor = ArgumentCaptor.forClass(List.class);
-        when(tradeRepository.saveAll(captor.capture())).thenAnswer(invocation -> captor.getValue());
+        when(tradeRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
-        List<Trade> savedTrades = tradeService.saveOrIgnore(newTrades);
+        UpdateReport<Trade> result = tradeService.addOrSkip(newTrades);
 
         // assertions
-        assertEquals(1, savedTrades.size());
-        assertEquals(getEURUSDTrade().getId(), savedTrades.get(0).getId());
+        assertEquals(1, result.getAdded().size());
+        assertEquals(2, result.getSkipped().size());
+        assertEquals("EUR.USD", result.getAdded().get(0).getSymbol());
     }
 }

@@ -5,12 +5,12 @@ import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapper;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 public class TradeServiceImpl implements TradeService {
 
     private final TradeRepository tradeRepository;
@@ -67,14 +66,19 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public List<Trade> saveOrIgnore(List<Trade> trades) {
-        List<Trade> tradesToSave = new ArrayList<>();
-        for (Trade trade : trades) {
-            Long id = trade.getId();
-            if (!tradeRepository.existsById(id)) {
-                tradesToSave.add(trade);
+    public UpdateReport<Trade> addOrSkip(List<Trade> trades) {
+        // Init lists
+        List<Trade> tradesToAdd = new ArrayList<>();
+        List<Trade> tradesToSkip = new ArrayList<>();
+
+        // Check if trade already exists in the database
+        for (Trade t : trades) {
+            if (tradeRepository.existsById(t.getId())) {
+                tradesToSkip.add(t);
+            } else {
+                tradesToAdd.add(t);
             }
         }
-        return tradeRepository.saveAll(tradesToSave);
+        return UpdateReport.<Trade>builder().added(tradeRepository.saveAll(tradesToAdd)).skipped(tradesToSkip).build();
     }
 }

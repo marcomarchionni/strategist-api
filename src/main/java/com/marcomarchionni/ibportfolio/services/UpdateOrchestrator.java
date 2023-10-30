@@ -1,10 +1,12 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 public interface UpdateOrchestrator {
-    void updateFromFile(InputStream stream) throws IOException;
+    CombinedUpdateReport updateFromFile(InputStream stream) throws IOException;
 
-    void updateFromServer() throws IOException;
+    CombinedUpdateReport updateFromServer() throws IOException;
 }

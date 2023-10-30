@@ -1,10 +1,12 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.Dividend;
+import com.marcomarchionni.ibportfolio.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.domain.Position;
 import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
+import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
+import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.services.parsers.ResponseParser;
 import org.springframework.stereotype.Service;
 
@@ -20,56 +22,58 @@ public class UpdateServiceImpl implements UpdateService {
 
     private final DividendService dividendService;
 
-    private final FlexStatementRepository flexStatementRepository;
+    private final FlexStatementService flexStatementService;
 
     private final PositionService positionService;
 
     public UpdateServiceImpl(ResponseParser parser,
                              TradeService tradeService,
                              DividendService dividendService,
-                             FlexStatementRepository flexStatementRepository,
-                             PositionService positionService) {
+                             FlexStatementService flexStatementService, PositionService positionService) {
         this.parser = parser;
         this.tradeService = tradeService;
         this.dividendService = dividendService;
-        this.flexStatementRepository = flexStatementRepository;
+        this.flexStatementService = flexStatementService;
         this.positionService = positionService;
     }
 
     @Override
-    public void save(FlexQueryResponseDto dto) {
+    public CombinedUpdateReport save(FlexQueryResponseDto dto) {
+        //Declare report variables
+        UpdateReport<Position> positionReport;
+        UpdateReport<Dividend> dividendReport;
 
+        // Extract trades and dividends from dto
         List<Trade> trades = parser.getTrades(dto);
         List<Dividend> closedDividends = parser.getClosedDividends(dto);
 
-        // update positions and dividends if flexQuery has the latest data
-        if (hasTheLatestData(dto)) {
+        // Check if dto has the latest data
+        LocalDate toDateInDto = parser.getFlexStatementToDate(dto);
+        LocalDate latestToDateInDb = flexStatementService.findLatestToDate();
+        boolean dtoHasTheLatestData = toDateInDto.isAfter(latestToDateInDb);
+
+        if (dtoHasTheLatestData) {
+            // extract positions and open dividends from dto
             List<Position> positions = parser.getPositions(dto);
             List<Dividend> openDividends = parser.getOpenDividends(dto);
 
-            positionService.updatePositions(positions);
-            dividendService.updateDividends(openDividends, closedDividends);
+            // Update positions, open dividends, closed dividends
+            positionReport = positionService.updatePositions(positions);
+            dividendReport = dividendService.updateDividends(openDividends, closedDividends);
 
         } else {
-            // only add missing closed dividends
-            dividendService.saveOrIgnore(closedDividends);
+            // Add new closed dividends, no action on positions
+            positionReport = UpdateReport.<Position>builder().build();
+            dividendReport = dividendService.addOrSkip(closedDividends);
         }
 
-        // add missing trades
-        tradeService.saveOrIgnore(trades);
+        // Add new or missing trades
+        UpdateReport<Trade> tradeReport = tradeService.addOrSkip(trades);
 
         // Save flexStatement
-        flexStatementRepository.save(parser.getFlexStatement(dto));
-    }
+        UpdateReport<FlexStatement> flexStatementReport = flexStatementService.save(parser.getFlexStatement(dto));
 
-    private boolean hasTheLatestData(FlexQueryResponseDto dto) {
-
-        LocalDate dtoLastReportedDate = getLatestReportedDate(dto);
-        LocalDate dbLastReportedDate = flexStatementRepository.findLastReportedDate();
-        return dbLastReportedDate == null || dtoLastReportedDate.isAfter(dbLastReportedDate);
-    }
-
-    private LocalDate getLatestReportedDate(FlexQueryResponseDto dto) {
-        return dto.getFlexStatements().getFlexStatement().getToDate();
+        return CombinedUpdateReport.builder().flexStatements(flexStatementReport).trades(tradeReport)
+                .positions(positionReport).dividends(dividendReport).build();
     }
 }

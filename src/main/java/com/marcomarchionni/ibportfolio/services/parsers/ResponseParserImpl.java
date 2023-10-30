@@ -11,6 +11,7 @@ import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapper;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -86,7 +87,7 @@ public class ResponseParserImpl implements ResponseParser {
         return closedDividendsDto
                 .stream()
                 .filter(isValidClosedDividend())
-                .map(dividendMapper::toDividend)
+                .map(dividendMapper::toClosedDividend)
                 .toList();
     }
 
@@ -100,7 +101,12 @@ public class ResponseParserImpl implements ResponseParser {
                 .orElse(Collections.emptyList());
         return openDividendsDto
                 .stream()
-                .map(dividendMapper::toDividend)
+                .map(dividendMapper::toOpenDividend)
                 .toList();
+    }
+
+    @Override
+    public LocalDate getFlexStatementToDate(FlexQueryResponseDto dto) {
+        return dto.getFlexStatements().getFlexStatement().getToDate();
     }
 }

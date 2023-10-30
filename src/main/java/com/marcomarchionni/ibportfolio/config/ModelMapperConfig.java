@@ -1,6 +1,9 @@
 package com.marcomarchionni.ibportfolio.config;
 
-import com.marcomarchionni.ibportfolio.domain.*;
+import com.marcomarchionni.ibportfolio.domain.Dividend;
+import com.marcomarchionni.ibportfolio.domain.FlexStatement;
+import com.marcomarchionni.ibportfolio.domain.Position;
+import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -60,25 +63,25 @@ public class ModelMapperConfig {
         };
     }
 
-    private PropertyMap<FlexQueryResponseDto.ChangeInDividendAccrual, ClosedDividend> getClosedDividendPropertyMap() {
+    private PropertyMap<FlexQueryResponseDto.ChangeInDividendAccrual, Dividend> getClosedDividendPropertyMap() {
         return new PropertyMap<>() {
             protected void configure() {
                 using(ctx -> calculateDividendId(
                         ((FlexQueryResponseDto.ChangeInDividendAccrual) ctx.getSource()).getConid(),
                         ((FlexQueryResponseDto.ChangeInDividendAccrual) ctx.getSource()).getPayDate()
                 )).map(source, destination.getId());
-                skip().setStrategy(null);
                 map().setConId(source.getConid());
                 using(absValue).map().setGrossAmount(source.getGrossAmount());
                 using(absValue).map().setNetAmount(source.getNetAmount());
                 using(absValue).map().setTax(source.getTax());
+                destination.setOpenClosed(Dividend.OpenClosed.CLOSED);
             }
         };
     }
 
     // For Closed Dividends, we need to extract a unique id from the flex query data
     // to avoid duplicates in the update process
-    private PropertyMap<FlexQueryResponseDto.OpenDividendAccrual, OpenDividend> getOpenDividendPropertyMap() {
+    private PropertyMap<FlexQueryResponseDto.OpenDividendAccrual, Dividend> getOpenDividendPropertyMap() {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
@@ -88,6 +91,7 @@ public class ModelMapperConfig {
                 )).map(source, destination.getId());
                 skip().setStrategy(null);
                 map().setConId(source.getConid());
+                destination.setOpenClosed(Dividend.OpenClosed.OPEN);
             }
         };
     }

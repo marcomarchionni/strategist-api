@@ -1,37 +1,23 @@
 package com.marcomarchionni.ibportfolio.model.mapping;
 
-import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.domain.Dividend;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.mappers.DividendMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DividendMapperImplTest {
-
-    ModelMapperConfig modelMapperConfig;
-
-    ModelMapper modelMapper;
-
     DividendMapperImpl dividendMapper;
 
     @BeforeEach
     void init() {
-
-        modelMapperConfig = new ModelMapperConfig();
-        modelMapper = modelMapperConfig.modelMapper();
-        dividendMapper = new DividendMapperImpl(modelMapper);
-    }
-
-    @Test
-    void validateMapping() {
-        assertDoesNotThrow(() -> modelMapper.validate());
+        dividendMapper = new DividendMapperImpl();
     }
 
     @Test
@@ -51,12 +37,13 @@ class DividendMapperImplTest {
         d.setLevelOfDetail("SUMMARY");
         d.setConid(267547L);
 
-        Dividend dividend = dividendMapper.toDividend(d);
+        Dividend dividend = dividendMapper.toClosedDividend(d);
 
         assertNotNull(dividend);
         assertEquals(LocalDate.of(2022, 5, 19), dividend.getExDate());
         assertEquals("CGNX", dividend.getSymbol());
         assertEquals(26754720220603L, dividend.getId());
+        assertEquals(Dividend.OpenClosed.CLOSED, dividend.getOpenClosed());
     }
 
     @Test
@@ -70,7 +57,7 @@ class DividendMapperImplTest {
         d.setPayDate(LocalDate.of(2022, 6, 3));
         d.setConid(267547L);
 
-        Dividend dividend = dividendMapper.toDividend(d);
+        Dividend dividend = dividendMapper.toOpenDividend(d);
 
         assertNotNull(dividend);
         assertEquals(LocalDate.of(2022, 5, 19), dividend.getExDate());

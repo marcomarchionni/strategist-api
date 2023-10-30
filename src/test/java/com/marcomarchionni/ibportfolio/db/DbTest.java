@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -73,12 +74,38 @@ public class DbTest {
         assertEquals(2, closedDividends.size());
     }
 
+    public static Dividend getFDXDividend() {
+        Dividend div = new Dividend();
+        div.setId(510058320220624L);
+        div.setSymbol("FDX");
+        div.setDescription("FEDEX CORPORATION");
+        div.setConId(5100583L);
+        div.setExDate(LocalDate.of(2022, 6, 24));
+        div.setPayDate(LocalDate.of(2022, 7, 11));
+        div.setQuantity(new BigDecimal("47.05"));
+        div.setTax(BigDecimal.valueOf(0.11));
+        div.setGrossRate(BigDecimal.valueOf(1.15));
+        div.setGrossAmount(BigDecimal.valueOf(54.05));
+        div.setNetAmount(BigDecimal.valueOf(45.94));
+        div.setOpenClosed(Dividend.OpenClosed.OPEN);
+        return div;
+    }
+
     @Test
-    void findLastReportedDateTest() {
-        LocalDate expectedDate = LocalDate.of(2022, 7, 8);
+    void bigDecimalTest() {
+        Dividend FDXdividend = dividendRepository.findById(510058320220711L).get();
+        assertEquals("FDX", FDXdividend.getSymbol());
+        assertEquals(new BigDecimal("47"), FDXdividend.getQuantity());
+    }
 
-        LocalDate lastReportedDate = flexStatementRepository.findLastReportedDate();
+    @Test
+    void bigDecimalMerge() {
+        Dividend d = getFDXDividend();
+        assertEquals(new BigDecimal("47.05"), d.getQuantity());
+        Dividend FDXMergedDividend = dividendRepository.save(d);
+        assertEquals(new BigDecimal("47.05"), FDXMergedDividend.getQuantity());
 
-        assertEquals(expectedDate, lastReportedDate);
+        dividendRepository.findById(510058320220624L)
+                .ifPresent(dividend -> assertEquals(new BigDecimal("47.05"), dividend.getQuantity()));
     }
 }

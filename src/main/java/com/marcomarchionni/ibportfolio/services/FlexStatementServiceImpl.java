@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.FlexStatement;
+import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,17 @@ public class FlexStatementServiceImpl implements FlexStatementService {
     }
 
     @Override
-    public LocalDate getLastReportDate() {
+    public LocalDate findLatestToDate() {
         Optional<FlexStatement> optionalLastFlex = flexStatementRepository.findFirstByOrderByToDateDesc();
         return optionalLastFlex.map(FlexStatement::getToDate).orElse(LocalDate.MIN);
     }
 
     @Override
-    public void save(FlexStatement flexStatement) {
-        flexStatementRepository.save(flexStatement);
+    public UpdateReport<FlexStatement> save(FlexStatement flexStatement) {
+        FlexStatement savedFlexStatement = flexStatementRepository.save(flexStatement);
+        return UpdateReport.<FlexStatement>builder()
+                .added(List.of(savedFlexStatement))
+                .build();
     }
 
     public List<FlexStatement> findAllOrderedByFromDateAsc() {
