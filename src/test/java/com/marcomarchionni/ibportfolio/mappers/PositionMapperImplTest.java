@@ -1,10 +1,8 @@
-package com.marcomarchionni.ibportfolio.model.mapping;
+package com.marcomarchionni.ibportfolio.mappers;
 
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.domain.Position;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
-import com.marcomarchionni.ibportfolio.mappers.PositionMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
