@@ -9,4 +9,6 @@ public interface PositionMapper {
     PositionListDto toPositionListDto(Position position);
 
     Position toPosition(FlexQueryResponseDto.OpenPosition openPosition);
+
+    Position mergeIbProperties(Position newPosition, Position existingPosition);
 }

@@ -25,6 +25,7 @@ public class DividendMapperImpl implements DividendMapper {
         dto.setStrategyId(Optional.ofNullable(dividend.getStrategy()).map(Strategy::getId).orElse(null));
         dto.setStrategyName(Optional.ofNullable(dividend.getStrategy()).map(Strategy::getName).orElse(null));
         dto.setSymbol(dividend.getSymbol());
+        dto.setDescription(dividend.getDescription());
         dto.setExDate(dividend.getExDate());
         dto.setPayDate(dividend.getPayDate());
         dto.setGrossRate(dividend.getGrossRate());
@@ -37,6 +38,23 @@ public class DividendMapperImpl implements DividendMapper {
     }
 
     @Override
+    public Dividend mergeIbProperties(Dividend source, Dividend target) {
+        target.setId(source.getId());
+        target.setConId(source.getConId());
+        target.setSymbol(source.getSymbol());
+        target.setDescription(source.getDescription());
+        target.setExDate(source.getExDate());
+        target.setPayDate(source.getPayDate());
+        target.setGrossRate(source.getGrossRate());
+        target.setQuantity(source.getQuantity());
+        target.setGrossAmount(source.getGrossAmount());
+        target.setTax(source.getTax());
+        target.setNetAmount(source.getNetAmount());
+        target.setOpenClosed(source.getOpenClosed());
+        return target;
+    }
+
+    @Override
     public Dividend toClosedDividend(FlexQueryResponseDto.ChangeInDividendAccrual closedDividendDto) {
         return toDividend(closedDividendDto, Dividend.OpenClosed.CLOSED);
     }
@@ -45,6 +63,7 @@ public class DividendMapperImpl implements DividendMapper {
     public Dividend toOpenDividend(FlexQueryResponseDto.OpenDividendAccrual openDividendDto) {
         return toDividend(openDividendDto, Dividend.OpenClosed.OPEN);
     }
+
 
     private Dividend toDividend(FlexQueryResponseDto.DividendAccrual dividendAccrual, Dividend.OpenClosed openClosed) {
         Dividend d = new Dividend();

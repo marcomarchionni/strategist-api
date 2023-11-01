@@ -131,8 +131,8 @@ public class FlexQueryResponseDto {
         private BigDecimal fifoPnlUnrealized;
         private String side;
         private String levelOfDetail;
-        //TODO: allow multiple date time formats (yyyyMMdd;HHmmss and yyyyMMdd)
-        private String openDateTime;
+        @JsonFormat(pattern = "yyyyMMdd;HHmmss")
+        private LocalDateTime openDateTime;
         private String holdingPeriodDateTime;
         private String code;
         private String originatingOrderID;

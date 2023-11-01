@@ -30,7 +30,7 @@ class PositionMapperImplTest {
 
     @Test
     void toPosition() {
-
+        // Set all fields of the dto to avoid null pointer exceptions
         FlexQueryResponseDto.OpenPosition p = new FlexQueryResponseDto.OpenPosition();
         p.setAccountId("U7169936");
         p.setCurrency("EUR");
@@ -42,6 +42,10 @@ class PositionMapperImplTest {
         p.setPosition(BigDecimal.valueOf(1));
         p.setMarkPrice(BigDecimal.valueOf(1388));
         p.setLevelOfDetail("SUMMARY");
+        p.setCostBasisMoney(BigDecimal.valueOf(1388));
+        p.setCostBasisPrice(BigDecimal.valueOf(1388));
+        p.setPercentOfNAV(BigDecimal.valueOf(1));
+        p.setFifoPnlUnrealized(BigDecimal.valueOf(0));
 
         PositionMapper positionMapper = new PositionMapperImpl(mapper);
         Position position = positionMapper.toPosition(p);

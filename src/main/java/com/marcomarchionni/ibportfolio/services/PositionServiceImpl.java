@@ -42,28 +42,6 @@ public class PositionServiceImpl implements PositionService{
             throw new UnableToSaveEntitiesException(e.getMessage());
         }
     }
-
-    private Position copyAllPropertiesButStrategy(Position newPosition, Position existingPosition) {
-            existingPosition.setConId(newPosition.getConId());
-            existingPosition.setReportDate(newPosition.getReportDate());
-            existingPosition.setSymbol(newPosition.getSymbol());
-            existingPosition.setDescription(newPosition.getDescription());
-            existingPosition.setAssetCategory(newPosition.getAssetCategory());
-            existingPosition.setPutCall(newPosition.getPutCall());
-            existingPosition.setStrike(newPosition.getStrike());
-            existingPosition.setExpiry(newPosition.getExpiry());
-            existingPosition.setQuantity(newPosition.getQuantity());
-            existingPosition.setCostBasisPrice(newPosition.getCostBasisPrice());
-            existingPosition.setCostBasisMoney(newPosition.getCostBasisMoney());
-            existingPosition.setMarkPrice(newPosition.getMarkPrice());
-            existingPosition.setMultiplier(newPosition.getMultiplier());
-            existingPosition.setPositionValue(newPosition.getPositionValue());
-            existingPosition.setFifoPnlUnrealized(newPosition.getFifoPnlUnrealized());
-            return existingPosition;
-        }
-
-
-
     @Override
     public List<Position> deleteAll(List<Position> positions) {
         try {
@@ -105,7 +83,7 @@ public class PositionServiceImpl implements PositionService{
         // Select positions to be merged
         List<Position> toMerge = newPositions.stream()
                 .filter(newPosition -> existingPositionsMap.containsKey(newPosition.getId()))
-                .map(newPosition -> this.copyAllPropertiesButStrategy(newPosition,
+                .map(newPosition -> positionMapper.mergeIbProperties(newPosition,
                         existingPositionsMap.get(newPosition.getId())))
                 .toList();
 

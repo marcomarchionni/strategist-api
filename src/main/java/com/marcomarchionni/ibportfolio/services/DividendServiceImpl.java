@@ -94,7 +94,7 @@ public class DividendServiceImpl implements DividendService {
         // Select new closed dividends to merge (these are dividends that were open and now are paid out)
         List<Dividend> closedDividendsToMerge = closedDividends.stream()
                 .filter(closedDividend -> existingOpenDividendsMap.containsKey(closedDividend.getId()))
-                .map(closedDividend -> copyAllPropertiesButStrategy(closedDividend,
+                .map(closedDividend -> dividendMapper.mergeIbProperties(closedDividend,
                         existingOpenDividendsMap.get(closedDividend.getId())))
                 .toList();
 
@@ -102,7 +102,7 @@ public class DividendServiceImpl implements DividendService {
         // (some value may change before pay date, so it's safer to update open dividends to the latest values)
         List<Dividend> openDividendToMerge = openDividends.stream()
                 .filter(openDividend -> existingOpenDividendsMap.containsKey(openDividend.getId()))
-                .map(openDividend -> copyAllPropertiesButStrategy(openDividend,
+                .map(openDividend -> dividendMapper.mergeIbProperties(openDividend,
                         existingOpenDividendsMap.get(openDividend.getId())))
                 .toList();
 
@@ -130,21 +130,6 @@ public class DividendServiceImpl implements DividendService {
         );
         dividend.setStrategy(strategyToAssign);
         return dividendMapper.toDividendListDto(dividendRepository.save(dividend));
-    }
-
-    private Dividend copyAllPropertiesButStrategy(Dividend source, Dividend target) {
-        target.setConId(source.getConId());
-        target.setSymbol(source.getSymbol());
-        target.setDescription(source.getDescription());
-        target.setExDate(source.getExDate());
-        target.setPayDate(source.getPayDate());
-        target.setGrossRate(source.getGrossRate());
-        target.setQuantity(source.getQuantity());
-        target.setGrossAmount(source.getGrossAmount());
-        target.setTax(source.getTax());
-        target.setNetAmount(source.getNetAmount());
-        target.setOpenClosed(source.getOpenClosed());
-        return target;
     }
 
     private List<Dividend> saveAll(List<Dividend> dividends) {
