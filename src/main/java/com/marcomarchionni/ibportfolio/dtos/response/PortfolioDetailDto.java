@@ -15,5 +15,5 @@ public class PortfolioDetailDto {
 
     private Long id;
     private String name;
-    private List<StrategyListDto> strategies;
+    private List<StrategySummaryDto> strategies;
 }

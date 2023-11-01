@@ -4,7 +4,7 @@ import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.TradeSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
@@ -74,7 +74,7 @@ class TradeServiceImplTest {
         when(strategyRepository.findById(strategy.getId())).thenReturn(Optional.of(strategy));
         when(tradeRepository.save(trade)).thenReturn(trade);
 
-        TradeListDto updatedTrade = tradeService.updateStrategyId(tradeUpdate);
+        TradeSummaryDto updatedTrade = tradeService.updateStrategyId(tradeUpdate);
 
         verify(tradeRepository).save(trade);
         assertEquals(tradeUpdate.getId(), updatedTrade.getId());
@@ -96,7 +96,7 @@ class TradeServiceImplTest {
         when(tradeRepository.findByParams(any(),any(),any(),any(),any())).thenReturn(trades);
         int expectedSize = trades.size();
 
-        List<TradeListDto> actualTrades = tradeService.findByFilter(tradeCriteria);
+        List<TradeSummaryDto> actualTrades = tradeService.findByFilter(tradeCriteria);
 
         assertEquals(expectedSize, actualTrades.size());
     }

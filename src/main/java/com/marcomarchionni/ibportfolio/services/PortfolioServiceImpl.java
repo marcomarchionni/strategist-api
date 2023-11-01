@@ -4,7 +4,7 @@ import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.ibportfolio.dtos.response.PortfolioListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
@@ -29,7 +29,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public List<PortfolioListDto> findAll() {
+    public List<PortfolioSummaryDto> findAll() {
         List<Portfolio> portfolios = portfolioRepository.findAll();
         return portfolios.stream().map(portfolioMapper::toPortfolioListDto).collect(Collectors.toList());
     }

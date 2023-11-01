@@ -2,7 +2,7 @@ package com.marcomarchionni.ibportfolio.controllers;
 
 import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.TradeSummaryDto;
 import com.marcomarchionni.ibportfolio.services.TradeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +22,12 @@ public class TradeController {
     }
 
     @GetMapping
-    public List<TradeListDto> findByFilter(@Valid TradeFindDto tradeFind) {
+    public List<TradeSummaryDto> findByFilter(@Valid TradeFindDto tradeFind) {
         return tradeService.findByFilter(tradeFind);
     }
 
     @PutMapping
-    public TradeListDto updateStrategyId(@RequestBody @Valid UpdateStrategyDto tradeUpdate) {
+    public TradeSummaryDto updateStrategyId(@RequestBody @Valid UpdateStrategyDto tradeUpdate) {
         return tradeService.updateStrategyId(tradeUpdate);
     }
 }

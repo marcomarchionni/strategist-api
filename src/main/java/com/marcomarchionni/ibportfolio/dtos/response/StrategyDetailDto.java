@@ -29,11 +29,11 @@ public class StrategyDetailDto {
     private String portfolioName;
 
     @NotNull
-    private List<TradeListDto> trades;
+    private List<TradeSummaryDto> trades;
 
     @NotNull
-    private List<PositionListDto> positions;
+    private List<PositionSummaryDto> positions;
 
     @NotNull
-    private List<DividendListDto> dividends;
+    private List<DividendSummaryDto> dividends;
 }

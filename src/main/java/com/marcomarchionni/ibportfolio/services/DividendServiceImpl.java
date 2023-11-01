@@ -4,7 +4,7 @@ import com.marcomarchionni.ibportfolio.domain.Dividend;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.dtos.request.DividendFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.DividendSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
@@ -41,7 +41,7 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public List<DividendListDto> findByFilter(DividendFindDto dividendFind) {
+    public List<DividendSummaryDto> findByFilter(DividendFindDto dividendFind) {
         List<Dividend> dividends = dividendRepository.findByParams(
                 dividendFind.getExDateFrom(),
                 dividendFind.getExDateTo(),
@@ -120,7 +120,7 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public DividendListDto updateStrategyId(UpdateStrategyDto dividendUpdate) {
+    public DividendSummaryDto updateStrategyId(UpdateStrategyDto dividendUpdate) {
 
         Dividend dividend = dividendRepository.findById(dividendUpdate.getId()).orElseThrow(
                 () -> new EntityNotFoundException("Dividend with id: " + dividendUpdate.getId() + " not found")

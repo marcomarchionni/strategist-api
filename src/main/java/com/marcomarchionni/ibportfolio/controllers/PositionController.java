@@ -2,7 +2,7 @@ package com.marcomarchionni.ibportfolio.controllers;
 
 import com.marcomarchionni.ibportfolio.dtos.request.PositionFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.dtos.response.PositionListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PositionSummaryDto;
 import com.marcomarchionni.ibportfolio.services.PositionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +22,12 @@ public class PositionController {
     }
 
     @GetMapping
-    public List<PositionListDto> findByFilter(@Valid PositionFindDto positionFind) {
+    public List<PositionSummaryDto> findByFilter(@Valid PositionFindDto positionFind) {
         return positionService.findByFilter(positionFind);
     }
 
     @PutMapping
-    public PositionListDto updateStrategyId(@RequestBody @Valid UpdateStrategyDto positionUpdate) {
+    public PositionSummaryDto updateStrategyId(@RequestBody @Valid UpdateStrategyDto positionUpdate) {
         return positionService.updateStrategyId(positionUpdate);
     }
 }

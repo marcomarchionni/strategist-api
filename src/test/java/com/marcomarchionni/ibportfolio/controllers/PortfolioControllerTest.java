@@ -5,7 +5,7 @@ import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.ibportfolio.dtos.response.PortfolioListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapper;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapperImpl;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
@@ -40,7 +40,7 @@ class PortfolioControllerTest {
     MockMvc mockMvc;
     ObjectMapper mapper;
     PortfolioMapper portfolioMapper;
-    List<PortfolioListDto> portfolioListDtos;
+    List<PortfolioSummaryDto> portfolioSummaryDtos;
     Portfolio portfolio;
     PortfolioDetailDto portfolioDetailDto;
 
@@ -48,7 +48,7 @@ class PortfolioControllerTest {
     void setup() {
         mapper = new ObjectMapper();
         portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
-        portfolioListDtos = getSamplePortfolios()
+        portfolioSummaryDtos = getSamplePortfolios()
                 .stream()
                 .map(portfolioMapper::toPortfolioListDto)
                 .toList();
@@ -58,12 +58,12 @@ class PortfolioControllerTest {
 
     @Test
     void findPortfolios() throws Exception {
-        when(portfolioService.findAll()).thenReturn(portfolioListDtos);
+        when(portfolioService.findAll()).thenReturn(portfolioSummaryDtos);
 
         mockMvc.perform(get("/portfolios"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(portfolioListDtos.size())));
+                .andExpect(jsonPath("$", hasSize(portfolioSummaryDtos.size())));
     }
 
     @Test

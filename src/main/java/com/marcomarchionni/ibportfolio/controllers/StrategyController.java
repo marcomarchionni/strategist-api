@@ -4,7 +4,7 @@ import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.ibportfolio.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.StrategySummaryDto;
 import com.marcomarchionni.ibportfolio.services.StrategyService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class StrategyController {
     }
 
     @GetMapping
-    public List<StrategyListDto> findByFilter(@Valid StrategyFindDto strategyFind) {
+    public List<StrategySummaryDto> findByFilter(@Valid StrategyFindDto strategyFind) {
         return strategyService.findByFilter(strategyFind);
     }
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.TradeSummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapper;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapperImpl;
 import com.marcomarchionni.ibportfolio.services.TradeService;
@@ -45,13 +45,13 @@ class TradeControllerTest {
     TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
     Trade trade = getSampleTrade();
     Strategy strategy = getSampleStrategy();
-    List<TradeListDto> tradeListDtos;
+    List<TradeSummaryDto> tradeSummaryDtos;
 
     @BeforeEach
     void setUp() {
         objectMapper.registerModule(new JavaTimeModule());
         tradeMapper = new TradeMapperImpl(new ModelMapper());
-        tradeListDtos = TestUtils.getSampleTrades()
+        tradeSummaryDtos = TestUtils.getSampleTrades()
                 .stream()
                 .map(tradeMapper::toTradeListDto)
                 .toList();
@@ -60,19 +60,19 @@ class TradeControllerTest {
     @Test
     void getTrades() throws Exception {
 
-        when(tradeService.findByFilter(any())).thenReturn(tradeListDtos);
+        when(tradeService.findByFilter(any())).thenReturn(tradeSummaryDtos);
 
         mockMvc.perform(get("/trades"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(tradeListDtos.size())));
+                .andExpect(jsonPath("$", hasSize(tradeSummaryDtos.size())));
     }
 
     @ParameterizedTest
     @CsvSource({",,,ZM,", ",2022-06-14,true,,"})
     void findTradesSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
-        when(tradeService.findByFilter(any())).thenReturn(tradeListDtos);
+        when(tradeService.findByFilter(any())).thenReturn(tradeSummaryDtos);
 
         mockMvc.perform(get("/trades")
                         .param("tradeDateFrom", tradeDateFrom)
@@ -83,7 +83,7 @@ class TradeControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(tradeListDtos.size())));
+                .andExpect(jsonPath("$", hasSize(tradeSummaryDtos.size())));
     }
 
     @ParameterizedTest
@@ -105,9 +105,9 @@ class TradeControllerTest {
 
         UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(trade.getId()).strategyId(strategy.getId()).build();
         trade.setStrategy(strategy);
-        TradeListDto tradeListDto = tradeMapper.toTradeListDto(trade);
+        TradeSummaryDto tradeSummaryDto = tradeMapper.toTradeListDto(trade);
 
-        when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(tradeListDto);
+        when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(tradeSummaryDto);
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)

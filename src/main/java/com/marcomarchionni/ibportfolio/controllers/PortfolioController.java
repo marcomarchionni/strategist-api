@@ -3,7 +3,7 @@ package com.marcomarchionni.ibportfolio.controllers;
 import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.ibportfolio.dtos.response.PortfolioListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ public class PortfolioController {
     }
 
     @GetMapping
-    public List<PortfolioListDto> findAll() {
+    public List<PortfolioSummaryDto> findAll() {
         return portfolioService.findAll();
     }
 

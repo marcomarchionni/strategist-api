@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StrategyListDto {
+public class StrategySummaryDto {
 
     @NotNull
     private Long id;

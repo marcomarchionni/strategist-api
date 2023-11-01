@@ -41,10 +41,10 @@ class ResponseParserImplTest {
         // config model mapper
         ModelMapperConfig config = new ModelMapperConfig();
         ModelMapper modelMapper = config.modelMapper();
-        flexStatementMapper = new FlexStatementMapperImpl();
+        flexStatementMapper = new FlexStatementMapperImpl(modelMapper);
         positionMapper = new PositionMapperImpl(modelMapper);
         tradeMapper = new TradeMapperImpl(modelMapper);
-        dividendMapper = new DividendMapperImpl();
+        dividendMapper = new DividendMapperImpl(modelMapper);
         responseParser = new ResponseParserImpl(flexStatementMapper, tradeMapper, positionMapper, dividendMapper);
     }
 

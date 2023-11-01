@@ -3,7 +3,7 @@ package com.marcomarchionni.ibportfolio.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.domain.Position;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.dtos.response.PositionListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PositionSummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
 import com.marcomarchionni.ibportfolio.mappers.PositionMapperImpl;
 import com.marcomarchionni.ibportfolio.services.PositionService;
@@ -41,31 +41,31 @@ class PositionControllerTest {
     PositionMapper positionMapper;
 
     List<Position> positions;
-    List<PositionListDto> positionListDtos;
+    List<PositionSummaryDto> positionSummaryDtos;
     Position position;
-    PositionListDto positionListDto;
+    PositionSummaryDto positionSummaryDto;
 
     @BeforeEach
     void setup() {
         positions = getSamplePositions();
         positionMapper = new PositionMapperImpl(new ModelMapper());
-        positionListDtos = positions
+        positionSummaryDtos = positions
                 .stream()
                 .map(positionMapper::toPositionListDto)
                 .toList();
         position = getSamplePosition();
-        positionListDto = positionMapper.toPositionListDto(position);
+        positionSummaryDto = positionMapper.toPositionListDto(position);
     }
 
     @Test
     void getPositions() throws Exception {
 
-        when(positionService.findByFilter(any())).thenReturn(positionListDtos);
+        when(positionService.findByFilter(any())).thenReturn(positionSummaryDtos);
 
         mockMvc.perform(get("/positions"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(positionListDtos.size())));
+                .andExpect(jsonPath("$", hasSize(positionSummaryDtos.size())));
     }
 
     @Test
@@ -74,7 +74,7 @@ class PositionControllerTest {
         mapper = new ObjectMapper();
 
         UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(position.getId()).strategyId(2L).build();
-        when(positionService.updateStrategyId(any())).thenReturn(positionListDto);
+        when(positionService.updateStrategyId(any())).thenReturn(positionSummaryDto);
 
         mockMvc.perform(put("/positions")
                         .contentType(MediaType.APPLICATION_JSON)

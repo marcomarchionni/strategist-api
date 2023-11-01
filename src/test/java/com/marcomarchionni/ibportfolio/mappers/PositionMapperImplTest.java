@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.mappers;
 
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.domain.Position;
+import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,19 +10,21 @@ import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePosition;
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PositionMapperImplTest {
 
-    ModelMapper mapper;
+    PositionMapper positionMapper;
 
     @BeforeEach
     void setUp() {
         ModelMapperConfig modelMapperConfig = new ModelMapperConfig();
-        mapper = modelMapperConfig.modelMapper();
+        ModelMapper mapper = modelMapperConfig.modelMapper();
+        positionMapper = new PositionMapperImpl(mapper);
     }
 
     @Test
@@ -47,8 +50,8 @@ class PositionMapperImplTest {
         p.setPercentOfNAV(BigDecimal.valueOf(1));
         p.setFifoPnlUnrealized(BigDecimal.valueOf(0));
 
-        PositionMapper positionMapper = new PositionMapperImpl(mapper);
         Position position = positionMapper.toPosition(p);
+
         assertNotNull(position);
         assertEquals(p.getMarkPrice(), position.getMarkPrice());
         assertEquals(p.getConid(), position.getId());
@@ -56,17 +59,29 @@ class PositionMapperImplTest {
     }
 
     @Test
-    void calculateDividendId() {
+    void mergeIbProperties() {
+        Position source = getSamplePosition();
+        Strategy strategy = getSampleStrategy();
+        Position target = new Position();
+        target.setStrategy(strategy);
 
-        LocalDate payDate = LocalDate.of(2022, 6, 30);
-        long conid = 267547L;
-
-        Long payDateLong = Long.parseLong(payDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        Long bigConId = (long) (conid * 10E7);
-        Long id = bigConId + payDateLong;
-
-        assertEquals(26754720220630L, id);
-
-
+        Position destination = positionMapper.mergeIbProperties(source, target);
+        assertEquals(source.getId(), destination.getId());
+        assertEquals(source.getConId(), destination.getConId());
+        assertEquals(source.getReportDate(), destination.getReportDate());
+        assertEquals(source.getSymbol(), destination.getSymbol());
+        assertEquals(source.getDescription(), destination.getDescription());
+        assertEquals(source.getAssetCategory(), destination.getAssetCategory());
+        assertEquals(source.getPutCall(), destination.getPutCall());
+        assertEquals(source.getStrike(), destination.getStrike());
+        assertEquals(source.getExpiry(), destination.getExpiry());
+        assertEquals(source.getQuantity(), destination.getQuantity());
+        assertEquals(source.getCostBasisPrice(), destination.getCostBasisPrice());
+        assertEquals(source.getCostBasisMoney(), destination.getCostBasisMoney());
+        assertEquals(source.getMarkPrice(), destination.getMarkPrice());
+        assertEquals(source.getMultiplier(), destination.getMultiplier());
+        assertEquals(source.getPositionValue(), destination.getPositionValue());
+        assertEquals(source.getFifoPnlUnrealized(), destination.getFifoPnlUnrealized());
+        assertEquals(strategy, destination.getStrategy());
     }
 }

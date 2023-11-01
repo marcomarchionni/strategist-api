@@ -3,13 +3,13 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.ibportfolio.dtos.response.PortfolioListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
 
 import java.util.List;
 
 public interface PortfolioService {
 
-    List<PortfolioListDto> findAll();
+    List<PortfolioSummaryDto> findAll();
 
     PortfolioDetailDto findById(Long id);
 

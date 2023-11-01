@@ -4,7 +4,7 @@ import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.ibportfolio.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.StrategySummaryDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +24,8 @@ public class StrategyMapperImpl implements StrategyMapper {
     }
 
     @Override
-    public StrategyListDto toStrategyListDto(Strategy strategy) {
-        return modelMapper.map(strategy, StrategyListDto.class);
+    public StrategySummaryDto toStrategyListDto(Strategy strategy) {
+        return modelMapper.map(strategy, StrategySummaryDto.class);
     }
 
     @Override

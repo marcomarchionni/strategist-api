@@ -6,7 +6,7 @@ import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.ibportfolio.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.StrategySummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.StrategyMapper;
 import com.marcomarchionni.ibportfolio.mappers.StrategyMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
@@ -54,7 +54,7 @@ class StrategyServiceImplTest {
         StrategyFindDto strategyFindDto = StrategyFindDto.builder().build();
         when(strategyRepository.findByParams(any())).thenReturn(strategies);
 
-        List<StrategyListDto> actualStrategies = strategyService.findByFilter(strategyFindDto);
+        List<StrategySummaryDto> actualStrategies = strategyService.findByFilter(strategyFindDto);
 
         assertNotNull(actualStrategies);
     }

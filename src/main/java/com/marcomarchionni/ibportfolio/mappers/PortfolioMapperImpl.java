@@ -3,7 +3,7 @@ package com.marcomarchionni.ibportfolio.mappers;
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.ibportfolio.dtos.response.PortfolioListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +22,8 @@ public class PortfolioMapperImpl implements PortfolioMapper{
     }
 
     @Override
-    public PortfolioListDto toPortfolioListDto(Portfolio portfolio) {
-        return PortfolioListDto.builder().id(portfolio.getId()).name(portfolio.getName()).build();
+    public PortfolioSummaryDto toPortfolioListDto(Portfolio portfolio) {
+        return PortfolioSummaryDto.builder().id(portfolio.getId()).name(portfolio.getName()).build();
     }
 
     @Override

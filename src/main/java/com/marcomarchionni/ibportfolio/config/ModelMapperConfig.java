@@ -12,33 +12,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Configuration
 public class ModelMapperConfig {
     private final Converter<BigDecimal, BigDecimal> absValue =
             ctx -> ctx.getSource() == null ? null : ctx.getSource().abs();
-
-    @Bean
-    public ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.addMappings(getFlexStatementPropertyMap());
-        modelMapper.addMappings(getTradePropertyMap());
-        modelMapper.addMappings(getPositionPropertyMap());
-        modelMapper.addMappings(getClosedDividendPropertyMap());
-        modelMapper.addMappings(getOpenDividendPropertyMap());
-        return modelMapper;
-    }
-
-    private PropertyMap<FlexQueryResponseDto.FlexStatement, FlexStatement> getFlexStatementPropertyMap() {
-        return new PropertyMap<>() {
-            @Override
-            protected void configure() {
-                skip().setId(null);
-            }
-        };
-    }
+    private final Converter<FlexQueryResponseDto.DividendAccrual, Long> dividendIdConverter = ctx -> {
+        long conIdFactor = ctx.getSource().getConid() * 100_000_000L;
+        long payDateLong = Long.parseLong(ctx.getSource().getPayDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        return conIdFactor + payDateLong;
+    };
 
     private PropertyMap<FlexQueryResponseDto.Order, Trade> getTradePropertyMap() {
         return new PropertyMap<>() {
@@ -46,10 +31,35 @@ public class ModelMapperConfig {
             protected void configure() {
                 map().setId(source.getIbOrderID());
                 map().setConId(source.getConid());
-                skip().setStrategy(null);
             }
         };
+    }
+    private final Converter<LocalDateTime, Long> flexStatementIdConverter = ctx -> {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String formattedDateTime = ctx.getSource().format(formatter);
+        return Long.parseLong(formattedDateTime);
+    };
 
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.addMappings(getFlexStatementPropertyMap());
+        modelMapper.addMappings(getTradePropertyMap());
+        modelMapper.addMappings(getPositionPropertyMap());
+        modelMapper.addMappings(getMergePositionPropertyMap());
+        modelMapper.addMappings(getClosedDividendPropertyMap());
+        modelMapper.addMappings(getOpenDividendPropertyMap());
+        modelMapper.addMappings(getMergeDividendPropertyMap());
+        return modelMapper;
+    }
+
+    private PropertyMap<FlexQueryResponseDto.FlexStatement, FlexStatement> getFlexStatementPropertyMap() {
+        return new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                using(flexStatementIdConverter).map(source.getWhenGenerated(), destination.getId());
+            }
+        };
     }
 
     private PropertyMap<FlexQueryResponseDto.OpenPosition, Position> getPositionPropertyMap() {
@@ -58,46 +68,49 @@ public class ModelMapperConfig {
                 map().setId(source.getConid());
                 map().setConId(source.getConid());
                 map().setQuantity(source.getPosition());
+            }
+        };
+    }
+
+    private PropertyMap<Position, Position> getMergePositionPropertyMap() {
+        return new PropertyMap<>() {
+            @Override
+            protected void configure() {
                 skip().setStrategy(null);
             }
         };
     }
 
+    // Extract a unique dividend id from the flex query dto to avoid duplicates in the update process
     private PropertyMap<FlexQueryResponseDto.ChangeInDividendAccrual, Dividend> getClosedDividendPropertyMap() {
         return new PropertyMap<>() {
             protected void configure() {
-                using(ctx -> calculateDividendId(
-                        ((FlexQueryResponseDto.ChangeInDividendAccrual) ctx.getSource()).getConid(),
-                        ((FlexQueryResponseDto.ChangeInDividendAccrual) ctx.getSource()).getPayDate()
-                )).map(source, destination.getId());
+                using(dividendIdConverter).map(source, destination.getId());
                 map().setConId(source.getConid());
                 using(absValue).map().setGrossAmount(source.getGrossAmount());
                 using(absValue).map().setNetAmount(source.getNetAmount());
                 using(absValue).map().setTax(source.getTax());
-                destination.setOpenClosed(Dividend.OpenClosed.CLOSED);
+                map().setOpenClosed(Dividend.OpenClosed.CLOSED);
             }
         };
     }
 
-    // For Closed Dividends, we need to extract a unique id from the flex query data
-    // to avoid duplicates in the update process
     private PropertyMap<FlexQueryResponseDto.OpenDividendAccrual, Dividend> getOpenDividendPropertyMap() {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
-                using(ctx -> calculateDividendId(
-                        ((FlexQueryResponseDto.OpenDividendAccrual) ctx.getSource()).getConid(),
-                        ((FlexQueryResponseDto.OpenDividendAccrual) ctx.getSource()).getPayDate()
-                )).map(source, destination.getId());
-                skip().setStrategy(null);
+                using(dividendIdConverter).map(source, destination.getId());
                 map().setConId(source.getConid());
-                destination.setOpenClosed(Dividend.OpenClosed.OPEN);
+                map().setOpenClosed(Dividend.OpenClosed.OPEN);
             }
         };
     }
 
-    private Long calculateDividendId(Long conid, LocalDate payDate) {
-        long payDateLong = Long.parseLong(payDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        return (long) ((conid * 10E7) + payDateLong);
+    private PropertyMap<Dividend, Dividend> getMergeDividendPropertyMap() {
+        return new PropertyMap<>() {
+            protected void configure() {
+                skip().setStrategy(null);
+            }
+        };
     }
 }

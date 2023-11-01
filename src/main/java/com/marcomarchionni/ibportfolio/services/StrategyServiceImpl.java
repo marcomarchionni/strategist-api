@@ -6,7 +6,7 @@ import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.ibportfolio.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.StrategySummaryDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
@@ -34,7 +34,7 @@ public class StrategyServiceImpl implements StrategyService {
     }
 
     @Override
-    public List<StrategyListDto> findByFilter(StrategyFindDto strategyFind) {
+    public List<StrategySummaryDto> findByFilter(StrategyFindDto strategyFind) {
         List<Strategy> strategies = strategyRepository.findByParams(strategyFind.getName());
         return strategies.stream().map(strategyMapper::toStrategyListDto).collect(Collectors.toList());
     }

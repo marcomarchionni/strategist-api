@@ -6,7 +6,7 @@ import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.ibportfolio.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.StrategySummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.StrategyMapper;
 import com.marcomarchionni.ibportfolio.mappers.StrategyMapperImpl;
 import com.marcomarchionni.ibportfolio.services.StrategyService;
@@ -42,13 +42,13 @@ class StrategyControllerTest {
     ObjectMapper mapper = new ObjectMapper();
     StrategyMapper strategyMapper = new StrategyMapperImpl(new ModelMapper());
     List<Strategy> strategies = getSampleStrategies();
-    List<StrategyListDto> strategyListDtos;
+    List<StrategySummaryDto> strategySummaryDtos;
     StrategyDetailDto strategyDetailDto;
     Strategy strategy = getSampleStrategy();
 
     @BeforeEach
     void setUp() {
-        strategyListDtos = strategies.stream().map(strategyMapper::toStrategyListDto).toList();
+        strategySummaryDtos = strategies.stream().map(strategyMapper::toStrategyListDto).toList();
         strategyDetailDto = strategyMapper.toStrategyDetailDto(strategy);
     }
 
@@ -56,7 +56,7 @@ class StrategyControllerTest {
     void findByParams() throws Exception {
         StrategyFindDto strategyFindDto = StrategyFindDto.builder().build();
 
-        when(strategyService.findByFilter(strategyFindDto)).thenReturn(strategyListDtos);
+        when(strategyService.findByFilter(strategyFindDto)).thenReturn(strategySummaryDtos);
 
         mockMvc.perform(get("/strategies")
                         .param("name", strategyFindDto.getName()))

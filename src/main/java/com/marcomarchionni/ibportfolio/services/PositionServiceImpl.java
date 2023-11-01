@@ -4,7 +4,7 @@ import com.marcomarchionni.ibportfolio.domain.Position;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.dtos.request.PositionFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.dtos.response.PositionListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PositionSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
@@ -53,7 +53,7 @@ public class PositionServiceImpl implements PositionService{
     }
 
     @Override
-    public List<PositionListDto> findByFilter(PositionFindDto positionFind) {
+    public List<PositionSummaryDto> findByFilter(PositionFindDto positionFind) {
         List<Position> positions = positionRepository.findByParams(
                                             positionFind.getTagged(),
                                             positionFind.getSymbol(),
@@ -98,7 +98,7 @@ public class PositionServiceImpl implements PositionService{
     }
 
     @Override
-    public PositionListDto updateStrategyId(UpdateStrategyDto positionUpdate) {
+    public PositionSummaryDto updateStrategyId(UpdateStrategyDto positionUpdate) {
         Position position = positionRepository.findById(positionUpdate.getId()).orElseThrow(
                 ()-> new EntityNotFoundException("Position with id: " + positionUpdate.getId() + " not found")
         );

@@ -4,7 +4,7 @@ import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.TradeSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
@@ -42,7 +42,7 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public TradeListDto updateStrategyId(UpdateStrategyDto tradeUpdate) {
+    public TradeSummaryDto updateStrategyId(UpdateStrategyDto tradeUpdate) {
 
         Trade trade = tradeRepository.findById(tradeUpdate.getId()).orElseThrow(
                 () -> new EntityNotFoundException("Trade with id: " + tradeUpdate.getId() + " not found")
@@ -55,7 +55,7 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public List<TradeListDto> findByFilter(TradeFindDto tradeFind) {
+    public List<TradeSummaryDto> findByFilter(TradeFindDto tradeFind) {
         List<Trade> trades = tradeRepository.findByParams(
                 tradeFind.getTradeDateFrom(),
                 tradeFind.getTradeDateTo(),

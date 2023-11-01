@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TradeListDto {
+public class TradeSummaryDto {
 
     private Long id;
     private Long strategyId;

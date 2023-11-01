@@ -3,7 +3,7 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.ibportfolio.dtos.response.PortfolioListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapper;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapperImpl;
@@ -49,7 +49,7 @@ class PortfolioServiceImplTest {
     void findAll() {
         when(portfolioRepository.findAll()).thenReturn(portfolios);
 
-        List<PortfolioListDto> actualPortfolios = portfolioService.findAll();
+        List<PortfolioSummaryDto> actualPortfolios = portfolioService.findAll();
 
         assertEquals(actualPortfolios.size(), portfolios.size());
     }

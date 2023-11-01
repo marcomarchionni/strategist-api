@@ -2,7 +2,7 @@ package com.marcomarchionni.ibportfolio.mappers;
 
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
-import com.marcomarchionni.ibportfolio.dtos.response.StrategyListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.StrategySummaryDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -27,11 +27,11 @@ class StrategyMapperImplTest {
         Strategy strategy = getSampleStrategy();
         strategy.setPortfolio(portfolio);
 
-        StrategyListDto strategyListDto = strategyMapper.toStrategyListDto(strategy);
+        StrategySummaryDto strategySummaryDto = strategyMapper.toStrategyListDto(strategy);
 
-        assertNotNull(strategyListDto);
-        assertEquals(strategy.getId(), strategyListDto.getId());
-        assertEquals(strategy.getPortfolio().getId(), strategyListDto.getPortfolioId());
-        assertEquals(strategy.getPortfolio().getName(), strategyListDto.getPortfolioName());
+        assertNotNull(strategySummaryDto);
+        assertEquals(strategy.getId(), strategySummaryDto.getId());
+        assertEquals(strategy.getPortfolio().getId(), strategySummaryDto.getPortfolioId());
+        assertEquals(strategy.getPortfolio().getName(), strategySummaryDto.getPortfolioName());
     }
 }

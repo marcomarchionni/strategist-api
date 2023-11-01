@@ -4,15 +4,14 @@ import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.ibportfolio.dtos.response.TradeListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.TradeSummaryDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleTrade;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TradeMapperTest {
 
@@ -33,10 +32,10 @@ class TradeMapperTest {
         Trade trade = getSampleTrade();
         trade.setStrategy(strategy);
 
-        TradeListDto tradeListDto = tradeMapper.toTradeListDto(trade);
+        TradeSummaryDto tradeSummaryDto = tradeMapper.toTradeListDto(trade);
 
-        assertEquals(trade.getId(), tradeListDto.getId());
-        assertEquals(trade.getStrategy().getName(), tradeListDto.getStrategyName());
+        assertEquals(trade.getId(), tradeSummaryDto.getId());
+        assertEquals(trade.getStrategy().getName(), tradeSummaryDto.getStrategyName());
     }
 
     @Test
@@ -52,5 +51,6 @@ class TradeMapperTest {
         assertNotNull(trade);
         assertEquals(order.getIbOrderID(), trade.getId());
         assertEquals(order.getIbOrderID(), trade.getIbOrderId());
+        assertNull(trade.getStrategy());
     }
 }

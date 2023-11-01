@@ -2,7 +2,7 @@ package com.marcomarchionni.ibportfolio.controllers;
 
 import com.marcomarchionni.ibportfolio.dtos.request.DividendFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.ibportfolio.dtos.response.DividendListDto;
+import com.marcomarchionni.ibportfolio.dtos.response.DividendSummaryDto;
 import com.marcomarchionni.ibportfolio.services.DividendService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +20,12 @@ public class DividendController {
     }
 
     @GetMapping
-    public List<DividendListDto> findByFilter(@Valid DividendFindDto dividendFind) {
+    public List<DividendSummaryDto> findByFilter(@Valid DividendFindDto dividendFind) {
         return dividendService.findByFilter(dividendFind);
     }
 
     @PutMapping
-    public DividendListDto updateStrategyId(@RequestBody UpdateStrategyDto dividendUpdate) {
+    public DividendSummaryDto updateStrategyId(@RequestBody UpdateStrategyDto dividendUpdate) {
         return dividendService.updateStrategyId(dividendUpdate);
     }
 }
