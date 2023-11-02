@@ -43,13 +43,10 @@ public class LoggingUtils {
     }
 
     public static void logCall(String string) {
-        log.info(">>>> {}", string);
-    }
-    public static void logPlain(String string) {
-        log.info("---- {}", string);
+        log.info("---> {}", string);
     }
     public static void logReturn(String string) {
-        log.info("<<<< {}", string);
+        log.info("<--- {}", string);
     }
     public static void logWarning(String string) {
         log.warn("!!!! {}", string);

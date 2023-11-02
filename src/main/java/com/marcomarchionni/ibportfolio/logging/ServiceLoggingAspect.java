@@ -31,7 +31,6 @@ public class ServiceLoggingAspect {
         int deletedSize = updateReport.getDeleted().size();
         int skippedSize = updateReport.getSkipped().size();
 
-
         // Get entity name from first element of any stream
         Stream<?> combinedStream = Stream.concat(Stream.concat(updateReport.getAdded()
                 .stream(), updateReport.getMerged()
@@ -39,6 +38,8 @@ public class ServiceLoggingAspect {
         String entityName = combinedStream.findFirst().map(Object::getClass).map(Class::getSimpleName)
                 .map(String::toLowerCase).orElse(
                         "entity");
+
+        // log line
         logReturn(methodName + " report: Added " + addedSize + " Merged " + mergedSize + " Deleted " +
                 deletedSize + " Skipped " + skippedSize + " " + entityName + "(s)");
     }
