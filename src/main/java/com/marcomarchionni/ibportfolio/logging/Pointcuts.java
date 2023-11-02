@@ -20,23 +20,37 @@ public class Pointcuts {
     @Pointcut("execution(java.util.List com.marcomarchionni.ibportfolio.*.*.*(..)))")
     public void returningList() {}
 
-    @Pointcut("execution(com.marcomarchionni.ibportfolio.model.domain.* com.marcomarchionni.ibportfolio.*.*.*(..)))")
+    @Pointcut("execution(com.marcomarchionni.ibportfolio.domain.* com.marcomarchionni.ibportfolio.*.*.*(..)))")
     public void returningEntities() {}
+
+    @Pointcut("execution(com.marcomarchionni.ibportfolio.dtos.update.* com.marcomarchionni.ibportfolio.*.*.*(..)))")
+    public void returningReport() {
+    }
 
     @Pointcut("controllerClasses() && returningList()")
     public void controllerClassesReturningList() {}
 
-    @Pointcut("serviceClasses() && returningList()")
-    public void serviceClassesReturningList() {}
-
     @Pointcut("controllerClasses() && returningEntities()")
     public void controllerClassesReturningEntities() {}
 
+    @Pointcut("controllerClasses() && returningReport()")
+    public void controllerClassesReturningReport() {
+    }
+
+    @Pointcut("controllerClasses() && (returningEntities() || returningReport())")
+    public void controllerClassesReturningObject() {
+    }
+
+    @Pointcut("serviceClasses() && returningList()")
+    public void serviceClassesReturningList() {
+    }
+
+    @Pointcut("serviceClasses() && returningReport()")
+    public void servicesClassesReturningReport() {
+    }
+
     @Pointcut("serviceClasses() && returningEntities()")
     public void serviceClassesReturningEntities() {}
-
-    @Pointcut("execution(* com.marcomarchionni.ibportfolio.services.*.save*(java.util.List))")
-    public void serviceSave() {}
 
     @Pointcut("execution(* com.marcomarchionni.ibportfolio.services.*.updateStrategyId(..))")
     public void serviceUpdateStrategyId() {}

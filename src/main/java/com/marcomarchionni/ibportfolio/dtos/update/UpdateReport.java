@@ -2,11 +2,13 @@ package com.marcomarchionni.ibportfolio.dtos.update;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Builder
 @Getter
+@ToString
 public class UpdateReport<T> {
 
     @Builder.Default

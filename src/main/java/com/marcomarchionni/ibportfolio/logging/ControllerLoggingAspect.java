@@ -13,9 +13,16 @@ import static com.marcomarchionni.ibportfolio.logging.LoggingUtils.logReturn;
 @Component
 public class ControllerLoggingAspect {
 
-    @AfterReturning(pointcut = "com.marcomarchionni.ibportfolio.logging.Pointcuts.controllerUpdateStrategyId()", returning = "entity")
-    public void logControllerUpdateStrategyId(Object entity) {
-        logReturn("Controller Response: " + entity);
+//    @AfterReturning(pointcut = "com.marcomarchionni.ibportfolio.logging.Pointcuts.controllerUpdateStrategyId()",
+//    returning = "entity")
+//    public void logControllerUpdateStrategyId(Object entity) {
+//        logReturn("Controller Response: " + entity);
+//    }
+
+    @AfterReturning(pointcut = "com.marcomarchionni.ibportfolio.logging.Pointcuts.controllerClassesReturningObject()"
+            , returning = "object")
+    public void logControllerReport(Object object) {
+        logReturn("Controller Response: " + object);
     }
 
     @AfterReturning(pointcut = "com.marcomarchionni.ibportfolio.logging.Pointcuts.controllerClassesReturningList()", returning = "entities")

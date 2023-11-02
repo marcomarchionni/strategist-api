@@ -13,7 +13,11 @@ public class MainLoggingAspect {
 
     @Before("com.marcomarchionni.ibportfolio.logging.Pointcuts.serviceAndControllerClasses()")
     public void logClassMethodNameAndParameters(JoinPoint joinPoint) {
-        logCall(getClassAndMethodName(joinPoint) + " called with params " + getParamNamesAndValues(joinPoint));
+        if (hasParameters(joinPoint)) {
+            logCall(getClassAndMethodName(joinPoint) + " called with param(s) " + getParamNamesAndValues(joinPoint));
+        } else {
+            logCall(getClassAndMethodName(joinPoint) + " called");
+        }
     }
 }
 

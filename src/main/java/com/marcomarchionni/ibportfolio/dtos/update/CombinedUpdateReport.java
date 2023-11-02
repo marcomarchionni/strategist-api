@@ -6,9 +6,11 @@ import com.marcomarchionni.ibportfolio.domain.Position;
 import com.marcomarchionni.ibportfolio.domain.Trade;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Builder
 @Getter
+@ToString
 public class CombinedUpdateReport {
     private final UpdateReport<FlexStatement> flexStatements;
     private final UpdateReport<Trade> trades;

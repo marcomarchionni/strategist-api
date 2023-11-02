@@ -64,7 +64,7 @@ public class PositionServiceImpl implements PositionService{
 
 
     @Override
-    public UpdateReport<Position> updatePositions(List<Position> newPositions) {
+    public UpdateReport<Position> updatePositions(List<Position> positions) {
         List<Position> existingPositions = positionRepository.findAll();
 
         // Create a map of existing positions
@@ -72,16 +72,16 @@ public class PositionServiceImpl implements PositionService{
                 .collect(Collectors.toMap(Position::getId, Function.identity()));
 
         // Create a map of new positions
-        Map<Long, Position> newPositionsMap = newPositions.stream()
+        Map<Long, Position> newPositionsMap = positions.stream()
                 .collect(Collectors.toMap(Position::getId, Function.identity()));
 
         // Select positions to be saved
-        List<Position> toAdd = newPositions.stream()
+        List<Position> toAdd = positions.stream()
                 .filter(newPosition -> !existingPositionsMap.containsKey(newPosition.getId()))
                 .toList();
 
         // Select positions to be merged
-        List<Position> toMerge = newPositions.stream()
+        List<Position> toMerge = positions.stream()
                 .filter(newPosition -> existingPositionsMap.containsKey(newPosition.getId()))
                 .map(newPosition -> positionMapper.mergeIbProperties(newPosition,
                         existingPositionsMap.get(newPosition.getId())))

@@ -28,6 +28,10 @@ public class LoggingUtils {
         }
     }
 
+    public static boolean hasParameters(JoinPoint joinPoint) {
+        return ((CodeSignature) joinPoint.getSignature()).getParameterNames().length > 0;
+    }
+
     public static String getParamNamesAndValues(JoinPoint joinPoint) {
         String[] paramNames = ((CodeSignature) joinPoint.getSignature()).getParameterNames();
         Object[] paramValues = joinPoint.getArgs();
