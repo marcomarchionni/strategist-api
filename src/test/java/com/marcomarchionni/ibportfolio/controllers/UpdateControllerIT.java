@@ -32,7 +32,7 @@ class UpdateControllerIT {
         Resource fileResource = new ClassPathResource("flex/SimpleJune2022.xml");
         mockFile = new MockMultipartFile(
                 "file", // the name of the parameter
-                "SimpleJune2022.xml", // filename
+                "SimpleFlex.xml", // filename
                 "text/xml", // content type
                 fileResource.getInputStream() // file content
         );

@@ -41,13 +41,30 @@ class UpdateControllerTest {
     MockMvc mockMvc;
 
     @Test
+    void updateFromFileInvalidFile() throws Exception {
+        Resource fileResource = new ClassPathResource("flex/InvalidFlex");
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "file", // the name of the parameter
+                "InvalidFile", // filename
+                "text/xml", // content type
+                fileResource.getInputStream() // file content
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/update/from-file")
+                        .file(mockFile))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+    }
+
+    @Test
     void updateFromFile() throws Exception {
 
         // Load the file from classpath
         Resource fileResource = new ClassPathResource("flex/SimpleJune2022.xml");
         MockMultipartFile mockFile = new MockMultipartFile(
                 "file", // the name of the parameter
-                "SimpleJune2022.xml", // filename
+                "SimpleFlex.xml", // filename
                 "text/xml", // content type
                 fileResource.getInputStream() // file content
         );
@@ -79,7 +96,7 @@ class UpdateControllerTest {
 
         // Compare the contents
         byte[] capturedContent = StreamUtils.copyToByteArray(inputStreamCaptor.getValue());
-        byte[] expectedContent = Files.readAllBytes(Paths.get("src/test/resources/flex/SimpleJune2022.xml"));
+        byte[] expectedContent = Files.readAllBytes(Paths.get("src/test/resources/flex/SimpleFlex.xml"));
 
         assertArrayEquals(expectedContent, capturedContent);
     }
