@@ -86,8 +86,7 @@ class PositionControllerIT {
 
 
     @ParameterizedTest
-   @CsvSource({"265598, 3455", "20, 1", ",,"})
-//    @CsvSource("265598, 20")
+    @CsvSource({"265598, 3455", "20, 1", ",,"})
     void updateStrategyIdExceptions(Long positionId, Long strategyId) throws Exception {
 
         UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(positionId).strategyId(strategyId).build();

@@ -6,6 +6,7 @@ import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapper;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapperImpl;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
@@ -75,6 +76,16 @@ class PortfolioControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name", is(portfolio.getName())));
+    }
+
+    @Test
+    void findPortfolioException() throws Exception {
+        when(portfolioService.findById(any())).thenThrow(new EntityNotFoundException("Portfolio with id: 1 not found"));
+
+        mockMvc.perform(get("/portfolios/{id}", 1L))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -16,27 +17,21 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
-        return createErrorResponse("entity-not-found", ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(UnableToDeleteEntitiesException.class)
-    public ResponseEntity<Object> handleUnableToDeleteException(Exception ex) {
-        return createErrorResponse("unable-to-delete-entities", ex.getMessage(), HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(UnableToSaveEntitiesException.class)
-    public ResponseEntity<Object> handleUnableToSaveException(Exception ex) {
-        return createErrorResponse("unable-to-save-entities", ex.getMessage(), HttpStatus.FORBIDDEN);
+    @ExceptionHandler({
+            EntityNotFoundException.class,
+            UnableToSaveEntitiesException.class,
+            UnableToDeleteEntitiesException.class,
+            EmptyFileException.class,
+            NotXMLFileException.class,
+            IbServerErrorException.class})
+    public ResponseEntity<Object> handleEntityNotFoundException(ErrorResponse ex) {
+        return ResponseEntity.status(ex.getStatusCode()).body(ex.getBody());
     }
 
     @ExceptionHandler({
             MethodArgumentTypeMismatchException.class,
             IllegalArgumentException.class,
             ConstraintViolationException.class,
-            EmptyFileException.class,
-            NotXMLFileException.class,
             MaxUploadSizeExceededException.class
     })
     public ResponseEntity<Object> handleBadRequestException(Exception ex) {
@@ -56,7 +51,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 //    }
     /*TODO: override BindException*/
 //    @Override
-//    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+//    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatusCode
+//    status, WebRequest request) {
 //        return handleCustomBindException(ex);
 //    }
 

@@ -8,8 +8,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-
 @Component
 public class ServerDataFetcher implements DataFetcher {
 
@@ -28,8 +26,7 @@ public class ServerDataFetcher implements DataFetcher {
     }
 
     @Override
-    public FlexQueryResponseDto fetch(FetchContext context) throws IOException {
-        //TODO remove checked exception from interface
+    public FlexQueryResponseDto fetch(FetchContext context) {
         return fetchFlexQuery();
     }
 
@@ -44,8 +41,8 @@ public class ServerDataFetcher implements DataFetcher {
         ResponseEntity<FlexStatementResponseDto> statementResponse = restTemplate.exchange(
                 authUrl, HttpMethod.GET, request, FlexStatementResponseDto.class, token, queryId);
 
-        if (statementResponse.getBody() == null || statementResponse.getStatusCode() != HttpStatus.OK) {
-            throw new IbServerErrorException();
+        if (statementResponse.getStatusCode() != HttpStatus.OK || statementResponse.getBody() == null) {
+            throw new IbServerErrorException(statementResponse);
         }
 
         String downloadUrl = statementResponse.getBody().getUrl() + reqPath;
@@ -65,7 +62,7 @@ public class ServerDataFetcher implements DataFetcher {
         HttpStatusCode statusCode = queryResponse.getStatusCode();
 
         if (xml == null || statusCode != HttpStatus.OK) {
-            throw new IbServerErrorException();
+            throw new IbServerErrorException(queryResponse);
         }
 
         return xml;
