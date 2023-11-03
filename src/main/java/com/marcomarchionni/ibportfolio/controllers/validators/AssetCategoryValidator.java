@@ -8,7 +8,7 @@ import java.util.List;
 
 public class AssetCategoryValidator implements ConstraintValidator<AssetCategory, String> {
 
-    //TODO: get allowed asset cathegories from application properties
+    //TODO: get allowed asset categories from application properties
     final List<String> allowedAssetCategories = Arrays.asList("STK", "OPT", "FUT", "CASH");
 
     @Override

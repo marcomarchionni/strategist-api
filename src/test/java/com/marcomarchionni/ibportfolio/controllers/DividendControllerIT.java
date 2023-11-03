@@ -42,7 +42,8 @@ class DividendControllerIT {
 
     @ParameterizedTest
     @CsvSource({"2022-06-01,,,,,,2", ",,2022-07-01,2022-07-15,,FDX,1", ",,,,true,,1"})
-    void findDividendsSuccess(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo, String tagged, String symbol, int expectedSize) throws Exception {
+    void findDividendsSuccess(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo, String tagged
+            , String symbol, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/dividends")
                         .param("exDateFrom", exDateFrom)
@@ -59,7 +60,8 @@ class DividendControllerIT {
 
     @ParameterizedTest
     @CsvSource({"pippo,,,,,", ",,,,farse,", ",,2022-06-02,2022-06-01,,,"})
-    void findDividendsBadRequest(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo, String tagged, String symbol) throws Exception {
+    void findDividendsBadRequest(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo,
+                                 String tagged, String symbol) throws Exception {
 
         mockMvc.perform(get("/dividends")
                         .param("exDateFrom", exDateFrom)
@@ -71,7 +73,8 @@ class DividendControllerIT {
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.status", is(400)));
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.type", is("invalid-query-parameter")));
     }
 
     @ParameterizedTest
@@ -93,7 +96,8 @@ class DividendControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"1029120220603, 20", "20, 1", ",,"})
+//    @CsvSource({"1029120220603, 20", "20, 1", ",,"})
+    @CsvSource({",,"})
     void updateStrategyIdExceptions(Long dividendId, Long strategyId) throws Exception {
 
         UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();

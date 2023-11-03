@@ -25,7 +25,7 @@ public class DividendController {
     }
 
     @PutMapping
-    public DividendSummaryDto updateStrategyId(@RequestBody UpdateStrategyDto dividendUpdate) {
+    public DividendSummaryDto updateStrategyId(@RequestBody @Valid UpdateStrategyDto dividendUpdate) {
         return dividendService.updateStrategyId(dividendUpdate);
     }
 }

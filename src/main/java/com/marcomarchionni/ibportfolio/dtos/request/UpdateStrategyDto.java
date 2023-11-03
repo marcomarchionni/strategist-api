@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateStrategyDto {
 
-    @NotNull
+    @NotNull(message = "'id' cannot be null.")
     private Long id;
 
-    @NotNull
+    @NotNull(message = "'strategyId' cannot be null.")
     private Long strategyId;
 }

@@ -1,18 +1,20 @@
 package com.marcomarchionni.ibportfolio.errorhandling;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.*;
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.net.URI;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -28,15 +30,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(ex.getStatusCode()).body(ex.getBody());
     }
 
-    @ExceptionHandler({
-            MethodArgumentTypeMismatchException.class,
-            IllegalArgumentException.class,
-            ConstraintViolationException.class,
-            MaxUploadSizeExceededException.class
-    })
-    public ResponseEntity<Object> handleBadRequestException(Exception ex) {
-        return createErrorResponse("bad-request", ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
+
+//    @ExceptionHandler({
+////            MethodArgumentTypeMismatchException.class,
+//            IllegalArgumentException.class,
+////            ConstraintViolationException.class,
+//
+//    })
+//    public ResponseEntity<Object> handleBadRequestException(ErrorResponse ex) {
+//        return ResponseEntity.status(ex.getStatusCode()).body(ex.getBody());
+//    }
 
 //    @Override
 //    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders
@@ -44,11 +47,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 //        return createErrorResponse("http-message-body-not-readable", ex.getMessage(), HttpStatus.BAD_REQUEST);
 //    }
 
-//    @Override
-//    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders
-//    headers, HttpStatusCode status, WebRequest request) {
-//        return handleCustomBindException(ex);
-//    }
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        ProblemDetail body = ex.getBody();
+        body.setType(URI.create("invalid-query-parameter"));
+        body.setTitle("Invalid query parameter(s)");
+        String detail = ex.getBindingResult().getAllErrors().stream().map(ObjectError::getDefaultMessage)
+                .collect(Collectors.joining(" - "));
+        if (!detail.isEmpty()) {
+            body.setDetail(detail);
+        }
+        return handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+
     /*TODO: override BindException*/
 //    @Override
 //    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatusCode
@@ -66,19 +79,4 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 //                .orElse(ex.getMessage());
 //        return createErrorResponse("argument-not-valid", detail, HttpStatus.BAD_REQUEST);
 //    }
-
-    private ResponseEntity<Object> createErrorResponse(String type, String detail, HttpStatus httpStatus) {
-        String title = StringUtils.capitalize(type.replace("-", " "));
-        ProblemDetails details = ProblemDetails
-                .builder()
-                .type(type)
-                .title(title)
-                .status(httpStatus.value())
-                .detail(detail)
-                .timeStamp(System.currentTimeMillis())
-                .build();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_PROBLEM_JSON);
-        return ResponseEntity.status(httpStatus).headers(httpHeaders).body(details);
-    }
 }
