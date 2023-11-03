@@ -1,10 +1,9 @@
 package com.marcomarchionni.ibportfolio.errorhandling;
 
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.*;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.*;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,6 +27,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             IbServerErrorException.class})
     public ResponseEntity<Object> handleEntityNotFoundException(ErrorResponse ex) {
         return ResponseEntity.status(ex.getStatusCode()).body(ex.getBody());
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+
+        if (ex.getCause() instanceof ConstraintViolationException constraintViolationEx) {
+            String constraintName = constraintViolationEx.getConstraintName();
+            ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, constraintName);
+            pd.setType(URI.create("data-integrity-violation"));
+            pd.setTitle("Data integrity violation");
+            return ResponseEntity.status(pd.getStatus()).body(pd);
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getRootCause());
     }
 
 
@@ -60,6 +72,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         }
         return handleExceptionInternal(ex, body, headers, status, request);
     }
+
+
 
 
     /*TODO: override BindException*/

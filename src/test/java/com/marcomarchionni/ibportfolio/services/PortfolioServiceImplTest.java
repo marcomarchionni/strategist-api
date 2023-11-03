@@ -73,11 +73,10 @@ class PortfolioServiceImplTest {
     @Test
     void updatePortfolioNameSuccess() {
         UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("NewName").build();
-        Portfolio expectedPortfolio = Portfolio.builder().id(1L).name("NewName").build();
         Portfolio originalPortfolio = Portfolio.builder().id(1L).name("OldName").build();
 
         when(portfolioRepository.findById(any())).thenReturn(Optional.of(originalPortfolio));
-        when(portfolioRepository.save(expectedPortfolio)).thenReturn(expectedPortfolio);
+        when(portfolioRepository.existsByName(any())).thenReturn(false);
 
         PortfolioDetailDto actualPortfolioDto = portfolioService.updateName(updateNameDto);
 

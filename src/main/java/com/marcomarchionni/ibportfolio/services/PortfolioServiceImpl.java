@@ -10,6 +10,7 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEn
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapper;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public PortfolioDetailDto findById(Long id) {
         Portfolio portfolio = portfolioRepository.findById(id).orElseThrow(
-                ()-> new EntityNotFoundException("Portfolio with id: " + id + " not found")
+                () -> new EntityNotFoundException("Portfolio with id: " + id + " not found")
         );
         return portfolioMapper.toPortfolioDetailDto(portfolio);
     }
@@ -45,7 +46,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public void deleteById(Long id) {
         Portfolio portfolioToDelete = portfolioRepository.findById(id).orElseThrow(
-                ()-> new EntityNotFoundException("Portfolio with id: " + id + " not found")
+                () -> new EntityNotFoundException("Portfolio with id: " + id + " not found")
         );
         if (portfolioToDelete.getStrategies().isEmpty()) {
             portfolioRepository.deleteById(id);
@@ -55,26 +56,31 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public PortfolioDetailDto create(PortfolioCreateDto portfolioCreateDto) {
-        Portfolio portfolio = portfolioMapper.toEntity(portfolioCreateDto);
-        return portfolioMapper.toPortfolioDetailDto(this.save(portfolio));
+    public PortfolioDetailDto create(@Valid PortfolioCreateDto portfolioCreateDto) {
+        // Check if portfolio with the same name already exists
+        boolean existsPortfolioWithTheSameName = portfolioRepository.existsByName(portfolioCreateDto.getName());
+        if (existsPortfolioWithTheSameName) {
+            throw new UnableToSaveEntitiesException("Portfolio with name: " + portfolioCreateDto.getName() + " " +
+                    "already exists");
+        }
+        // Create portfolio
+        Portfolio savedPortfolio = portfolioRepository.save(portfolioMapper.toEntity(portfolioCreateDto));
+        return portfolioMapper.toPortfolioDetailDto(savedPortfolio);
     }
 
     @Override
-    public PortfolioDetailDto updateName(UpdateNameDto dto) {
+    public PortfolioDetailDto updateName(@Valid UpdateNameDto dto) {
+        // Check if the portfolio to update exists
         Portfolio portfolio = portfolioRepository.findById(dto.getId()).orElseThrow(
-                ()->new EntityNotFoundException("Portfolio with id: " + dto.getId() + " not found.")
+                () -> new EntityNotFoundException("Portfolio with id: " + dto.getId() + " not found.")
         );
+        // Check if a portfolio with the same name already exists
+        boolean existsPortfolioWithTheSameName = portfolioRepository.existsByName(dto.getName());
+        if (existsPortfolioWithTheSameName) {
+            throw new UnableToSaveEntitiesException("Portfolio with name: " + dto.getName() + " already exists");
+        }
+        // Update portfolio name
         portfolio.setName(dto.getName());
-        return portfolioMapper.toPortfolioDetailDto(this.save(portfolio));
-    }
-
-    private Portfolio save(Portfolio portfolio) {
-        try {
-            return portfolioRepository.save(portfolio);
-        }
-        catch (Exception exc) {
-            throw new UnableToSaveEntitiesException(exc.getMessage());
-        }
+        return portfolioMapper.toPortfolioDetailDto(portfolio);
     }
 }

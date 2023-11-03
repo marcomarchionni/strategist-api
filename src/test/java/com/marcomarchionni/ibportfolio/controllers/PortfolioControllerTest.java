@@ -103,6 +103,19 @@ class PortfolioControllerTest {
     }
 
     @Test
+    void createPortfolioInvalidNameException() throws Exception {
+
+        PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name("A").build();
+
+        mockMvc.perform(post("/portfolios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(portfolioCreateDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+    }
+
+    @Test
     void updatePortfolioName() throws Exception {
 
         UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("MFStockAdvisor").build();
