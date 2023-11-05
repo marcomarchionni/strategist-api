@@ -96,8 +96,7 @@ class DividendControllerIT {
     }
 
     @ParameterizedTest
-//    @CsvSource({"1029120220603, 20", "20, 1", ",,"})
-    @CsvSource({",,"})
+    @CsvSource({"1029120220603, 20", "20, 1", ",,"})
     void updateStrategyIdExceptions(Long dividendId, Long strategyId) throws Exception {
 
         UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();

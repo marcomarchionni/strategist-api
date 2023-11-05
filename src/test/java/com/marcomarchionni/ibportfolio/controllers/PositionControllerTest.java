@@ -90,6 +90,8 @@ class PositionControllerTest {
         mockMvc.perform(put("/positions")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type", is("request-body-not-readable")));
     }
 }

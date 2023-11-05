@@ -4,6 +4,8 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.*;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -70,6 +72,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         if (!detail.isEmpty()) {
             body.setDetail(detail);
         }
+        return handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    @Nullable
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        ProblemDetail body = createProblemDetail(ex, status, "Failed to read request. Request body is null or " +
+                "invalid", null, null, request);
+        body.setTitle("Request body not readable");
+        body.setType(URI.create("request-body-not-readable"));
         return handleExceptionInternal(ex, body, headers, status, request);
     }
 
