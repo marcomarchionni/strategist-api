@@ -96,14 +96,14 @@ class DividendControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"1029120220603, 20", "20, 1", ",,"})
-    void updateStrategyIdExceptions(Long dividendId, Long strategyId) throws Exception {
+    @CsvSource({"1029120220603, 20", "20, 1", ",,", "\"r\",1"})
+    void updateStrategyIdExceptions(String dividendId, String strategyId) throws Exception {
 
-        UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();
+        String payload = String.format("{\"id\": %s, \"strategyId\": %s}", dividendId, strategyId);
 
         mockMvc.perform(put("/dividends")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(dividendUpdate)))
+                        .content(payload))
                 .andDo(print()).andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.type").isNotEmpty());

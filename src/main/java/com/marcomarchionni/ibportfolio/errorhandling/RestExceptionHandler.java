@@ -69,22 +69,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, pd, headers, status, request);
     }
 
-//    @ExceptionHandler({
-////            MethodArgumentTypeMismatchException.class,
-//            IllegalArgumentException.class,
-////            ConstraintViolationException.class,
-//
-//    })
-//    public ResponseEntity<Object> handleBadRequestException(ErrorResponse ex) {
-//        return ResponseEntity.status(ex.getStatusCode()).body(ex.getBody());
-//    }
-
-//    @Override
-//    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders
-//    headers, HttpStatusCode status, WebRequest request) {
-//        return createErrorResponse("http-message-body-not-readable", ex.getMessage(), HttpStatus.BAD_REQUEST);
-//    }
-
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
@@ -110,25 +94,4 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         body.setType(URI.create("request-body-not-readable"));
         return handleExceptionInternal(ex, body, headers, status, request);
     }
-
-
-
-
-    /*TODO: override BindException*/
-//    @Override
-//    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatusCode
-//    status, WebRequest request) {
-//        return handleCustomBindException(ex);
-//    }
-
-//    private ResponseEntity<Object> handleCustomBindException(BindException ex) {
-//        String detail = ex
-//                .getBindingResult()
-//                .getFieldErrors()
-//                .stream()
-//                .findFirst()
-//                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-//                .orElse(ex.getMessage());
-//        return createErrorResponse("argument-not-valid", detail, HttpStatus.BAD_REQUEST);
-//    }
 }
