@@ -7,9 +7,9 @@ import com.marcomarchionni.ibportfolio.services.fetchers.FetchContext;
 import com.marcomarchionni.ibportfolio.services.util.DataFetcherResolver;
 import com.marcomarchionni.ibportfolio.services.util.DataSourceType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 @Service
 public class UpdateOrchestratorImpl implements UpdateOrchestrator {
@@ -30,12 +30,11 @@ public class UpdateOrchestratorImpl implements UpdateOrchestrator {
     }
 
     @Override
-    public CombinedUpdateReport updateFromFile(InputStream stream) throws IOException {
+    public CombinedUpdateReport updateFromFile(MultipartFile file) throws IOException {
         DataFetcher dataFetcher = dataFetcherResolver.resolve(DataSourceType.FILE);
         FetchContext context = new FetchContext();
-        context.setStream(stream);
+        context.setFile(file);
         FlexQueryResponseDto dto = dataFetcher.fetch(context);
         return updateService.save(dto);
-
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -26,10 +27,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             UnableToSaveEntitiesException.class,
             UnableToDeleteEntitiesException.class,
             EmptyFileException.class,
-            NotXMLFileException.class,
-            IbServerErrorException.class})
-    public ResponseEntity<Object> handleEntityNotFoundException(ErrorResponse ex) {
+            InvalidXMLFileException.class,
+            NoXMLExtensionException.class,
+            IbServerErrorException.class}
+    )
+    public ResponseEntity<Object> handleCustomExceptions(ErrorResponse ex) {
         return ResponseEntity.status(ex.getStatusCode()).body(ex.getBody());
+    }
+
+    @ExceptionHandler({MaxUploadSizeExceededException.class})
+    public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.PAYLOAD_TOO_LARGE, ex.getMessage());
+        pd.setType(URI.create("max-upload-size-exceeded"));
+        pd.setTitle("Max upload size exceeded");
+        if (ex.getCause() instanceof IllegalStateException illegalStateException) {
+            pd.setDetail(illegalStateException.getMessage());
+        }
+        return ResponseEntity.status(pd.getStatus()).body(pd);
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class})
@@ -50,8 +64,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleNoHandlerFoundException(
             NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-        pd.setType(URI.create("not-found"));
-        pd.setTitle("Not found");
+        pd.setType(URI.create("endpoint-not-found"));
+        pd.setTitle("Endpoint not found");
         return handleExceptionInternal(ex, pd, headers, status, request);
     }
 

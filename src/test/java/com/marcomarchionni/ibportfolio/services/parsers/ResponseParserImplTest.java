@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ResponseParserImplTest {
 
@@ -33,8 +34,8 @@ class ResponseParserImplTest {
     @BeforeEach
     void setUp() throws IOException {
         // get dto
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("flex/SimpleJune2022.xml")) {
-            if (is == null) fail("Resource not found");
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("flex/Flex.xml")) {
+            assertNotNull(is);
             flexQueryResponseDto = getXmlMapper().readValue(is, FlexQueryResponseDto.class);
         }
 

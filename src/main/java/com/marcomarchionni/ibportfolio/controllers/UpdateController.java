@@ -1,8 +1,6 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EmptyFileException;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.NotXMLFileException;
 import com.marcomarchionni.ibportfolio.services.UpdateOrchestrator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,9 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 
-import static com.marcomarchionni.ibportfolio.controllers.util.Util.fileIsNotXML;
 
 @RestController
 @RequestMapping("/update")
@@ -28,14 +24,7 @@ public class UpdateController {
 
     @PostMapping("/from-file")
     public CombinedUpdateReport updateFromFile(@RequestParam("file") MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw new EmptyFileException();
-        }
-        if (fileIsNotXML(file)) {
-            throw new NotXMLFileException();
-        }
-        InputStream xmlStream = file.getInputStream();
-        return updateOrchestrator.updateFromFile(xmlStream);
+        return updateOrchestrator.updateFromFile(file);
     }
 
     @PostMapping("/from-server")

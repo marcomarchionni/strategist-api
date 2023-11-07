@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class UpdateOrchestratorIT {
     @Autowired
     UpdateOrchestrator updateOrchestrator;
 
-    InputStream flexQueryStream;
+    MockMultipartFile mockMultipartFile;
 
     @AfterEach
     public void cleanDb() {
@@ -53,14 +54,20 @@ public class UpdateOrchestratorIT {
     }
 
     @BeforeEach
-    public void setUp() {
-        flexQueryStream = getClass().getResourceAsStream("/flex/SimpleJune2022.xml");
+    public void setUp() throws IOException {
+        InputStream flexQueryStream = getClass().getResourceAsStream("/flex/Flex.xml");
+        mockMultipartFile = new MockMultipartFile(
+                "file", // the name of the parameter
+                "Flex.xml", // filename
+                "text/xml", // content type
+                flexQueryStream // file content
+        );
     }
 
     @Test
     void updateFromFileEmptyDbTest() throws IOException {
 
-        CombinedUpdateReport report = updateOrchestrator.updateFromFile(flexQueryStream);
+        CombinedUpdateReport report = updateOrchestrator.updateFromFile(mockMultipartFile);
 
         // get data from db
         List<Trade> trades = tradeRepository.findAll();
@@ -97,7 +104,7 @@ public class UpdateOrchestratorIT {
         List<Dividend> existingDividends = dividendRepository.findAll();
 
         // update db
-        CombinedUpdateReport report = updateOrchestrator.updateFromFile(flexQueryStream);
+        CombinedUpdateReport report = updateOrchestrator.updateFromFile(mockMultipartFile);
 
         // assess db state after update
         List<Trade> updatedTrades = tradeRepository.findAll();

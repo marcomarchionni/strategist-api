@@ -50,7 +50,8 @@ class PositionControllerIT {
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type").isNotEmpty());
+                .andExpect(jsonPath("$.type").isNotEmpty())
+                .andExpect(jsonPath("$.type", is("endpoint-not-found")));
     }
 
     @ParameterizedTest
