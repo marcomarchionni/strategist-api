@@ -68,6 +68,7 @@ class PositionControllerTest {
                 .andExpect(jsonPath("$", hasSize(positionSummaryDtos.size())));
     }
 
+
     @Test
     void updateStrategy() throws Exception {
 

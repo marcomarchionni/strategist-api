@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marcomarchionni.ibportfolio.config.WebMvcConfig;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
@@ -10,6 +11,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Import(WebMvcConfig.class)
 @Sql("classpath:dbScripts/insertSampleData.sql")
 @Transactional
 class PositionControllerIT {
@@ -39,6 +42,16 @@ class PositionControllerIT {
 
     @Autowired
     StrategyRepository strategyRepository;
+
+    @Test
+    void getPositionsInvalidEndpoint() throws Exception {
+
+        mockMvc.perform(get("/pasitions"))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type").isNotEmpty());
+    }
 
     @ParameterizedTest
     @CsvSource({",ZM,,0", ",DIS,STK,1", "true,,,3"})

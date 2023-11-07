@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.net.URI;
@@ -44,6 +45,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getRootCause());
     }
 
+    @Override
+    @Nullable
+    protected ResponseEntity<Object> handleNoHandlerFoundException(
+            NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        pd.setType(URI.create("not-found"));
+        pd.setTitle("Not found");
+        return handleExceptionInternal(ex, pd, headers, status, request);
+    }
 
 //    @ExceptionHandler({
 ////            MethodArgumentTypeMismatchException.class,
