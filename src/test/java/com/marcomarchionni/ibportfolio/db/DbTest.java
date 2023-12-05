@@ -7,7 +7,7 @@ import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.repositories.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @Sql("classpath:dbScripts/insertSampleData.sql")
-@SpringBootTest
+@DataJpaTest
 public class DbTest {
 
     @Autowired
