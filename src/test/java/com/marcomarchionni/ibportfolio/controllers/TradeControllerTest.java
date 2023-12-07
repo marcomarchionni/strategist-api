@@ -8,7 +8,9 @@ import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.TradeSummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapper;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapperImpl;
+import com.marcomarchionni.ibportfolio.services.JwtService;
 import com.marcomarchionni.ibportfolio.services.TradeService;
+import com.marcomarchionni.ibportfolio.services.UserService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -35,12 +38,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TradeController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class TradeControllerTest {
 
     @MockBean
     TradeService tradeService;
     @Autowired
     MockMvc mockMvc;
+
+    @MockBean
+    JwtService jwtService;
+
+    @MockBean
+    UserService userService;
     ObjectMapper objectMapper = new ObjectMapper();
     TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
     Trade trade = getSampleTrade();

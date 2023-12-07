@@ -3,10 +3,13 @@ package com.marcomarchionni.ibportfolio.controllers;
 import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
+import com.marcomarchionni.ibportfolio.services.JwtService;
 import com.marcomarchionni.ibportfolio.services.UpdateOrchestrator;
+import com.marcomarchionni.ibportfolio.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -28,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UpdateController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UpdateControllerTest {
 
     @MockBean
@@ -35,6 +39,12 @@ class UpdateControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @MockBean
+    JwtService jwtService;
+
+    @MockBean
+    UserService userService;
 
     @Test
     void updateFromFile() throws Exception {

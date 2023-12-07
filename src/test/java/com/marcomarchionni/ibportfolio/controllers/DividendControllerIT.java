@@ -1,9 +1,13 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
+import com.marcomarchionni.ibportfolio.repositories.UserRepository;
+import com.marcomarchionni.ibportfolio.services.JwtService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -11,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,12 +45,36 @@ class DividendControllerIT {
     @Autowired
     StrategyRepository strategyRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    JwtService jwtService;
+
+    @Autowired
+    UserRepository userRepository;
+
+    String token;
+
+    @BeforeEach
+    void setUp() {
+        User user = User.builder()
+                .id(1L)
+                .firstName("Marco")
+                .lastName("Marchionni")
+                .email("marco99@gmail.com").password(passwordEncoder.encode("password")).role(User.Role.USER).build();
+        userRepository.save(user);
+        token = jwtService.generateToken(user);
+
+    }
+
     @ParameterizedTest
     @CsvSource({"2022-06-01,,,,,,2", ",,2022-07-01,2022-07-15,,FDX,1", ",,,,true,,1"})
     void findDividendsSuccess(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo, String tagged
             , String symbol, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/dividends")
+                        .header("Authorization", "Bearer " + token)
                         .param("exDateFrom", exDateFrom)
                         .param("exDateTo", exDateTo)
                         .param("payDateFrom", payDateFrom)
@@ -64,6 +93,7 @@ class DividendControllerIT {
                                  String tagged, String symbol) throws Exception {
 
         mockMvc.perform(get("/dividends")
+                        .header("Authorization", "Bearer " + token)
                         .param("exDateFrom", exDateFrom)
                         .param("exDateTo", exDateTo)
                         .param("payDateFrom", payDateFrom)
@@ -86,6 +116,7 @@ class DividendControllerIT {
         UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/dividends")
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(dividendUpdate)))
                 .andDo(print())
@@ -102,6 +133,7 @@ class DividendControllerIT {
         String payload = String.format("{\"id\": %s, \"strategyId\": %s}", dividendId, strategyId);
 
         mockMvc.perform(put("/dividends")
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(payload))
                 .andDo(print()).andExpect(status().is4xxClientError())
@@ -113,6 +145,7 @@ class DividendControllerIT {
     void updateStrategyIdEmptyBody() throws Exception {
 
         mockMvc.perform(put("/dividends")
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())

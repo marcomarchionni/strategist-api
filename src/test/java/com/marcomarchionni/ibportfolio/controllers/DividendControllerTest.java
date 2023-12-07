@@ -9,11 +9,14 @@ import com.marcomarchionni.ibportfolio.dtos.response.DividendSummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.DividendMapper;
 import com.marcomarchionni.ibportfolio.mappers.DividendMapperImpl;
 import com.marcomarchionni.ibportfolio.services.DividendService;
+import com.marcomarchionni.ibportfolio.services.JwtService;
+import com.marcomarchionni.ibportfolio.services.UserService;
 import com.marcomarchionni.ibportfolio.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -33,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(DividendController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class DividendControllerTest {
 
     @MockBean
@@ -40,6 +44,12 @@ class DividendControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @MockBean
+    JwtService jwtService;
+
+    @MockBean
+    UserService userService;
 
     DividendMapper dividendMapper;
     List<DividendSummaryDto> dividendSummaryDtos;

@@ -18,8 +18,14 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    @Value("${token.signing.key}")
-    private String jwtSigningKey;
+    private final String jwtSigningKey;
+    private final long jwtExpirationInMs;
+
+    public JwtServiceImpl(@Value("${token.signing.key}") String jwtSigningKey,
+                          @Value("${token.expiration.time}") long jwtExpirationInMs) {
+        this.jwtSigningKey = jwtSigningKey;
+        this.jwtExpirationInMs = jwtExpirationInMs;
+    }
 
     @Override
     public String extractUserName(String token) {
@@ -45,7 +51,7 @@ public class JwtServiceImpl implements JwtService {
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 

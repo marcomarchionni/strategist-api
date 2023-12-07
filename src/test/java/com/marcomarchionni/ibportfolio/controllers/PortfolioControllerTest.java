@@ -9,11 +9,14 @@ import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapper;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapperImpl;
+import com.marcomarchionni.ibportfolio.services.JwtService;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
+import com.marcomarchionni.ibportfolio.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -31,14 +34,22 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @WebMvcTest(PortfolioController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class PortfolioControllerTest {
 
     @MockBean
     PortfolioService portfolioService;
+
     @Autowired
     MockMvc mockMvc;
+
+    @MockBean
+    JwtService jwtService;
+
+    @MockBean
+    UserService userService;
+
     ObjectMapper mapper;
     PortfolioMapper portfolioMapper;
     List<PortfolioSummaryDto> portfolioSummaryDtos;

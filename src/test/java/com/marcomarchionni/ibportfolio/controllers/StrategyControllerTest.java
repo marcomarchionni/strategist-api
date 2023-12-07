@@ -9,11 +9,14 @@ import com.marcomarchionni.ibportfolio.dtos.response.StrategyDetailDto;
 import com.marcomarchionni.ibportfolio.dtos.response.StrategySummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.StrategyMapper;
 import com.marcomarchionni.ibportfolio.mappers.StrategyMapperImpl;
+import com.marcomarchionni.ibportfolio.services.JwtService;
 import com.marcomarchionni.ibportfolio.services.StrategyService;
+import com.marcomarchionni.ibportfolio.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -31,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StrategyController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class StrategyControllerTest {
 
     @Autowired
@@ -38,6 +42,12 @@ class StrategyControllerTest {
 
     @MockBean
     StrategyService strategyService;
+
+    @MockBean
+    JwtService jwtService;
+
+    @MockBean
+    UserService userService;
 
     ObjectMapper mapper = new ObjectMapper();
     StrategyMapper strategyMapper = new StrategyMapperImpl(new ModelMapper());

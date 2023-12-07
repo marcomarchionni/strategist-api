@@ -6,11 +6,14 @@ import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PositionSummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
 import com.marcomarchionni.ibportfolio.mappers.PositionMapperImpl;
+import com.marcomarchionni.ibportfolio.services.JwtService;
 import com.marcomarchionni.ibportfolio.services.PositionService;
+import com.marcomarchionni.ibportfolio.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -30,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PositionController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class PositionControllerTest {
 
     @MockBean
@@ -37,6 +41,12 @@ class PositionControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @MockBean
+    JwtService jwtService;
+
+    @MockBean
+    UserService userService;
     ObjectMapper mapper;
     PositionMapper positionMapper;
 
