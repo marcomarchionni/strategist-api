@@ -6,6 +6,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -58,6 +60,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getRootCause());
     }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+        pd.setType(URI.create("access-denied"));
+        pd.setTitle("Access denied");
+        return ResponseEntity.status(pd.getStatus()).body(pd);
+    }
+
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<Object> handleUnauthorized(AuthenticationException ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        pd.setType(URI.create("unauthorized"));
+        pd.setTitle("Unauthorized");
+        return ResponseEntity.status(pd.getStatus()).body(pd);
+    }
+
 
     @Override
     @Nullable

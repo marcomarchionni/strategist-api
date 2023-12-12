@@ -72,4 +72,19 @@ class AuthenticationControllerIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.token", is(notNullValue())));
     }
+
+    @Test
+    void unauthorized() throws Exception {
+
+        SignInDto signInDto = SignInDto.builder()
+                .email("marco99@gmail.com").password("password").build();
+
+        mockMvc.perform(post("/auth/signin")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(signInDto)))
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type", is("unauthorized")));
+    }
 }
