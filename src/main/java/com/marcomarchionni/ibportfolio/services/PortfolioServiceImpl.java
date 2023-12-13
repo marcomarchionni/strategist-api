@@ -81,6 +81,9 @@ public class PortfolioServiceImpl implements PortfolioService {
         }
         // Update portfolio name
         portfolio.setName(dto.getName());
-        return portfolioMapper.toPortfolioDetailDto(portfolio);
+
+        // Save portfolio
+        Portfolio savedPortfolio = portfolioRepository.save(portfolio);
+        return portfolioMapper.toPortfolioDetailDto(savedPortfolio);
     }
 }

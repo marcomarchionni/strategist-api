@@ -7,6 +7,8 @@ import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class PortfolioMapperImpl implements PortfolioMapper{
 
@@ -18,7 +20,7 @@ public class PortfolioMapperImpl implements PortfolioMapper{
 
     @Override
     public Portfolio toEntity(PortfolioCreateDto portfolioCreateDto) {
-        return Portfolio.builder().name(portfolioCreateDto.getName()).build();
+        return Portfolio.builder().name(portfolioCreateDto.getName()).strategies(new ArrayList<>()).build();
     }
 
     @Override
