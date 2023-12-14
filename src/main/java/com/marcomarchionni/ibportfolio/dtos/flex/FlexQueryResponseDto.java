@@ -43,7 +43,6 @@ public class FlexQueryResponseDto {
         @JsonFormat(pattern = "yyyyMMdd")
         private LocalDate toDate;
         private String period;
-        //        @JsonFormat(pattern = "yyyyMMdd;HHmmss")
         private LocalDateTime whenGenerated;
     }
 
@@ -131,7 +130,6 @@ public class FlexQueryResponseDto {
         private BigDecimal fifoPnlUnrealized;
         private String side;
         private String levelOfDetail;
-        //        @JsonFormat(pattern = "yyyyMMdd;HHmmss")
         private LocalDateTime openDateTime;
         private String holdingPeriodDateTime;
         private String code;
@@ -237,11 +235,8 @@ public class FlexQueryResponseDto {
         private String volatilityOrderLink;
         private String exchOrderId;
         private String extExecID;
-        //        @JsonFormat(pattern = "yyyyMMdd;HHmmss")
         private LocalDateTime orderTime;
-        //        @JsonFormat(pattern = "yyyyMMdd;HHmmss")
         private LocalDateTime openDateTime;
-        //        @JsonFormat(pattern = "yyyyMMdd;HHmmss")
         private LocalDateTime holdingPeriodDateTime;
         private String whenRealized;
         private String whenReopened;
@@ -256,7 +251,6 @@ public class FlexQueryResponseDto {
         private String listingExchange;
         private String underlyingSecurityID;
         private String underlyingListingExchange;
-        //        @JsonFormat(pattern = "yyyyMMdd;HHmmss")
         private LocalDateTime dateTime;
         private BigDecimal fxPnl;
         private BigDecimal accruedInt;
@@ -327,11 +321,8 @@ public class FlexQueryResponseDto {
         private String volatilityOrderLink;
         private String exchOrderId;
         private String extExecID;
-        //        @JsonFormat(pattern = "yyyyMMdd;HHmmss")
         private LocalDateTime orderTime;
-        //        @JsonFormat(pattern = "yyyyMMdd;HHmmss")
         private LocalDateTime openDateTime;
-        //        @JsonFormat(pattern = "yyyyMMdd;HHmmss")
         private LocalDateTime holdingPeriodDateTime;
         private String whenRealized;
         private String whenReopened;
@@ -346,7 +337,6 @@ public class FlexQueryResponseDto {
         private String listingExchange;
         private String underlyingSecurityID;
         private String underlyingListingExchange;
-        //        @JsonFormat(pattern = "yyyyMMdd;HHmmss")
         private LocalDateTime dateTime;
         private BigDecimal fxPnl;
         private BigDecimal accruedInt;

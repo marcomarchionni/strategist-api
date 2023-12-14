@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -54,6 +55,9 @@ public class Trade {
 
     @Column(name = "trade_date")
     private LocalDate tradeDate;
+
+    @Column(name = "date_time")
+    private LocalDateTime dateTime;
 
     @Column(name = "quantity")
     private BigDecimal quantity;
