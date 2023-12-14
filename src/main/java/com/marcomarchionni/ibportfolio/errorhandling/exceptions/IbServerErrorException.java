@@ -14,6 +14,10 @@ public class IbServerErrorException extends RuntimeException implements ErrorRes
         super(getMessage(response));
     }
 
+    public IbServerErrorException(String message) {
+        super(message);
+    }
+
     private static String getMessage(ResponseEntity<?> response) {
         String message;
 
