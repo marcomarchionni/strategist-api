@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class RestTemplateTest {
 
-    @Value("${token}")
+    @Value("${ib.token}")
     private String token;
 
-    @Value("${query.id}")
+    @Value("${ib.query-id}")
     private String queryId;
 
-    @Value("${auth.url}")
+    @Value("${ib.auth-url}")
     private String authUrl;
 
     @Autowired

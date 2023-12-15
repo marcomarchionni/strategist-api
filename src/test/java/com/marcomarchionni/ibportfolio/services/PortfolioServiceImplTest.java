@@ -77,6 +77,7 @@ class PortfolioServiceImplTest {
 
         when(portfolioRepository.findById(any())).thenReturn(Optional.of(originalPortfolio));
         when(portfolioRepository.existsByName(any())).thenReturn(false);
+        when(portfolioRepository.save(any())).thenReturn(originalPortfolio);
 
         PortfolioDetailDto actualPortfolioDto = portfolioService.updateName(updateNameDto);
 

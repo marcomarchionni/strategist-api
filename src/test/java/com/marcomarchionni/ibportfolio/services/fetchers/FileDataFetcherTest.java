@@ -1,15 +1,16 @@
 package com.marcomarchionni.ibportfolio.services.fetchers;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.marcomarchionni.ibportfolio.config.XMLConverterConfig;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidXMLFileException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,23 +18,15 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {XMLConverterConfig.class, FileDataFetcher.class})
 class FileDataFetcherTest {
 
+    @Autowired
+    XmlMapper xmlMapper;
+
+    @Autowired
     FileDataFetcher fileDataFetcher;
-
-    @BeforeEach
-    void setUp() {
-
-        // Configure xml mapper
-        JacksonXmlModule xmlModule = new JacksonXmlModule();
-        xmlModule.setDefaultUseWrapper(false);
-        XmlMapper xmlMapper = new XmlMapper(xmlModule);
-        xmlMapper.registerModule(new JavaTimeModule());
-        xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        // Initialize file data fetcher
-        fileDataFetcher = new FileDataFetcher(xmlMapper);
-    }
 
     @Test
     void fetchFileInvalid() throws IOException {
@@ -54,8 +47,8 @@ class FileDataFetcherTest {
         try {
             fileDataFetcher.fetch(context);
         } catch (Exception e) {
-            assertTrue(e instanceof InvalidXMLFileException);
-            assertTrue(e.getCause() instanceof JsonParseException);
+            assertInstanceOf(InvalidXMLFileException.class, e);
+            assertInstanceOf(JsonParseException.class, e.getCause());
         }
     }
 

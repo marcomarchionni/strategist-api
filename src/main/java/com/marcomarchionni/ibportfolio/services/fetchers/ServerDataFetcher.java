@@ -4,6 +4,7 @@ import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
 import com.marcomarchionni.ibportfolio.services.fetchers.validators.DtoValidator;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -15,36 +16,40 @@ import org.springframework.web.client.RestTemplate;
 public class ServerDataFetcher implements DataFetcher {
 
     private final RestTemplate restTemplate;
-    @Value("${token}")
-    private String token;
-    @Value("${query.id}")
-    private String queryId;
-    @Value("${auth.url}")
-    private String authUrl;
-    @Value("${req.path}")
-    private String reqPath;
-
-    private final int MAX_ATTEMPTS = 3;
-    private final int RETRY_DELAY = 1000;
+    private final String token;
+    private final String queryId;
+    private final String authUrl;
+    private final String reqPath;
+    private final int maxAttempts;
+    private final long retryDelay;
 
     private final DtoValidator dtoValidator;
 
-    public ServerDataFetcher(RestTemplate restTemplate, DtoValidator dtoValidator) {
+    public ServerDataFetcher(RestTemplate restTemplate, @Value("${ib.token}") String token,
+                             @Value("${ib.query-id}") String queryId, @Value("${ib.auth-url}") String authUrl,
+                             @Value("${ib.req-path}") String reqPath, @Value("${ib.max-attempts}") int maxAttempts,
+                             @Value("${ib.retry-delay}") long retryDelay, DtoValidator dtoValidator) {
         this.restTemplate = restTemplate;
+        this.token = token;
+        this.queryId = queryId;
+        this.authUrl = authUrl;
+        this.reqPath = reqPath;
+        this.maxAttempts = maxAttempts;
+        this.retryDelay = retryDelay;
         this.dtoValidator = dtoValidator;
     }
 
     @Override
     public FlexQueryResponseDto fetch(FetchContext context) {
 
-        HttpEntity<String> requestEntity = createRequest();
+        // Create request entity with headers
+        HttpEntity<String> requestEntity = createRequestWithHeaders();
 
         // Fetch statement response dto from server
         FlexStatementResponseDto statementResponseDto = executeRequestWithRetry(authUrl, requestEntity,
                 FlexStatementResponseDto.class, token, queryId);
 
         // Extract url and reference code from statement response dto
-        assert statementResponseDto != null;
         String downloadUrl = statementResponseDto.getUrl() + reqPath;
         String referenceCode = statementResponseDto.getReferenceCode();
 
@@ -53,18 +58,18 @@ public class ServerDataFetcher implements DataFetcher {
         return executeRequestWithRetry(downloadUrl, requestEntity, FlexQueryResponseDto.class, token, referenceCode);
     }
 
-    private HttpEntity<String> createRequest() {
+    private HttpEntity<String> createRequestWithHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("User-Agent", "Technology/Version");
         return new HttpEntity<>(headers);
     }
 
-    private <T> T executeRequestWithRetry(String url, HttpEntity<?> requestEntity,
-                                          Class<T> responseType, Object... uriVariables) {
-        int attempts = 0;
-        long delay = RETRY_DELAY;
-        ResponseEntity<T> response = null;
-        while (attempts < MAX_ATTEMPTS) {
+    private <T> @NotNull T executeRequestWithRetry(String url, HttpEntity<?> requestEntity,
+                                                   Class<T> responseType, Object... uriVariables) {
+        int attempts = 1;
+        long delay = retryDelay;
+        ResponseEntity<T> response;
+        while (attempts <= maxAttempts) {
             response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
@@ -73,7 +78,9 @@ public class ServerDataFetcher implements DataFetcher {
                     uriVariables);
 
             // If response is OK and dto is valid, return dto
+            log.info("Executing request to IB server... Attempt: {}", attempts);
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null && dtoValidator.isValid(response.getBody())) {
+                log.info("Valid response from IB server, returning... Response: {}", response);
                 return response.getBody();
             }
 
@@ -88,6 +95,7 @@ public class ServerDataFetcher implements DataFetcher {
                 throw new IbServerErrorException("Interrupted while waiting to retry");
             }
         }
-        throw new IbServerErrorException(response);
+        throw new IbServerErrorException("Failed to get valid response from IB server after " + maxAttempts + " " +
+                "attempts");
     }
 }

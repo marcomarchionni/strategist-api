@@ -3,6 +3,7 @@ package com.marcomarchionni.ibportfolio.dtos.flex;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 
@@ -13,9 +14,11 @@ public class FlexStatementResponseDto {
     @JsonProperty("Status")
     private String status;
 
+    @NotNull
     @JsonProperty("ReferenceCode")
     private String referenceCode;
 
+    @NotNull
     @JsonProperty("Url")
     private String url;
 

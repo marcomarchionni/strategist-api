@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.dtos.flex;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Data
 public class FlexQueryResponseDto {
+    @NotNull
     @JsonProperty("FlexStatements")
     private FlexStatements flexStatements;
     private String queryName;
@@ -20,6 +22,7 @@ public class FlexQueryResponseDto {
 
     @Data
     public static class FlexStatements {
+        @NotNull
         @JsonProperty("FlexStatement")
         private FlexStatement flexStatement;
         private int count;

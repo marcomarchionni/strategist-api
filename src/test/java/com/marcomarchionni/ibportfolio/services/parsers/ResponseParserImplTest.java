@@ -1,10 +1,8 @@
 package com.marcomarchionni.ibportfolio.services.parsers;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
+import com.marcomarchionni.ibportfolio.config.XMLConverterConfig;
 import com.marcomarchionni.ibportfolio.domain.Dividend;
 import com.marcomarchionni.ibportfolio.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.domain.Position;
@@ -13,7 +11,11 @@ import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.mappers.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +24,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {XMLConverterConfig.class})
 class ResponseParserImplTest {
+
+    @Autowired
+    private XmlMapper xmlMapper;
 
     FlexStatementMapper flexStatementMapper;
     PositionMapper positionMapper;
@@ -36,7 +43,7 @@ class ResponseParserImplTest {
         // get dto
         try (InputStream is = getClass().getClassLoader().getResourceAsStream("flex/Flex.xml")) {
             assertNotNull(is);
-            flexQueryResponseDto = getXmlMapper().readValue(is, FlexQueryResponseDto.class);
+            flexQueryResponseDto = xmlMapper.readValue(is, FlexQueryResponseDto.class);
         }
 
         // config model mapper
@@ -87,14 +94,5 @@ class ResponseParserImplTest {
 
         assertNotNull(openDividends);
         assertEquals(3, openDividends.size());
-    }
-
-    private XmlMapper getXmlMapper() {
-        JacksonXmlModule xmlModule = new JacksonXmlModule();
-        xmlModule.setDefaultUseWrapper(false);
-        XmlMapper xmlMapper = new XmlMapper(xmlModule);
-        xmlMapper.registerModule(new JavaTimeModule());
-        xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return xmlMapper;
     }
 }
