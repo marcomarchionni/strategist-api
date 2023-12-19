@@ -23,6 +23,9 @@ public class StrategySummaryDto {
     @NotNull
     private Long portfolioId;
 
+    @NotNull
+    private String accountId;
+
     @PortfolioName
     private String portfolioName;
 }

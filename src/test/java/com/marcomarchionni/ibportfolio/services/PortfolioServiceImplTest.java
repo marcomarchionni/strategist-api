@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,89 +30,125 @@ class PortfolioServiceImplTest {
 
     @Mock
     PortfolioRepository portfolioRepository;
-
     PortfolioMapper portfolioMapper;
     PortfolioService portfolioService;
-
-    List<Portfolio> portfolios;
-    Portfolio portfolio;
+    User user;
+    Portfolio userPortfolio;
 
     @BeforeEach
     void setup() {
-        portfolios = getSamplePortfolios();
-        portfolio = getSamplePortfolio("MF StockAdvisor");
         portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
         portfolioService = new PortfolioServiceImpl(portfolioRepository, portfolioMapper);
+
+        user = getSampleUser();
+        userPortfolio = getSamplePortfolio("MFStockAdvisor");
     }
 
     @Test
     void findAllByUser() {
-        User user = getSampleUser();
-        when(portfolioRepository.findAllByAccountId(user.getAccountId())).thenReturn(portfolios);
+        // Setup test data
+        String accountId = user.getAccountId();
+        List<Portfolio> portfolios = getSamplePortfolios();
+        portfolios.forEach(portfolio -> portfolio.setAccountId(accountId));
 
+        // Setup mocks
+        when(portfolioRepository.findAllByAccountId(accountId)).thenReturn(portfolios);
+
+        // Execute service
         List<PortfolioSummaryDto> actualPortfolios = portfolioService.findAllByUser(user);
 
+        // Verify results
         assertEquals(actualPortfolios.size(), portfolios.size());
     }
 
     @Test
     void findByIdSuccess() {
-        when(portfolioRepository.findById(any())).thenReturn(Optional.of(portfolio));
+        // Setup test data
+        String accountId = user.getAccountId();
+        Long portfolioId = userPortfolio.getId();
 
-        PortfolioDetailDto actualPortfolioDto = portfolioService.findById(1L);
-        assertEquals(actualPortfolioDto.getId(), portfolio.getId());
-        assertEquals(actualPortfolioDto.getName(), portfolio.getName());
+        // Setup mocks
+        when(portfolioRepository.findByIdAndAccountId(portfolioId, accountId)).thenReturn(Optional.of(userPortfolio));
+
+        // Execute service
+        PortfolioDetailDto actualPortfolioDto = portfolioService.findByUserAndId(user, portfolioId);
+
+        // Verify results
+        assertEquals(actualPortfolioDto.getId(), userPortfolio.getId());
+        assertEquals(actualPortfolioDto.getName(), userPortfolio.getName());
     }
 
     @Test
     void findByIdException() {
-        long unknownId = 1L;
-        when(portfolioRepository.findById(unknownId)).thenReturn(Optional.empty());
+        // Setup test data
+        Long unknownPortfolioId = 1L;
+        String accountId = user.getAccountId();
 
-        assertThrows(EntityNotFoundException.class, () -> portfolioService.findById(unknownId));
+        // Setup mocks
+        when(portfolioRepository.findByIdAndAccountId(unknownPortfolioId, accountId)).thenReturn(Optional.empty());
+
+        // Execute service and verify exception
+        assertThrows(EntityNotFoundException.class, () -> portfolioService.findByUserAndId(user, unknownPortfolioId));
     }
 
     @Test
     void createPortfolioSuccess() {
-        User user = getSampleUser();
+        // Setup test data
+        String accountId = user.getAccountId();
         PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name("NewPortfolioName").build();
+        String portfolioName = portfolioCreateDto.getName();
 
-        when(portfolioRepository.existsByNameAndAccountId(user.getAccountId(), portfolioCreateDto.getName())).thenReturn(false);
+        // Setup mocks
+        when(portfolioRepository.existsByAccountIdAndName(accountId, portfolioName)).thenReturn(false);
         when(portfolioRepository.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
+        // Execute service
         PortfolioDetailDto createdPortfolioDto = portfolioService.create(user, portfolioCreateDto);
 
+        // Verify results
         assertNotNull(createdPortfolioDto);
-        assertEquals(createdPortfolioDto.getName(), portfolioCreateDto.getName());
+        assertEquals(portfolioName, createdPortfolioDto.getName());
+        assertEquals(accountId, createdPortfolioDto.getAccountId());
     }
 
     @Test
     void updatePortfolioNameSuccess() {
-        User user = getSampleUser();
-        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("NewName").build();
-        Portfolio originalPortfolio = Portfolio.builder().id(1L).name("OldName").build();
+        // Setup test data
+        String accountId = user.getAccountId();
+        Long portfolioId = userPortfolio.getId();
+        String newPortfolioName = "NewName";
+        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(portfolioId).name(newPortfolioName).build();
 
-        when(portfolioRepository.findById(any())).thenReturn(Optional.of(originalPortfolio));
-        when(portfolioRepository.existsByNameAndAccountId(any(), any())).thenReturn(false);
-        when(portfolioRepository.save(any())).thenReturn(originalPortfolio);
+        // Setup mocks
+        when(portfolioRepository.findByIdAndAccountId(portfolioId, accountId)).thenReturn(Optional.of(userPortfolio));
+        when(portfolioRepository.existsByAccountIdAndName(accountId, newPortfolioName)).thenReturn(false);
+        when(portfolioRepository.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
+        // Execute service
         PortfolioDetailDto actualPortfolioDto = portfolioService.updateName(user, updateNameDto);
 
+        // Verify results
         assertNotNull(actualPortfolioDto);
-        assertEquals(actualPortfolioDto.getId(), updateNameDto.getId());
-        assertEquals(actualPortfolioDto.getName(), updateNameDto.getName());
+        assertEquals(newPortfolioName, actualPortfolioDto.getName());
+        assertEquals(portfolioId, actualPortfolioDto.getId());
+        assertEquals(accountId, actualPortfolioDto.getAccountId());
     }
 
     @Test
-    void deleteByIdSuccess(){
-        portfolio.setId(1L);
-        portfolio.setStrategies(new ArrayList<>());
-        when(portfolioRepository.findById(portfolio.getId())).thenReturn(Optional.of(portfolio));
-        doNothing().when(portfolioRepository).deleteById(portfolio.getId());
+    void deleteByIdSuccess() {
+        // setup test data
+        Long portfolioId = userPortfolio.getId();
+        String accountId = user.getAccountId();
 
-        assertDoesNotThrow(()->portfolioService.deleteById(1L));
+        // setup mocks
+        when(portfolioRepository.findByIdAndAccountId(portfolioId, accountId)).thenReturn(Optional.of(userPortfolio));
+        doNothing().when(portfolioRepository).deleteById(portfolioId);
 
-        verify(portfolioRepository).findById(portfolio.getId());
-        verify(portfolioRepository).deleteById(portfolio.getId());
+        // execute service
+        assertDoesNotThrow(() -> portfolioService.deleteByUserAndId(user, portfolioId));
+
+        // verify results
+        verify(portfolioRepository).findByIdAndAccountId(portfolioId, accountId);
+        verify(portfolioRepository).deleteById(portfolioId);
     }
 }

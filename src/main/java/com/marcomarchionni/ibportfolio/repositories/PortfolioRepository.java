@@ -11,7 +11,9 @@ import java.util.Optional;
 public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
     Optional<Portfolio> findByAccountIdAndName(String accountId, String name);
 
-    boolean existsByNameAndAccountId(String portfolioName, String accountId);
+    boolean existsByAccountIdAndName(String accountId, String portfolioName);
 
     List<Portfolio> findAllByAccountId(String accountId);
+
+    Optional<Portfolio> findByIdAndAccountId(Long id, String accountId);
 }

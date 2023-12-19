@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class PortfolioSummaryDto {
 
     private Long id;
+    private String accountId;
     private String name;
 }

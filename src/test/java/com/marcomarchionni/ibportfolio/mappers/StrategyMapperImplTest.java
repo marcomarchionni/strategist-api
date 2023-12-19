@@ -27,7 +27,7 @@ class StrategyMapperImplTest {
         Strategy strategy = getSampleStrategy();
         strategy.setPortfolio(portfolio);
 
-        StrategySummaryDto strategySummaryDto = strategyMapper.toStrategyListDto(strategy);
+        StrategySummaryDto strategySummaryDto = strategyMapper.toStrategySummaryDto(strategy);
 
         assertNotNull(strategySummaryDto);
         assertEquals(strategy.getId(), strategySummaryDto.getId());

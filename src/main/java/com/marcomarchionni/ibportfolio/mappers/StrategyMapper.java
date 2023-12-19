@@ -9,7 +9,7 @@ public interface StrategyMapper {
 
     Strategy toEntity(StrategyCreateDto strategyCreateDto);
 
-    StrategySummaryDto toStrategyListDto(Strategy strategy);
+    StrategySummaryDto toStrategySummaryDto(Strategy strategy);
 
     StrategyDetailDto toStrategyDetailDto(Strategy strategy);
 }

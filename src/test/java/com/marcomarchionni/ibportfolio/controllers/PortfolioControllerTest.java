@@ -28,12 +28,11 @@ import java.util.List;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @WebMvcTest(PortfolioController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class PortfolioControllerTest {
@@ -49,31 +48,37 @@ class PortfolioControllerTest {
 
     @MockBean
     UserService userService;
-
     ObjectMapper mapper;
     PortfolioMapper portfolioMapper;
-    List<PortfolioSummaryDto> portfolioSummaryDtos;
-    Portfolio portfolio;
-    PortfolioDetailDto portfolioDetailDto;
+    Portfolio userPortfolio;
+    User user;
 
     @BeforeEach
     void setup() {
         mapper = new ObjectMapper();
         portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
-        portfolioSummaryDtos = getSamplePortfolios()
-                .stream()
-                .map(portfolioMapper::toPortfolioListDto)
-                .toList();
-        portfolio = getSamplePortfolio("MFStockAdvisor");
-        portfolioDetailDto = portfolioMapper.toPortfolioDetailDto(portfolio);
+
+        userPortfolio = getSamplePortfolio("MFStockAdvisor");
+        user = getSampleUser();
+
+        // setup mock behavior
+        when(userService.getAuthenticatedUser()).thenReturn(user);
     }
 
     @Test
     void findPortfolios() throws Exception {
-        User user = getSampleUser();
-        when(userService.getAuthenticatedUser()).thenReturn(user);
+        // setup test data
+        String accountId = user.getAccountId();
+        List<PortfolioSummaryDto> portfolioSummaryDtos = getSamplePortfolios()
+                .stream()
+                .peek(portfolio -> portfolio.setAccountId(accountId))
+                .map(portfolioMapper::toPortfolioListDto)
+                .toList();
+
+        // setup mock behavior
         when(portfolioService.findAllByUser(user)).thenReturn(portfolioSummaryDtos);
 
+        // Execute test
         mockMvc.perform(get("/portfolios"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -82,20 +87,36 @@ class PortfolioControllerTest {
 
     @Test
     void findPortfolioSuccess() throws Exception {
-        when(portfolioService.findById(any())).thenReturn(portfolioDetailDto);
+        // setup test data
+        Long portfolioId = userPortfolio.getId();
+        PortfolioDetailDto portfolioDetailDto = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
+        // setup mock behavior
+        when(portfolioService.findByUserAndId(user, portfolioId)).thenReturn(portfolioDetailDto);
+
+        // Execute test
         mockMvc.perform(get("/portfolios/{id}", 1L))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(portfolio.getName())));
+                .andExpect(jsonPath("$.name", is(userPortfolio.getName())))
+                .andExpect(jsonPath("$.id", is(userPortfolio.getId().intValue())))
+                .andExpect(jsonPath("$.accountId", is(userPortfolio.getAccountId())))
+                .andExpect(jsonPath("$.strategies", hasSize(userPortfolio.getStrategies().size())));
     }
 
     @Test
     void findPortfolioException() throws Exception {
-        when(portfolioService.findById(any())).thenThrow(new EntityNotFoundException("Portfolio with id: 1 not found"));
+        // setup test data
+        Long unknownPortfolioId = 3L;
+        String accountId = user.getAccountId();
 
-        mockMvc.perform(get("/portfolios/{id}", 1L))
+        // setup mock behavior
+        when(portfolioService.findByUserAndId(user, unknownPortfolioId)).thenThrow(
+                new EntityNotFoundException(Portfolio.class, unknownPortfolioId, accountId));
+
+        // Execute test
+        mockMvc.perform(get("/portfolios/{id}", unknownPortfolioId))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
@@ -103,39 +124,50 @@ class PortfolioControllerTest {
 
     @Test
     void createPortfolioSuccess() throws Exception {
+        // setup test data
+        PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name(userPortfolio.getName()).build();
+        PortfolioDetailDto portfolioDetailDto = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
-        PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name(portfolio.getName()).build();
-        when(userService.getAuthenticatedUser()).thenReturn(getSampleUser());
-        when(portfolioService.create(any(User.class), any(PortfolioCreateDto.class))).thenReturn(portfolioDetailDto);
+        // setup mock behavior
+        when(portfolioService.create(user, portfolioCreateDto)).thenReturn(portfolioDetailDto);
 
+        // Execute test
         mockMvc.perform(post("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(portfolioCreateDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(portfolio.getName())));
+                .andExpect(jsonPath("$.name", is(userPortfolio.getName())))
+                .andExpect(jsonPath("$.id", is(userPortfolio.getId().intValue())))
+                .andExpect(jsonPath("$.accountId", is(userPortfolio.getAccountId())));
     }
 
     @Test
     void createPortfolioInvalidNameException() throws Exception {
-
+        // setup test data
         PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name("A").build();
 
+        // execute test
         mockMvc.perform(post("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(portfolioCreateDto)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type", is("invalid-query-parameter")));
     }
 
     @Test
     void updatePortfolioName() throws Exception {
+        // setup test
+        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(userPortfolio.getId()).name("NewPortfolioName")
+                .build();
+        PortfolioDetailDto portfolioDetailDto = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
-        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("MFStockAdvisor").build();
-        when(userService.getAuthenticatedUser()).thenReturn(getSampleUser());
-        when(portfolioService.updateName(any(User.class), any(UpdateNameDto.class))).thenReturn(portfolioDetailDto);
+        // setup mock behavior
+        when(portfolioService.updateName(user, updateNameDto)).thenReturn(portfolioDetailDto);
 
+        // Execute test
         mockMvc.perform(put("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(updateNameDto)))
@@ -146,11 +178,19 @@ class PortfolioControllerTest {
 
     @Test
     void deletePortfolioSuccess() throws Exception {
-        Long id = 1L;
-        doNothing().when(portfolioService).deleteById(id);
+        // setup test data
+        Long portfolioId = userPortfolio.getId();
 
-        mockMvc.perform(delete("/portfolios/{id}", id))
+        // setup mock behavior
+        doNothing().when(portfolioService).deleteByUserAndId(user, portfolioId);
+
+        // Execute test
+        mockMvc.perform(delete("/portfolios/{id}", portfolioId))
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        // Verify results
+        verify(userService, times(1)).getAuthenticatedUser();
+        verify(portfolioService, times(1)).deleteByUserAndId(user, portfolioId);
     }
 }

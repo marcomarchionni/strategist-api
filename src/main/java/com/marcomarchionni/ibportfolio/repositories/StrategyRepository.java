@@ -7,13 +7,18 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StrategyRepository extends JpaRepository<Strategy, Long> {
     @Query(
             "SELECT s FROM strategy s WHERE" +
-            "(:name is null or s.name = :name)")
-    List<Strategy> findByParams(@Param("name") String name);
+                    "(s.accountId = :accountId) and" +
+                    "(:name is null or s.name = :name)")
+    List<Strategy> findByParams(@Param("accountId") String accountId, @Param("name") String name);
 
+    //TODO: check if this is needed
     List<Strategy> findByName(String expectedSymbol);
+
+    Optional<Strategy> findByIdAndAccountId(Long id, String accountId);
 }

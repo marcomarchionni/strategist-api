@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
@@ -27,54 +28,62 @@ public class StrategyServiceImpl implements StrategyService {
     private final StrategyMapper strategyMapper;
 
     @Autowired
-    public StrategyServiceImpl(StrategyRepository strategyRepository, PortfolioRepository portfolioRepository, StrategyMapper strategyMapper) {
+    public StrategyServiceImpl(StrategyRepository strategyRepository, PortfolioRepository portfolioRepository,
+                               StrategyMapper strategyMapper) {
         this.strategyRepository = strategyRepository;
         this.portfolioRepository = portfolioRepository;
         this.strategyMapper = strategyMapper;
     }
 
     @Override
-    public List<StrategySummaryDto> findByFilter(StrategyFindDto strategyFind) {
-        List<Strategy> strategies = strategyRepository.findByParams(strategyFind.getName());
-        return strategies.stream().map(strategyMapper::toStrategyListDto).collect(Collectors.toList());
+    public List<StrategySummaryDto> findByFilter(User user, StrategyFindDto strategyFind) {
+        String accountId = user.getAccountId();
+        List<Strategy> strategies = strategyRepository.findByParams(accountId, strategyFind.getName());
+        return strategies.stream().map(strategyMapper::toStrategySummaryDto).collect(Collectors.toList());
     }
 
     @Override
-    public void deleteById(Long id) {
-        Strategy strategy = strategyRepository.findById(id).orElseThrow(
-                ()-> new EntityNotFoundException("Strategy with id: " + id + " not found")
+    public void deleteByUserAndId(User user, Long strategyId) {
+        String accountId = user.getAccountId();
+        Strategy strategy = strategyRepository.findByIdAndAccountId(strategyId, accountId).orElseThrow(
+                () -> new EntityNotFoundException(Strategy.class, strategyId, accountId)
         );
-        if (strategy.getTrades().isEmpty() && strategy.getPositions().isEmpty() && strategy.getDividends().isEmpty()){
-            strategyRepository.deleteById(id);
-        }
-        else {
+        if (strategy.getTrades().isEmpty() && strategy.getPositions().isEmpty() && strategy.getDividends().isEmpty()) {
+            strategyRepository.deleteById(strategyId);
+        } else {
             throw new UnableToDeleteEntitiesException("Strategy still assigned to trades, positions or dividends");
         }
     }
 
     @Override
-    public StrategyDetailDto findById(Long id) {
-        Strategy strategy = strategyRepository.findById(id).orElseThrow(
-                ()-> new EntityNotFoundException("Strategy with id: " + id + " not found")
+    public StrategyDetailDto findByUserAndId(User user, Long strategyId) {
+        String accountId = user.getAccountId();
+        Strategy strategy = strategyRepository.findByIdAndAccountId(strategyId, accountId).orElseThrow(
+                () -> new EntityNotFoundException(Strategy.class, strategyId, accountId)
         );
         return strategyMapper.toStrategyDetailDto(strategy);
     }
 
     @Override
-    public StrategyDetailDto updateName(UpdateNameDto updateNameDto) {
-        Strategy strategy = strategyRepository.findById(updateNameDto.getId()).orElseThrow(
-                ()-> new EntityNotFoundException("Strategy with id: " + updateNameDto.getId() + "not found")
+    public StrategyDetailDto updateName(User user, UpdateNameDto updateNameDto) {
+        Long strategyId = updateNameDto.getId();
+        String accountId = user.getAccountId();
+        Strategy strategy = strategyRepository.findByIdAndAccountId(strategyId, accountId).orElseThrow(
+                () -> new EntityNotFoundException(Strategy.class, strategyId, accountId)
         );
         strategy.setName(updateNameDto.getName());
         return strategyMapper.toStrategyDetailDto(this.save(strategy));
     }
 
     @Override
-    public StrategyDetailDto create(StrategyCreateDto strategyCreateDto) {
-        Portfolio portfolio = portfolioRepository.findById(strategyCreateDto.getPortfolioId()).orElseThrow(
-                ()-> new EntityNotFoundException("Portfolio with id: " + strategyCreateDto.getPortfolioId() + " not found")
+    public StrategyDetailDto create(User user, StrategyCreateDto strategyCreateDto) {
+        String accountId = user.getAccountId();
+        long portfolioId = strategyCreateDto.getPortfolioId();
+        Portfolio portfolio = portfolioRepository.findByIdAndAccountId(portfolioId, accountId).orElseThrow(
+                () -> new EntityNotFoundException(Portfolio.class, portfolioId, accountId)
         );
-        Strategy createdStrategy = Strategy.builder().name(strategyCreateDto.getName()).portfolio(portfolio).build();
+        Strategy createdStrategy = Strategy.builder().name(strategyCreateDto.getName()).portfolio(portfolio)
+                .accountId(accountId).build();
         return strategyMapper.toStrategyDetailDto(this.save(createdStrategy));
     }
 

@@ -24,7 +24,7 @@ public class StrategyMapperImpl implements StrategyMapper {
     }
 
     @Override
-    public StrategySummaryDto toStrategyListDto(Strategy strategy) {
+    public StrategySummaryDto toStrategySummaryDto(Strategy strategy) {
         return modelMapper.map(strategy, StrategySummaryDto.class);
     }
 

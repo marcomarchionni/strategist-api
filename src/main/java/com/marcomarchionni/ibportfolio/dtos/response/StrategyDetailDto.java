@@ -29,6 +29,9 @@ public class StrategyDetailDto {
     private String portfolioName;
 
     @NotNull
+    private String accountId;
+
+    @NotNull
     private List<TradeSummaryDto> trades;
 
     @NotNull

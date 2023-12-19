@@ -1,7 +1,9 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
@@ -27,8 +29,7 @@ import java.util.List;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -48,88 +49,122 @@ class StrategyControllerTest {
 
     @MockBean
     UserService userService;
-
     ObjectMapper mapper = new ObjectMapper();
     StrategyMapper strategyMapper = new StrategyMapperImpl(new ModelMapper());
-    List<Strategy> strategies = getSampleStrategies();
-    List<StrategySummaryDto> strategySummaryDtos;
-    StrategyDetailDto strategyDetailDto;
-    Strategy strategy = getSampleStrategy();
+    User user;
+    Strategy userStrategy;
 
     @BeforeEach
-    void setUp() {
-        strategySummaryDtos = strategies.stream().map(strategyMapper::toStrategyListDto).toList();
-        strategyDetailDto = strategyMapper.toStrategyDetailDto(strategy);
+    void setup() {
+        user = getSampleUser();
+        userStrategy = getSampleStrategy();
+
+        // mock service calls
+        when(userService.getAuthenticatedUser()).thenReturn(user);
     }
 
     @Test
     void findByParams() throws Exception {
+        // setup test data
+        List<Strategy> userStrategies = getSampleStrategies();
+        List<StrategySummaryDto> strategySummaryDtos = userStrategies
+                .stream()
+                .map(strategyMapper::toStrategySummaryDto)
+                .toList();
         StrategyFindDto strategyFindDto = StrategyFindDto.builder().build();
 
-        when(strategyService.findByFilter(strategyFindDto)).thenReturn(strategySummaryDtos);
+        // mock service calls
+        when(strategyService.findByFilter(user, strategyFindDto)).thenReturn(strategySummaryDtos);
 
         mockMvc.perform(get("/strategies")
                         .param("name", strategyFindDto.getName()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(strategies.size())));
+                .andExpect(jsonPath("$", hasSize(userStrategies.size())))
+                .andExpect(jsonPath("$[0].accountId", is(strategySummaryDtos.get(0).getAccountId())));
     }
 
     @Test
     void findById() throws Exception {
-        Long id = 1L;
-        Strategy strategy1 = getSampleStrategy();
-        strategy1.getTrades().add(getSampleTrade());
-        strategy1.getPositions().add(getSamplePosition());
-        strategyDetailDto = strategyMapper.toStrategyDetailDto(strategy1);
-        System.out.println(strategyDetailDto);
+        // setup test data
+        userStrategy.getTrades().add(getSampleTrade());
+        userStrategy.getPositions().add(getSamplePosition());
+        Long strategyId = userStrategy.getId();
+        StrategyDetailDto strategyDetailDto = strategyMapper.toStrategyDetailDto(userStrategy);
 
-        when(strategyService.findById(id)).thenReturn(strategyDetailDto);
+        // mock service calls
+        when(strategyService.findByUserAndId(user, strategyId)).thenReturn(strategyDetailDto);
 
-        mockMvc.perform(get("/strategies/{id}", id))
+        mockMvc.perform(get("/strategies/{id}", strategyId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name", is(strategyDetailDto.getName())))
-                .andExpect(jsonPath("$.trades", hasSize(1)));
+                .andExpect(jsonPath("$.trades", hasSize(1)))
+                .andExpect(jsonPath("$.positions", hasSize(1)));
     }
 
     @Test
     void updateNameSuccess() throws Exception {
+        // setup test data
+        Long strategyId = userStrategy.getId();
+        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(strategyId).name("NewName").build();
+        userStrategy.setName(updateNameDto.getName());
+        StrategyDetailDto strategyDetailDto = strategyMapper.toStrategyDetailDto(userStrategy);
 
-        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("NewName").build();
-        when(strategyService.updateName(updateNameDto)).thenReturn(strategyDetailDto);
+        // mock service calls
+        when(strategyService.updateName(user, updateNameDto)).thenReturn(strategyDetailDto);
 
+        // execute
         mockMvc.perform(put("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(updateNameDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(Math.toIntExact(strategy.getId()))));
+                .andExpect(jsonPath("$.id", is(Math.toIntExact(strategyId))))
+                .andExpect(jsonPath("$.name", is(updateNameDto.getName())))
+                .andExpect(jsonPath("$.accountId", is(user.getAccountId())));
     }
 
     @Test
     void createSuccess() throws Exception {
-        StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("ZM long").portfolioId(1L).build();
-//        StrategyListDto strategyListDto = StrategyListDto.builder().id(1L).name("ZM long").portfolioId(1L).portfolioName("Saver").build();
-        when(strategyService.create(strategyCreateDto)).thenReturn(strategyDetailDto);
+        // setup test data
+        Portfolio userPortfolio = getSamplePortfolio("Saver");
+        userStrategy.setPortfolio(userPortfolio);
+        StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder()
+                .name(userStrategy.getName())
+                .portfolioId(userPortfolio.getId())
+                .build();
+        StrategyDetailDto strategyDetailDto = strategyMapper.toStrategyDetailDto(userStrategy);
 
+        // mock service calls
+        when(strategyService.create(user, strategyCreateDto)).thenReturn(strategyDetailDto);
+
+        // execute
         mockMvc.perform(post("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(strategyCreateDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(strategy.getName())));
+                .andExpect(jsonPath("$.name", is(strategyCreateDto.getName())))
+                .andExpect(jsonPath("$.id", is(Math.toIntExact(userStrategy.getId()))))
+                .andExpect(jsonPath("$.accountId", is(user.getAccountId())))
+                .andExpect(jsonPath("$.portfolioId", is(Math.toIntExact(userPortfolio.getId()))));
     }
 
     @Test
     void deleteSuccess() throws Exception {
-        doNothing().when(strategyService).deleteById(strategy.getId());
+        // setup test data
+        Long strategyId = userStrategy.getId();
 
-        mockMvc.perform(delete("/strategies/{id}", strategy.getId()))
+        mockMvc.perform(delete("/strategies/{id}", strategyId))
+                .andDo(print())
                 .andExpect(status().isOk());
+
+        // verify that the service method was called
+        verify(strategyService, times(1)).deleteByUserAndId(user, strategyId);
     }
 }

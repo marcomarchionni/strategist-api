@@ -29,7 +29,8 @@ public class PortfolioController {
 
     @GetMapping("/{id}")
     public PortfolioDetailDto findById(@PathVariable Long id) {
-        return portfolioService.findById(id);
+        User user = userService.getAuthenticatedUser();
+        return portfolioService.findByUserAndId(user, id);
     }
 
     @PostMapping
@@ -46,6 +47,7 @@ public class PortfolioController {
 
     @DeleteMapping("/{id}")
     public void deletePortfolio(@PathVariable Long id) {
-        portfolioService.deleteById(id);
+        User user = userService.getAuthenticatedUser();
+        portfolioService.deleteByUserAndId(user, id);
     }
 }

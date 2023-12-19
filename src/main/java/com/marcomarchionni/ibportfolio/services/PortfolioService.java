@@ -12,11 +12,11 @@ import java.util.List;
 public interface PortfolioService {
     List<PortfolioSummaryDto> findAllByUser(User user);
 
-    PortfolioDetailDto findById(Long id);
+    PortfolioDetailDto findByUserAndId(User user, Long id);
 
     PortfolioDetailDto create(User user, PortfolioCreateDto portfolioCreateDto);
 
-    void deleteById(Long id);
+    void deleteByUserAndId(User user, Long id);
 
     PortfolioDetailDto updateName(User user, @Valid UpdateNameDto dto);
 }

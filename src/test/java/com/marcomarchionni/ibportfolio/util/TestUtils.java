@@ -84,7 +84,8 @@ public class TestUtils {
     }
 
     public static Portfolio getSamplePortfolio(String portfolioName) {
-        return Portfolio.builder().name(portfolioName).accountId("U1111111").build();
+        return Portfolio.builder().name(portfolioName).accountId("U1111111").strategies(new ArrayList<>()).id(1L)
+                .build();
     }
 
     public static TradeFindDto getSampleTradeCriteria() {

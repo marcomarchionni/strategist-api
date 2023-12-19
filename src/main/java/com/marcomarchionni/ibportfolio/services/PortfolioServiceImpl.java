@@ -38,34 +38,38 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public PortfolioDetailDto findById(Long id) {
-        Portfolio portfolio = portfolioRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Portfolio with id: " + id + " not found")
+    public PortfolioDetailDto findByUserAndId(User user, Long portfolioId) {
+        String accountId = user.getAccountId();
+        Portfolio portfolio = portfolioRepository.findByIdAndAccountId(portfolioId, accountId).orElseThrow(
+                () -> new EntityNotFoundException(Portfolio.class, portfolioId, accountId)
         );
         return portfolioMapper.toPortfolioDetailDto(portfolio);
     }
 
     @Override
-    public void deleteById(Long id) {
-        Portfolio portfolioToDelete = portfolioRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Portfolio with id: " + id + " not found")
+    public void deleteByUserAndId(User user, Long portfolioId) {
+        String accountId = user.getAccountId();
+        Portfolio portfolioToDelete = portfolioRepository.findByIdAndAccountId(portfolioId, accountId).orElseThrow(
+                () -> new EntityNotFoundException(Portfolio.class, portfolioId, accountId)
         );
         if (portfolioToDelete.getStrategies().isEmpty()) {
-            portfolioRepository.deleteById(id);
+            portfolioRepository.deleteById(portfolioId);
         } else {
             throw new UnableToDeleteEntitiesException("Portfolio contains strategies and cannot be deleted");
         }
     }
 
     @Override
+    @Transactional
     public PortfolioDetailDto create(User user, PortfolioCreateDto portfolioCreateDto) {
-        // Get user account id
+        // Get name and account id
         String accountId = user.getAccountId();
+        String portfolioName = portfolioCreateDto.getName();
 
         // Check if portfolio with the same name already exists
-        boolean existsUserPortfolioWithTheSameName = portfolioRepository.existsByNameAndAccountId(accountId,
-                portfolioCreateDto.getName());
-        if (existsUserPortfolioWithTheSameName) {
+        boolean existsUserPortfolioWithName = portfolioRepository.existsByAccountIdAndName(accountId,
+                portfolioName);
+        if (existsUserPortfolioWithName) {
             throw new UnableToSaveEntitiesException("Portfolio with name: " + portfolioCreateDto.getName() + " " +
                     "already exists for account: " + accountId);
         }
@@ -80,13 +84,14 @@ public class PortfolioServiceImpl implements PortfolioService {
 
         // Get user account id
         String accountId = user.getAccountId();
+        Long portfolioId = dto.getId();
 
         // Check if the portfolio to update exists
-        Portfolio portfolio = portfolioRepository.findById(dto.getId()).orElseThrow(
-                () -> new EntityNotFoundException("Portfolio with id: " + dto.getId() + " not found.")
+        Portfolio portfolio = portfolioRepository.findByIdAndAccountId(portfolioId, accountId).orElseThrow(
+                () -> new EntityNotFoundException(Portfolio.class, portfolioId, accountId)
         );
         // Check if a portfolio with the same name already exists
-        boolean existsPortfolioWithTheSameName = portfolioRepository.existsByNameAndAccountId(accountId, dto.getName());
+        boolean existsPortfolioWithTheSameName = portfolioRepository.existsByAccountIdAndName(accountId, dto.getName());
         if (existsPortfolioWithTheSameName) {
             throw new UnableToSaveEntitiesException("Portfolio with name: " + dto.getName() + " already exists for " +
                     "account: " + accountId + ".");

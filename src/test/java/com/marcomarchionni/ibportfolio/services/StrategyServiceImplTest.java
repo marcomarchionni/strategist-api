@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
@@ -22,8 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -32,82 +32,108 @@ class StrategyServiceImplTest {
 
     @Mock
     StrategyRepository strategyRepository;
-
     @Mock
     PortfolioRepository portfolioRepository;
-
     StrategyMapper strategyMapper;
-
     StrategyServiceImpl strategyService;
-
-    final List<Strategy> strategies = getSampleStrategies();
-    final Strategy strategy = getSampleStrategy();
+    List<Strategy> userStrategies;
+    User user;
+    Strategy userStrategy;
 
     @BeforeEach
     void setup() {
         strategyMapper = new StrategyMapperImpl(new ModelMapper());
         strategyService = new StrategyServiceImpl(strategyRepository, portfolioRepository, strategyMapper);
+
+        user = getSampleUser();
+        userStrategy = getSampleStrategy();
+        userStrategies = getSampleStrategies();
     }
 
     @Test
     void findByParams() {
+        // setup
         StrategyFindDto strategyFindDto = StrategyFindDto.builder().build();
-        when(strategyRepository.findByParams(any())).thenReturn(strategies);
+        when(strategyRepository.findByParams(user.getAccountId(), strategyFindDto.getName())).thenReturn(userStrategies);
 
-        List<StrategySummaryDto> actualStrategies = strategyService.findByFilter(strategyFindDto);
+        // execute
+        List<StrategySummaryDto> actualStrategies = strategyService.findByFilter(user, strategyFindDto);
 
+        // verify
         assertNotNull(actualStrategies);
+        assertTrue(actualStrategies.stream().allMatch(dto -> dto.getAccountId()
+                .equals(user.getAccountId())));
     }
 
     @Test
     void findByIdSuccess() {
-        Strategy strategy1 = getSampleStrategy();
-        strategy1.getTrades().add(getSampleTrade());
+        // setup
+        userStrategy.getTrades().add(getSampleTrade());
+        when(strategyRepository.findByIdAndAccountId(userStrategy.getId(), user.getAccountId())).thenReturn(Optional.of(userStrategy));
 
-        when(strategyRepository.findById(any())).thenReturn(Optional.of(strategy1));
+        // execute
+        StrategyDetailDto strategyDetailDto = strategyService.findByUserAndId(user, userStrategy.getId());
 
-        StrategyDetailDto strategyDetailDto = strategyService.findById(1L);
-
+        // verify
         assertNotNull(strategyDetailDto);
-        assertEquals(strategy1.getId(), strategyDetailDto.getId());
-        assertEquals(strategy1.getTrades().size(), strategyDetailDto.getTrades().size());
+        assertEquals(userStrategy.getId(), strategyDetailDto.getId());
+        assertEquals(userStrategy.getTrades().size(), strategyDetailDto.getTrades().size());
     }
 
     @Test
     void create() {
-        Portfolio portfolio = Portfolio.builder().id(1L).name("MyPortfolio").build();
-        StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("ZM long").portfolioId(1L).build();
-        Strategy createdStrategy = Strategy.builder().name(strategyCreateDto.getName()).portfolio(portfolio).build();
-        Strategy expectedStrategy = Strategy.builder().id(1L).name(strategyCreateDto.getName()).portfolio(portfolio).build();
+        // setup test data
+        Portfolio userPortfolio = getSamplePortfolio("MyPortfolio");
+        StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("ZM long")
+                .portfolioId(userPortfolio.getId()).build();
 
-        when(portfolioRepository.findById(1L)).thenReturn(Optional.ofNullable(portfolio));
-        when(strategyRepository.save(createdStrategy)).thenReturn(expectedStrategy);
+        // setup mocks
+        when(portfolioRepository.findByIdAndAccountId(userPortfolio.getId(), user.getAccountId())).thenReturn(Optional.of(userPortfolio));
+        when(strategyRepository.save(any(Strategy.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        StrategyDetailDto actualStrategy = strategyService.create(strategyCreateDto);
+        // execute
+        StrategyDetailDto actualStrategy = strategyService.create(user, strategyCreateDto);
 
-        assertEquals(expectedStrategy.getName(), actualStrategy.getName());
+        // verify
+        assertNotNull(actualStrategy);
+        assertEquals(strategyCreateDto.getName(), actualStrategy.getName());
+        assertEquals(user.getAccountId(), actualStrategy.getAccountId());
+        assertEquals(userPortfolio.getId(), actualStrategy.getPortfolioId());
     }
 
     @Test
     void updateName() {
-        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("NewName").build();
-        Strategy expectedStrategy = Strategy.builder().id(strategy.getId()).name(updateNameDto.getName()).build();
+        // setup test data
+        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(userStrategy.getId()).name("NewName").build();
 
-        when(strategyRepository.findById(updateNameDto.getId())).thenReturn(Optional.of(strategy));
-        when(strategyRepository.save(expectedStrategy)).thenReturn(expectedStrategy);
+        // setup mocks
+        when(strategyRepository.findByIdAndAccountId(userStrategy.getId(), user.getAccountId())).thenReturn(Optional.of(userStrategy));
+        when(strategyRepository.save(any(Strategy.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        StrategyDetailDto actualStrategy = strategyService.updateName(updateNameDto);
+        // execute
+        StrategyDetailDto renamedStrategy = strategyService.updateName(user, updateNameDto);
 
-        assertEquals(updateNameDto.getName(), actualStrategy.getName());
+        // verify
+        assertNotNull(renamedStrategy);
+        assertEquals(userStrategy.getId(), renamedStrategy.getId());
+        assertEquals(updateNameDto.getName(), renamedStrategy.getName());
     }
 
     @Test
     void deleteByIdSuccess() {
-        when(strategyRepository.findById(1L)).thenReturn(Optional.of(strategy));
-        doNothing().when(strategyRepository).deleteById(1L);
+        // setup entities
+        Long strategyId = userStrategy.getId();
+        String accountId = user.getAccountId();
 
-        strategyService.deleteById(1L);
+        // setup mocks
+        when(strategyRepository.findByIdAndAccountId(strategyId, accountId)).thenReturn(Optional.of(userStrategy));
+        doNothing().when(strategyRepository).deleteById(strategyId);
 
-        verify(strategyRepository).deleteById(1L);
+        // execute
+        strategyService.deleteByUserAndId(user, strategyId);
+
+        // verify
+        verify(strategyRepository, times(1)).findByIdAndAccountId(strategyId, accountId);
+        verify(strategyRepository, times(1)).deleteById(strategyId);
     }
 }

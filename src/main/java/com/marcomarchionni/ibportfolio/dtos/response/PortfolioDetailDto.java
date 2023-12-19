@@ -14,6 +14,7 @@ import java.util.List;
 public class PortfolioDetailDto {
 
     private Long id;
+    private String accountId;
     private String name;
     private List<StrategySummaryDto> strategies;
 }
