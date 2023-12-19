@@ -1,28 +1,30 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
+import com.marcomarchionni.ibportfolio.services.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/portfolios")
 public class PortfolioController {
 
-    PortfolioService portfolioService;
-
-    public PortfolioController(PortfolioService portfolioService) {
-        this.portfolioService = portfolioService;
-    }
+    private final PortfolioService portfolioService;
+    private final UserService userService;
 
     @GetMapping
-    public List<PortfolioSummaryDto> findAll() {
-        return portfolioService.findAll();
+    public List<PortfolioSummaryDto> findAllByUser() {
+        User user = userService.getAuthenticatedUser();
+        return portfolioService.findAllByUser(user);
     }
 
     @GetMapping("/{id}")
@@ -32,12 +34,14 @@ public class PortfolioController {
 
     @PostMapping
     public PortfolioDetailDto create(@RequestBody @Valid PortfolioCreateDto portfolioCreate) {
-        return portfolioService.create(portfolioCreate);
+        User user = userService.getAuthenticatedUser();
+        return portfolioService.create(user, portfolioCreate);
     }
 
     @PutMapping
     public PortfolioDetailDto updateName(@RequestBody @Valid UpdateNameDto updateName) {
-        return portfolioService.updateName(updateName);
+        User user = userService.getAuthenticatedUser();
+        return portfolioService.updateName(user, updateName);
     }
 
     @DeleteMapping("/{id}")

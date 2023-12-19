@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
@@ -24,8 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePortfolio;
-import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePortfolios;
+import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,7 +70,9 @@ class PortfolioControllerTest {
 
     @Test
     void findPortfolios() throws Exception {
-        when(portfolioService.findAll()).thenReturn(portfolioSummaryDtos);
+        User user = getSampleUser();
+        when(userService.getAuthenticatedUser()).thenReturn(user);
+        when(portfolioService.findAllByUser(user)).thenReturn(portfolioSummaryDtos);
 
         mockMvc.perform(get("/portfolios"))
                 .andExpect(status().isOk())
@@ -103,7 +105,8 @@ class PortfolioControllerTest {
     void createPortfolioSuccess() throws Exception {
 
         PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name(portfolio.getName()).build();
-        when(portfolioService.create(any())).thenReturn(portfolioDetailDto);
+        when(userService.getAuthenticatedUser()).thenReturn(getSampleUser());
+        when(portfolioService.create(any(User.class), any(PortfolioCreateDto.class))).thenReturn(portfolioDetailDto);
 
         mockMvc.perform(post("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -130,8 +133,8 @@ class PortfolioControllerTest {
     void updatePortfolioName() throws Exception {
 
         UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("MFStockAdvisor").build();
-
-        when(portfolioService.updateName(any())).thenReturn(portfolioDetailDto);
+        when(userService.getAuthenticatedUser()).thenReturn(getSampleUser());
+        when(portfolioService.updateName(any(User.class), any(UpdateNameDto.class))).thenReturn(portfolioDetailDto);
 
         mockMvc.perform(put("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)

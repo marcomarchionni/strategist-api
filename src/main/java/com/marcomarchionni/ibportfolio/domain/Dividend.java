@@ -21,6 +21,9 @@ public class Dividend {
     @Column(name = "con_id")
     private Long conId;
 
+    @Column(name = "account_id")
+    private String accountId;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne

@@ -29,6 +29,12 @@ public class User implements UserDetails {
     String email;
     @Column(name = "password")
     String password;
+    @Column(name = "account_id")
+    String accountId;
+    @Column(name = "token")
+    String token;
+    @Column(name = "query_id")
+    String queryId;
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     Role role;

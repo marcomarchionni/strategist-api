@@ -2,16 +2,18 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.Dividend;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.DividendFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.DividendSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidDataException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.DividendMapper;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,27 +23,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@RequiredArgsConstructor
 public class DividendServiceImpl implements DividendService {
 
     private final DividendRepository dividendRepository;
     private final StrategyRepository strategyRepository;
     private final DividendMapper dividendMapper;
-
-    @Autowired
-    DividendServiceImpl(DividendRepository dividendRepository, StrategyRepository strategyRepository,
-                        DividendMapper dividendMapper) {
-        this.dividendRepository = dividendRepository;
-        this.strategyRepository = strategyRepository;
-        this.dividendMapper = dividendMapper;
-    }
+//    @Override
+//    public void saveDividends(List<Dividend> openOrClosedDividends) {
+//        dividendRepository.saveAll(openOrClosedDividends);
+//    }
 
     @Override
-    public void saveDividends(List<Dividend> openOrClosedDividends) {
-        dividendRepository.saveAll(openOrClosedDividends);
-    }
-
-    @Override
-    public List<DividendSummaryDto> findByFilter(DividendFindDto dividendFind) {
+    public List<DividendSummaryDto> findByFilter(User user, DividendFindDto dividendFind) {
         List<Dividend> dividends = dividendRepository.findByParams(
                 dividendFind.getExDateFrom(),
                 dividendFind.getExDateTo(),
@@ -54,18 +48,27 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public UpdateReport<Dividend> addOrSkip(List<Dividend> closedDividends) {
+    public UpdateReport<Dividend> addOrSkip(User user, List<Dividend> closedDividends) {
+        // Retrieve authenticated user account id
+        String accountId = user.getAccountId();
+
+        // Check if all dividends have account id matching authenticated user account id
+        boolean allDataBelongToAccountId = closedDividends.stream()
+                .allMatch(dividend -> dividend.getAccountId().equals(accountId));
+        if (!allDataBelongToAccountId) {
+            throw new InvalidDataException();
+        }
+
         // Init lists
         List<Dividend> dividendsToAdd = new ArrayList<>();
         List<Dividend> dividendsToSkip = new ArrayList<>();
 
-        // Check if dividend is already in the database
-        for (Dividend closedDividend : closedDividends) {
-            Long id = closedDividend.getId();
-            if (dividendRepository.existsById(id)) {
-                dividendsToSkip.add(closedDividend);
+        // Only add dividends that are not already in the database
+        for (Dividend cd : closedDividends) {
+            if (dividendRepository.existsById(cd.getId())) {
+                dividendsToSkip.add(cd);
             } else {
-                dividendsToAdd.add(closedDividend);
+                dividendsToAdd.add(cd);
             }
         }
         return UpdateReport.<Dividend>builder().added(dividendRepository.saveAll(dividendsToAdd))
@@ -73,9 +76,14 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public UpdateReport<Dividend> updateDividends(List<Dividend> openDividends, List<Dividend> closedDividends) {
+    public UpdateReport<Dividend> updateDividends(User user, List<Dividend> openDividends,
+                                                  List<Dividend> closedDividends) {
+
+        // Retrieve authenticated user account id
+        String accountId = user.getAccountId();
+
         // Create a map of existing open dividends
-        Map<Long, Dividend> existingOpenDividendsMap = dividendRepository.findOpenDividends().stream()
+        Map<Long, Dividend> existingOpenDividendsMap = dividendRepository.findOpenDividends(accountId).stream()
                 .collect(Collectors.toMap(Dividend::getId, dividend -> dividend));
 
         // Select new open dividends to add (not yet present in the database)

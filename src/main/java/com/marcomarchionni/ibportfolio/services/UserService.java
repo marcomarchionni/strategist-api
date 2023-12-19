@@ -1,7 +1,8 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
+
+import com.marcomarchionni.ibportfolio.domain.User;
 
 public interface UserService {
-    UserDetailsService userDetailsService();
+    User getAuthenticatedUser();
 }

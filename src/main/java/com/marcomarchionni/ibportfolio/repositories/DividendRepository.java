@@ -12,10 +12,10 @@ import java.util.List;
 @Repository
 public interface DividendRepository extends JpaRepository<Dividend, Long> {
 
-    List<Dividend> findByOpenClosed(Dividend.OpenClosed openClosed);
+    List<Dividend> findByOpenClosedAndAccountId(Dividend.OpenClosed openClosed, String accountId);
 
-    default List<Dividend> findOpenDividends() {
-        return findByOpenClosed(Dividend.OpenClosed.OPEN);
+    default List<Dividend> findOpenDividends(String accountId) {
+        return findByOpenClosedAndAccountId(Dividend.OpenClosed.OPEN, accountId);
     }
 
     void deleteByOpenClosed(Dividend.OpenClosed openClosed);

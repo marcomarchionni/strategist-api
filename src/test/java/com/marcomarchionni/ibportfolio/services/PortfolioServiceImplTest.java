@@ -1,6 +1,8 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.domain.User;
+import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
@@ -19,8 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePortfolio;
-import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePortfolios;
+import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -46,10 +47,11 @@ class PortfolioServiceImplTest {
     }
 
     @Test
-    void findAll() {
-        when(portfolioRepository.findAll()).thenReturn(portfolios);
+    void findAllByUser() {
+        User user = getSampleUser();
+        when(portfolioRepository.findAllByAccountId(user.getAccountId())).thenReturn(portfolios);
 
-        List<PortfolioSummaryDto> actualPortfolios = portfolioService.findAll();
+        List<PortfolioSummaryDto> actualPortfolios = portfolioService.findAllByUser(user);
 
         assertEquals(actualPortfolios.size(), portfolios.size());
     }
@@ -65,21 +67,37 @@ class PortfolioServiceImplTest {
 
     @Test
     void findByIdException() {
-        when(portfolioRepository.findById(any())).thenReturn(Optional.empty());
+        long unknownId = 1L;
+        when(portfolioRepository.findById(unknownId)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, ()-> portfolioService.findById(1L));
+        assertThrows(EntityNotFoundException.class, () -> portfolioService.findById(unknownId));
+    }
+
+    @Test
+    void createPortfolioSuccess() {
+        User user = getSampleUser();
+        PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name("NewPortfolioName").build();
+
+        when(portfolioRepository.existsByNameAndAccountId(user.getAccountId(), portfolioCreateDto.getName())).thenReturn(false);
+        when(portfolioRepository.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        PortfolioDetailDto createdPortfolioDto = portfolioService.create(user, portfolioCreateDto);
+
+        assertNotNull(createdPortfolioDto);
+        assertEquals(createdPortfolioDto.getName(), portfolioCreateDto.getName());
     }
 
     @Test
     void updatePortfolioNameSuccess() {
+        User user = getSampleUser();
         UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("NewName").build();
         Portfolio originalPortfolio = Portfolio.builder().id(1L).name("OldName").build();
 
         when(portfolioRepository.findById(any())).thenReturn(Optional.of(originalPortfolio));
-        when(portfolioRepository.existsByName(any())).thenReturn(false);
+        when(portfolioRepository.existsByNameAndAccountId(any(), any())).thenReturn(false);
         when(portfolioRepository.save(any())).thenReturn(originalPortfolio);
 
-        PortfolioDetailDto actualPortfolioDto = portfolioService.updateName(updateNameDto);
+        PortfolioDetailDto actualPortfolioDto = portfolioService.updateName(user, updateNameDto);
 
         assertNotNull(actualPortfolioDto);
         assertEquals(actualPortfolioDto.getId(), updateNameDto.getId());

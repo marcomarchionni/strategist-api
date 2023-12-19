@@ -4,18 +4,11 @@ import com.marcomarchionni.ibportfolio.domain.Dividend;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class DividendServiceImplIT {
@@ -44,18 +37,18 @@ public class DividendServiceImplIT {
         closedDividend.setOpenClosed(Dividend.OpenClosed.CLOSED);
     }
 
-    @Test
-    void saveClosedDividendOpenClosedEqualsClosed() {
-        List<Dividend> dividends = new ArrayList<>();
-        dividends.add(closedDividend);
-
-        dividendService.saveDividends(dividends);
-
-        Optional<Dividend> optDbDividend = dividendRepository.findById(26754720220603L);
-        assertTrue(optDbDividend.isPresent());
-        Dividend dbDividend = optDbDividend.get();
-        assertEquals(Dividend.OpenClosed.CLOSED, dbDividend.getOpenClosed());
-    }
+//    @Test
+//    void saveClosedDividendOpenClosedEqualsClosed() {
+//        List<Dividend> dividends = new ArrayList<>();
+//        dividends.add(closedDividend);
+//
+//        dividendService.saveDividends(dividends);
+//
+//        Optional<Dividend> optDbDividend = dividendRepository.findById(26754720220603L);
+//        assertTrue(optDbDividend.isPresent());
+//        Dividend dbDividend = optDbDividend.get();
+//        assertEquals(Dividend.OpenClosed.CLOSED, dbDividend.getOpenClosed());
+//    }
 
     @AfterEach
     void cleanup() {

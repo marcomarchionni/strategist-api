@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
 import com.marcomarchionni.ibportfolio.domain.Trade;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.services.JwtService;
@@ -22,6 +23,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleTrades;
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,7 +68,10 @@ class UpdateControllerTest {
         List<Trade> addedTrades = getSampleTrades();
         UpdateReport<Trade> tradeReport = UpdateReport.<Trade>builder().added(addedTrades).build();
         CombinedUpdateReport combinedUpdateReport = CombinedUpdateReport.builder().trades(tradeReport).build();
-        when(updateOrchestrator.updateFromFile(any(MultipartFile.class))).thenReturn(combinedUpdateReport);
+        when(updateOrchestrator.updateFromFile(any(User.class), any(MultipartFile.class))).thenReturn(combinedUpdateReport);
+
+        // setup userService mock
+        when(userService.getAuthenticatedUser()).thenReturn(getSampleUser());
 
 
         ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor =
@@ -82,7 +87,7 @@ class UpdateControllerTest {
 
 
         // Verify that the method was called with the captured InputStream
-        verify(updateOrchestrator).updateFromFile(mockMultipartFileArgumentCaptor.capture());
+        verify(updateOrchestrator).updateFromFile(any(User.class), mockMultipartFileArgumentCaptor.capture());
 
         // Check if multipart file is not null
         assertNotNull(mockMultipartFileArgumentCaptor.getValue());
@@ -98,7 +103,10 @@ class UpdateControllerTest {
         List<Trade> addedTrades = getSampleTrades();
         UpdateReport<Trade> tradeReport = UpdateReport.<Trade>builder().added(addedTrades).build();
         CombinedUpdateReport combinedUpdateReport = CombinedUpdateReport.builder().trades(tradeReport).build();
-        when(updateOrchestrator.updateFromServer()).thenReturn(combinedUpdateReport);
+        when(updateOrchestrator.updateFromServer(any(User.class))).thenReturn(combinedUpdateReport);
+
+        // setup userService mock
+        when(userService.getAuthenticatedUser()).thenReturn(getSampleUser());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/update/from-server"))
                 .andDo(print())
@@ -107,7 +115,7 @@ class UpdateControllerTest {
                 .andExpect(jsonPath("$.trades").exists());
 
         // Verify that the method was called
-        verify(updateOrchestrator).updateFromServer();
+        verify(updateOrchestrator).updateFromServer(any(User.class));
     }
 
 }

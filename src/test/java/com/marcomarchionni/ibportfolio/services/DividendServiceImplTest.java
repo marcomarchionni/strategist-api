@@ -3,10 +3,12 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.domain.Dividend;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.DividendFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.DividendSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidDataException;
 import com.marcomarchionni.ibportfolio.mappers.DividendMapper;
 import com.marcomarchionni.ibportfolio.mappers.DividendMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
@@ -22,8 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
@@ -58,12 +59,16 @@ class DividendServiceImplTest {
     @Test
     void findByParams() {
 
-        when(dividendRepository.findByParams(any(), any(), any(), any(), any(), any())).thenReturn(dividends);
+        User user = getSampleUser();
+        List<Dividend> userDividends = dividends.stream().peek(d -> d.setAccountId(user.getAccountId())).toList();
+
+        when(dividendRepository.findByParams(any(), any(), any(), any(), any(), any())).thenReturn(userDividends);
 
         List<DividendSummaryDto> foundDividends = dividendService.findByFilter(
-                dividendFind);
+                user, dividendFind);
 
         assertEquals(dividends.size(), foundDividends.size());
+        assertEquals(dividends.get(0).getAccountId(), user.getAccountId());
     }
 
     @Test
@@ -88,6 +93,8 @@ class DividendServiceImplTest {
 
     @Test
     void updateDividends() {
+        // setup user
+        User user = getSampleUser();
 
         // setup existing closed dividend
         Dividend EBAYClosedDividend = getEBAYClosedDividend();
@@ -105,13 +112,13 @@ class DividendServiceImplTest {
         List<Dividend> newClosedDividends = List.of(getNKEClosedDividend(), getEBAYClosedDividend());
 
         // setup mocks
-        when(dividendRepository.findOpenDividends()).thenReturn(existingOpenDividends);
+        when(dividendRepository.findOpenDividends(user.getAccountId())).thenReturn(existingOpenDividends);
         when(dividendRepository.existsById(EBAYClosedDividend.getId())).thenReturn(true);
         when(dividendRepository.existsById(NKEClosedDividend.getId())).thenReturn(true);
         when(dividendRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
-        UpdateReport<Dividend> result = dividendService.updateDividends(newOpenDividends, newClosedDividends);
+        UpdateReport<Dividend> result = dividendService.updateDividends(user, newOpenDividends, newClosedDividends);
 
         // assertions
         assertEquals(1, result.getAdded().size());
@@ -124,6 +131,9 @@ class DividendServiceImplTest {
 
     @Test
     void addOrSkip() {
+        // setup user
+        User user = getSampleUser();
+
         // setup existing closed dividend
         Dividend EBAYClosedDividend = getEBAYClosedDividend();
         EBAYClosedDividend.setStrategy(getSampleStrategy());
@@ -139,12 +149,25 @@ class DividendServiceImplTest {
         when(dividendRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
-        UpdateReport<Dividend> result = dividendService.addOrSkip(newClosedDividends);
+        UpdateReport<Dividend> result = dividendService.addOrSkip(user, newClosedDividends);
 
         // assertions
         assertEquals(1, result.getAdded().size());
         assertEquals(1, result.getSkipped().size());
         assertEquals("NKE", result.getAdded().get(0).getSymbol());
         assertEquals("EBAY", result.getSkipped().get(0).getSymbol());
+    }
+
+    @Test
+    void addOrSkipInvalidDataException() {
+        // setup user
+        User user = getSampleUser();
+        user.setAccountId("UNEXPECTED_ACCOUNT_ID");
+
+        // setup new closed dividends
+        List<Dividend> newClosedDividends = List.of(getNKEClosedDividend());
+
+        // execute method
+        assertThrows(InvalidDataException.class, () -> dividendService.addOrSkip(user, newClosedDividends));
     }
 }

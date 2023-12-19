@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
@@ -19,7 +20,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -83,7 +87,9 @@ class StrategyControllerIT {
 
     @Test
     void createSuccess() throws Exception {
-        Long portfolioId = portfolioRepository.findByName("Saver Portfolio").get(0).getId();
+        Optional<Portfolio> portfolio = portfolioRepository.findByAccountIdAndName("U1111111", "Saver Portfolio");
+        assertTrue(portfolio.isPresent());
+        Long portfolioId = portfolio.get().getId();
         StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("AAPL long").portfolioId(portfolioId).build();
 
         mockMvc.perform(post("/strategies")

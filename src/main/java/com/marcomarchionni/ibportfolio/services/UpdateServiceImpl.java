@@ -1,9 +1,6 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.domain.Dividend;
-import com.marcomarchionni.ibportfolio.domain.FlexStatement;
-import com.marcomarchionni.ibportfolio.domain.Position;
-import com.marcomarchionni.ibportfolio.domain.Trade;
+import com.marcomarchionni.ibportfolio.domain.*;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
@@ -38,7 +35,7 @@ public class UpdateServiceImpl implements UpdateService {
     }
 
     @Override
-    public CombinedUpdateReport save(FlexQueryResponseDto dto) {
+    public CombinedUpdateReport save(User user, FlexQueryResponseDto dto) {
         //Declare report variables
         UpdateReport<Position> positionReport;
         UpdateReport<Dividend> dividendReport;
@@ -59,12 +56,12 @@ public class UpdateServiceImpl implements UpdateService {
 
             // Update positions, open dividends, closed dividends
             positionReport = positionService.updatePositions(positions);
-            dividendReport = dividendService.updateDividends(openDividends, closedDividends);
+            dividendReport = dividendService.updateDividends(user, openDividends, closedDividends);
 
         } else {
             // Add new closed dividends, no action on positions
             positionReport = UpdateReport.<Position>builder().build();
-            dividendReport = dividendService.addOrSkip(closedDividends);
+            dividendReport = dividendService.addOrSkip(user, closedDividends);
         }
 
         // Add new or missing trades

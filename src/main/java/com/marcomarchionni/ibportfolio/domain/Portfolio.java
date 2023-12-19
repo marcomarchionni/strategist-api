@@ -18,6 +18,9 @@ public class Portfolio {
     @Column(name="id")
     private Long id;
 
+    @Column(name = "account_id")
+    private String accountId;
+
     @Column(name="name", unique = true)
     private String name;
 

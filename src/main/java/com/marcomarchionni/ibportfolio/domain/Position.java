@@ -18,6 +18,9 @@ public class Position {
     @Column(name="id")
     private Long id;
 
+    @Column(name = "account_id")
+    private String accountId;
+
     @Column(name="con_id")
     private Long conId;
 

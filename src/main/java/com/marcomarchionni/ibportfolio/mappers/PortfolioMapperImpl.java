@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 @Component
-public class PortfolioMapperImpl implements PortfolioMapper{
+public class PortfolioMapperImpl implements PortfolioMapper {
 
     ModelMapper modelMapper;
 
@@ -19,8 +19,9 @@ public class PortfolioMapperImpl implements PortfolioMapper{
     }
 
     @Override
-    public Portfolio toEntity(PortfolioCreateDto portfolioCreateDto) {
-        return Portfolio.builder().name(portfolioCreateDto.getName()).strategies(new ArrayList<>()).build();
+    public Portfolio toEntity(String accountId, PortfolioCreateDto portfolioCreateDto) {
+        return Portfolio.builder().name(portfolioCreateDto.getName()).accountId(accountId).strategies(new ArrayList<>())
+                .build();
     }
 
     @Override

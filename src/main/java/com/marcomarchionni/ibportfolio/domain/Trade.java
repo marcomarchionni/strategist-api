@@ -17,6 +17,9 @@ public class Trade {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "account_id")
+    private String accountId;
+
     @Column(name = "trade_id")
     private Long tradeId;
 

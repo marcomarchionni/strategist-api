@@ -64,12 +64,16 @@ public class TestUtils {
         return strategies;
     }
 
+    public static User getSampleUser() {
+        return User.builder().id(1L).email("marco99@gmail.com").accountId("U1111111").build();
+    }
+
     public static Strategy getEBAYStrategy() {
-        return Strategy.builder().id(2L).name("EBAY covcall").build();
+        return Strategy.builder().id(2L).accountId("U1111111").name("EBAY covcall").build();
     }
 
     public static Strategy getZMStrategy() {
-        return Strategy.builder().id(1L).name("ZM long").build();
+        return Strategy.builder().id(1L).accountId("U1111111").name("ZM long").build();
     }
 
     public static List<Portfolio> getSamplePortfolios() {
@@ -80,7 +84,7 @@ public class TestUtils {
     }
 
     public static Portfolio getSamplePortfolio(String portfolioName) {
-        return Portfolio.builder().name(portfolioName).build();
+        return Portfolio.builder().name(portfolioName).accountId("U1111111").build();
     }
 
     public static TradeFindDto getSampleTradeCriteria() {
@@ -102,124 +106,139 @@ public class TestUtils {
 
     public static DividendFindDto getSampleDividendCriteria() {
         return DividendFindDto.builder()
-                .exDateFrom(LocalDate.of(2022,6,5))
+                .exDateFrom(LocalDate.of(2022, 6, 5))
                 .build();
     }
 
-
     public static Dividend getFDXOpenDividend() {
-        Dividend div = new Dividend();
-        div.setId(510058320220624L);
-        div.setSymbol("FDX");
-        div.setDescription("FEDEX CORPORATION");
-        div.setConId(5100583L);
-        div.setExDate(LocalDate.of(2022, 6, 24));
-        div.setPayDate(LocalDate.of(2022, 7, 11));
-        div.setQuantity(BigDecimal.valueOf(47));
-        div.setTax(BigDecimal.valueOf(0.11));
-        div.setGrossRate(BigDecimal.valueOf(1.15));
-        div.setGrossAmount(BigDecimal.valueOf(54.05));
-        div.setNetAmount(BigDecimal.valueOf(45.94));
-        div.setOpenClosed(Dividend.OpenClosed.OPEN);
-        return div;
+        return Dividend.builder()
+                .id(510058320220624L)
+                .accountId("U1111111")
+                .symbol("FDX")
+                .description("FEDEX CORPORATION")
+                .conId(5100583L)
+                .exDate(LocalDate.of(2022, 6, 24))
+                .payDate(LocalDate.of(2022, 7, 11))
+                .quantity(BigDecimal.valueOf(47))
+                .tax(BigDecimal.valueOf(0.11))
+                .grossRate(BigDecimal.valueOf(1.15))
+                .grossAmount(BigDecimal.valueOf(54.05))
+                .netAmount(BigDecimal.valueOf(45.94))
+                .openClosed(Dividend.OpenClosed.OPEN)
+                .build();
     }
 
     public static Dividend getNKEOpenDividend() {
-        Dividend div = new Dividend();
-        div.setId(1029120220603L);
-        div.setSymbol("NKE");
-        div.setDescription("NIKE INC -CL B");
-        div.setConId(10291L);
-        div.setExDate(LocalDate.of(2022, 6, 3));
-        div.setPayDate(LocalDate.of(2022, 7, 1));
-        div.setQuantity(BigDecimal.valueOf(84));
-        div.setTax(BigDecimal.valueOf(3.84));
-        div.setGrossRate(BigDecimal.valueOf(0.305));
-        div.setGrossAmount(BigDecimal.valueOf(25.62));
-        div.setNetAmount(BigDecimal.valueOf(21.78));
-        div.setOpenClosed(Dividend.OpenClosed.OPEN);
-        return div;
+        return Dividend.builder()
+                .id(1029120220603L)
+                .accountId("U1111111")
+                .symbol("NKE")
+                .description("NIKE INC -CL B")
+                .conId(10291L)
+                .exDate(LocalDate.of(2022, 6, 3))
+                .payDate(LocalDate.of(2022, 7, 1))
+                .quantity(BigDecimal.valueOf(84))
+                .tax(BigDecimal.valueOf(3.84))
+                .grossRate(BigDecimal.valueOf(0.305))
+                .grossAmount(BigDecimal.valueOf(25.62))
+                .netAmount(BigDecimal.valueOf(21.78))
+                .openClosed(Dividend.OpenClosed.OPEN)
+                .build();
     }
 
     public static Dividend getNKEClosedDividend() {
-        Dividend div = new Dividend();
-        div.setId(1029120220603L);
-        div.setSymbol("NKE");
-        div.setDescription("NIKE INC -CL B");
-        div.setConId(10291L);
-        div.setExDate(LocalDate.of(2022, 6, 3));
-        div.setPayDate(LocalDate.of(2022, 7, 1));
-        div.setQuantity(BigDecimal.valueOf(84));
-        div.setTax(BigDecimal.valueOf(3.84));
-        div.setGrossRate(BigDecimal.valueOf(0.305));
-        div.setGrossAmount(BigDecimal.valueOf(25.62));
-        div.setNetAmount(BigDecimal.valueOf(21.78));
+        Dividend div = getNKEOpenDividend();
         div.setOpenClosed(Dividend.OpenClosed.CLOSED);
         return div;
     }
 
     public static Dividend getEBAYClosedDividend() {
-        Dividend div = new Dividend();
-        div.setId(434708620220531L);
-        div.setConId(4347086L);
-        div.setSymbol("EBAY");
-        div.setDescription("EBAY INC");
-        div.setExDate(LocalDate.of(2022, 5, 31));
-        div.setPayDate(LocalDate.of(2022, 6, 17));
-        div.setQuantity(new BigDecimal(100));
-        div.setGrossRate(new BigDecimal("0.22"));
-        div.setGrossAmount(new BigDecimal("22"));
-        div.setNetAmount(new BigDecimal("18.7"));
-        div.setTax(new BigDecimal("3.3"));
-        div.setOpenClosed(Dividend.OpenClosed.CLOSED);
-        return div;
+        return Dividend.builder()
+                .id(434708620220531L)
+                .accountId("U1111111")
+                .conId(4347086L)
+                .symbol("EBAY")
+                .description("EBAY INC")
+                .exDate(LocalDate.of(2022, 5, 31))
+                .payDate(LocalDate.of(2022, 6, 17))
+                .quantity(BigDecimal.valueOf(100))
+                .grossRate(new BigDecimal("0.22"))
+                .grossAmount(new BigDecimal("22"))
+                .netAmount(new BigDecimal("18.7"))
+                .tax(new BigDecimal("3.3"))
+                .openClosed(Dividend.OpenClosed.CLOSED)
+                .build();
     }
 
     @SuppressWarnings("unused")
     public static Dividend getCGNXClosedDividend() {
-        Dividend closedDividend = new Dividend();
-        closedDividend.setId(26754720220603L);
-        closedDividend.setSymbol("CGNX");
-        closedDividend.setConId(267547L);
-        closedDividend.setExDate(LocalDate.of(2022, 5, 19));
-        closedDividend.setPayDate(LocalDate.of(2022, 6, 3));
-        closedDividend.setQuantity(BigDecimal.valueOf(44));
-        closedDividend.setTax(BigDecimal.valueOf(0.43));
-        closedDividend.setGrossRate(BigDecimal.valueOf(0.065));
-        closedDividend.setGrossAmount(BigDecimal.valueOf(2.86));
-        closedDividend.setNetAmount(BigDecimal.valueOf(2.43));
-        closedDividend.setOpenClosed(Dividend.OpenClosed.CLOSED);
-        return closedDividend;
+        return Dividend.builder()
+                .id(26754720220603L)
+                .accountId("U1111111")
+                .symbol("CGNX")
+                .conId(267547L)
+                .exDate(LocalDate.of(2022, 5, 19))
+                .payDate(LocalDate.of(2022, 6, 3))
+                .quantity(BigDecimal.valueOf(44))
+                .tax(BigDecimal.valueOf(0.43))
+                .grossRate(BigDecimal.valueOf(0.065))
+                .grossAmount(BigDecimal.valueOf(2.86))
+                .netAmount(BigDecimal.valueOf(2.43))
+                .openClosed(Dividend.OpenClosed.CLOSED)
+                .build();
     }
+
 
     public static Position getADYENPosition() {
         return Position.builder()
-                .id(321202935L).conId(321202935L).reportDate(LocalDate.of(2022, 6, 30))
-                .symbol("ADYEN").description("ADYEN NV").assetCategory("STK").quantity(new BigDecimal(1))
+                .id(321202935L)
+                .accountId("U1111111")
+                .conId(321202935L)
+                .reportDate(LocalDate.of(2022, 6, 30))
+                .symbol("ADYEN")
+                .description("ADYEN NV")
+                .assetCategory("STK")
+                .quantity(new BigDecimal(1))
                 .costBasisPrice(new BigDecimal("1578.8"))
                 .markPrice(new BigDecimal("1388")).multiplier(1).build();
     }
 
     public static Position getADBEPosition() {
         return Position.builder()
-                .id(265768L).conId(265768L).reportDate(LocalDate.of(2022, 7, 7))
-                .symbol("ADBE").description("ADOBE INC").assetCategory("STK").quantity(new BigDecimal(10))
+                .id(265768L)
+                .accountId("U1111111")
+                .conId(265768L)
+                .reportDate(LocalDate.of(2022, 7, 7))
+                .symbol("ADBE")
+                .description("ADOBE INC")
+                .assetCategory("STK")
+                .quantity(new BigDecimal(10))
                 .costBasisPrice(new BigDecimal("434.4900"))
-                .markPrice(new BigDecimal("390.8900")).multiplier(1).build();
+                .markPrice(new BigDecimal("390.8900"))
+                .multiplier(1)
+                .build();
     }
 
     public static Position getAMZNPosition() {
         return Position.builder()
-                .id(3691937L).conId(3691937L).reportDate(LocalDate.of(2022, 7, 7))
-                .symbol("AMZN").description("AMAZON.COM INC").assetCategory("STK").quantity(new BigDecimal(460))
+                .id(3691937L)
+                .accountId("U1111111")
+                .conId(3691937L)
+                .reportDate(LocalDate.of(2022, 7, 7))
+                .symbol("AMZN")
+                .description("AMAZON.COM INC")
+                .assetCategory("STK").quantity(new BigDecimal(460))
                 .costBasisPrice(new BigDecimal("10.9868"))
-                .markPrice(new BigDecimal("106.2100")).multiplier(1).build();
+                .markPrice(new BigDecimal("106.2100"))
+                .multiplier(1)
+                .build();
     }
 
 
     public static Trade getZMTrade() {
         return Trade.builder()
                 .id(1180780161L)
+                .accountId("U1111111")
                 .tradeId(387679436L)
                 .conId(361181057L)
                 .strategy(getSampleStrategy())
@@ -237,6 +256,7 @@ public class TestUtils {
     public static Trade getFVRRTrade() {
         return Trade.builder()
                 .id(1180785204L)
+                .accountId("U1111111")
                 .tradeId(387681643L)
                 .conId(370695082L)
                 .strategy(getSampleStrategy())
@@ -254,6 +274,7 @@ public class TestUtils {
     public static Trade getIBKROpt1Trade() {
         return Trade.builder()
                 .id(1198688377L)
+                .accountId("U1111111")
                 .tradeId(391765250L)
                 .conId(520934333L)
                 .tradeDate(LocalDate.of(2022, 6, 15))
@@ -274,6 +295,7 @@ public class TestUtils {
     public static Trade getIBKROpt2Trade() {
         return Trade.builder()
                 .id(1198688378L)
+                .accountId("U1111111")
                 .tradeId(391765279L)
                 .conId(539457903L)
                 .tradeDate(LocalDate.of(2022, 6, 15))
@@ -294,6 +316,7 @@ public class TestUtils {
     public static Trade getTTWO1Trade() {
         return Trade.builder()
                 .id(1222538552L)
+                .accountId("U1111111")
                 .conId(6478131L)
                 .tradeDate(LocalDate.of(2022, 6, 28))
                 .symbol("TTWO")
@@ -310,6 +333,7 @@ public class TestUtils {
     public static Trade getTTWO2Trade() {
         return Trade.builder()
                 .id(1222538553L)
+                .accountId("U1111111")
                 .conId(6478131L)
                 .tradeDate(LocalDate.of(2022, 6, 28))
                 .symbol("TTWO")
@@ -326,6 +350,7 @@ public class TestUtils {
     public static Trade getEURUSDTrade() {
         return Trade.builder()
                 .id(1238155321L)
+                .accountId("U1111111")
                 .tradeId(400172483L)
                 .conId(12087792L)
                 .tradeDate(LocalDate.of(2022, 7, 6))

@@ -1,19 +1,19 @@
-<FlexQueryResponse queryName="TinyFlex2" type="AF">
+<FlexQueryResponse queryName="Flex" type="AF">
     <FlexStatements count="1">
-        <FlexStatement accountId="U7169936" fromDate="20220601" toDate="20220730" period=""
+        <FlexStatement accountId="U1111111" fromDate="20220601" toDate="20220730" period=""
                        whenGenerated="20221228;124835">
-            <AccountInformation accountId="U7169936" acctAlias="" model="" currency="EUR" name="Marco Marchionni"
-                                accountType="Individual" customerType="Individual" accountCapabilities="Margin"
-                                tradingPermissions="Stocks,Options,Warrants,Bonds,Forex,Futures,Futures Options,Fully Paid Stock Loan"
-                                dateOpened="20210129" dateFunded="20130225" dateClosed=""
-                                street="via Alfonso Marchesani 56" street2="" city="Vasto" state="IT-65" country="Italy"
-                                postalCode="66054" streetResidentialAddress="via Alfonso Marchesani 56"
-                                street2ResidentialAddress="" cityResidentialAddress="Vasto"
-                                stateResidentialAddress="IT-65" countryResidentialAddress="Italy"
-                                postalCodeResidentialAddress="66054" masterName="" ibEntity="IB-IE"
-                                primaryEmail="marco.marchionni@gmail.com"/>
+            <AccountInformation accountId="U1111111" acctAlias="" model="" currency="EUR" name="XXX"
+                                accountType="XXX" customerType="XXX" accountCapabilities="XXX"
+                                tradingPermissions="XXX"
+                                dateOpened="20220101" dateFunded="20220101" dateClosed=""
+                                street="XXX XXX" street2="" city="XXX" state="XXX" country="XXX"
+                                postalCode="XXX" streetResidentialAddress="XXX"
+                                street2ResidentialAddress="" cityResidentialAddress="XXX"
+                                stateResidentialAddress="XXX" countryResidentialAddress="XXX"
+                                postalCodeResidentialAddress="XXX" masterName="" ibEntity="IB-IE"
+                                primaryEmail="marco99@gmail.com"/>
             <OpenPositions>
-                <OpenPosition accountId="U7169936" acctAlias="" model="" currency="EUR" fxRateToBase="1"
+                <OpenPosition accountId="U1111111" acctAlias="" model="" currency="EUR" fxRateToBase="1"
                               assetCategory="STK" symbol="ADYEN" description="ADYEN NV" conid="321202935"
                               securityID="NL0012969182" securityIDType="ISIN" cusip="" isin="NL0012969182"
                               underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry=""
@@ -24,7 +24,7 @@
                               accruedInt="" principalAdjustFactor="" listingExchange="AEB" underlyingSecurityID=""
                               underlyingListingExchange="" vestingDate="" serialNumber="" deliveryType=""
                               commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <OpenPosition accountId="U7169936" acctAlias="" model="" currency="EUR" fxRateToBase="1"
+                <OpenPosition accountId="U1111111" acctAlias="" model="" currency="EUR" fxRateToBase="1"
                               assetCategory="STK" symbol="ADYEN" description="ADYEN NV" conid="321202935"
                               securityID="NL0012969182" securityIDType="ISIN" cusip="" isin="NL0012969182"
                               underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry=""
@@ -35,7 +35,7 @@
                               originatingTransactionID="1109416227" accruedInt="" principalAdjustFactor=""
                               listingExchange="AEB" underlyingSecurityID="" underlyingListingExchange="" vestingDate=""
                               serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <OpenPosition accountId="U7169936" acctAlias="" model="" currency="EUR" fxRateToBase="1"
+                <OpenPosition accountId="U1111111" acctAlias="" model="" currency="EUR" fxRateToBase="1"
                               assetCategory="STK" symbol="JUVE" description="JUVENTUS FOOTBALL CLUB SPA"
                               conid="26319301" securityID="IT0000336518" securityIDType="ISIN" cusip=""
                               isin="IT0000336518" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -46,7 +46,7 @@
                               originatingOrderID="" originatingTransactionID="" accruedInt="" principalAdjustFactor=""
                               listingExchange="BVME" underlyingSecurityID="" underlyingListingExchange="" vestingDate=""
                               serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <OpenPosition accountId="U7169936" acctAlias="" model="" currency="EUR" fxRateToBase="1"
+                <OpenPosition accountId="U1111111" acctAlias="" model="" currency="EUR" fxRateToBase="1"
                               assetCategory="STK" symbol="JUVE" description="JUVENTUS FOOTBALL CLUB SPA"
                               conid="26319301" securityID="IT0000336518" securityIDType="ISIN" cusip=""
                               isin="IT0000336518" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -58,7 +58,7 @@
                               principalAdjustFactor="" listingExchange="BVME" underlyingSecurityID=""
                               underlyingListingExchange="" vestingDate="" serialNumber="" deliveryType=""
                               commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <OpenPosition accountId="U7169936" acctAlias="" model="" currency="EUR" fxRateToBase="1"
+                <OpenPosition accountId="U1111111" acctAlias="" model="" currency="EUR" fxRateToBase="1"
                               assetCategory="STK" symbol="JUVE" description="JUVENTUS FOOTBALL CLUB SPA"
                               conid="26319301" securityID="IT0000336518" securityIDType="ISIN" cusip=""
                               isin="IT0000336518" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -70,7 +70,7 @@
                               accruedInt="" principalAdjustFactor="" listingExchange="BVME" underlyingSecurityID=""
                               underlyingListingExchange="" vestingDate="" serialNumber="" deliveryType=""
                               commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <OpenPosition accountId="U7169936" acctAlias="" model="" currency="EUR" fxRateToBase="1"
+                <OpenPosition accountId="U1111111" acctAlias="" model="" currency="EUR" fxRateToBase="1"
                               assetCategory="STK" symbol="JUVE" description="JUVENTUS FOOTBALL CLUB SPA"
                               conid="26319301" securityID="IT0000336518" securityIDType="ISIN" cusip=""
                               isin="IT0000336518" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -82,7 +82,7 @@
                               accruedInt="" principalAdjustFactor="" listingExchange="BVME" underlyingSecurityID=""
                               underlyingListingExchange="" vestingDate="" serialNumber="" deliveryType=""
                               commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <OpenPosition accountId="U7169936" acctAlias="" model="" currency="EUR" fxRateToBase="1"
+                <OpenPosition accountId="U1111111" acctAlias="" model="" currency="EUR" fxRateToBase="1"
                               assetCategory="STK" symbol="JUVE" description="JUVENTUS FOOTBALL CLUB SPA"
                               conid="26319301" securityID="IT0000336518" securityIDType="ISIN" cusip=""
                               isin="IT0000336518" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -94,7 +94,7 @@
                               accruedInt="" principalAdjustFactor="" listingExchange="BVME" underlyingSecurityID=""
                               underlyingListingExchange="" vestingDate="" serialNumber="" deliveryType=""
                               commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <OpenPosition accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95389"
+                <OpenPosition accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95389"
                               assetCategory="STK" symbol="AAPL" description="APPLE INC" conid="265598"
                               securityID="US0378331005" securityIDType="ISIN" cusip="037833100" isin="US0378331005"
                               underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry=""
@@ -108,7 +108,7 @@
                               weight="0.0 ()"/>
             </OpenPositions>
             <Trades>
-                <AssetSummary accountId="U7169936" acctAlias="" model="" currency="" fxRateToBase="" assetCategory="STK"
+                <AssetSummary accountId="U1111111" acctAlias="" model="" currency="" fxRateToBase="" assetCategory="STK"
                               symbol="" description="" conid="" securityID="" securityIDType="" cusip="" isin=""
                               underlyingConid="" underlyingSymbol="" issuer="" multiplier="" strike="" expiry=""
                               putCall="" tradeID="" reportDate="" tradeDate="" settleDateTarget="" transactionType=""
@@ -123,7 +123,7 @@
                               listingExchange="" underlyingSecurityID="" underlyingListingExchange="" dateTime=""
                               fxPnl="" accruedInt="" serialNumber="" deliveryType="" commodityType="" fineness=""
                               weight="" relatedTradeID="" relatedTransactionID=""/>
-                <SymbolSummary accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase=""
+                <SymbolSummary accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase=""
                                assetCategory="STK" symbol="FVRR" description="FIVERR INTERNATIONAL LTD"
                                conid="370695082" securityID="IL0011582033" securityIDType="ISIN" cusip=""
                                isin="IL0011582033" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -140,7 +140,7 @@
                                underlyingSecurityID="" underlyingListingExchange="" dateTime="" fxPnl="" accruedInt="0"
                                serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"
                                relatedTradeID="" relatedTransactionID=""/>
-                <SymbolSummary accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase=""
+                <SymbolSummary accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase=""
                                assetCategory="STK" symbol="FVRR" description="FIVERR INTERNATIONAL LTD"
                                conid="370695082" securityID="IL0011582033" securityIDType="ISIN" cusip=""
                                isin="IL0011582033" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -158,7 +158,7 @@
                                listingExchange="NYSE" underlyingSecurityID="" underlyingListingExchange="" dateTime=""
                                fxPnl="" accruedInt="0" serialNumber="" deliveryType="" commodityType="" fineness="0.0"
                                weight="0.0 ()" relatedTradeID="" relatedTransactionID=""/>
-                <Order accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Order accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                        assetCategory="STK" symbol="FVRR" description="FIVERR INTERNATIONAL LTD" conid="370695082"
                        securityID="IL0011582033" securityIDType="ISIN" cusip="" isin="IL0011582033" underlyingConid=""
                        underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall="" tradeID=""
@@ -174,7 +174,7 @@
                        listingExchange="NYSE" underlyingSecurityID="" underlyingListingExchange=""
                        dateTime="20220607;100249" fxPnl="0" accruedInt="0" serialNumber="" deliveryType=""
                        commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID="" relatedTransactionID=""/>
-                <Trade accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Trade accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                        assetCategory="STK" symbol="FVRR" description="FIVERR INTERNATIONAL LTD" conid="370695082"
                        securityID="IL0011582033" securityIDType="ISIN" cusip="" isin="IL0011582033" underlyingConid=""
                        underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall="" tradeID="387681339"
@@ -192,7 +192,7 @@
                        listingExchange="NYSE" underlyingSecurityID="" underlyingListingExchange=""
                        dateTime="20220607;100249" fxPnl="0" accruedInt="0" serialNumber="" deliveryType=""
                        commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID="" relatedTransactionID=""/>
-                <Lot accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Lot accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                      assetCategory="STK" symbol="FVRR" description="FIVERR INTERNATIONAL LTD" conid="370695082"
                      securityID="IL0011582033" securityIDType="ISIN" cusip="" isin="IL0011582033" underlyingConid=""
                      underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall="" tradeID=""
@@ -208,7 +208,7 @@
                      underlyingSecurityID="" underlyingListingExchange="" dateTime="20220607;100249" fxPnl="0"
                      accruedInt="" serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"
                      relatedTradeID="" relatedTransactionID=""/>
-                <Lot accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Lot accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                      assetCategory="STK" symbol="FVRR" description="FIVERR INTERNATIONAL LTD" conid="370695082"
                      securityID="IL0011582033" securityIDType="ISIN" cusip="" isin="IL0011582033" underlyingConid=""
                      underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall="" tradeID=""
@@ -224,7 +224,7 @@
                      underlyingSecurityID="" underlyingListingExchange="" dateTime="20220607;100249" fxPnl="0"
                      accruedInt="" serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"
                      relatedTradeID="" relatedTransactionID=""/>
-                <Lot accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Lot accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                      assetCategory="STK" symbol="FVRR" description="FIVERR INTERNATIONAL LTD" conid="370695082"
                      securityID="IL0011582033" securityIDType="ISIN" cusip="" isin="IL0011582033" underlyingConid=""
                      underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall="" tradeID=""
@@ -240,7 +240,7 @@
                      underlyingSecurityID="" underlyingListingExchange="" dateTime="20220607;100249" fxPnl="0"
                      accruedInt="" serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"
                      relatedTradeID="" relatedTransactionID=""/>
-                <Order accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Order accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                        assetCategory="STK" symbol="FVRR" description="FIVERR INTERNATIONAL LTD" conid="370695082"
                        securityID="IL0011582033" securityIDType="ISIN" cusip="" isin="IL0011582033" underlyingConid=""
                        underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall="" tradeID=""
@@ -256,7 +256,7 @@
                        listingExchange="NYSE" underlyingSecurityID="" underlyingListingExchange=""
                        dateTime="20220607;100323" fxPnl="0" accruedInt="0" serialNumber="" deliveryType=""
                        commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID="" relatedTransactionID=""/>
-                <Trade accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Trade accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                        assetCategory="STK" symbol="FVRR" description="FIVERR INTERNATIONAL LTD" conid="370695082"
                        securityID="IL0011582033" securityIDType="ISIN" cusip="" isin="IL0011582033" underlyingConid=""
                        underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall="" tradeID="387681627"
@@ -274,7 +274,7 @@
                        underlyingListingExchange="" dateTime="20220607;100323" fxPnl="0" accruedInt="0" serialNumber=""
                        deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                        relatedTransactionID=""/>
-                <Trade accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Trade accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                        assetCategory="STK" symbol="FVRR" description="FIVERR INTERNATIONAL LTD" conid="370695082"
                        securityID="IL0011582033" securityIDType="ISIN" cusip="" isin="IL0011582033" underlyingConid=""
                        underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall="" tradeID="387681631"
@@ -292,7 +292,7 @@
                        listingExchange="NYSE" underlyingSecurityID="" underlyingListingExchange=""
                        dateTime="20220607;100323" fxPnl="0" accruedInt="0" serialNumber="" deliveryType=""
                        commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID="" relatedTransactionID=""/>
-                <Trade accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Trade accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                        assetCategory="STK" symbol="FVRR" description="FIVERR INTERNATIONAL LTD" conid="370695082"
                        securityID="IL0011582033" securityIDType="ISIN" cusip="" isin="IL0011582033" underlyingConid=""
                        underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall="" tradeID="387681643"
@@ -310,7 +310,7 @@
                        underlyingListingExchange="" dateTime="20220607;100323" fxPnl="0" accruedInt="0" serialNumber=""
                        deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                        relatedTransactionID=""/>
-                <SymbolSummary accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase=""
+                <SymbolSummary accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase=""
                                assetCategory="STK" symbol="TTWO" description="TAKE-TWO INTERACTIVE SOFTWRE"
                                conid="6478131" securityID="US8740541094" securityIDType="ISIN" cusip="874054109"
                                isin="US8740541094" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -328,7 +328,7 @@
                                underlyingListingExchange="" dateTime="" fxPnl="" accruedInt="0" serialNumber=""
                                deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                                relatedTransactionID=""/>
-                <Order accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95056"
+                <Order accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95056"
                        assetCategory="STK" symbol="TTWO" description="TAKE-TWO INTERACTIVE SOFTWRE" conid="6478131"
                        securityID="US8740541094" securityIDType="ISIN" cusip="874054109" isin="US8740541094"
                        underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -344,7 +344,7 @@
                        underlyingSecurityID="" underlyingListingExchange="" dateTime="20220523;202500" fxPnl="0"
                        accruedInt="0" serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"
                        relatedTradeID="" relatedTransactionID=""/>
-                <Trade accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95056"
+                <Trade accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95056"
                        assetCategory="STK" symbol="TTWO" description="TAKE-TWO INTERACTIVE SOFTWRE" conid="6478131"
                        securityID="US8740541094" securityIDType="ISIN" cusip="874054109" isin="US8740541094"
                        underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -361,7 +361,7 @@
                        listingExchange="NASDAQ" underlyingSecurityID="" underlyingListingExchange=""
                        dateTime="20220523;202500" fxPnl="0" accruedInt="0" serialNumber="" deliveryType=""
                        commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID="" relatedTransactionID=""/>
-                <Order accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95056"
+                <Order accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95056"
                        assetCategory="STK" symbol="TTWO" description="TAKE-TWO INTERACTIVE SOFTWRE" conid="6478131"
                        securityID="US8740541094" securityIDType="ISIN" cusip="874054109" isin="US8740541094"
                        underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -377,7 +377,7 @@
                        underlyingSecurityID="" underlyingListingExchange="" dateTime="20220523;202500" fxPnl="0"
                        accruedInt="0" serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"
                        relatedTradeID="" relatedTransactionID=""/>
-                <Trade accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95056"
+                <Trade accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95056"
                        assetCategory="STK" symbol="TTWO" description="TAKE-TWO INTERACTIVE SOFTWRE" conid="6478131"
                        securityID="US8740541094" securityIDType="ISIN" cusip="874054109" isin="US8740541094"
                        underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -394,7 +394,7 @@
                        underlyingSecurityID="" underlyingListingExchange="" dateTime="20220523;202500" fxPnl="0"
                        accruedInt="0" serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"
                        relatedTradeID="" relatedTransactionID=""/>
-                <Lot accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95056"
+                <Lot accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95056"
                      assetCategory="STK" symbol="TTWO" description="TAKE-TWO INTERACTIVE SOFTWRE" conid="6478131"
                      securityID="US8740541094" securityIDType="ISIN" cusip="874054109" isin="US8740541094"
                      underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -411,7 +411,7 @@
                      underlyingListingExchange="" dateTime="20220523;202500" fxPnl="0" accruedInt="" serialNumber=""
                      deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                      relatedTransactionID=""/>
-                <SymbolSummary accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase=""
+                <SymbolSummary accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase=""
                                assetCategory="STK" symbol="ZM" description="ZOOM VIDEO COMMUNICATIONS-A"
                                conid="361181057" securityID="US98980L1017" securityIDType="ISIN" cusip="98980L101"
                                isin="US98980L1017" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -428,7 +428,7 @@
                                underlyingSecurityID="" underlyingListingExchange="" dateTime="" fxPnl="" accruedInt="0"
                                serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"
                                relatedTradeID="" relatedTransactionID=""/>
-                <SymbolSummary accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase=""
+                <SymbolSummary accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase=""
                                assetCategory="STK" symbol="ZM" description="ZOOM VIDEO COMMUNICATIONS-A"
                                conid="361181057" securityID="US98980L1017" securityIDType="ISIN" cusip="98980L101"
                                isin="US98980L1017" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -446,7 +446,7 @@
                                listingExchange="NASDAQ" underlyingSecurityID="" underlyingListingExchange="" dateTime=""
                                fxPnl="" accruedInt="0" serialNumber="" deliveryType="" commodityType="" fineness="0.0"
                                weight="0.0 ()" relatedTradeID="" relatedTransactionID=""/>
-                <Order accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Order accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                        assetCategory="STK" symbol="ZM" description="ZOOM VIDEO COMMUNICATIONS-A" conid="361181057"
                        securityID="US98980L1017" securityIDType="ISIN" cusip="98980L101" isin="US98980L1017"
                        underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -463,7 +463,7 @@
                        listingExchange="NASDAQ" underlyingSecurityID="" underlyingListingExchange=""
                        dateTime="20220607;100048" fxPnl="0" accruedInt="0" serialNumber="" deliveryType=""
                        commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID="" relatedTransactionID=""/>
-                <Trade accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Trade accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                        assetCategory="STK" symbol="ZM" description="ZOOM VIDEO COMMUNICATIONS-A" conid="361181057"
                        securityID="US98980L1017" securityIDType="ISIN" cusip="98980L101" isin="US98980L1017"
                        underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -482,7 +482,7 @@
                        underlyingListingExchange="" dateTime="20220607;100048" fxPnl="0" accruedInt="0" serialNumber=""
                        deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                        relatedTransactionID=""/>
-                <Lot accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Lot accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                      assetCategory="STK" symbol="ZM" description="ZOOM VIDEO COMMUNICATIONS-A" conid="361181057"
                      securityID="US98980L1017" securityIDType="ISIN" cusip="98980L101" isin="US98980L1017"
                      underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -498,7 +498,7 @@
                      underlyingSecurityID="" underlyingListingExchange="" dateTime="20220607;100048" fxPnl="0"
                      accruedInt="" serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"
                      relatedTradeID="" relatedTransactionID=""/>
-                <Lot accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Lot accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                      assetCategory="STK" symbol="ZM" description="ZOOM VIDEO COMMUNICATIONS-A" conid="361181057"
                      securityID="US98980L1017" securityIDType="ISIN" cusip="98980L101" isin="US98980L1017"
                      underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -515,7 +515,7 @@
                      underlyingListingExchange="" dateTime="20220607;100048" fxPnl="0" accruedInt="" serialNumber=""
                      deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                      relatedTransactionID=""/>
-                <Lot accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Lot accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                      assetCategory="STK" symbol="ZM" description="ZOOM VIDEO COMMUNICATIONS-A" conid="361181057"
                      securityID="US98980L1017" securityIDType="ISIN" cusip="98980L101" isin="US98980L1017"
                      underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -532,7 +532,7 @@
                      underlyingListingExchange="" dateTime="20220607;100048" fxPnl="0" accruedInt="" serialNumber=""
                      deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                      relatedTransactionID=""/>
-                <Lot accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Lot accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                      assetCategory="STK" symbol="ZM" description="ZOOM VIDEO COMMUNICATIONS-A" conid="361181057"
                      securityID="US98980L1017" securityIDType="ISIN" cusip="98980L101" isin="US98980L1017"
                      underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -549,7 +549,7 @@
                      underlyingListingExchange="" dateTime="20220607;100048" fxPnl="0" accruedInt="" serialNumber=""
                      deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                      relatedTransactionID=""/>
-                <Order accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Order accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                        assetCategory="STK" symbol="ZM" description="ZOOM VIDEO COMMUNICATIONS-A" conid="361181057"
                        securityID="US98980L1017" securityIDType="ISIN" cusip="98980L101" isin="US98980L1017"
                        underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -566,7 +566,7 @@
                        underlyingListingExchange="" dateTime="20220607;100107" fxPnl="0" accruedInt="0" serialNumber=""
                        deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                        relatedTransactionID=""/>
-                <Trade accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
+                <Trade accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.93418"
                        assetCategory="STK" symbol="ZM" description="ZOOM VIDEO COMMUNICATIONS-A" conid="361181057"
                        securityID="US98980L1017" securityIDType="ISIN" cusip="98980L101" isin="US98980L1017"
                        underlyingConid="" underlyingSymbol="" issuer="" multiplier="1" strike="" expiry="" putCall=""
@@ -584,7 +584,7 @@
                        listingExchange="NASDAQ" underlyingSecurityID="" underlyingListingExchange=""
                        dateTime="20220607;100107" fxPnl="0" accruedInt="0" serialNumber="" deliveryType=""
                        commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID="" relatedTransactionID=""/>
-                <AssetSummary accountId="U7169936" acctAlias="" model="" currency="" fxRateToBase="" assetCategory="OPT"
+                <AssetSummary accountId="U1111111" acctAlias="" model="" currency="" fxRateToBase="" assetCategory="OPT"
                               symbol="" description="" conid="" securityID="" securityIDType="" cusip="" isin=""
                               underlyingConid="" underlyingSymbol="" issuer="" multiplier="" strike="" expiry=""
                               putCall="" tradeID="" reportDate="" tradeDate="" settleDateTarget="" transactionType=""
@@ -599,7 +599,7 @@
                               listingExchange="" underlyingSecurityID="" underlyingListingExchange="" dateTime=""
                               fxPnl="" accruedInt="" serialNumber="" deliveryType="" commodityType="" fineness=""
                               weight="" relatedTradeID="" relatedTransactionID=""/>
-                <SymbolSummary accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase=""
+                <SymbolSummary accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase=""
                                assetCategory="OPT" symbol="IBKR  220617P00055000" description="IBKR 17JUN22 55 P"
                                conid="520934333" securityID="" securityIDType="" cusip="" isin=""
                                underlyingConid="43645865" underlyingSymbol="IBKR" issuer="" multiplier="100" strike="55"
@@ -617,7 +617,7 @@
                                underlyingListingExchange="NASDAQ" dateTime="" fxPnl="" accruedInt="0" serialNumber=""
                                deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                                relatedTransactionID=""/>
-                <Order accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95733"
+                <Order accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95733"
                        assetCategory="OPT" symbol="IBKR  220617P00055000" description="IBKR 17JUN22 55 P"
                        conid="520934333" securityID="" securityIDType="" cusip="" isin="" underlyingConid="43645865"
                        underlyingSymbol="IBKR" issuer="" multiplier="100" strike="55" expiry="20220617" putCall="P"
@@ -634,7 +634,7 @@
                        underlyingSecurityID="US45841N1072" underlyingListingExchange="NASDAQ" dateTime="20220615;142305"
                        fxPnl="0" accruedInt="0" serialNumber="" deliveryType="" commodityType="" fineness="0.0"
                        weight="0.0 ()" relatedTradeID="" relatedTransactionID=""/>
-                <Trade accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95733"
+                <Trade accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95733"
                        assetCategory="OPT" symbol="IBKR  220617P00055000" description="IBKR 17JUN22 55 P"
                        conid="520934333" securityID="" securityIDType="" cusip="" isin="" underlyingConid="43645865"
                        underlyingSymbol="IBKR" issuer="" multiplier="100" strike="55" expiry="20220617" putCall="P"
@@ -651,7 +651,7 @@
                        listingExchange="CBOE" underlyingSecurityID="US45841N1072" underlyingListingExchange="NASDAQ"
                        dateTime="20220615;142305" fxPnl="0" accruedInt="0" serialNumber="" deliveryType=""
                        commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID="" relatedTransactionID=""/>
-                <Lot accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95733"
+                <Lot accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95733"
                      assetCategory="OPT" symbol="IBKR  220617P00055000" description="IBKR 17JUN22 55 P"
                      conid="520934333" securityID="" securityIDType="" cusip="" isin="" underlyingConid="43645865"
                      underlyingSymbol="IBKR" issuer="" multiplier="100" strike="55" expiry="20220617" putCall="P"
@@ -668,7 +668,7 @@
                      underlyingListingExchange="NASDAQ" dateTime="20220615;142305" fxPnl="0" accruedInt=""
                      serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                      relatedTransactionID=""/>
-                <SymbolSummary accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase=""
+                <SymbolSummary accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase=""
                                assetCategory="OPT" symbol="IBKR  220916P00055000" description="IBKR 16SEP22 55 P"
                                conid="539457903" securityID="" securityIDType="" cusip="" isin=""
                                underlyingConid="43645865" underlyingSymbol="IBKR" issuer="" multiplier="100" strike="55"
@@ -686,7 +686,7 @@
                                underlyingListingExchange="NASDAQ" dateTime="" fxPnl="" accruedInt="0" serialNumber=""
                                deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                                relatedTransactionID=""/>
-                <Order accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95733"
+                <Order accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95733"
                        assetCategory="OPT" symbol="IBKR  220916P00055000" description="IBKR 16SEP22 55 P"
                        conid="539457903" securityID="" securityIDType="" cusip="" isin="" underlyingConid="43645865"
                        underlyingSymbol="IBKR" issuer="" multiplier="100" strike="55" expiry="20220916" putCall="P"
@@ -703,7 +703,7 @@
                        underlyingListingExchange="NASDAQ" dateTime="20220615;142305" fxPnl="0" accruedInt="0"
                        serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()" relatedTradeID=""
                        relatedTransactionID=""/>
-                <Trade accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95733"
+                <Trade accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95733"
                        assetCategory="OPT" symbol="IBKR  220916P00055000" description="IBKR 16SEP22 55 P"
                        conid="539457903" securityID="" securityIDType="" cusip="" isin="" underlyingConid="43645865"
                        underlyingSymbol="IBKR" issuer="" multiplier="100" strike="55" expiry="20220916" putCall="P"
@@ -800,7 +800,7 @@
                                          underlyingListingExchange="" reportDate="20220608" actionID="108487312"
                                          levelOfDetail="SUMMARY" serialNumber="" deliveryType="" commodityType=""
                                          fineness="0.0" weight="0.0 ()"/>
-                <ChangeInDividendAccrual accountId="U7169936" acctAlias="" model="" currency="USD"
+                <ChangeInDividendAccrual accountId="U1111111" acctAlias="" model="" currency="USD"
                                          fxRateToBase="0.93292" assetCategory="STK" symbol="CGNX"
                                          description="COGNEX CORP" conid="267547" securityID="US1924221039"
                                          securityIDType="ISIN" cusip="192422103" isin="US1924221039" underlyingConid=""
@@ -811,7 +811,7 @@
                                          underlyingSecurityID="" underlyingListingExchange="" reportDate="20220603"
                                          actionID="107805787" levelOfDetail="DETAIL" serialNumber="" deliveryType=""
                                          commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <ChangeInDividendAccrual accountId="U7169936" acctAlias="" model="" currency="USD"
+                <ChangeInDividendAccrual accountId="U1111111" acctAlias="" model="" currency="USD"
                                          fxRateToBase="0.94186" assetCategory="STK" symbol="CME"
                                          description="CME GROUP INC" conid="45127739" securityID="US12572Q1058"
                                          securityIDType="ISIN" cusip="12572Q105" isin="US12572Q1058" underlyingConid=""
@@ -822,7 +822,7 @@
                                          underlyingSecurityID="" underlyingListingExchange="" reportDate="20220609"
                                          actionID="107792036" levelOfDetail="DETAIL" serialNumber="" deliveryType=""
                                          commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <ChangeInDividendAccrual accountId="U7169936" acctAlias="" model="" currency="USD"
+                <ChangeInDividendAccrual accountId="U1111111" acctAlias="" model="" currency="USD"
                                          fxRateToBase="0.95056" assetCategory="STK" symbol="CME"
                                          description="CME GROUP INC" conid="45127739" securityID="US12572Q1058"
                                          securityIDType="ISIN" cusip="12572Q105" isin="US12572Q1058" underlyingConid=""
@@ -833,7 +833,7 @@
                                          underlyingSecurityID="" underlyingListingExchange="" reportDate="20220628"
                                          actionID="107792036" levelOfDetail="DETAIL" serialNumber="" deliveryType=""
                                          commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <ChangeInDividendAccrual accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.9528"
+                <ChangeInDividendAccrual accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.9528"
                                          assetCategory="STK" symbol="EBAY" description="EBAY INC" conid="4347086"
                                          securityID="US2786421030" securityIDType="ISIN" cusip="278642103"
                                          isin="US2786421030" underlyingConid="" underlyingSymbol="" issuer=""
@@ -844,7 +844,7 @@
                                          underlyingListingExchange="" reportDate="20220617" actionID="107795526"
                                          levelOfDetail="DETAIL" serialNumber="" deliveryType="" commodityType=""
                                          fineness="0.0" weight="0.0 ()"/>
-                <ChangeInDividendAccrual accountId="U7169936" acctAlias="" model="" currency="USD"
+                <ChangeInDividendAccrual accountId="U1111111" acctAlias="" model="" currency="USD"
                                          fxRateToBase="0.94734" assetCategory="STK" symbol="FDX"
                                          description="FEDEX CORPORATION" conid="5100583" securityID="US31428X1063"
                                          securityIDType="ISIN" cusip="31428X106" isin="US31428X1063" underlyingConid=""
@@ -855,7 +855,7 @@
                                          underlyingSecurityID="" underlyingListingExchange="" reportDate="20220624"
                                          actionID="109127413" levelOfDetail="DETAIL" serialNumber="" deliveryType=""
                                          commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <ChangeInDividendAccrual accountId="U7169936" acctAlias="" model="" currency="USD"
+                <ChangeInDividendAccrual accountId="U1111111" acctAlias="" model="" currency="USD"
                                          fxRateToBase="0.93292" assetCategory="STK" symbol="NKE"
                                          description="NIKE INC -CL B" conid="10291" securityID="US6541061031"
                                          securityIDType="ISIN" cusip="654106103" isin="US6541061031" underlyingConid=""
@@ -866,7 +866,7 @@
                                          underlyingSecurityID="" underlyingListingExchange="" reportDate="20220603"
                                          actionID="107805863" levelOfDetail="DETAIL" serialNumber="" deliveryType=""
                                          commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <ChangeInDividendAccrual accountId="U7169936" acctAlias="" model="" currency="USD"
+                <ChangeInDividendAccrual accountId="U1111111" acctAlias="" model="" currency="USD"
                                          fxRateToBase="0.93311" assetCategory="STK" symbol="NVDA"
                                          description="NVIDIA CORP" conid="4815747" securityID="US67066G1040"
                                          securityIDType="ISIN" cusip="67066G104" isin="US67066G1040" underlyingConid=""
@@ -879,7 +879,7 @@
                                          commodityType="" fineness="0.0" weight="0.0 ()"/>
             </ChangeInDividendAccruals>
             <OpenDividendAccruals>
-                <OpenDividendAccrual accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95389"
+                <OpenDividendAccrual accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95389"
                                      assetCategory="STK" symbol="FDX" description="FEDEX CORPORATION" conid="5100583"
                                      securityID="US31428X1063" securityIDType="ISIN" cusip="31428X106"
                                      isin="US31428X1063" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -888,7 +888,7 @@
                                      fromAcct="" toAcct="" principalAdjustFactor="" listingExchange="NYSE"
                                      underlyingSecurityID="" underlyingListingExchange="" actionID="109127413"
                                      serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <OpenDividendAccrual accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95389"
+                <OpenDividendAccrual accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95389"
                                      assetCategory="STK" symbol="NKE" description="NIKE INC -CL B" conid="10291"
                                      securityID="US6541061031" securityIDType="ISIN" cusip="654106103"
                                      isin="US6541061031" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"
@@ -897,7 +897,7 @@
                                      fromAcct="" toAcct="" principalAdjustFactor="" listingExchange="NYSE"
                                      underlyingSecurityID="" underlyingListingExchange="" actionID="107805863"
                                      serialNumber="" deliveryType="" commodityType="" fineness="0.0" weight="0.0 ()"/>
-                <OpenDividendAccrual accountId="U7169936" acctAlias="" model="" currency="USD" fxRateToBase="0.95389"
+                <OpenDividendAccrual accountId="U1111111" acctAlias="" model="" currency="USD" fxRateToBase="0.95389"
                                      assetCategory="STK" symbol="NVDA" description="NVIDIA CORP" conid="4815747"
                                      securityID="US67066G1040" securityIDType="ISIN" cusip="67066G104"
                                      isin="US67066G1040" underlyingConid="" underlyingSymbol="" issuer="" multiplier="1"

@@ -1,9 +1,6 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.domain.Dividend;
-import com.marcomarchionni.ibportfolio.domain.FlexStatement;
-import com.marcomarchionni.ibportfolio.domain.Position;
-import com.marcomarchionni.ibportfolio.domain.Trade;
+import com.marcomarchionni.ibportfolio.domain.*;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.repositories.*;
 import org.junit.jupiter.api.AfterEach;
@@ -18,7 +15,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -66,26 +66,37 @@ public class UpdateOrchestratorIT {
 
     @Test
     void updateFromFileEmptyDbTest() throws IOException {
+        // Get sample user
+        User user = getSampleUser();
 
-        CombinedUpdateReport report = updateOrchestrator.updateFromFile(mockMultipartFile);
+        // Execute update
+        CombinedUpdateReport report = updateOrchestrator.updateFromFile(user, mockMultipartFile);
 
-        // get data from db
+        // Verify data
+
+        // Get data from db
         List<Trade> trades = tradeRepository.findAll();
         List<Position> positions = positionRepository.findAll();
         List<Dividend> dividends = dividendRepository.findAll();
         List<FlexStatement> flexStatements = flexStatementRepository.findAll();
 
-        // assert db is populated
+        // Assert db is populated
         assertFalse(trades.isEmpty());
         assertFalse(positions.isEmpty());
         assertFalse(dividends.isEmpty());
         assertFalse(flexStatements.isEmpty());
 
-        // assert dividends' openClosed is not null
+        // Assert data belong to user account
+        assertTrue(trades.stream().allMatch(t -> t.getAccountId().equals(user.getAccountId())));
+        assertTrue(positions.stream().allMatch(p -> p.getAccountId().equals(user.getAccountId())));
+        assertTrue(dividends.stream().allMatch(d -> d.getAccountId().equals(user.getAccountId())));
+        assertTrue(flexStatements.stream().allMatch(fs -> fs.getAccountId().equals(user.getAccountId())));
+
+        // Assert dividends' openClosed is not null
         Optional<Dividend> result = dividends.stream().filter(d -> d.getOpenClosed() == null).findFirst();
         assertTrue(result.isEmpty());
 
-        // assert report data reflects db data
+        // Assert report data reflects db data
         assertEquals(trades.size(), report.getTrades().getAdded().size());
         assertEquals(positions.size(), report.getPositions().getAdded().size());
         assertEquals(dividends.size(), report.getDividends().getAdded().size());
@@ -96,6 +107,9 @@ public class UpdateOrchestratorIT {
     @Sql("classpath:dbScripts/insertSampleData.sql")
     void updateFromFilePopulatedDbTest() throws IOException {
 
+        // Get sample user
+        User user = getSampleUser();
+
         // assess db state before update
         List<FlexStatement> existingFlexStatements = flexStatementRepository.findAll();
         List<Trade> existingTrades = tradeRepository.findAll();
@@ -103,25 +117,27 @@ public class UpdateOrchestratorIT {
                 .count();
         List<Dividend> existingDividends = dividendRepository.findAll();
 
-        // update db
-        CombinedUpdateReport report = updateOrchestrator.updateFromFile(mockMultipartFile);
+        // execute update db
+        CombinedUpdateReport report = updateOrchestrator.updateFromFile(user, mockMultipartFile);
 
         // assess db state after update
         List<Trade> updatedTrades = tradeRepository.findAll();
         long countTradesWithStrategyAfter = updatedTrades.stream().filter(trade -> trade.getStrategy() != null).count();
 
         List<Position> updatedPositions = positionRepository.findAll();
-        long countPositionsWithStrategy = updatedPositions.stream().filter(position -> position.getStrategy() != null)
+        long countPositionsWithStrategyAfter = updatedPositions.stream()
+                .filter(position -> position.getStrategy() != null)
                 .count();
         List<Dividend> updatedDividends = dividendRepository.findAll();
         List<FlexStatement> updatedFlexStatements = flexStatementRepository.findAll();
 
-        // assert flexStatement is added
+        // assert a new flexStatement is added
         assertEquals(existingFlexStatements.size() + 1, updatedFlexStatements.size());
-        FlexStatement lastAddedFlex = updatedFlexStatements.stream()
-                .filter(fs -> fs.getId().equals(report.getFlexStatements().getAdded().get(0).getId())).findFirst()
-                .get();
-        assertEquals(report.getFlexStatements().getAdded().get(0), lastAddedFlex);
+        Set<Long> existingFlexIds = existingFlexStatements.stream().map(FlexStatement::getId)
+                .collect(Collectors.toSet());
+        FlexStatement addedFlexStatement = updatedFlexStatements.stream()
+                .filter(fs -> !existingFlexIds.contains(fs.getId())).toList().get(0);
+        assertEquals(report.getFlexStatements().getAdded().get(0), addedFlexStatement);
 
         // assert trades are updated
         assertEquals(existingTrades.size() + report.getTrades().getAdded().size(), updatedTrades.size());
@@ -130,7 +146,7 @@ public class UpdateOrchestratorIT {
         // assert positions are updated
         assertEquals(report.getPositions().getAdded().size() + report.getPositions().getMerged()
                 .size(), updatedPositions.size());
-        assertEquals(report.getPositions().getMerged().size(), countPositionsWithStrategy);
+        assertEquals(report.getPositions().getMerged().size(), countPositionsWithStrategyAfter);
 
         // assert dividends are updated
         assertEquals(existingDividends.size() + report.getDividends().getAdded().size(), updatedDividends.size());

@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
@@ -10,9 +11,9 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEn
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapper;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,8 +31,9 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public List<PortfolioSummaryDto> findAll() {
-        List<Portfolio> portfolios = portfolioRepository.findAll();
+    public List<PortfolioSummaryDto> findAllByUser(User user) {
+        String accountId = user.getAccountId();
+        List<Portfolio> portfolios = portfolioRepository.findAllByAccountId(accountId);
         return portfolios.stream().map(portfolioMapper::toPortfolioListDto).collect(Collectors.toList());
     }
 
@@ -56,28 +58,38 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public PortfolioDetailDto create(@Valid PortfolioCreateDto portfolioCreateDto) {
+    public PortfolioDetailDto create(User user, PortfolioCreateDto portfolioCreateDto) {
+        // Get user account id
+        String accountId = user.getAccountId();
+
         // Check if portfolio with the same name already exists
-        boolean existsPortfolioWithTheSameName = portfolioRepository.existsByName(portfolioCreateDto.getName());
-        if (existsPortfolioWithTheSameName) {
+        boolean existsUserPortfolioWithTheSameName = portfolioRepository.existsByNameAndAccountId(accountId,
+                portfolioCreateDto.getName());
+        if (existsUserPortfolioWithTheSameName) {
             throw new UnableToSaveEntitiesException("Portfolio with name: " + portfolioCreateDto.getName() + " " +
-                    "already exists");
+                    "already exists for account: " + accountId);
         }
         // Create portfolio
-        Portfolio savedPortfolio = portfolioRepository.save(portfolioMapper.toEntity(portfolioCreateDto));
+        Portfolio savedPortfolio = portfolioRepository.save(portfolioMapper.toEntity(accountId, portfolioCreateDto));
         return portfolioMapper.toPortfolioDetailDto(savedPortfolio);
     }
 
     @Override
-    public PortfolioDetailDto updateName(@Valid UpdateNameDto dto) {
+    @Transactional
+    public PortfolioDetailDto updateName(User user, UpdateNameDto dto) {
+
+        // Get user account id
+        String accountId = user.getAccountId();
+
         // Check if the portfolio to update exists
         Portfolio portfolio = portfolioRepository.findById(dto.getId()).orElseThrow(
                 () -> new EntityNotFoundException("Portfolio with id: " + dto.getId() + " not found.")
         );
         // Check if a portfolio with the same name already exists
-        boolean existsPortfolioWithTheSameName = portfolioRepository.existsByName(dto.getName());
+        boolean existsPortfolioWithTheSameName = portfolioRepository.existsByNameAndAccountId(accountId, dto.getName());
         if (existsPortfolioWithTheSameName) {
-            throw new UnableToSaveEntitiesException("Portfolio with name: " + dto.getName() + " already exists");
+            throw new UnableToSaveEntitiesException("Portfolio with name: " + dto.getName() + " already exists for " +
+                    "account: " + accountId + ".");
         }
         // Update portfolio name
         portfolio.setName(dto.getName());

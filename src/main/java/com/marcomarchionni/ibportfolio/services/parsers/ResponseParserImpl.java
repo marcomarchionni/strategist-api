@@ -39,7 +39,7 @@ public class ResponseParserImpl implements ResponseParser {
 
     private Predicate<FlexQueryResponseDto.ChangeInDividendAccrual> isValidClosedDividend() {
         return cd ->
-                cd.getLevelOfDetail().equalsIgnoreCase("SUMMARY") &&
+                cd.getLevelOfDetail().equalsIgnoreCase("DETAIL") && cd.getCode().equalsIgnoreCase("Re") &&
                         cd.getDate().equals(cd.getPayDate());
     }
 

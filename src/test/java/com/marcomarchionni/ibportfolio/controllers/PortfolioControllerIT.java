@@ -2,9 +2,11 @@ package com.marcomarchionni.ibportfolio.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,12 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePortfolio;
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -29,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@WithMockUser
 @Sql("classpath:dbScripts/insertSampleData.sql")
 class PortfolioControllerIT {
 
@@ -41,17 +45,25 @@ class PortfolioControllerIT {
 
     @Autowired
     ObjectMapper mapper;
-
-    Portfolio portfolio;
+    User user;
 
     @BeforeEach
     void setup() {
-        portfolio = getSamplePortfolio("MF StockAdvisor");
+        // Setup authenticated user for testing
+        user = User.builder().firstName("Marco").lastName("Marchionni").email("marco99@gmail.com").accountId("U1111111")
+                .role(User.Role.USER).build(); // Initialize with necessary properties
+        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test
     void findAllSuccess() throws Exception {
-        int expectedSize = portfolioRepository.findAll().size();
+        int expectedSize = portfolioRepository.findAllByAccountId(user.getAccountId()).size();
 
         mockMvc.perform(get("/portfolios"))
                 .andExpect(status().isOk())
@@ -60,9 +72,11 @@ class PortfolioControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"Saver Portfolio,5", "Trader Portfolio,2"})
-    void findByIdSuccess(String portfolioName, int expectedSize) throws Exception {
-        Long portfolioId = portfolioRepository.findByName(portfolioName).get(0).getId();
+    @CsvSource({"U1111111,Saver Portfolio,5", "U1111111,Trader Portfolio,2"})
+    void findByIdSuccess(String accountId, String portfolioName, int expectedSize) throws Exception {
+        Optional<Portfolio> portfolio = portfolioRepository.findByAccountIdAndName(accountId, portfolioName);
+        assertTrue(portfolio.isPresent());
+        Long portfolioId = portfolio.get().getId();
 
         mockMvc.perform(get("/portfolios/{id}", portfolioId))
                 .andDo(print())
@@ -86,9 +100,9 @@ class PortfolioControllerIT {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Super Portfolio", "Marco's Portfolio", "Zipp"})
-    void updatePortfolioNameSuccess(String portfolioName) throws Exception {
-        Long portfolioId = portfolioRepository.findByName("Saver Portfolio").get(0).getId();
+    @CsvSource({"U1111111, Super Portfolio", "U1111111, Marco's Portfolio", "U1111111, Zipp"})
+    void updatePortfolioNameSuccess(String accountId, String portfolioName) throws Exception {
+        Long portfolioId = portfolioRepository.findByAccountIdAndName(accountId, "Saver Portfolio").get().getId();
         UpdateNameDto updateName = UpdateNameDto.builder().id(portfolioId).name(portfolioName).build();
 
         mockMvc.perform(put("/portfolios")
@@ -114,8 +128,9 @@ class PortfolioControllerIT {
 
     @Test
     void deleteByIdSuccess() throws Exception {
-        Long portfolioId = portfolioRepository.findByName("Millionaire Portfolio").get(0).getId();
-        assertTrue(portfolioRepository.findById(portfolioId).isPresent());
+        Optional<Portfolio> portfolio = portfolioRepository.findByAccountIdAndName("U1111111", "Millionaire Portfolio");
+        assertTrue(portfolio.isPresent());
+        Long portfolioId = portfolio.get().getId();
 
         mockMvc.perform(delete("/portfolios/{id}", portfolioId))
                 .andDo(print())
@@ -125,12 +140,15 @@ class PortfolioControllerIT {
     }
 
     @Test
-    void deleteByIdException() throws Exception {
-        Long portfolioId = portfolioRepository.findByName("Saver Portfolio").get(0).getId();
-        assertTrue(portfolioRepository.findById(portfolioId).isPresent());
+    void deleteByIdUnableToDeleteEntitiesException() throws Exception {
+        Optional<Portfolio> portfolio = portfolioRepository.findByAccountIdAndName("U1111111", "Saver Portfolio");
+        assertTrue(portfolio.isPresent());
+        Long portfolioId = portfolio.get().getId();
 
         mockMvc.perform(delete("/portfolios/{id}", portfolioId))
                 .andDo(print())
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type", is("unable-to-delete-entities")));
     }
 }

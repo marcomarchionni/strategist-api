@@ -2,27 +2,20 @@ package com.marcomarchionni.ibportfolio.errorhandling.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
-import org.springframework.web.ErrorResponse;
 
-import java.net.URI;
+public class EntityNotFoundException extends CustomException {
 
-public class EntityNotFoundException extends RuntimeException implements ErrorResponse {
+    public static final String DEFAULT_MESSAGE = "Entity not found";
+    public static final String DEFAULT_TITLE = "Entity Not Found";
+    public static final HttpStatusCode DEFAULT_STATUS_CODE = HttpStatus.NOT_FOUND;
+
+    //TODO: add a constructor that takes an entity name and user account id
+    @SuppressWarnings("unused")
+    public EntityNotFoundException() {
+        super(DEFAULT_MESSAGE, DEFAULT_TITLE, DEFAULT_STATUS_CODE);
+    }
 
     public EntityNotFoundException(String message) {
-        super(message);
-    }
-
-    @Override
-    public HttpStatusCode getStatusCode() {
-        return HttpStatus.NOT_FOUND;
-    }
-
-    @Override
-    public ProblemDetail getBody() {
-        ProblemDetail pd = ProblemDetail.forStatusAndDetail(getStatusCode(), getMessage());
-        pd.setType(URI.create("entity-not-found"));
-        pd.setTitle("Entity not found");
-        return pd;
+        super(message, DEFAULT_TITLE, DEFAULT_STATUS_CODE);
     }
 }

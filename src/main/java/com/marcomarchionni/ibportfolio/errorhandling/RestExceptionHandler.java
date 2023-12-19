@@ -31,6 +31,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             EmptyFileException.class,
             InvalidXMLFileException.class,
             NoXMLExtensionException.class,
+            UserNotAuthenticatedException.class,
             IbServerErrorException.class}
     )
     public ResponseEntity<Object> handleCustomExceptions(ErrorResponse ex) {

@@ -19,6 +19,9 @@ public class Strategy {
     @Column(name= "id")
     private Long id;
 
+    @Column(name = "account_id")
+    private String accountId;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne
@@ -47,8 +50,10 @@ public class Strategy {
     @OneToMany(mappedBy = "strategy", fetch = FetchType.LAZY)
     private List<Dividend> dividends = new ArrayList<>();
 
-    public Strategy(Long id, Portfolio portfolio, String name, List<Position> positions, List<Trade> trades, List<Dividend> dividends) {
+    public Strategy(Long id, String accountId, Portfolio portfolio, String name, List<Position> positions,
+                    List<Trade> trades, List<Dividend> dividends) {
         this.id = id;
+        this.accountId = accountId;
         this.name = name;
         this.portfolio = portfolio;
         if (trades != null) this.trades = trades;
