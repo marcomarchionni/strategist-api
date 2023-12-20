@@ -46,7 +46,7 @@ public class UpdateServiceImpl implements UpdateService {
 
         // Check if dto has the latest data
         LocalDate toDateInDto = parser.getFlexStatementToDate(dto);
-        LocalDate latestToDateInDb = flexStatementService.findLatestToDate();
+        LocalDate latestToDateInDb = flexStatementService.findLatestToDate(user);
         boolean dtoHasTheLatestData = toDateInDto.isAfter(latestToDateInDb);
 
         if (dtoHasTheLatestData) {
@@ -68,7 +68,7 @@ public class UpdateServiceImpl implements UpdateService {
         UpdateReport<Trade> tradeReport = tradeService.addOrSkip(trades);
 
         // Save flexStatement
-        UpdateReport<FlexStatement> flexStatementReport = flexStatementService.save(parser.getFlexStatement(dto));
+        UpdateReport<FlexStatement> flexStatementReport = flexStatementService.save(user, parser.getFlexStatement(dto));
 
         return CombinedUpdateReport.builder().flexStatements(flexStatementReport).trades(tradeReport)
                 .positions(positionReport).dividends(dividendReport).build();

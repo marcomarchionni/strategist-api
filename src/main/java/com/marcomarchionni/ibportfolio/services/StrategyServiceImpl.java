@@ -37,8 +37,7 @@ public class StrategyServiceImpl implements StrategyService {
 
     @Override
     public List<StrategySummaryDto> findByFilter(User user, StrategyFindDto strategyFind) {
-        String accountId = user.getAccountId();
-        List<Strategy> strategies = strategyRepository.findByParams(accountId, strategyFind.getName());
+        List<Strategy> strategies = strategyRepository.findByParams(user.getAccountId(), strategyFind.getName());
         return strategies.stream().map(strategyMapper::toStrategySummaryDto).collect(Collectors.toList());
     }
 
@@ -49,7 +48,7 @@ public class StrategyServiceImpl implements StrategyService {
                 () -> new EntityNotFoundException(Strategy.class, strategyId, accountId)
         );
         if (strategy.getTrades().isEmpty() && strategy.getPositions().isEmpty() && strategy.getDividends().isEmpty()) {
-            strategyRepository.deleteById(strategyId);
+            this.deleteById(strategyId);
         } else {
             throw new UnableToDeleteEntitiesException("Strategy still assigned to trades, positions or dividends");
         }
@@ -91,7 +90,15 @@ public class StrategyServiceImpl implements StrategyService {
         try {
             return strategyRepository.save(strategy);
         } catch (Exception exc) {
-            throw new UnableToSaveEntitiesException("Strategy cannot be saved." + exc.getMessage());
+            throw new UnableToSaveEntitiesException("Strategy cannot be saved. " + exc.getMessage());
+        }
+    }
+
+    private void deleteById(Long strategyId) {
+        try {
+            strategyRepository.deleteById(strategyId);
+        } catch (Exception exc) {
+            throw new UnableToDeleteEntitiesException("Strategy cannot be deleted. " + exc.getMessage());
         }
     }
 }

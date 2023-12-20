@@ -29,10 +29,6 @@ public class DividendServiceImpl implements DividendService {
     private final DividendRepository dividendRepository;
     private final StrategyRepository strategyRepository;
     private final DividendMapper dividendMapper;
-//    @Override
-//    public void saveDividends(List<Dividend> openOrClosedDividends) {
-//        dividendRepository.saveAll(openOrClosedDividends);
-//    }
 
     @Override
     public List<DividendSummaryDto> findByFilter(User user, DividendFindDto dividendFind) {

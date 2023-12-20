@@ -32,8 +32,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public List<PortfolioSummaryDto> findAllByUser(User user) {
-        String accountId = user.getAccountId();
-        List<Portfolio> portfolios = portfolioRepository.findAllByAccountId(accountId);
+        List<Portfolio> portfolios = portfolioRepository.findAllByAccountId(user.getAccountId());
         return portfolios.stream().map(portfolioMapper::toPortfolioListDto).collect(Collectors.toList());
     }
 
@@ -67,9 +66,9 @@ public class PortfolioServiceImpl implements PortfolioService {
         String portfolioName = portfolioCreateDto.getName();
 
         // Check if portfolio with the same name already exists
-        boolean existsUserPortfolioWithName = portfolioRepository.existsByAccountIdAndName(accountId,
+        boolean existsPortfolioWithName = portfolioRepository.existsByAccountIdAndName(accountId,
                 portfolioName);
-        if (existsUserPortfolioWithName) {
+        if (existsPortfolioWithName) {
             throw new UnableToSaveEntitiesException("Portfolio with name: " + portfolioCreateDto.getName() + " " +
                     "already exists for account: " + accountId);
         }
@@ -91,8 +90,8 @@ public class PortfolioServiceImpl implements PortfolioService {
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId, accountId)
         );
         // Check if a portfolio with the same name already exists
-        boolean existsPortfolioWithTheSameName = portfolioRepository.existsByAccountIdAndName(accountId, dto.getName());
-        if (existsPortfolioWithTheSameName) {
+        boolean existsPortfolioWithName = portfolioRepository.existsByAccountIdAndName(accountId, dto.getName());
+        if (existsPortfolioWithName) {
             throw new UnableToSaveEntitiesException("Portfolio with name: " + dto.getName() + " already exists for " +
                     "account: " + accountId + ".");
         }

@@ -1,20 +1,15 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.FlexStatement;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public interface FlexStatementService {
 
-    // TODO: Implement db check for data continuity
-    @SuppressWarnings("unused")
-    LocalDate findLatestToDate();
+    LocalDate findLatestToDate(User user);
 
-    UpdateReport<FlexStatement> save(FlexStatement flexStatement);
-
-    @SuppressWarnings("unused")
-    List<FlexStatement> findAllOrderedByFromDateAsc();
+    UpdateReport<FlexStatement> save(User user, FlexStatement flexStatement);
 }
 

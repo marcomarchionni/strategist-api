@@ -10,8 +10,7 @@ import org.modelmapper.ModelMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FlexStatementMapperImplTest {
     FlexStatementMapperImpl flexStatementMapper;
@@ -39,6 +38,6 @@ class FlexStatementMapperImplTest {
         assertEquals(flexDto.getAccountId(), flexStatement.getAccountId());
         assertEquals(flexDto.getFromDate(), flexStatement.getFromDate());
         assertEquals(flexDto.getToDate(), flexStatement.getToDate());
-        assertEquals(20221228124835L, flexStatement.getId());
+        assertNull(flexStatement.getId());
     }
 }

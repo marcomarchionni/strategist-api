@@ -16,12 +16,12 @@ FROM `portfolio`;
 
 -- Insert sample data in ibTestDb
 
-INSERT INTO `flex_statement` (`id`, `account_id`, `from_date`, `to_date`, `period`, `when_generated`)
-VALUES ('20220708120433', 'U1111111', '2022-06-01', '2022-06-30', 'LastMonth', '2022-07-08 12:04:33');
-INSERT INTO `flex_statement` (`id`, `account_id`, `from_date`, `to_date`, `period`, `when_generated`)
-VALUES ('20220708130433', 'U1111111', '2022-06-01', '2022-07-08', 'Custom', '2022-07-08 13:04:33');
--- INSERT INTO `flex_statement` (`id`, `account_id`, `from_date`, `to_date`, `period`, `when_generated`)
--- VALUES ('20220708130433', 'U2222222', '2022-06-01', '2022-07-08', 'Custom', '2022-07-08 13:04:33');
+INSERT INTO `flex_statement` (`account_id`, `from_date`, `to_date`, `period`, `when_generated`)
+VALUES ('U1111111', '2022-06-01', '2022-06-30', 'LastMonth', '2022-07-08 12:04:33');
+INSERT INTO `flex_statement` (`account_id`, `from_date`, `to_date`, `period`, `when_generated`)
+VALUES ('U1111111', '2022-06-01', '2022-07-08', 'Custom', '2022-07-08 13:04:33');
+INSERT INTO `flex_statement` (`account_id`, `from_date`, `to_date`, `period`, `when_generated`)
+VALUES ('U2222222', '2022-06-01', '2022-07-09', 'Custom', '2022-07-08 13:04:33');
 
 INSERT INTO `portfolio` (`name`, `account_id`)
 VALUES ('Saver Portfolio', 'U1111111');

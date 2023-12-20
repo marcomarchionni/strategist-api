@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Configuration
@@ -34,11 +33,11 @@ public class ModelMapperConfig {
             }
         };
     }
-    private final Converter<LocalDateTime, Long> flexStatementIdConverter = ctx -> {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String formattedDateTime = ctx.getSource().format(formatter);
-        return Long.parseLong(formattedDateTime);
-    };
+//    private final Converter<LocalDateTime, Long> flexStatementIdConverter = ctx -> {
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+//        String formattedDateTime = ctx.getSource().format(formatter);
+//        return Long.parseLong(formattedDateTime);
+//    };
 
     @Bean
     public ModelMapper modelMapper() {
@@ -57,7 +56,7 @@ public class ModelMapperConfig {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
-                using(flexStatementIdConverter).map(source.getWhenGenerated(), destination.getId());
+                skip().setId(null);
             }
         };
     }
