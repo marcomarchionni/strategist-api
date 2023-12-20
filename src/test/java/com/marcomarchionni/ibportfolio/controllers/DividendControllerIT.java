@@ -7,6 +7,7 @@ import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.repositories.UserRepository;
 import com.marcomarchionni.ibportfolio.services.JwtService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,11 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleUser;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -56,16 +61,18 @@ class DividendControllerIT {
 
     String token;
 
+    User user;
+
     @BeforeEach
     void setUp() {
-        User user = User.builder()
-                .id(1L)
-                .firstName("Marco")
-                .lastName("Marchionni")
-                .email("marco99@gmail.com").password(passwordEncoder.encode("password")).role(User.Role.USER).build();
-        userRepository.save(user);
-        token = jwtService.generateToken(user);
+        user = getSampleUser();
+        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
 
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @ParameterizedTest
@@ -74,7 +81,6 @@ class DividendControllerIT {
             , String symbol, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/dividends")
-                        .header("Authorization", "Bearer " + token)
                         .param("exDateFrom", exDateFrom)
                         .param("exDateTo", exDateTo)
                         .param("payDateFrom", payDateFrom)
@@ -93,7 +99,6 @@ class DividendControllerIT {
                                  String tagged, String symbol) throws Exception {
 
         mockMvc.perform(get("/dividends")
-                        .header("Authorization", "Bearer " + token)
                         .param("exDateFrom", exDateFrom)
                         .param("exDateTo", exDateTo)
                         .param("payDateFrom", payDateFrom)
@@ -111,7 +116,7 @@ class DividendControllerIT {
     @CsvSource({"510058320220711,ZM long,FDX", "26754720220603,IBKR put,CGNX"})
     void updateStrategyIdSuccess(Long dividendId, String strategyName, String expectedSymbol) throws Exception {
 
-        Long strategyId = strategyRepository.findByName(strategyName).get(0).getId();
+        Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), strategyName).get().getId();
 
         UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();
 

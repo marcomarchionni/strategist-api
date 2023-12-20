@@ -12,6 +12,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @Entity(name="strategy")
+@Table(
+        name = "strategy",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"name", "account_id"})
+)
 public class Strategy {
 
     @Id
@@ -29,7 +33,7 @@ public class Strategy {
     private Portfolio portfolio;
 
     @StrategyName
-    @Column(name = "name", unique = true)
+    @Column(name = "name")
     private String name;
 
     @ToString.Exclude

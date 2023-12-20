@@ -20,17 +20,26 @@ INSERT INTO `flex_statement` (`id`, `account_id`, `from_date`, `to_date`, `perio
 VALUES ('20220708120433', 'U1111111', '2022-06-01', '2022-06-30', 'LastMonth', '2022-07-08 12:04:33');
 INSERT INTO `flex_statement` (`id`, `account_id`, `from_date`, `to_date`, `period`, `when_generated`)
 VALUES ('20220708130433', 'U1111111', '2022-06-01', '2022-07-08', 'Custom', '2022-07-08 13:04:33');
+-- INSERT INTO `flex_statement` (`id`, `account_id`, `from_date`, `to_date`, `period`, `when_generated`)
+-- VALUES ('20220708130433', 'U2222222', '2022-06-01', '2022-07-08', 'Custom', '2022-07-08 13:04:33');
 
 INSERT INTO `portfolio` (`name`, `account_id`)
 VALUES ('Saver Portfolio', 'U1111111');
+INSERT INTO `portfolio` (`name`, `account_id`)
+VALUES ('Saver Portfolio', 'U2222222');
 INSERT INTO `portfolio` (`name`, `account_id`)
 VALUES ('Trader Portfolio', 'U1111111');
 INSERT INTO `portfolio` (`name`, `account_id`)
 VALUES ('Millionaire Portfolio', 'U1111111');
 
-SELECT @SaverId := id
+SELECT @SaverId1 := id
 FROM `portfolio`
-WHERE name = 'Saver Portfolio';
+WHERE name = 'Saver Portfolio'
+  AND account_id = 'U1111111';
+SELECT @SaverId2 := id
+FROM `portfolio`
+WHERE name = 'Saver Portfolio'
+  AND account_id = 'U2222222';
 SELECT @TraderId := id
 FROM `portfolio`
 WHERE name = 'Trader Portfolio';
@@ -39,24 +48,31 @@ FROM `portfolio`
 WHERE name = 'Millionaire Portfolio';
 
 INSERT INTO `strategy` (`name`, `strategy_portfolio_id`, `account_id`)
-VALUES ('ZM long', @SaverId, 'U1111111');
+VALUES ('ZM long', @SaverId1, 'U1111111');
+INSERT INTO `strategy` (`name`, `strategy_portfolio_id`, `account_id`)
+VALUES ('ZM long', @SaverId2, 'U2222222');
 INSERT INTO `strategy` (`name`, `strategy_portfolio_id`, `account_id`)
 VALUES ('IBKR put', @TraderId, 'U1111111');
 INSERT INTO `strategy` (`name`, `strategy_portfolio_id`, `account_id`)
-VALUES ('DIS long', @SaverId, 'U1111111');
+VALUES ('DIS long', @SaverId1, 'U1111111');
 INSERT INTO `strategy` (`name`, `strategy_portfolio_id`, `account_id`)
-VALUES ('NKE long', @SaverId, 'U1111111');
+VALUES ('NKE long', @SaverId1, 'U1111111');
 INSERT INTO `strategy` (`name`, `strategy_portfolio_id`, `account_id`)
 VALUES ('EBAY covcall', @TraderId, 'U1111111');
 INSERT INTO `strategy` (`name`, `strategy_portfolio_id`, `account_id`)
-VALUES ('IRBT long', @SaverId, 'U1111111');
+VALUES ('IRBT long', @SaverId1, 'U1111111');
 INSERT INTO `strategy` (`name`, `strategy_portfolio_id`, `account_id`)
-VALUES ('TTWO long', @SaverId, 'U1111111');
+VALUES ('TTWO long', @SaverId1, 'U1111111');
 
 
-SELECT @ZMId := id
+SELECT @ZMId1 := id
 FROM `strategy`
-WHERE name = 'ZM long';
+WHERE name = 'ZM long'
+  AND account_id = 'U1111111';
+SELECT @ZMId2 := id
+FROM `strategy`
+WHERE name = 'ZM long'
+  AND account_id = 'U2222222';
 SELECT @IBKRId := id
 FROM `strategy`
 WHERE name = 'IBKR put';
@@ -81,7 +97,7 @@ INSERT INTO `trade` (`id`, `account_id`, `trade_id`, `con_id`, `ib_order_id`, `t
                      `symbol`,
                      `description`, `asset_category`, `multiplier`, `put_call`, `strike`, `expiry`, `buy_sell`,
                      `quantity`, `trade_price`, `trade_money`, `fifo_pnl_realized`, `ib_commission`)
-VALUES (339578772, 'U1111111', 387679436, 361181057, 339578772, @ZMId, '2022-06-07', 'ZM',
+VALUES (339578772, 'U1111111', 387679436, 361181057, 339578772, @ZMId1, '2022-06-07', 'ZM',
         'ZOOM VIDEO COMMUNICATIONS-A', 'STK', 1,
         NULL, NULL, NULL, 'BUY', 15.0000, 111.3300, 1669.9500, 0.0000, -1.0000);
 INSERT INTO `trade` (`id`, `account_id`, `trade_id`, `con_id`, `ib_order_id`, `trade_strategy_id`, `trade_date`,
@@ -142,7 +158,7 @@ VALUES (10291, 'U1111111', 10291, '2022-06-30', @NKEId, 'NKE', 'NIKE INC -CL B',
 INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (265598, 'U1111111', 265598, '2022-06-30', @ZMId, 'AAPL', 'APPLE INC', 'STK', NULL, NULL, NULL, 540, 16.0184,
+VALUES (265598, 'U1111111', 265598, '2022-06-30', @ZMId1, 'AAPL', 'APPLE INC', 'STK', NULL, NULL, NULL, 540, 16.0184,
         136.7200, 1,
         NULL, NULL, NULL);
 INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,

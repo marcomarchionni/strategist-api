@@ -18,7 +18,7 @@ public interface StrategyRepository extends JpaRepository<Strategy, Long> {
     List<Strategy> findByParams(@Param("accountId") String accountId, @Param("name") String name);
 
     //TODO: check if this is needed
-    List<Strategy> findByName(String expectedSymbol);
+    Optional<Strategy> findByAccountIdAndName(String accountId, String expectedSymbol);
 
     Optional<Strategy> findByIdAndAccountId(Long id, String accountId);
 }

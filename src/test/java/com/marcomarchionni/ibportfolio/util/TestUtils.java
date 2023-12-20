@@ -65,7 +65,8 @@ public class TestUtils {
     }
 
     public static User getSampleUser() {
-        return User.builder().id(1L).email("marco99@gmail.com").accountId("U1111111").build();
+        return User.builder().id(1L).firstName("Marco").lastName("Marchionni").email("marco99@gmail.com")
+                .accountId("U1111111").role(User.Role.USER).build();
     }
 
     public static Strategy getEBAYStrategy() {

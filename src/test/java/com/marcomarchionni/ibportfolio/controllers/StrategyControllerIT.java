@@ -2,11 +2,15 @@ package com.marcomarchionni.ibportfolio.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
+import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -15,13 +19,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleUser;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -30,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser
 @Transactional
 @Sql("classpath:dbScripts/insertSampleData.sql")
 class StrategyControllerIT {
@@ -47,8 +53,23 @@ class StrategyControllerIT {
     @Autowired
     ObjectMapper mapper;
 
+    User user;
+
+    @BeforeEach
+    void setup() {
+        // Setup authenticated user for testing
+        user = getSampleUser();
+        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
+    }
+
     @ParameterizedTest
-    @CsvSource({"ZM long,1", ",7"})
+    @CsvSource({"ZM long,1", ",7", "ADBE long,0"})
     void findByParamsSuccess(String strategyName, int expectedSize) throws Exception {
         StrategyFindDto strategyFindDto = StrategyFindDto.builder().name(strategyName).build();
 
@@ -75,7 +96,10 @@ class StrategyControllerIT {
     @ParameterizedTest
     @CsvSource({"ZM long", "IBKR put"})
     void findByIdSuccess(String expectedName) throws Exception {
-        Long strategyId = strategyRepository.findByName(expectedName).get(0).getId();
+
+        Optional<Strategy> strategy = strategyRepository.findByAccountIdAndName(user.getAccountId(), expectedName);
+        assertTrue(strategy.isPresent());
+        Long strategyId = strategy.get().getId();
 
         mockMvc.perform(get("/strategies/{id}", strategyId))
                 .andDo(print())
@@ -90,7 +114,8 @@ class StrategyControllerIT {
         Optional<Portfolio> portfolio = portfolioRepository.findByAccountIdAndName("U1111111", "Saver Portfolio");
         assertTrue(portfolio.isPresent());
         Long portfolioId = portfolio.get().getId();
-        StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("AAPL long").portfolioId(portfolioId).build();
+        StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("AAPL long").portfolioId(portfolioId)
+                .build();
 
         mockMvc.perform(post("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -103,7 +128,7 @@ class StrategyControllerIT {
 
     @Test
     void updateNameSuccess() throws Exception {
-        Long strategyId = strategyRepository.findByName("ZM long").get(0).getId();
+        Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), "ZM long").get().getId();
 
         UpdateNameDto updateNameDto = UpdateNameDto.builder().id(strategyId).name("ZM leap").build();
 
@@ -132,7 +157,7 @@ class StrategyControllerIT {
 
     @Test
     void deleteSuccess() throws Exception {
-        Long strategyId = strategyRepository.findByName("IRBT long").get(0).getId();
+        Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), "IRBT long").get().getId();
         mockMvc.perform(delete("/strategies/{id}", strategyId))
                 .andExpect(status().isOk());
     }

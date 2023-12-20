@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleUser;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,8 +51,7 @@ class PortfolioControllerIT {
     @BeforeEach
     void setup() {
         // Setup authenticated user for testing
-        user = User.builder().firstName("Marco").lastName("Marchionni").email("marco99@gmail.com").accountId("U1111111")
-                .role(User.Role.USER).build(); // Initialize with necessary properties
+        user = getSampleUser();
         Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
