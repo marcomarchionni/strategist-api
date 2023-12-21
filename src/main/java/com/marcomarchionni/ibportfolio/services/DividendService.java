@@ -16,7 +16,7 @@ public interface DividendService {
 
     UpdateReport<Dividend> updateDividends(User user, List<Dividend> openDividends, List<Dividend> closedDividends);
 
-    DividendSummaryDto updateStrategyId(UpdateStrategyDto dividendToUpdate);
+    DividendSummaryDto updateStrategyId(User user, UpdateStrategyDto dividendToUpdate);
 
     List<DividendSummaryDto> findByFilter(User user, DividendFindDto dividendCriteria);
 

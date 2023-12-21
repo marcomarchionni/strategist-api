@@ -27,7 +27,7 @@ import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DividendServiceImplTest {
@@ -38,14 +38,16 @@ class DividendServiceImplTest {
     StrategyRepository strategyRepository;
     DividendMapper dividendMapper;
     DividendService dividendService;
-    List<Dividend> dividends;
+    List<Dividend> userDividends;
     Dividend dividend;
     Strategy strategy;
     DividendFindDto dividendFind;
+    User user;
 
     @BeforeEach
     void setup() {
-        dividends = getSampleDividends();
+        user = getSampleUser();
+        userDividends = getSampleDividends();
         dividend = getSampleClosedDividend();
         strategy = getSampleStrategy();
         dividendFind = getSampleDividendCriteria();
@@ -58,44 +60,48 @@ class DividendServiceImplTest {
 
     @Test
     void findByParams() {
+        // setup mocks
+        when(dividendRepository.findByParams(
+                user.getAccountId(),
+                dividendFind.getExDateFrom(),
+                dividendFind.getExDateTo(),
+                dividendFind.getPayDateFrom(),
+                dividendFind.getPayDateTo(),
+                dividendFind.getTagged(),
+                dividendFind.getSymbol())).thenReturn(userDividends);
 
-        User user = getSampleUser();
-        List<Dividend> userDividends = dividends.stream().peek(d -> d.setAccountId(user.getAccountId())).toList();
-
-        when(dividendRepository.findByParams(any(), any(), any(), any(), any(), any())).thenReturn(userDividends);
-
+        // execute method
         List<DividendSummaryDto> foundDividends = dividendService.findByFilter(
                 user, dividendFind);
 
-        assertEquals(dividends.size(), foundDividends.size());
-        assertEquals(dividends.get(0).getAccountId(), user.getAccountId());
+        // assertions
+        assertEquals(this.userDividends.size(), foundDividends.size());
+        assertEquals(this.userDividends.get(0).getAccountId(), user.getAccountId());
     }
 
     @Test
     void updateStrategyId() {
-
-        Dividend expectedDividend = getSampleClosedDividend();
+        // setup test data
         UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder()
-                .id(expectedDividend.getId()).strategyId(strategy.getId()).build();
-        expectedDividend.setStrategy(strategy);
+                .id(dividend.getId()).strategyId(strategy.getId()).build();
 
+        // setup mocks
+        when(dividendRepository.findByIdAndAccountId(dividend.getId(), user.getAccountId())).thenReturn(Optional.of(dividend));
+        when(strategyRepository.findByIdAndAccountId(strategy.getId(), user.getAccountId())).thenReturn(Optional.of(strategy));
+        when(dividendRepository.save(any(Dividend.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        when(dividendRepository.findById(dividendUpdate.getId())).thenReturn(Optional.of(dividend));
-        when(strategyRepository.findById(dividendUpdate.getStrategyId())).thenReturn(Optional.of(strategy));
-        when(dividendRepository.save(expectedDividend)).thenReturn(expectedDividend);
+        // execute method
+        DividendSummaryDto actualDividendDto = dividendService.updateStrategyId(user, dividendUpdate);
 
-        DividendSummaryDto actualDividendDto = dividendService.updateStrategyId(dividendUpdate);
-
+        // assertions
         assertNotNull(actualDividendDto);
-        assertEquals(dividendUpdate.getId(), actualDividendDto.getId());
-        assertEquals(dividendUpdate.getStrategyId(), actualDividendDto.getStrategyId());
+        assertEquals(dividend.getId(), actualDividendDto.getId());
+        assertEquals(strategy.getId(), actualDividendDto.getStrategyId());
     }
 
     @Test
     void updateDividends() {
-        // setup user
-        User user = getSampleUser();
-
+        //// setup data
         // setup existing closed dividend
         Dividend EBAYClosedDividend = getEBAYClosedDividend();
 
@@ -105,16 +111,17 @@ class DividendServiceImplTest {
         List<Dividend> existingOpenDividends = List.of(NKEOpenDividend);
 
         // setup new open dividend
-        List<Dividend> newOpenDividends = List.of(getFDXOpenDividend());
+        Dividend FDXOpenDividend = getFDXOpenDividend();
+        List<Dividend> newOpenDividends = List.of(FDXOpenDividend);
 
         // setup new closed dividends
-        Dividend NKEClosedDividend = getNKEClosedDividend();
         List<Dividend> newClosedDividends = List.of(getNKEClosedDividend(), getEBAYClosedDividend());
 
         // setup mocks
-        when(dividendRepository.findOpenDividends(user.getAccountId())).thenReturn(existingOpenDividends);
-        when(dividendRepository.existsById(EBAYClosedDividend.getId())).thenReturn(true);
-        when(dividendRepository.existsById(NKEClosedDividend.getId())).thenReturn(true);
+        when(dividendRepository.findOpenDividendsByAccountId(user.getAccountId())).thenReturn(existingOpenDividends);
+        when(dividendRepository.existsByAccountIdAndActionId(user.getAccountId(), EBAYClosedDividend.getActionId())).thenReturn(true);
+        when(dividendRepository.existsByAccountIdAndActionId(user.getAccountId(), FDXOpenDividend.getActionId())).thenReturn(false);
+        when(dividendRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(dividendRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
@@ -131,27 +138,28 @@ class DividendServiceImplTest {
 
     @Test
     void addOrSkip() {
-        // setup user
-        User user = getSampleUser();
-
-        // setup existing closed dividend
+        // setup data
+        //// setup existing closed dividend
         Dividend EBAYClosedDividend = getEBAYClosedDividend();
         EBAYClosedDividend.setStrategy(getSampleStrategy());
 
-        // setup new closed dividends
+        //// setup new closed dividends
         Dividend NKEClosedDividend = getNKEClosedDividend();
         Dividend newEBAYClosedDividend = getEBAYClosedDividend();
         List<Dividend> newClosedDividends = List.of(NKEClosedDividend, newEBAYClosedDividend);
 
-        // setup mocks
-        when(dividendRepository.existsById(EBAYClosedDividend.getId())).thenReturn(true);
-        when(dividendRepository.existsById(NKEClosedDividend.getId())).thenReturn(false);
+        //// setup mocks
+        when(dividendRepository.existsByAccountIdAndActionId(user.getAccountId(),
+                EBAYClosedDividend.getActionId())).thenReturn(true);
+        when(dividendRepository.existsByAccountIdAndActionId(user.getAccountId(), NKEClosedDividend.getActionId())).thenReturn(false);
         when(dividendRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
         UpdateReport<Dividend> result = dividendService.addOrSkip(user, newClosedDividends);
 
         // assertions
+        verify(dividendRepository, times(1)).existsByAccountIdAndActionId(user.getAccountId(),
+                newEBAYClosedDividend.getActionId());
         assertEquals(1, result.getAdded().size());
         assertEquals(1, result.getSkipped().size());
         assertEquals("NKE", result.getAdded().get(0).getSymbol());

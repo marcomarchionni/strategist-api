@@ -10,11 +10,12 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity(name = "dividend")
+@Table(name = "dividend", uniqueConstraints = @UniqueConstraint(columnNames = {"action_id", "account_id"}))
 public class Dividend {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -23,6 +24,9 @@ public class Dividend {
 
     @Column(name = "account_id")
     private String accountId;
+
+    @Column(name = "action_id")
+    private Long actionId;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

@@ -115,6 +115,7 @@ public class TestUtils {
     public static Dividend getFDXOpenDividend() {
         return Dividend.builder()
                 .id(510058320220624L)
+                .actionId(33333333L)
                 .accountId("U1111111")
                 .symbol("FDX")
                 .description("FEDEX CORPORATION")
@@ -134,6 +135,7 @@ public class TestUtils {
         return Dividend.builder()
                 .id(1029120220603L)
                 .accountId("U1111111")
+                .actionId(222222222L)
                 .symbol("NKE")
                 .description("NIKE INC -CL B")
                 .conId(10291L)
@@ -158,6 +160,7 @@ public class TestUtils {
         return Dividend.builder()
                 .id(434708620220531L)
                 .accountId("U1111111")
+                .actionId(11111111L)
                 .conId(4347086L)
                 .symbol("EBAY")
                 .description("EBAY INC")

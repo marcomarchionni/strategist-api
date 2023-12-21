@@ -12,17 +12,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
 
 @Configuration
 public class ModelMapperConfig {
     private final Converter<BigDecimal, BigDecimal> absValue =
             ctx -> ctx.getSource() == null ? null : ctx.getSource().abs();
-    private final Converter<FlexQueryResponseDto.DividendAccrual, Long> dividendIdConverter = ctx -> {
-        long conIdFactor = ctx.getSource().getConid() * 100_000_000L;
-        long payDateLong = Long.parseLong(ctx.getSource().getPayDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        return conIdFactor + payDateLong;
-    };
 
     private PropertyMap<FlexQueryResponseDto.Order, Trade> getTradePropertyMap() {
         return new PropertyMap<>() {
@@ -33,11 +27,6 @@ public class ModelMapperConfig {
             }
         };
     }
-//    private final Converter<LocalDateTime, Long> flexStatementIdConverter = ctx -> {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-//        String formattedDateTime = ctx.getSource().format(formatter);
-//        return Long.parseLong(formattedDateTime);
-//    };
 
     @Bean
     public ModelMapper modelMapper() {
@@ -84,7 +73,7 @@ public class ModelMapperConfig {
     private PropertyMap<FlexQueryResponseDto.ChangeInDividendAccrual, Dividend> getClosedDividendPropertyMap() {
         return new PropertyMap<>() {
             protected void configure() {
-                using(dividendIdConverter).map(source, destination.getId());
+                skip().setId(null);
                 map().setConId(source.getConid());
                 using(absValue).map().setGrossAmount(source.getGrossAmount());
                 using(absValue).map().setNetAmount(source.getNetAmount());
@@ -98,7 +87,7 @@ public class ModelMapperConfig {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
-                using(dividendIdConverter).map(source, destination.getId());
+                skip().setId(null);
                 map().setConId(source.getConid());
                 map().setOpenClosed(Dividend.OpenClosed.OPEN);
             }
@@ -108,6 +97,7 @@ public class ModelMapperConfig {
     private PropertyMap<Dividend, Dividend> getMergeDividendPropertyMap() {
         return new PropertyMap<>() {
             protected void configure() {
+                skip().setId(null);
                 skip().setStrategy(null);
             }
         };

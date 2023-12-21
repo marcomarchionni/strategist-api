@@ -14,8 +14,7 @@ import java.time.LocalDate;
 
 import static com.marcomarchionni.ibportfolio.db.DbTest.getFDXDividend;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DividendMapperImplTest {
     DividendMapperImpl dividendMapper;
@@ -72,10 +71,10 @@ class DividendMapperImplTest {
         Dividend dividend = dividendMapper.toClosedDividend(d);
 
         assertNotNull(dividend);
+        assertNull(dividend.getId());
         assertEquals(LocalDate.of(2022, 5, 19), dividend.getExDate());
         assertEquals("CGNX", dividend.getSymbol());
         assertEquals(BigDecimal.valueOf(0.1), dividend.getGrossAmount());
-        assertEquals(26754720220603L, dividend.getId());
         assertEquals(Dividend.OpenClosed.CLOSED, dividend.getOpenClosed());
     }
 
@@ -93,22 +92,31 @@ class DividendMapperImplTest {
         Dividend dividend = dividendMapper.toOpenDividend(d);
 
         assertNotNull(dividend);
+        assertNull(dividend.getId());
         assertEquals(LocalDate.of(2022, 5, 19), dividend.getExDate());
         assertEquals("CGNX", dividend.getSymbol());
-        assertEquals(26754720220603L, dividend.getId());
 
     }
 
     @Test
-    void mergeIbProperties() {
+    void mergeFlexProperties() {
+        // Setup source (dividend coming from IB)
         Dividend source = getFDXDividend();
-        Strategy strategy = getSampleStrategy();
-        Dividend target = new Dividend();
-        target.setStrategy(strategy);
+        source.setId(null);
+        source.setStrategy(null);
+        source.setOpenClosed(Dividend.OpenClosed.CLOSED);
 
-        Dividend merged = dividendMapper.mergeIbProperties(source, target);
+        // Setup target (dividend coming from DB)
+        Dividend target = getFDXDividend();
+        target.setId(1L);
+        target.setStrategy(getSampleStrategy());
+        target.setOpenClosed(Dividend.OpenClosed.OPEN);
 
-        assertEquals(source.getId(), merged.getId());
+        // Execute merge
+        Dividend merged = dividendMapper.mergeFlexProperties(source, target);
+
+        // Assert
+        assertNotNull(merged.getId());
         assertEquals(source.getConId(), merged.getConId());
         assertEquals(source.getSymbol(), merged.getSymbol());
         assertEquals(source.getDescription(), merged.getDescription());
@@ -120,6 +128,6 @@ class DividendMapperImplTest {
         assertEquals(source.getTax(), merged.getTax());
         assertEquals(source.getNetAmount(), merged.getNetAmount());
         assertEquals(source.getOpenClosed(), merged.getOpenClosed());
-        assertEquals(strategy, merged.getStrategy());
+        assertEquals(target.getStrategy(), merged.getStrategy());
     }
 }

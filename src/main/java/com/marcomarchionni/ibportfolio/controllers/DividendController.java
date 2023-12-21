@@ -28,6 +28,7 @@ public class DividendController {
 
     @PutMapping
     public DividendSummaryDto updateStrategyId(@RequestBody @Valid UpdateStrategyDto dividendUpdate) {
-        return dividendService.updateStrategyId(dividendUpdate);
+        User user = userService.getAuthenticatedUser();
+        return dividendService.updateStrategyId(user, dividendUpdate);
     }
 }

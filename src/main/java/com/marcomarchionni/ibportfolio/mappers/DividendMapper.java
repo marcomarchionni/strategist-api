@@ -8,7 +8,7 @@ public interface DividendMapper {
 
     DividendSummaryDto toDividendListDto(Dividend dividend);
 
-    Dividend mergeIbProperties(Dividend source, Dividend target);
+    Dividend mergeFlexProperties(Dividend source, Dividend target);
 
     Dividend toClosedDividend(FlexQueryResponseDto.ChangeInDividendAccrual closedDividendDto);
 

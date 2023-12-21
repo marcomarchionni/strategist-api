@@ -21,7 +21,7 @@ public class DividendMapperImpl implements DividendMapper {
     }
 
     @Override
-    public Dividend mergeIbProperties(Dividend source, Dividend target) {
+    public Dividend mergeFlexProperties(Dividend source, Dividend target) {
         mapper.map(source, target);
         return target;
     }

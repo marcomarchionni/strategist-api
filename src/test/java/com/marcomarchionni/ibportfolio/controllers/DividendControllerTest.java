@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.domain.Dividend;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.DividendSummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.DividendMapper;
@@ -24,8 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleClosedDividend;
-import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
+import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,17 +54,25 @@ class DividendControllerTest {
     DividendMapper dividendMapper;
     List<DividendSummaryDto> dividendSummaryDtos;
     DividendSummaryDto dividendSummaryDto;
+    User user;
 
     @BeforeEach
     void setUp() {
+        // setup mapper
         ModelMapperConfig modelMapperConfig = new ModelMapperConfig();
         ModelMapper mapper = modelMapperConfig.modelMapper();
         dividendMapper = new DividendMapperImpl(mapper);
+
+        //setup data
+        user = getSampleUser();
         dividendSummaryDtos = TestUtils.getSampleDividends()
                 .stream()
                 .map(dividendMapper::toDividendListDto)
                 .toList();
         dividendSummaryDto = dividendMapper.toDividendListDto(getSampleClosedDividend());
+
+        //setup mocks
+        when(userService.getAuthenticatedUser()).thenReturn(user);
     }
 
     @Test
@@ -103,7 +111,7 @@ class DividendControllerTest {
         dividend.setStrategy(strategy);
         DividendSummaryDto expectedDividendSummaryDto = dividendMapper.toDividendListDto(dividend);
 
-        when(dividendService.updateStrategyId(dividendUpdate)).thenReturn(expectedDividendSummaryDto);
+        when(dividendService.updateStrategyId(user, dividendUpdate)).thenReturn(expectedDividendSummaryDto);
 
         mockMvc.perform(put("/dividends")
                         .contentType(MediaType.APPLICATION_JSON)
