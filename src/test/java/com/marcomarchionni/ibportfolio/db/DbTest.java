@@ -73,14 +73,6 @@ public class DbTest {
         assertFalse(strategies.isEmpty());
     }
 
-    @Test
-    void dbDeleteOpenDividendsTest() {
-        dividendRepository.deleteOpenDividends();
-        List<Dividend> closedDividends = dividendRepository.findAll();
-
-        assertEquals(2, closedDividends.size());
-    }
-
     public static Dividend getFDXDividend() {
         Dividend div = new Dividend();
         div.setId(510058320220624L);

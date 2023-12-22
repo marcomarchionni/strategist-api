@@ -143,70 +143,70 @@ VALUES (1238155321, 'U1111111', 400172483, 12087792, 1238155321, NULL, '2022-05-
         NULL, NULL,
         NULL, 'BUY', 1.0000, 1.0174, 1.0174, 0.0000, -1.9484);
 
-INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
+INSERT INTO `position` (`account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (6459, 'U1111111', 6459, '2022-06-30', @DISId, 'DIS', 'WALT DISNEY CO/THE', 'STK', NULL, NULL, NULL, 202,
+VALUES ('U1111111', 6459, '2022-06-30', @DISId, 'DIS', 'WALT DISNEY CO/THE', 'STK', NULL, NULL, NULL, 202,
         89.3512, 94.4000,
         1, NULL, NULL, NULL);
-INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
+INSERT INTO `position` (`account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (10291, 'U1111111', 10291, '2022-06-30', @NKEId, 'NKE', 'NIKE INC -CL B', 'STK', NULL, NULL, NULL, 84, 24.5601,
+VALUES ('U1111111', 10291, '2022-06-30', @NKEId, 'NKE', 'NIKE INC -CL B', 'STK', NULL, NULL, NULL, 84, 24.5601,
         102.2000, 1,
         NULL, NULL, NULL);
-INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
+INSERT INTO `position` (`account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (265598, 'U1111111', 265598, '2022-06-30', @ZMId1, 'AAPL', 'APPLE INC', 'STK', NULL, NULL, NULL, 540, 16.0184,
+VALUES ('U1111111', 265598, '2022-06-30', @ZMId1, 'AAPL', 'APPLE INC', 'STK', NULL, NULL, NULL, 540, 16.0184,
         136.7200, 1,
         NULL, NULL, NULL);
-INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
+INSERT INTO `position` (`account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (265768, 'U1111111', 265768, '2022-06-30', NULL, 'ADBE', 'ADOBE INC', 'STK', NULL, NULL, NULL, 10, 434.4900,
+VALUES ('U1111111', 265768, '2022-06-30', NULL, 'ADBE', 'ADOBE INC', 'STK', NULL, NULL, NULL, 10, 434.4900,
         366.0600, 1,
         NULL, NULL, NULL);
-INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
+INSERT INTO `position` (`account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (267547, 'U1111111', 267547, '2022-06-30', NULL, 'CGNX', 'COGNEX CORP', 'STK', NULL, NULL, NULL, 44, 46.8727,
+VALUES ('U1111111', 267547, '2022-06-30', NULL, 'CGNX', 'COGNEX CORP', 'STK', NULL, NULL, NULL, 44, 46.8727,
         42.5200, 1,
         NULL, NULL, NULL);
-INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
+INSERT INTO `position` (`account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (272997, 'U1111111', 272997, '2022-06-30', NULL, 'COST', 'COSTCO WHOLESALE CORP', 'STK', NULL, NULL, NULL, 20,
+VALUES ('U1111111', 272997, '2022-06-30', NULL, 'COST', 'COSTCO WHOLESALE CORP', 'STK', NULL, NULL, NULL, 20,
         138.3800,
         479.2800, 1, NULL, NULL, NULL);
-INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
+INSERT INTO `position` (`account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (274105, 'U1111111', 274105, '2022-06-30', NULL, 'SBUX', 'STARBUCKS CORP', 'STK', NULL, NULL, NULL, 200, 55.1595,
+VALUES ('U1111111', 274105, '2022-06-30', NULL, 'SBUX', 'STARBUCKS CORP', 'STK', NULL, NULL, NULL, 200, 55.1595,
         76.3900, 1,
         NULL, NULL, NULL);
-INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
+INSERT INTO `position` (`account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (274385, 'U1111111', 274385, '2022-06-30', NULL, 'SIVB', 'SVB FINANCIAL GROUP', 'STK', NULL, NULL, NULL, 8,
+VALUES ('U1111111', 274385, '2022-06-30', NULL, 'SIVB', 'SVB FINANCIAL GROUP', 'STK', NULL, NULL, NULL, 8,
         146.9850,
         394.9900, 1, NULL, NULL, NULL);
-INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
+INSERT INTO `position` (`account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (3691937, 'U1111111', 3691937, '2022-06-30', NULL, 'AMZN', 'AMAZON.COM INC', 'STK', NULL, NULL, NULL, 460,
+VALUES ('U1111111', 3691937, '2022-06-30', NULL, 'AMZN', 'AMAZON.COM INC', 'STK', NULL, NULL, NULL, 460,
         10.9868, 106.2100,
         1, NULL, NULL, NULL);
-INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
+INSERT INTO `position` (`account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (4347086, 'U1111111', 4347086, '2022-06-30', NULL, 'EBAY', 'EBAY INC', 'STK', NULL, NULL, NULL, 100, 58.8100,
+VALUES ('U1111111', 4347086, '2022-06-30', NULL, 'EBAY', 'EBAY INC', 'STK', NULL, NULL, NULL, 100, 58.8100,
         41.6700, 1,
         NULL, NULL, NULL);
-INSERT INTO `position` (`id`, `account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
+INSERT INTO `position` (`account_id`, `con_id`, `report_date`, `position_strategy_id`, `symbol`, `description`,
                         `asset_category`, `put_call`, `strike`, `expiry`, `quantity`, `cost_basis_price`, `mark_price`,
                         `multiplier`, `cost_basis_money`, `position_value`, `fifo_pnl_unrealized`)
-VALUES (4815747, 'U1111111', 4815747, '2022-06-30', NULL, 'NVDA', 'NVIDIA CORP', 'STK', NULL, NULL, NULL, 64, 46.6325,
+VALUES ('U1111111', 4815747, '2022-06-30', NULL, 'NVDA', 'NVIDIA CORP', 'STK', NULL, NULL, NULL, 64, 46.6325,
         151.5900, 1,
         NULL, NULL, NULL);
 

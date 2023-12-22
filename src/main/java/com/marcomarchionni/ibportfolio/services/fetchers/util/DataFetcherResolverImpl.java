@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.services.util;
+package com.marcomarchionni.ibportfolio.services.fetchers.util;
 
 import com.marcomarchionni.ibportfolio.services.fetchers.DataFetcher;
 import com.marcomarchionni.ibportfolio.services.fetchers.FileDataFetcher;

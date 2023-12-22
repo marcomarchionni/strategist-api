@@ -3,6 +3,7 @@ package com.marcomarchionni.ibportfolio.services;
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.domain.Position;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.PositionFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PositionSummaryDto;
@@ -47,9 +48,11 @@ class PositionServiceImplTest {
     Position samplePosition;
     Strategy sampleStrategy;
     PositionFindDto positionFind;
+    User user;
 
     @BeforeEach
     void setup() {
+        user = getSampleUser();
         samplePositions = getSamplePositions();
         samplePosition = getSamplePosition();
         sampleStrategy = getSampleStrategy();
@@ -126,19 +129,21 @@ class PositionServiceImplTest {
         Position newADYENposition = getADYENPosition();
         newADYENposition.setReportDate(LocalDate.of(2022, 7, 7));
         newADYENposition.setQuantity(BigDecimal.valueOf(2));
+        newADYENposition.setId(null);
 
         Position newAMZNposition = getAMZNPosition();
+        newAMZNposition.setId(null);
         newAMZNposition.setReportDate(LocalDate.of(2022, 7, 7));
 
         List<Position> existingPositions = List.of(existingADYENposition, existingADBEposition);
         List<Position> newPositions = List.of(newADYENposition, newAMZNposition);
 
         // mock
-        when(positionRepository.findAll()).thenReturn(existingPositions);
+        when(positionRepository.findAllByAccountId(user.getAccountId())).thenReturn(existingPositions);
         when(positionRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // test
-        UpdateReport<Position> result = positionService.updatePositions(newPositions);
+        UpdateReport<Position> result = positionService.updatePositions(user, newPositions);
 
         // verify
         assertEquals(1, result.getAdded().size());

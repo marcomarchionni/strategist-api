@@ -26,7 +26,7 @@ public class PositionMapperImpl implements PositionMapper {
     }
 
     @Override
-    public Position mergeIbProperties(Position source, Position target) {
+    public Position mergeFlexProperties(Position source, Position target) {
         modelMapper.map(source, target);
         return target;
     }

@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.Position;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.PositionFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PositionSummaryDto;
@@ -14,9 +15,9 @@ public interface PositionService {
 
     List<Position> deleteAll(List<Position> positions);
 
+    UpdateReport<Position> updatePositions(User user, List<Position> positions);
+
     PositionSummaryDto updateStrategyId(UpdateStrategyDto position);
 
     List<PositionSummaryDto> findByFilter(PositionFindDto positionCriteria);
-
-    UpdateReport<Position> updatePositions(List<Position> positions);
 }

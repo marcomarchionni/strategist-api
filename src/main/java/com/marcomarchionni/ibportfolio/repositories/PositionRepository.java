@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PositionRepository extends JpaRepository<Position, Long> {
@@ -19,5 +20,9 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     List<Position> findByParams(@Param("tagged") Boolean tagged,
                                 @Param("symbol") String symbol,
                                 @Param("assetCategory") String assetCategory);
+
+    List<Position> findAllByAccountId(String accountId);
+
+    Optional<Position> findByAccountIdAndSymbol(String accountId, String symbol);
 
 }

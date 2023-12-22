@@ -7,22 +7,24 @@ import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class OpenDividendsMap {
+public class OpenDividendsUpdateManager {
 
     private final Map<Long, Dividend> openDividendsMap;
 
     private final DividendMapper mapper;
 
-    private OpenDividendsMap(DividendMapper mapper, Map<Long, Dividend> openDividendsMap) {
+    private OpenDividendsUpdateManager(DividendMapper mapper, Map<Long, Dividend> openDividendsMap) {
         this.openDividendsMap = openDividendsMap;
         this.mapper = mapper;
     }
 
-    public static OpenDividendsMap createOpenDividendMap(String accountId, DividendRepository dividendRepository,
-                                                         DividendMapper mapper) {
-        Map<Long, Dividend> openDividendsMap = dividendRepository.findOpenDividendsByAccountId(accountId).stream()
+    public static OpenDividendsUpdateManager createOpenDividendMap(String accountId,
+                                                                   DividendRepository dividendRepository,
+                                                                   DividendMapper mapper) {
+        Map<Long, Dividend> openDividendsMap = dividendRepository.findOpenDividendsByAccountId(accountId)
+                .stream()
                 .collect(Collectors.toMap(Dividend::getActionId, dividend -> dividend));
-        return new OpenDividendsMap(mapper, openDividendsMap);
+        return new OpenDividendsUpdateManager(mapper, openDividendsMap);
     }
 
     public boolean contains(Dividend dividend) {

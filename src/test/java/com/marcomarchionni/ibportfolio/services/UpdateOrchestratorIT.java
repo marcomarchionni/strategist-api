@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleUser;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class UpdateOrchestratorIT {
 
     @Autowired

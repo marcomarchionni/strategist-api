@@ -13,8 +13,7 @@ import java.time.LocalDate;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePosition;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PositionMapperImplTest {
 
@@ -53,35 +52,41 @@ class PositionMapperImplTest {
         Position position = positionMapper.toPosition(p);
 
         assertNotNull(position);
+        assertNull(position.getId());
         assertEquals(p.getMarkPrice(), position.getMarkPrice());
-        assertEquals(p.getConid(), position.getId());
         assertEquals(p.getConid(), position.getConId());
     }
 
     @Test
     void mergeIbProperties() {
         Position source = getSamplePosition();
-        Strategy strategy = getSampleStrategy();
-        Position target = new Position();
-        target.setStrategy(strategy);
+        source.setId(null);
+        source.setQuantity(BigDecimal.valueOf(3));
 
-        Position destination = positionMapper.mergeIbProperties(source, target);
-        assertEquals(source.getId(), destination.getId());
-        assertEquals(source.getConId(), destination.getConId());
-        assertEquals(source.getReportDate(), destination.getReportDate());
-        assertEquals(source.getSymbol(), destination.getSymbol());
-        assertEquals(source.getDescription(), destination.getDescription());
-        assertEquals(source.getAssetCategory(), destination.getAssetCategory());
-        assertEquals(source.getPutCall(), destination.getPutCall());
-        assertEquals(source.getStrike(), destination.getStrike());
-        assertEquals(source.getExpiry(), destination.getExpiry());
-        assertEquals(source.getQuantity(), destination.getQuantity());
-        assertEquals(source.getCostBasisPrice(), destination.getCostBasisPrice());
-        assertEquals(source.getCostBasisMoney(), destination.getCostBasisMoney());
-        assertEquals(source.getMarkPrice(), destination.getMarkPrice());
-        assertEquals(source.getMultiplier(), destination.getMultiplier());
-        assertEquals(source.getPositionValue(), destination.getPositionValue());
-        assertEquals(source.getFifoPnlUnrealized(), destination.getFifoPnlUnrealized());
-        assertEquals(strategy, destination.getStrategy());
+        Strategy strategy = getSampleStrategy();
+        Position target = getSamplePosition();
+        target.setId(1L);
+        target.setStrategy(strategy);
+        target.setQuantity(BigDecimal.valueOf(2));
+
+        Position merged = positionMapper.mergeFlexProperties(source, target);
+
+        assertEquals(1L, merged.getId());
+        assertEquals(source.getConId(), merged.getConId());
+        assertEquals(source.getReportDate(), merged.getReportDate());
+        assertEquals(source.getSymbol(), merged.getSymbol());
+        assertEquals(source.getDescription(), merged.getDescription());
+        assertEquals(source.getAssetCategory(), merged.getAssetCategory());
+        assertEquals(source.getPutCall(), merged.getPutCall());
+        assertEquals(source.getStrike(), merged.getStrike());
+        assertEquals(source.getExpiry(), merged.getExpiry());
+        assertEquals(source.getQuantity(), merged.getQuantity());
+        assertEquals(source.getCostBasisPrice(), merged.getCostBasisPrice());
+        assertEquals(source.getCostBasisMoney(), merged.getCostBasisMoney());
+        assertEquals(source.getMarkPrice(), merged.getMarkPrice());
+        assertEquals(source.getMultiplier(), merged.getMultiplier());
+        assertEquals(source.getPositionValue(), merged.getPositionValue());
+        assertEquals(source.getFifoPnlUnrealized(), merged.getFifoPnlUnrealized());
+        assertEquals(target.getStrategy(), merged.getStrategy());
     }
 }

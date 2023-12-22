@@ -19,11 +19,6 @@ public interface DividendRepository extends JpaRepository<Dividend, Long> {
         return findByOpenClosedAndAccountId(Dividend.OpenClosed.OPEN, accountId);
     }
 
-    void deleteByOpenClosed(Dividend.OpenClosed openClosed);
-    default void deleteOpenDividends() {
-        deleteByOpenClosed(Dividend.OpenClosed.OPEN);
-    }
-
   @Query("SELECT d FROM dividend d WHERE " +
           "(d.accountId = :accountId) and " +
           "(:exDateFrom is null or d.exDate > :exDateFrom) and " +

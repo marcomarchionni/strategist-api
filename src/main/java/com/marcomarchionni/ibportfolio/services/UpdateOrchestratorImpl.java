@@ -5,8 +5,8 @@ import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.services.fetchers.DataFetcher;
 import com.marcomarchionni.ibportfolio.services.fetchers.FetchContext;
-import com.marcomarchionni.ibportfolio.services.util.DataFetcherResolver;
-import com.marcomarchionni.ibportfolio.services.util.DataSourceType;
+import com.marcomarchionni.ibportfolio.services.fetchers.util.DataFetcherResolver;
+import com.marcomarchionni.ibportfolio.services.fetchers.util.DataSourceType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

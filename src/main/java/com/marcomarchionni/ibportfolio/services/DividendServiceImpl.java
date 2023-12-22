@@ -13,7 +13,7 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEnti
 import com.marcomarchionni.ibportfolio.mappers.DividendMapper;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
-import com.marcomarchionni.ibportfolio.services.util.OpenDividendsMap;
+import com.marcomarchionni.ibportfolio.services.util.OpenDividendsUpdateManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -97,7 +97,8 @@ public class DividendServiceImpl implements DividendService {
         List<Dividend> dividendToSkip = new ArrayList<>();
 
         // Retrieve existing open dividends in an OpenDividendsMap instance
-        OpenDividendsMap openDividendsMap = OpenDividendsMap.createOpenDividendMap(accountId, dividendRepository,
+        OpenDividendsUpdateManager openDividendsMap = OpenDividendsUpdateManager.createOpenDividendMap(accountId,
+                dividendRepository,
                 dividendMapper);
 
         // Assign dividends to target lists

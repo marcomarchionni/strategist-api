@@ -104,9 +104,11 @@ class PositionControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"265598,ZM long,AAPL", "265768,IBKR put,ADBE"})
-    void updateStrategyIdSuccess(Long positionId, String strategyName, String expectedSymbol) throws Exception {
+    @CsvSource({"ZM long,AAPL", "IBKR put,ADBE"})
+    void updateStrategyIdSuccess(String strategyName, String expectedSymbol) throws Exception {
         Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), strategyName).get().getId();
+        Long positionId = positionRepository.findByAccountIdAndSymbol(user.getAccountId(), expectedSymbol).get()
+                .getId();
 
         UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(positionId).strategyId(strategyId).build();
 

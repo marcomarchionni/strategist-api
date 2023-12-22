@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.Position;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.PositionFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PositionSummaryDto;
@@ -12,12 +13,12 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEnti
 import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
+import com.marcomarchionni.ibportfolio.services.util.PositionUpdateManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,33 +65,26 @@ public class PositionServiceImpl implements PositionService{
 
 
     @Override
-    public UpdateReport<Position> updatePositions(List<Position> positions) {
-        List<Position> existingPositions = positionRepository.findAll();
+    public UpdateReport<Position> updatePositions(User user, List<Position> positions) {
 
-        // Create a map of existing positions
-        Map<Long, Position> existingPositionsMap = existingPositions.stream()
-                .collect(Collectors.toMap(Position::getId, Function.identity()));
+        // Create a PositionUpdateManager instance to manage the update process
+        PositionUpdateManager updateManager = PositionUpdateManager.createPositionUpdateManager(
+                user.getAccountId(), positionMapper, positionRepository);
 
-        // Create a map of new positions
-        Map<Long, Position> newPositionsMap = positions.stream()
-                .collect(Collectors.toMap(Position::getId, Function.identity()));
+        // Select positions to add or merge
+        List<Position> toAdd = new ArrayList<>();
+        List<Position> toMerge = new ArrayList<>();
 
-        // Select positions to be saved
-        List<Position> toAdd = positions.stream()
-                .filter(newPosition -> !existingPositionsMap.containsKey(newPosition.getId()))
-                .toList();
+        for (Position p : positions) {
+            if (updateManager.existInDb(p)) {
+                toMerge.add(updateManager.getMergedPosition(p));
+            } else {
+                toAdd.add(p);
+            }
+        }
 
-        // Select positions to be merged
-        List<Position> toMerge = positions.stream()
-                .filter(newPosition -> existingPositionsMap.containsKey(newPosition.getId()))
-                .map(newPosition -> positionMapper.mergeIbProperties(newPosition,
-                        existingPositionsMap.get(newPosition.getId())))
-                .toList();
-
-        // Select positions to be deleted
-        List<Position> toDelete = existingPositions.stream()
-                .filter(existingPosition -> !newPositionsMap.containsKey(existingPosition.getId()))
-                .toList();
+        // Select positions to delete
+        List<Position> toDelete = updateManager.getUnmergedPositions();
 
         // Perform database operations and return the result
         return UpdateReport.<Position>builder().added(this.saveAll(toAdd)).merged(this.saveAll(toMerge))

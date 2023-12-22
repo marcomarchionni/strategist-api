@@ -57,7 +57,7 @@ public class UpdateServiceImpl implements UpdateService {
             List<Dividend> openDividends = parser.getOpenDividends(dto);
 
             // Update positions, open dividends, closed dividends
-            positionReport = positionService.updatePositions(positions);
+            positionReport = positionService.updatePositions(user, positions);
             dividendReport = dividendService.updateDividends(user, openDividends, closedDividends);
 
         } else {

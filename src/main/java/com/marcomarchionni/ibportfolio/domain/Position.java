@@ -15,6 +15,7 @@ import java.time.LocalDate;
 public class Position {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
 

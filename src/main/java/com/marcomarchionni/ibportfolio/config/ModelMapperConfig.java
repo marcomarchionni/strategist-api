@@ -53,7 +53,7 @@ public class ModelMapperConfig {
     private PropertyMap<FlexQueryResponseDto.OpenPosition, Position> getPositionPropertyMap() {
         return new PropertyMap<>() {
             protected void configure() {
-                map().setId(source.getConid());
+                skip().setId(null);
                 map().setConId(source.getConid());
                 map().setQuantity(source.getPosition());
             }
@@ -64,6 +64,7 @@ public class ModelMapperConfig {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
+                skip().setId(null);
                 skip().setStrategy(null);
             }
         };
