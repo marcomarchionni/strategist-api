@@ -61,7 +61,7 @@ class ResponseParserImplTest {
         FlexStatement flexStatement = responseParser.getFlexStatement(flexQueryResponseDto);
 
         assertNotNull(flexStatement);
-        assertEquals("U7169936", flexStatement.getAccountId());
+        assertEquals("U1111111", flexStatement.getAccountId());
     }
 
     @Test

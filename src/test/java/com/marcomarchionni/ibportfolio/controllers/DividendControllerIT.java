@@ -58,9 +58,6 @@ class DividendControllerIT {
 
     @Autowired
     UserRepository userRepository;
-
-    String token;
-
     User user;
 
     @BeforeEach
@@ -113,15 +110,18 @@ class DividendControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"510058320220711,ZM long,FDX", "26754720220603,IBKR put,CGNX"})
-    void updateStrategyIdSuccess(Long dividendId, String strategyName, String expectedSymbol) throws Exception {
+    @CsvSource({"ZM long,FDX", "IBKR put,CGNX"})
+    void updateStrategyIdSuccess(String strategyName, String expectedSymbol) throws Exception {
+        // set up data
+        Long dividendId = dividendRepository.findAll().stream().filter(d -> d.getSymbol().equals(expectedSymbol))
+                .findFirst().get().getId();
 
         Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), strategyName).get().getId();
 
         UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();
 
+        // execute request
         mockMvc.perform(put("/dividends")
-                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(dividendUpdate)))
                 .andDo(print())
@@ -138,7 +138,6 @@ class DividendControllerIT {
         String payload = String.format("{\"id\": %s, \"strategyId\": %s}", dividendId, strategyId);
 
         mockMvc.perform(put("/dividends")
-                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(payload))
                 .andDo(print()).andExpect(status().is4xxClientError())
@@ -150,7 +149,6 @@ class DividendControllerIT {
     void updateStrategyIdEmptyBody() throws Exception {
 
         mockMvc.perform(put("/dividends")
-                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())

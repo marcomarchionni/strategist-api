@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePortfolio;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
@@ -42,21 +43,27 @@ public class DbTest {
 
     @Test
     void dbFindPortfoliosTest() {
-        List<Portfolio> portfolios = portfolioRepository.findAll();
+        List<Portfolio> portfolios = portfolioRepository.findAllByAccountId("U1111111");
         assertEquals(3, portfolios.size());
     }
 
     @Test
     void dbSavePortfolioTest() {
-        List<Portfolio> portfolios = portfolioRepository.findAll();
-        int initialSize = portfolios.size();
+        // setup
+        List<Portfolio> portfoliosBefore = portfolioRepository.findAllByAccountId("U1111111");
 
-        Portfolio portfolio = Portfolio.builder().name("BrandNewPortfolio").build();
-        portfolioRepository.save(portfolio);
+        Portfolio portfolio = getSamplePortfolio("New Portfolio");
+        portfolio.setId(null);
 
-        portfolios = portfolioRepository.findAll();
-        assertEquals(initialSize + 1, portfolios.size());
-        assertEquals(4, portfolios.size());
+        // execute
+        Portfolio savedPortfolio = portfolioRepository.save(portfolio);
+
+        // verify
+        List<Portfolio> portfoliosAfter = portfolioRepository.findAllByAccountId("U1111111");
+
+        assertNotNull(savedPortfolio);
+        assertNotNull(savedPortfolio.getId());
+        assertEquals(portfoliosBefore.size() + 1, portfoliosAfter.size());
     }
 
     @Test
@@ -93,8 +100,9 @@ public class DbTest {
 
     @Test
     void bigDecimalTest() {
-        Dividend FDXdividend = dividendRepository.findById(510058320220711L).get();
-        assertEquals("FDX", FDXdividend.getSymbol());
+        Dividend FDXdividend = dividendRepository.findBySymbolAndAccountId("FDX", "U1111111").stream().findFirst()
+                .get();
+        assertNotNull(FDXdividend);
         assertEquals(new BigDecimal("47"), FDXdividend.getQuantity());
     }
 

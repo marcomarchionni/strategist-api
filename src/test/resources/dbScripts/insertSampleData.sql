@@ -210,27 +210,27 @@ VALUES (4815747, 'U1111111', 4815747, '2022-06-30', NULL, 'NVDA', 'NVIDIA CORP',
         151.5900, 1,
         NULL, NULL, NULL);
 
-INSERT INTO `dividend` (`id`, `account_id`, `con_id`, `dividend_strategy_id`, `symbol`, `description`, `ex_date`,
+INSERT INTO `dividend` (`action_id`, `account_id`, `con_id`, `dividend_strategy_id`, `symbol`, `description`, `ex_date`,
                         `pay_date`,
                         `gross_rate`, `quantity`, `gross_amount`, `tax`, `net_amount`, `open_closed`)
-VALUES (26754720220603, 'U1111111', 267547, NULL, 'CGNX', 'COGNEX CORP', '2022-05-19', '2022-06-03', 0.0650, 44, 2.8600,
+VALUES (1111, 'U1111111', 267547, NULL, 'CGNX', 'COGNEX CORP', '2022-05-19', '2022-06-03', 0.0650, 44, 2.8600,
         0.4300,
         2.4300, 'CLOSED');
-INSERT INTO `dividend` (`id`, `account_id`, `con_id`, `dividend_strategy_id`, `symbol`, `description`, `ex_date`,
+INSERT INTO `dividend` (`action_id`, `account_id`, `con_id`, `dividend_strategy_id`, `symbol`, `description`, `ex_date`,
                         `pay_date`,
                         `gross_rate`, `quantity`, `gross_amount`, `tax`, `net_amount`, `open_closed`)
-VALUES (434708620220617, 'U1111111', 4347086, @EBAYId, 'EBAY', 'EBAY INC', '2022-05-31', '2022-06-17', 0.2200, 100,
+VALUES (2222, 'U1111111', 4347086, @EBAYId, 'EBAY', 'EBAY INC', '2022-05-31', '2022-06-17', 0.2200, 100,
         22.0000, 3.3000,
         18.7000, 'OPEN');
-INSERT INTO `dividend` (`id`, `account_id`, `con_id`, `dividend_strategy_id`, `symbol`, `description`, `ex_date`,
+INSERT INTO `dividend` (`action_id`, `account_id`, `con_id`, `dividend_strategy_id`, `symbol`, `description`, `ex_date`,
                         `pay_date`,
                         `gross_rate`, `quantity`, `gross_amount`, `tax`, `net_amount`, `open_closed`)
-VALUES (510058320220711, 'U1111111', 5100583, NULL, 'FDX', 'FEDEX CORPORATION', '2022-06-24', '2022-07-11', 1.1500, 47,
+VALUES (3333, 'U1111111', 5100583, NULL, 'FDX', 'FEDEX CORPORATION', '2022-06-24', '2022-07-11', 1.1500, 47,
         54.0500,
         8.1100, 45.9400, 'OPEN');
-INSERT INTO `dividend` (`id`, `account_id`, `con_id`, `dividend_strategy_id`, `symbol`, `description`, `ex_date`,
+INSERT INTO `dividend` (`action_id`, `account_id`, `con_id`, `dividend_strategy_id`, `symbol`, `description`, `ex_date`,
                         `pay_date`,
                         `gross_rate`, `quantity`, `gross_amount`, `tax`, `net_amount`, `open_closed`)
-VALUES (4512773920220627, 'U1111111', 45127739, NULL, 'CME', 'CME GROUP INC', '2022-06-09', '2022-06-27', 1.0000, 10,
+VALUES (4444, 'U1111111', 45127739, NULL, 'CME', 'CME GROUP INC', '2022-06-09', '2022-06-27', 1.0000, 10,
         10.0000,
         1.5000, 8.5000, 'CLOSED');
