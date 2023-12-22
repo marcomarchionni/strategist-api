@@ -6,6 +6,7 @@ import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.services.parsers.ResponseParser;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +36,7 @@ public class UpdateServiceImpl implements UpdateService {
     }
 
     @Override
+    @Transactional
     public CombinedUpdateReport save(User user, FlexQueryResponseDto dto) {
         //Declare report variables
         UpdateReport<Position> positionReport;
