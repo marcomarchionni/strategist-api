@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class AuthenticationControllerIT {
 
     @Autowired
@@ -40,7 +42,10 @@ class AuthenticationControllerIT {
         SignUpDto signUpDto = SignUpDto.builder()
                 .firstName("Marco")
                 .lastName("Marchionni")
-                .email("marco99@gmail.com").password("password").build();
+                .email("marco99@gmail.com")
+                .password("password")
+                .accountId("U1111111")
+                .build();
 
         mockMvc.perform(post("/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -57,7 +62,10 @@ class AuthenticationControllerIT {
         User user = User.builder()
                 .firstName("Marco")
                 .lastName("Marchionni")
-                .email("marco99@gmail.com").password(passwordEncoder.encode("password")).role(User.Role.USER).build();
+                .email("marco99@gmail.com")
+                .password(passwordEncoder.encode("password"))
+                .accountId("U1111111")
+                .role(User.Role.USER).build();
 
         userRepository.save(user);
 
