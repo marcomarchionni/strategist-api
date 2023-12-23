@@ -25,11 +25,11 @@ public class User implements UserDetails {
     String firstName;
     @Column(name = "last_name")
     String lastName;
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     String email;
     @Column(name = "password")
     String password;
-    @Column(name = "account_id")
+    @Column(name = "account_id", unique = true)
     String accountId;
     @Column(name = "token")
     String token;
