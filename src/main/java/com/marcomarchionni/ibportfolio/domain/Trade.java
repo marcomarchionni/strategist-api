@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class Trade {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "account_id")

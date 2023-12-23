@@ -320,9 +320,10 @@ public class TestUtils {
 
     public static Trade getTTWO1Trade() {
         return Trade.builder()
-                .id(1222538552L)
+                .id(1L)
                 .accountId("U1111111")
                 .conId(6478131L)
+                .ibOrderId(11111111L)
                 .tradeDate(LocalDate.of(2022, 6, 28))
                 .symbol("TTWO")
                 .assetCategory("STK")
@@ -337,8 +338,9 @@ public class TestUtils {
 
     public static Trade getTTWO2Trade() {
         return Trade.builder()
-                .id(1222538553L)
+                .id(2L)
                 .accountId("U1111111")
+                .ibOrderId(2222222222L)
                 .conId(6478131L)
                 .tradeDate(LocalDate.of(2022, 6, 28))
                 .symbol("TTWO")

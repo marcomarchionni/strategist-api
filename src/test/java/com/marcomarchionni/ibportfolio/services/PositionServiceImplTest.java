@@ -65,19 +65,19 @@ class PositionServiceImplTest {
 
     @Test
     void saveAll() {
-        assertDoesNotThrow(() -> positionService.saveAll(samplePositions));
+        assertDoesNotThrow(() -> positionService.saveAll(user, samplePositions));
     }
 
     @Test
     void saveAllException() {
         doThrow(new RuntimeException()).when(positionRepository).saveAll(any());
 
-        assertThrows(UnableToSaveEntitiesException.class, () -> positionService.saveAll(samplePositions));
+        assertThrows(UnableToSaveEntitiesException.class, () -> positionService.saveAll(user, samplePositions));
     }
 
     @Test
     void deleteAllPositions() {
-        assertDoesNotThrow(() -> positionService.deleteAll(samplePositions));
+        assertDoesNotThrow(() -> positionService.deleteAll(user, samplePositions));
     }
 
     @Test
@@ -85,7 +85,7 @@ class PositionServiceImplTest {
         doThrow(new RuntimeException()).when(positionRepository).deleteAll();
 
         assertThrows(UnableToDeleteEntitiesException.class,
-                () -> positionService.deleteAll(List.of(getAMZNPosition())));
+                () -> positionService.deleteAll(user, List.of(getAMZNPosition())));
     }
 
     @Test

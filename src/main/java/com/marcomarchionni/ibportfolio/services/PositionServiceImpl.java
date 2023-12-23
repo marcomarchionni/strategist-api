@@ -8,6 +8,7 @@ import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PositionSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidDataException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
@@ -33,24 +34,6 @@ public class PositionServiceImpl implements PositionService{
         this.positionRepository = positionRepository;
         this.strategyRepository = strategyRepository;
         this.positionMapper = positionMapper;
-    }
-
-    @Override
-    public List<Position> saveAll(List<Position> positions) {
-        try {
-            return positionRepository.saveAll(positions);
-        } catch (Exception e) {
-            throw new UnableToSaveEntitiesException(e.getMessage());
-        }
-    }
-    @Override
-    public List<Position> deleteAll(List<Position> positions) {
-        try {
-            positionRepository.deleteAll(positions);
-            return positions;
-        } catch (Exception e) {
-            throw new UnableToDeleteEntitiesException(e.getMessage());
-        }
     }
 
     @Override
@@ -87,8 +70,11 @@ public class PositionServiceImpl implements PositionService{
         List<Position> toDelete = updateManager.getUnmergedPositions();
 
         // Perform database operations and return the result
-        return UpdateReport.<Position>builder().added(this.saveAll(toAdd)).merged(this.saveAll(toMerge))
-                .deleted(this.deleteAll(toDelete)).build();
+        return UpdateReport.<Position>builder()
+                .added(this.saveAll(user, toAdd))
+                .merged(this.saveAll(user, toMerge))
+                .deleted(this.deleteAll(user, toDelete))
+                .build();
     }
 
     @Override
@@ -101,6 +87,33 @@ public class PositionServiceImpl implements PositionService{
         );
         position.setStrategy(strategyToAssign);
         return positionMapper.toPositionListDto(positionRepository.save(position));
+    }
+
+    @Override
+    public List<Position> saveAll(User user, List<Position> positions) {
+        validateUser(user, positions);
+        try {
+            return positionRepository.saveAll(positions);
+        } catch (Exception e) {
+            throw new UnableToSaveEntitiesException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Position> deleteAll(User user, List<Position> positions) {
+        validateUser(user, positions);
+        try {
+            positionRepository.deleteAll(positions);
+            return positions;
+        } catch (Exception e) {
+            throw new UnableToDeleteEntitiesException(e.getMessage());
+        }
+    }
+
+    private void validateUser(User user, List<Position> positions) {
+        if (!positions.stream().allMatch(p -> p.getAccountId().equals(user.getAccountId()))) {
+            throw new InvalidDataException();
+        }
     }
 }
 

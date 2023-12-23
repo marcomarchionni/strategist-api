@@ -49,7 +49,7 @@ class TradeMapperTest {
 
         Trade trade = mapper.map(order, Trade.class);
         assertNotNull(trade);
-        assertEquals(order.getIbOrderID(), trade.getId());
+        assertNull(trade.getId());
         assertEquals(order.getIbOrderID(), trade.getIbOrderId());
         assertNull(trade.getStrategy());
     }

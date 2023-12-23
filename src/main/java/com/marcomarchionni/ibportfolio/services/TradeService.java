@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.Trade;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.TradeSummaryDto;
@@ -10,11 +11,11 @@ import java.util.List;
 
 public interface TradeService {
 
-    void saveAll(List<Trade> trades);
+    List<Trade> saveAll(User user, List<Trade> trades);
 
-    TradeSummaryDto updateStrategyId(UpdateStrategyDto trade);
+    TradeSummaryDto updateStrategyId(User user, UpdateStrategyDto trade);
 
-    List<TradeSummaryDto> findByFilter(TradeFindDto tradeCriteria);
+    List<TradeSummaryDto> findByFilter(User user, TradeFindDto tradeCriteria);
 
-    UpdateReport<Trade> addOrSkip(List<Trade> trades);
+    UpdateReport<Trade> addOrSkip(User user, List<Trade> trades);
 }

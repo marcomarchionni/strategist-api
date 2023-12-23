@@ -15,19 +15,6 @@ import java.math.BigDecimal;
 
 @Configuration
 public class ModelMapperConfig {
-    private final Converter<BigDecimal, BigDecimal> absValue =
-            ctx -> ctx.getSource() == null ? null : ctx.getSource().abs();
-
-    private PropertyMap<FlexQueryResponseDto.Order, Trade> getTradePropertyMap() {
-        return new PropertyMap<>() {
-            @Override
-            protected void configure() {
-                map().setId(source.getIbOrderID());
-                map().setConId(source.getConid());
-            }
-        };
-    }
-
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
@@ -39,6 +26,19 @@ public class ModelMapperConfig {
         modelMapper.addMappings(getOpenDividendPropertyMap());
         modelMapper.addMappings(getMergeDividendPropertyMap());
         return modelMapper;
+    }
+
+    private final Converter<BigDecimal, BigDecimal> absValue =
+            ctx -> ctx.getSource() == null ? null : ctx.getSource().abs();
+
+    private PropertyMap<FlexQueryResponseDto.Order, Trade> getTradePropertyMap() {
+        return new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                skip().setId(null);
+                map().setConId(source.getConid());
+            }
+        };
     }
 
     private PropertyMap<FlexQueryResponseDto.FlexStatement, FlexStatement> getFlexStatementPropertyMap() {

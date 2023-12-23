@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.domain.Trade;
+import com.marcomarchionni.ibportfolio.domain.User;
+import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.TradeSummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapper;
@@ -57,20 +59,24 @@ class TradeControllerTest {
     Strategy strategy = getSampleStrategy();
     List<TradeSummaryDto> tradeSummaryDtos;
 
+    User user;
+
     @BeforeEach
     void setUp() {
+        user = TestUtils.getSampleUser();
         objectMapper.registerModule(new JavaTimeModule());
         tradeMapper = new TradeMapperImpl(new ModelMapper());
         tradeSummaryDtos = TestUtils.getSampleTrades()
                 .stream()
                 .map(tradeMapper::toTradeListDto)
                 .toList();
+        when(userService.getAuthenticatedUser()).thenReturn(user);
     }
 
     @Test
     void getTrades() throws Exception {
 
-        when(tradeService.findByFilter(any())).thenReturn(tradeSummaryDtos);
+        when(tradeService.findByFilter(any(User.class), any(TradeFindDto.class))).thenReturn(tradeSummaryDtos);
 
         mockMvc.perform(get("/trades"))
                 .andExpect(status().isOk())
@@ -82,7 +88,7 @@ class TradeControllerTest {
     @CsvSource({",,,ZM,", ",2022-06-14,true,,"})
     void findTradesSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
-        when(tradeService.findByFilter(any())).thenReturn(tradeSummaryDtos);
+        when(tradeService.findByFilter(any(User.class), any(TradeFindDto.class))).thenReturn(tradeSummaryDtos);
 
         mockMvc.perform(get("/trades")
                         .param("tradeDateFrom", tradeDateFrom)
@@ -117,7 +123,7 @@ class TradeControllerTest {
         trade.setStrategy(strategy);
         TradeSummaryDto tradeSummaryDto = tradeMapper.toTradeListDto(trade);
 
-        when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(tradeSummaryDto);
+        when(tradeService.updateStrategyId(user, tradeUpdate)).thenReturn(tradeSummaryDto);
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)

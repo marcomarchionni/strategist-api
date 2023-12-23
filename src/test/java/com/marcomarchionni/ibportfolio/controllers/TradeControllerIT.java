@@ -97,8 +97,9 @@ class TradeControllerIT {
     @Sql("classpath:dbScripts/insertSampleData.sql")
     @ParameterizedTest
     @CsvSource({"339578772,ZM long,ZM", "339580463,IBKR put,FVRR"})
-    void updateStrategyIdSuccess(Long tradeId, String strategyName, String expectedSymbol) throws Exception {
+    void updateStrategyIdSuccess(Long ibOrderId, String strategyName, String expectedSymbol) throws Exception {
         Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), strategyName).get().getId();
+        Long tradeId = tradeRepository.findByAccountIdAndIbOrderId(user.getAccountId(), ibOrderId).get().getId();
 
         UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(tradeId).strategyId(strategyId).build();
 

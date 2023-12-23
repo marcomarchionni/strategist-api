@@ -67,7 +67,7 @@ public class UpdateServiceImpl implements UpdateService {
         }
 
         // Add new or missing trades
-        UpdateReport<Trade> tradeReport = tradeService.addOrSkip(trades);
+        UpdateReport<Trade> tradeReport = tradeService.addOrSkip(user, trades);
 
         // Save flexStatement
         UpdateReport<FlexStatement> flexStatementReport = flexStatementService.save(user, parser.getFlexStatement(dto));

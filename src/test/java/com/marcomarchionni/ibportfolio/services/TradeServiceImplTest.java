@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.domain.Trade;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.TradeSummaryDto;
@@ -38,14 +39,16 @@ class TradeServiceImplTest {
 
     TradeService tradeService;
 
-    private List<Trade> trades;
-    private Trade trade;
-    private Strategy strategy;
-    private UpdateStrategyDto tradeUpdate;
-    private TradeFindDto tradeCriteria;
+    List<Trade> trades;
+    Trade trade;
+    Strategy strategy;
+    UpdateStrategyDto tradeUpdate;
+    TradeFindDto tradeCriteria;
+    User user;
 
     @BeforeEach
     void setup() {
+        user = getSampleUser();
         trades = getSampleTrades();
         trade = getSampleTrade();
         strategy = getSampleStrategy();
@@ -57,14 +60,14 @@ class TradeServiceImplTest {
 
     @Test
     void saveAllSuccess() {
-        assertDoesNotThrow(() -> tradeService.saveAll(trades));
+        assertDoesNotThrow(() -> tradeService.saveAll(user, trades));
     }
 
     @Test
     void saveAllException() {
         doThrow(new RuntimeException()).when(tradeRepository).saveAll(any());
 
-        assertThrows(UnableToSaveEntitiesException.class, () -> tradeService.saveAll(trades));
+        assertThrows(UnableToSaveEntitiesException.class, () -> tradeService.saveAll(user, trades));
     }
 
     @Test
@@ -74,7 +77,7 @@ class TradeServiceImplTest {
         when(strategyRepository.findById(strategy.getId())).thenReturn(Optional.of(strategy));
         when(tradeRepository.save(trade)).thenReturn(trade);
 
-        TradeSummaryDto updatedTrade = tradeService.updateStrategyId(tradeUpdate);
+        TradeSummaryDto updatedTrade = tradeService.updateStrategyId(user, tradeUpdate);
 
         verify(tradeRepository).save(trade);
         assertEquals(tradeUpdate.getId(), updatedTrade.getId());
@@ -87,16 +90,16 @@ class TradeServiceImplTest {
         when(tradeRepository.findById(trade.getId())).thenReturn(Optional.of(trade));
         when(strategyRepository.findById(strategy.getId())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, ()-> tradeService.updateStrategyId(tradeUpdate));
+        assertThrows(EntityNotFoundException.class, () -> tradeService.updateStrategyId(user, tradeUpdate));
     }
 
     @Test
     void findWithParametersSuccess() {
 
-        when(tradeRepository.findByParams(any(),any(),any(),any(),any())).thenReturn(trades);
+        when(tradeRepository.findByParams(anyString(), any(), any(), any(), any(), any())).thenReturn(trades);
         int expectedSize = trades.size();
 
-        List<TradeSummaryDto> actualTrades = tradeService.findByFilter(tradeCriteria);
+        List<TradeSummaryDto> actualTrades = tradeService.findByFilter(user, tradeCriteria);
 
         assertEquals(expectedSize, actualTrades.size());
     }
@@ -107,12 +110,12 @@ class TradeServiceImplTest {
         List<Trade> newTrades = List.of(getTTWO1Trade(), getTTWO2Trade(), getEURUSDTrade());
 
         // setup mock, assuming that TTWO1 and TTWO2 already exist in the database
-        when(tradeRepository.existsById(getTTWO1Trade().getId())).thenReturn(true);
-        when(tradeRepository.existsById(getTTWO2Trade().getId())).thenReturn(true);
+        when(tradeRepository.existsByAccountIdAndIbOrderId(user.getAccountId(), getTTWO1Trade().getIbOrderId())).thenReturn(true);
+        when(tradeRepository.existsByAccountIdAndIbOrderId(user.getAccountId(), getTTWO2Trade().getIbOrderId())).thenReturn(true);
         when(tradeRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
-        UpdateReport<Trade> result = tradeService.addOrSkip(newTrades);
+        UpdateReport<Trade> result = tradeService.addOrSkip(user, newTrades);
 
         // assertions
         assertEquals(1, result.getAdded().size());
