@@ -57,7 +57,7 @@ public class DividendServiceImpl implements DividendService {
                 () -> new EntityNotFoundException(Strategy.class, strategyId, accountId)
         );
         dividend.setStrategy(strategyToAssign);
-        return dividendMapper.toDividendListDto(this.save(accountId, dividend));
+        return dividendMapper.toDividendListDto(this.save(user, dividend));
     }
 
     @Override
@@ -77,7 +77,8 @@ public class DividendServiceImpl implements DividendService {
                 dividendsToAdd.add(cd);
             }
         }
-        return UpdateReport.<Dividend>builder().added(this.saveAll(accountId, dividendsToAdd))
+        return UpdateReport.<Dividend>builder()
+                .added(this.saveAll(user, dividendsToAdd))
                 .skipped(dividendsToSkip).build();
     }
 
@@ -113,8 +114,9 @@ public class DividendServiceImpl implements DividendService {
         }
 
         // Save target lists and return report
-        return UpdateReport.<Dividend>builder().added(this.saveAll(accountId, newDividendsToSave))
-                .merged(this.saveAll(accountId, mergedDividendsToSave))
+        return UpdateReport.<Dividend>builder()
+                .added(this.saveAll(user, newDividendsToSave))
+                .merged(this.saveAll(user, mergedDividendsToSave))
                 .skipped(dividendToSkip).build();
     }
 
@@ -122,8 +124,8 @@ public class DividendServiceImpl implements DividendService {
         return dividendRepository.existsByAccountIdAndActionId(accountId, d.getActionId());
     }
 
-    private Dividend save(String accountId, Dividend dividend) {
-        if (!dividend.getAccountId().equals(accountId)) {
+    private Dividend save(User user, Dividend dividend) {
+        if (!dividend.getAccountId().equals(user.getAccountId())) {
             throw new InvalidDataException();
         }
         try {
@@ -133,8 +135,8 @@ public class DividendServiceImpl implements DividendService {
         }
     }
 
-    private List<Dividend> saveAll(String accountId, List<Dividend> dividends) {
-        if (!dividends.stream().allMatch(dividend -> dividend.getAccountId().equals(accountId))) {
+    private List<Dividend> saveAll(User user, List<Dividend> dividends) {
+        if (!dividends.stream().allMatch(dividend -> dividend.getAccountId().equals(user.getAccountId()))) {
             throw new InvalidDataException();
         }
         try {
