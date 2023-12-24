@@ -7,13 +7,19 @@ import org.springframework.web.ErrorResponse;
 import java.net.URI;
 
 public abstract class CustomException extends RuntimeException implements ErrorResponse {
-
     private final String message;
     private final String title;
     private final HttpStatusCode statusCode;
 
     public CustomException(String message, String title, HttpStatusCode statusCode) {
         super(message);
+        this.message = message;
+        this.title = title;
+        this.statusCode = statusCode;
+    }
+
+    public CustomException(String message, String title, HttpStatusCode statusCode, Throwable cause) {
+        super(message, cause);
         this.message = message;
         this.title = title;
         this.statusCode = statusCode;

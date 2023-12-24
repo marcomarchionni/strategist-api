@@ -8,7 +8,7 @@ import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.TradeSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidDataException;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapper;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
@@ -81,7 +81,7 @@ public class TradeServiceImpl implements TradeService {
     @Override
     public List<Trade> saveAll(User user, List<Trade> trades) {
         if (!trades.stream().allMatch(t -> t.getAccountId().equals(user.getAccountId()))) {
-            throw new InvalidDataException();
+            throw new InvalidUserDataException();
         }
         try {
             return tradeRepository.saveAll(trades);

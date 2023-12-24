@@ -8,7 +8,7 @@ import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.DividendSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidDataException;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.DividendMapper;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
@@ -126,7 +126,7 @@ public class DividendServiceImpl implements DividendService {
 
     private Dividend save(User user, Dividend dividend) {
         if (!dividend.getAccountId().equals(user.getAccountId())) {
-            throw new InvalidDataException();
+            throw new InvalidUserDataException();
         }
         try {
             return dividendRepository.save(dividend);
@@ -137,7 +137,7 @@ public class DividendServiceImpl implements DividendService {
 
     private List<Dividend> saveAll(User user, List<Dividend> dividends) {
         if (!dividends.stream().allMatch(dividend -> dividend.getAccountId().equals(user.getAccountId()))) {
-            throw new InvalidDataException();
+            throw new InvalidUserDataException();
         }
         try {
             return dividendRepository.saveAll(dividends);

@@ -68,7 +68,7 @@ public class ServerDataFetcher implements DataFetcher {
                                                    Class<T> responseType, Object... uriVariables) {
         int attempts = 1;
         long delay = retryDelay;
-        ResponseEntity<T> response;
+        ResponseEntity<T> response = null;
         while (attempts <= maxAttempts) {
             response = restTemplate.exchange(
                     url,
@@ -95,7 +95,8 @@ public class ServerDataFetcher implements DataFetcher {
                 throw new IbServerErrorException("Interrupted while waiting to retry");
             }
         }
-        throw new IbServerErrorException("Failed to get valid response from IB server after " + maxAttempts + " " +
-                "attempts");
+        if (response != null) throw new IbServerErrorException(response);
+        throw new IbServerErrorException("Unable to fetch data from IB server");
     }
 }
+

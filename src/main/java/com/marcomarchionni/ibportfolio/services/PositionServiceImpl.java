@@ -8,7 +8,7 @@ import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PositionSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidDataException;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
@@ -112,7 +112,7 @@ public class PositionServiceImpl implements PositionService{
 
     private void validateUser(User user, List<Position> positions) {
         if (!positions.stream().allMatch(p -> p.getAccountId().equals(user.getAccountId()))) {
-            throw new InvalidDataException();
+            throw new InvalidUserDataException();
         }
     }
 }

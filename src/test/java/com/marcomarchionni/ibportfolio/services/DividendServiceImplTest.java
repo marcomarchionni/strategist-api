@@ -8,7 +8,7 @@ import com.marcomarchionni.ibportfolio.dtos.request.DividendFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.DividendSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidDataException;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.mappers.DividendMapper;
 import com.marcomarchionni.ibportfolio.mappers.DividendMapperImpl;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
@@ -176,6 +176,6 @@ class DividendServiceImplTest {
         List<Dividend> newClosedDividends = List.of(getNKEClosedDividend());
 
         // execute method
-        assertThrows(InvalidDataException.class, () -> dividendService.addOrSkip(user, newClosedDividends));
+        assertThrows(InvalidUserDataException.class, () -> dividendService.addOrSkip(user, newClosedDividends));
     }
 }
