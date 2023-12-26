@@ -20,7 +20,7 @@ class ServerDataFetcherTest {
     void fetch() {
         assertNotNull(serverDataFetcher);
 
-        FlexQueryResponseDto flexQueryResponseDto = serverDataFetcher.fetch(new FetchContext());
+        FlexQueryResponseDto flexQueryResponseDto = serverDataFetcher.fetch(FetchContext.builder().build());
 
         assertNotNull(flexQueryResponseDto);
         String accountId = flexQueryResponseDto.getFlexStatements().getFlexStatement().getAccountId();

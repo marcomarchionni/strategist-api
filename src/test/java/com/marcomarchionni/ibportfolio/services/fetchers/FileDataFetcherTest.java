@@ -40,7 +40,7 @@ class FileDataFetcherTest {
                 stream // file content
         );
         assertNotNull(stream);
-        FetchContext context = new FetchContext();
+        FetchContext context = FetchContext.builder().build();
         context.setFile(file);
 
         // Fetch data
@@ -64,7 +64,7 @@ class FileDataFetcherTest {
                 "text/xml", // content type
                 stream // file content
         );
-        FetchContext context = new FetchContext();
+        FetchContext context = FetchContext.builder().build();
         context.setFile(mockMultipartFile);
 
         // Fetch data

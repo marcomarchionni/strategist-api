@@ -10,7 +10,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 public class FlexQueryResponseDto {
@@ -28,25 +30,11 @@ public class FlexQueryResponseDto {
         private int count;
     }
 
-    @Data
-    public static class FlexStatement {
-        @JsonProperty("AccountInformation")
-        private AccountInformation accountInformation;
-        @JsonProperty("OpenPositions")
-        private OpenPositions openPositions;
-        @JsonProperty("Trades")
-        private Trades trades;
-        @JsonProperty("ChangeInDividendAccruals")
-        private ChangeInDividendAccruals changeInDividendAccruals;
-        @JsonProperty("OpenDividendAccruals")
-        private OpenDividendAccruals openDividendAccruals;
-        private String accountId;
-        @JsonFormat(pattern = "yyyyMMdd")
-        private LocalDate fromDate;
-        @JsonFormat(pattern = "yyyyMMdd")
-        private LocalDate toDate;
-        private String period;
-        private LocalDateTime whenGenerated;
+    // helper methods to avoid null checks
+    public FlexQueryResponseDto.FlexStatement nullSafeGetFlexStatement() {
+        return Optional.ofNullable(flexStatements)
+                .map(FlexStatements::getFlexStatement)
+                .orElse(null);
     }
 
     @Data
@@ -440,6 +428,75 @@ public class FlexQueryResponseDto {
     @EqualsAndHashCode(callSuper = true)
     @Data
     public static class OpenDividendAccrual extends DividendAccrual {
+    }
+
+    public String nullSafeGetAccountId() {
+        return Optional.ofNullable(flexStatements)
+                .map(FlexStatements::getFlexStatement)
+                .map(FlexStatement::getAccountId)
+                .orElse(null);
+    }
+
+    public List<FlexQueryResponseDto.OpenPosition> nullSafeGetOpenPositions() {
+        return Optional.ofNullable(flexStatements)
+                .map(FlexStatements::getFlexStatement)
+                .map(FlexStatement::getOpenPositions)
+                .map(OpenPositions::getOpenPositionList)
+                .orElse(Collections.emptyList());
+    }
+
+    public List<FlexQueryResponseDto.Trade> nullSafeGetTrades() {
+        return Optional.ofNullable(flexStatements)
+                .map(FlexStatements::getFlexStatement)
+                .map(FlexStatement::getTrades)
+                .map(Trades::getTradeList)
+                .orElse(Collections.emptyList());
+    }
+
+    public List<FlexQueryResponseDto.Order> nullSafeGetOrders() {
+        return Optional.ofNullable(flexStatements)
+                .map(FlexStatements::getFlexStatement)
+                .map(FlexStatement::getTrades)
+                .map(Trades::getOrderList)
+                .orElse(Collections.emptyList());
+    }
+
+    public List<FlexQueryResponseDto.ChangeInDividendAccrual> nullSafeGetChangeInDividendAccruals() {
+        return Optional.ofNullable(flexStatements)
+                .map(FlexStatements::getFlexStatement)
+                .map(FlexStatement::getChangeInDividendAccruals)
+                .map(ChangeInDividendAccruals::getChangeInDividendAccrualList)
+                .orElse(Collections.emptyList());
+    }
+
+    public List<FlexQueryResponseDto.OpenDividendAccrual> nullSafeGetOpenDividendAccruals() {
+        return Optional.ofNullable(flexStatements)
+                .map(FlexStatements::getFlexStatement)
+                .map(FlexStatement::getOpenDividendAccruals)
+                .map(OpenDividendAccruals::getOpenDividendAccrualList)
+                .orElse(Collections.emptyList());
+    }
+
+    @Data
+    public static class FlexStatement {
+        @JsonProperty("AccountInformation")
+        private AccountInformation accountInformation;
+        @JsonProperty("OpenPositions")
+        private OpenPositions openPositions;
+        @JsonProperty("Trades")
+        private Trades trades;
+        @JsonProperty("ChangeInDividendAccruals")
+        private ChangeInDividendAccruals changeInDividendAccruals;
+        @JsonProperty("OpenDividendAccruals")
+        private OpenDividendAccruals openDividendAccruals;
+        @NotNull
+        private String accountId;
+        @JsonFormat(pattern = "yyyyMMdd")
+        private LocalDate fromDate;
+        @JsonFormat(pattern = "yyyyMMdd")
+        private LocalDate toDate;
+        private String period;
+        private LocalDateTime whenGenerated;
     }
 }
 

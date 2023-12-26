@@ -3,7 +3,6 @@ package com.marcomarchionni.ibportfolio.services.fetchers;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
-import com.marcomarchionni.ibportfolio.services.fetchers.validators.DtoValidator;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,13 +21,10 @@ public class ServerDataFetcher implements DataFetcher {
     private final String reqPath;
     private final int maxAttempts;
     private final long retryDelay;
-
-    private final DtoValidator dtoValidator;
-
     public ServerDataFetcher(RestTemplate restTemplate, @Value("${ib.token}") String token,
                              @Value("${ib.query-id}") String queryId, @Value("${ib.auth-url}") String authUrl,
                              @Value("${ib.req-path}") String reqPath, @Value("${ib.max-attempts}") int maxAttempts,
-                             @Value("${ib.retry-delay}") long retryDelay, DtoValidator dtoValidator) {
+                             @Value("${ib.retry-delay}") long retryDelay) {
         this.restTemplate = restTemplate;
         this.token = token;
         this.queryId = queryId;
@@ -36,7 +32,6 @@ public class ServerDataFetcher implements DataFetcher {
         this.reqPath = reqPath;
         this.maxAttempts = maxAttempts;
         this.retryDelay = retryDelay;
-        this.dtoValidator = dtoValidator;
     }
 
     @Override
@@ -79,7 +74,7 @@ public class ServerDataFetcher implements DataFetcher {
 
             // If response is OK and dto is valid, return dto
             log.info("Executing request to IB server... Attempt: {}", attempts);
-            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null && dtoValidator.isValid(response.getBody())) {
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 log.info("Valid response from IB server, returning... Response: {}", response);
                 return response.getBody();
             }

@@ -1,11 +1,11 @@
 package com.marcomarchionni.ibportfolio.services.util;
 
 import com.marcomarchionni.ibportfolio.services.fetchers.DataFetcher;
+import com.marcomarchionni.ibportfolio.services.fetchers.FetchContext;
 import com.marcomarchionni.ibportfolio.services.fetchers.FileDataFetcher;
 import com.marcomarchionni.ibportfolio.services.fetchers.ServerDataFetcher;
 import com.marcomarchionni.ibportfolio.services.fetchers.util.DataFetcherResolver;
 import com.marcomarchionni.ibportfolio.services.fetchers.util.DataFetcherResolverImpl;
-import com.marcomarchionni.ibportfolio.services.fetchers.util.DataSourceType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,10 +33,10 @@ class DataFetcherResolverImplTest {
 
     @Test
     void resolve() {
-        DataFetcher dataFetcher = dataFetcherResolver.resolve(DataSourceType.FILE);
+        DataFetcher dataFetcher = dataFetcherResolver.resolve(FetchContext.SourceType.FILE);
         assertNotNull(dataFetcher);
         assertInstanceOf(FileDataFetcher.class, dataFetcher);
-        dataFetcher = dataFetcherResolver.resolve(DataSourceType.SERVER);
+        dataFetcher = dataFetcherResolver.resolve(FetchContext.SourceType.SERVER);
         assertNotNull(dataFetcher);
         assertInstanceOf(ServerDataFetcher.class, dataFetcher);
     }
