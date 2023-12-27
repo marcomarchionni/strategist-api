@@ -10,14 +10,9 @@ import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import java.util.List;
 
 public interface DividendService {
-
-    //    void saveDividends(List<Dividend> dividends);
-    UpdateReport<Dividend> addOrSkip(User user, List<Dividend> closedDividends);
-
-    UpdateReport<Dividend> updateDividends(User user, List<Dividend> openDividends, List<Dividend> closedDividends);
-
     DividendSummaryDto updateStrategyId(User user, UpdateStrategyDto dividendToUpdate);
 
     List<DividendSummaryDto> findByFilter(User user, DividendFindDto dividendCriteria);
 
+    UpdateReport<Dividend> updateDividends(User user, List<Dividend> dividends);
 }

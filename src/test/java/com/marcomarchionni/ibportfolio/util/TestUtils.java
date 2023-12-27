@@ -7,15 +7,26 @@ import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class TestUtils {
 
+    public static FlexStatement getSampleFlexStatement() {
+        return FlexStatement.builder()
+                .accountId("U1111111")
+                .fromDate(LocalDate.of(2022, 6, 1))
+                .toDate(LocalDate.of(2022, 6, 30))
+                .whenGenerated(LocalDateTime.of(2022, 7, 1, 0, 0, 0))
+                .build();
+    }
+
     public static Trade getSampleTrade() {
         return getZMTrade();
     }
+
 
     public static List<Trade> getSampleTrades() {
         List<Trade> trades = new ArrayList<>();

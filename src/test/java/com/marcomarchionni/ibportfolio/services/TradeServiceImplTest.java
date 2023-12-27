@@ -105,7 +105,7 @@ class TradeServiceImplTest {
     }
 
     @Test
-    void addOrSkip() {
+    void updateTradesSuccess() {
         // setup new trades
         List<Trade> newTrades = List.of(getTTWO1Trade(), getTTWO2Trade(), getEURUSDTrade());
 
@@ -115,11 +115,19 @@ class TradeServiceImplTest {
         when(tradeRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
-        UpdateReport<Trade> result = tradeService.addOrSkip(user, newTrades);
+        UpdateReport<Trade> result = tradeService.updateTrades(user, newTrades);
 
         // assertions
         assertEquals(1, result.getAdded().size());
         assertEquals(2, result.getSkipped().size());
         assertEquals("EUR.USD", result.getAdded().get(0).getSymbol());
+    }
+
+    @Test
+    void updatTradesEmptyList() {
+        UpdateReport<Trade> result = tradeService.updateTrades(user, List.of());
+        assertEquals(0, result.getAdded().size());
+        assertEquals(0, result.getSkipped().size());
+        assertEquals(0, result.getMerged().size());
     }
 }

@@ -65,7 +65,7 @@ class FlexStatementServiceImplTest {
 
     @Test
     void save() {
-        UpdateReport<FlexStatement> report = flexStatementService.save(user, flexStatement);
+        UpdateReport<FlexStatement> report = flexStatementService.updateFlexStatements(user, flexStatement);
 
         assertNotNull(report);
         assertNotNull(report.getAdded());
@@ -75,12 +75,14 @@ class FlexStatementServiceImplTest {
     @Test
     void saveException() {
         flexStatement.setAccountId("U2222222");
-        assertThrows(UnableToSaveEntitiesException.class, () -> flexStatementService.save(user, flexStatement));
+        assertThrows(UnableToSaveEntitiesException.class, () -> flexStatementService.updateFlexStatements(user,
+                flexStatement));
     }
 
     @Test
     void saveExceptionNull() {
         flexStatement.setAccountId(null);
-        assertThrows(UnableToSaveEntitiesException.class, () -> flexStatementService.save(user, flexStatement));
+        assertThrows(UnableToSaveEntitiesException.class, () -> flexStatementService.updateFlexStatements(user,
+                flexStatement));
     }
 }

@@ -154,4 +154,13 @@ class PositionServiceImplTest {
         assertEquals(LocalDate.of(2022, 7, 7), result.getMerged().get(0).getReportDate());
         assertEquals(sampleStrategy, result.getMerged().get(0).getStrategy());
     }
+
+    @Test
+    void updatePositionsEmptyList() {
+        UpdateReport<Position> result = positionService.updatePositions(user, List.of());
+
+        assertEquals(0, result.getAdded().size());
+        assertEquals(0, result.getDeleted().size());
+        assertEquals(0, result.getMerged().size());
+    }
 }

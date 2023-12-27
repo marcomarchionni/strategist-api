@@ -3,11 +3,8 @@ package com.marcomarchionni.ibportfolio.services.parsers;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.config.XMLConverterConfig;
-import com.marcomarchionni.ibportfolio.domain.Dividend;
-import com.marcomarchionni.ibportfolio.domain.FlexStatement;
-import com.marcomarchionni.ibportfolio.domain.Position;
-import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.update.UpdateDto;
 import com.marcomarchionni.ibportfolio.mappers.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,7 +26,6 @@ class ResponseParserImplTest {
 
     @Autowired
     private XmlMapper xmlMapper;
-
     FlexStatementMapper flexStatementMapper;
     PositionMapper positionMapper;
     TradeMapper tradeMapper;
@@ -57,42 +52,24 @@ class ResponseParserImplTest {
     }
 
     @Test
-    void parseFlexStatement() {
-        FlexStatement flexStatement = responseParser.getFlexStatement(flexQueryResponseDto);
+    void parseAllData() {
+        UpdateDto updateDto = responseParser.parseAllData(flexQueryResponseDto);
 
-        assertNotNull(flexStatement);
-        assertEquals("U1111111", flexStatement.getAccountId());
+        assertNotNull(updateDto);
+        assertEquals("U1111111", updateDto.getFlexStatement().getAccountId());
+        assertEquals(8, updateDto.getTrades().size());
+        assertEquals(3, updateDto.getPositions().size());
+        assertEquals(6, updateDto.getDividends().size());
     }
 
     @Test
-    void parseTrades() {
-        List<Trade> trades = responseParser.getTrades(flexQueryResponseDto);
+    void parseHistoricalData() {
+        UpdateDto updateDto = responseParser.parseHistoricalData(flexQueryResponseDto);
 
-        assertNotNull(trades);
-        assertEquals(8, trades.size());
-    }
-
-    @Test
-    void parsePositions() {
-        List<Position> positions = responseParser.getPositions(flexQueryResponseDto);
-
-        assertNotNull(positions);
-        assertEquals(3, positions.size());
-    }
-
-    @Test
-    void parseClosedDividends() {
-        List<Dividend> closedDividends = responseParser.getClosedDividends(flexQueryResponseDto);
-
-        assertNotNull(closedDividends);
-        assertEquals(3, closedDividends.size());
-    }
-
-    @Test
-    void parseOpenDividends() {
-        List<Dividend> openDividends = responseParser.getOpenDividends(flexQueryResponseDto);
-
-        assertNotNull(openDividends);
-        assertEquals(3, openDividends.size());
+        assertNotNull(updateDto);
+        assertEquals("U1111111", updateDto.getFlexStatement().getAccountId());
+        assertEquals(8, updateDto.getTrades().size());
+        assertEquals(0, updateDto.getPositions().size());
+        assertEquals(3, updateDto.getDividends().size());
     }
 }

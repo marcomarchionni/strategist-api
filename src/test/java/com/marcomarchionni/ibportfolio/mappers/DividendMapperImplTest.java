@@ -56,7 +56,9 @@ class DividendMapperImplTest {
 
     @Test
     void toClosedDividend() {
-        FlexQueryResponseDto.ChangeInDividendAccrual d = new FlexQueryResponseDto.ChangeInDividendAccrual();
+        FlexQueryResponseDto.ChangeInDividendAccrual d = FlexQueryResponseDto.ChangeInDividendAccrual.builder().build();
+
+
         d.setCurrency("USD");
         d.setFxRateToBase(BigDecimal.valueOf(0.93292));
         d.setAssetCategory("STK");
@@ -80,14 +82,15 @@ class DividendMapperImplTest {
 
     @Test
     void toOpenDividend() {
-        FlexQueryResponseDto.OpenDividendAccrual d = new FlexQueryResponseDto.OpenDividendAccrual();
-        d.setCurrency("USD");
-        d.setFxRateToBase(BigDecimal.valueOf(0.93292));
-        d.setAssetCategory("STK");
-        d.setSymbol("CGNX");
-        d.setExDate(LocalDate.of(2022, 5, 19));
-        d.setPayDate(LocalDate.of(2022, 6, 3));
-        d.setConid(267547L);
+        FlexQueryResponseDto.OpenDividendAccrual d = FlexQueryResponseDto.OpenDividendAccrual.builder()
+                .currency("USD")
+                .fxRateToBase(BigDecimal.valueOf(0.93292))
+                .assetCategory("STK")
+                .symbol("CGNX")
+                .exDate(LocalDate.of(2022, 5, 19))
+                .payDate(LocalDate.of(2022, 6, 3))
+                .conid(267547L)
+                .build();
 
         Dividend dividend = dividendMapper.toOpenDividend(d);
 

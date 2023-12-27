@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FlexValidatorImplTest {
 
-    FlexValidator flexValidator;
+    FlexQueryResponseValidator flexValidator;
 
     Validator validator;
 
@@ -20,7 +20,7 @@ class FlexValidatorImplTest {
     void setUp() {
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             validator = factory.getValidator();
-            flexValidator = new FlexValidatorImpl(validator);
+            flexValidator = new FlexQueryResponseValidator(validator);
         }
     }
 

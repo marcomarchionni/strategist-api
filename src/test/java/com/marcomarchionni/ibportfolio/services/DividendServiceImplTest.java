@@ -27,7 +27,7 @@ import static com.marcomarchionni.ibportfolio.util.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DividendServiceImplTest {
@@ -110,22 +110,18 @@ class DividendServiceImplTest {
         NKEOpenDividend.setStrategy(getSampleStrategy());
         List<Dividend> existingOpenDividends = List.of(NKEOpenDividend);
 
-        // setup new open dividend
-        Dividend FDXOpenDividend = getFDXOpenDividend();
-        List<Dividend> newOpenDividends = List.of(FDXOpenDividend);
-
-        // setup new closed dividends
-        List<Dividend> newClosedDividends = List.of(getNKEClosedDividend(), getEBAYClosedDividend());
+        // new dividends
+        List<Dividend> newDividends = List.of(getFDXOpenDividend(), getNKEClosedDividend(), getEBAYClosedDividend());
 
         // setup mocks
         when(dividendRepository.findOpenDividendsByAccountId(user.getAccountId())).thenReturn(existingOpenDividends);
         when(dividendRepository.existsByAccountIdAndActionId(user.getAccountId(), EBAYClosedDividend.getActionId())).thenReturn(true);
-        when(dividendRepository.existsByAccountIdAndActionId(user.getAccountId(), FDXOpenDividend.getActionId())).thenReturn(false);
+        when(dividendRepository.existsByAccountIdAndActionId(user.getAccountId(), getFDXOpenDividend().getActionId())).thenReturn(false);
         when(dividendRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(dividendRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
-        UpdateReport<Dividend> result = dividendService.updateDividends(user, newOpenDividends, newClosedDividends);
+        UpdateReport<Dividend> result = dividendService.updateDividends(user, newDividends);
 
         // assertions
         assertEquals(1, result.getAdded().size());
@@ -137,37 +133,7 @@ class DividendServiceImplTest {
     }
 
     @Test
-    void addOrSkip() {
-        // setup data
-        //// setup existing closed dividend
-        Dividend EBAYClosedDividend = getEBAYClosedDividend();
-        EBAYClosedDividend.setStrategy(getSampleStrategy());
-
-        //// setup new closed dividends
-        Dividend NKEClosedDividend = getNKEClosedDividend();
-        Dividend newEBAYClosedDividend = getEBAYClosedDividend();
-        List<Dividend> newClosedDividends = List.of(NKEClosedDividend, newEBAYClosedDividend);
-
-        //// setup mocks
-        when(dividendRepository.existsByAccountIdAndActionId(user.getAccountId(),
-                EBAYClosedDividend.getActionId())).thenReturn(true);
-        when(dividendRepository.existsByAccountIdAndActionId(user.getAccountId(), NKEClosedDividend.getActionId())).thenReturn(false);
-        when(dividendRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
-
-        // execute method
-        UpdateReport<Dividend> result = dividendService.addOrSkip(user, newClosedDividends);
-
-        // assertions
-        verify(dividendRepository, times(1)).existsByAccountIdAndActionId(user.getAccountId(),
-                newEBAYClosedDividend.getActionId());
-        assertEquals(1, result.getAdded().size());
-        assertEquals(1, result.getSkipped().size());
-        assertEquals("NKE", result.getAdded().get(0).getSymbol());
-        assertEquals("EBAY", result.getSkipped().get(0).getSymbol());
-    }
-
-    @Test
-    void addOrSkipInvalidDataException() {
+    void updateDividendsInvalidDataException() {
         // setup user
         User user = getSampleUser();
         user.setAccountId("UNEXPECTED_ACCOUNT_ID");
@@ -176,6 +142,6 @@ class DividendServiceImplTest {
         List<Dividend> newClosedDividends = List.of(getNKEClosedDividend());
 
         // execute method
-        assertThrows(InvalidUserDataException.class, () -> dividendService.addOrSkip(user, newClosedDividends));
+        assertThrows(InvalidUserDataException.class, () -> dividendService.updateDividends(user, newClosedDividends));
     }
 }

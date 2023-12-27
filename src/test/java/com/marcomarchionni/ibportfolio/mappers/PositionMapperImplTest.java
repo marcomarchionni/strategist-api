@@ -33,21 +33,22 @@ class PositionMapperImplTest {
     @Test
     void toPosition() {
         // Set all fields of the dto to avoid null pointer exceptions
-        FlexQueryResponseDto.OpenPosition p = new FlexQueryResponseDto.OpenPosition();
-        p.setAccountId("U7169936");
-        p.setCurrency("EUR");
-        p.setAssetCategory("STK");
-        p.setSymbol("ADYEN");
-        p.setDescription("ADYEN NV");
-        p.setConid(321202935L);
-        p.setReportDate(LocalDate.of(2022, 6, 30));
-        p.setPosition(BigDecimal.valueOf(1));
-        p.setMarkPrice(BigDecimal.valueOf(1388));
-        p.setLevelOfDetail("SUMMARY");
-        p.setCostBasisMoney(BigDecimal.valueOf(1388));
-        p.setCostBasisPrice(BigDecimal.valueOf(1388));
-        p.setPercentOfNAV(BigDecimal.valueOf(1));
-        p.setFifoPnlUnrealized(BigDecimal.valueOf(0));
+        FlexQueryResponseDto.OpenPosition p = FlexQueryResponseDto.OpenPosition.builder()
+                .accountId("U1111111")
+                .currency("EUR")
+                .assetCategory("STK")
+                .symbol("ADYEN")
+                .description("ADYEN NV")
+                .conid(321202935L)
+                .reportDate(LocalDate.of(2022, 6, 30))
+                .position(BigDecimal.valueOf(1))
+                .markPrice(BigDecimal.valueOf(1388))
+                .levelOfDetail("SUMMARY")
+                .costBasisMoney(BigDecimal.valueOf(1388))
+                .costBasisPrice(BigDecimal.valueOf(1388))
+                .percentOfNAV(BigDecimal.valueOf(1))
+                .fifoPnlUnrealized(BigDecimal.valueOf(0))
+                .build();
 
         Position position = positionMapper.toPosition(p);
 

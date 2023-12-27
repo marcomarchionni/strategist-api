@@ -1,17 +1,19 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.domain.*;
+import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
-import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
+import com.marcomarchionni.ibportfolio.dtos.update.UpdateDto;
 import com.marcomarchionni.ibportfolio.services.parsers.ResponseParser;
+import com.marcomarchionni.ibportfolio.services.validators.UpdateDtoValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UpdateServiceImpl implements UpdateService {
 
     private final ResponseParser parser;
@@ -24,54 +26,36 @@ public class UpdateServiceImpl implements UpdateService {
 
     private final PositionService positionService;
 
-    public UpdateServiceImpl(ResponseParser parser,
-                             TradeService tradeService,
-                             DividendService dividendService,
-                             FlexStatementService flexStatementService, PositionService positionService) {
-        this.parser = parser;
-        this.tradeService = tradeService;
-        this.dividendService = dividendService;
-        this.flexStatementService = flexStatementService;
-        this.positionService = positionService;
-    }
+    private final UpdateDtoValidator updateDtoValidator;
 
     @Override
     @Transactional
-    public CombinedUpdateReport save(User user, FlexQueryResponseDto dto) {
-        //Declare report variables
-        UpdateReport<Position> positionReport;
-        UpdateReport<Dividend> dividendReport;
-
-        // Extract trades and dividends from dto
-        List<Trade> trades = parser.getTrades(dto);
-        List<Dividend> closedDividends = parser.getClosedDividends(dto);
+    public CombinedUpdateReport update(User user, FlexQueryResponseDto dto) {
 
         // Check if dto has the latest data
-        LocalDate toDateInDto = parser.getFlexStatementToDate(dto);
         LocalDate latestToDateInDb = flexStatementService.findLatestToDate(user);
-        boolean dtoHasTheLatestData = toDateInDto.isAfter(latestToDateInDb);
+        LocalDate toDateInFlexQuery = dto.nullSafeGetFlexStatement().getToDate();
+        boolean flexQueryHasTheLatestData = toDateInFlexQuery.isAfter(latestToDateInDb);
 
-        if (dtoHasTheLatestData) {
-            // extract positions and open dividends from dto
-            List<Position> positions = parser.getPositions(dto);
-            List<Dividend> openDividends = parser.getOpenDividends(dto);
-
-            // Update positions, open dividends, closed dividends
-            positionReport = positionService.updatePositions(user, positions);
-            dividendReport = dividendService.updateDividends(user, openDividends, closedDividends);
-
+        // Parse dto
+        UpdateDto updateDto;
+        if (flexQueryHasTheLatestData) {
+            updateDto = parser.parseAllData(dto);
         } else {
-            // Add new closed dividends, no action on positions
-            positionReport = UpdateReport.<Position>builder().build();
-            dividendReport = dividendService.addOrSkip(user, closedDividends);
+            updateDto = parser.parseHistoricalData(dto);
         }
 
-        // Add new or missing trades
-        UpdateReport<Trade> tradeReport = tradeService.addOrSkip(user, trades);
+        // Validate update dto
+        updateDtoValidator.isValid(updateDto);
+        updateDtoValidator.hasValidAccountId(updateDto, user.getAccountId());
 
-        // Save flexStatement
-        UpdateReport<FlexStatement> flexStatementReport = flexStatementService.save(user, parser.getFlexStatement(dto));
+        // Update flex statement, positions, open dividends, closed dividends
+        var flexStatementReport = flexStatementService.updateFlexStatements(user, updateDto.getFlexStatement());
+        var positionReport = positionService.updatePositions(user, updateDto.getPositions());
+        var tradeReport = tradeService.updateTrades(user, updateDto.getTrades());
+        var dividendReport = dividendService.updateDividends(user, updateDto.getDividends());
 
+        // Return report
         return CombinedUpdateReport.builder().flexStatements(flexStatementReport).trades(tradeReport)
                 .positions(positionReport).dividends(dividendReport).build();
     }

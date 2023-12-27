@@ -40,14 +40,16 @@ class TradeMapperTest {
 
     @Test
     void toTrade() {
-        FlexQueryResponseDto.Order order = new FlexQueryResponseDto.Order();
-        order.setCurrency("USD");
-        order.setAssetCategory("STK");
-        order.setSymbol("CGNX");
-        order.setConid(370695082L);
-        order.setIbOrderID(339580463L);
+        FlexQueryResponseDto.Order order = FlexQueryResponseDto.Order.builder()
+                .currency("USD")
+                .assetCategory("STK")
+                .symbol("CGNX")
+                .conid(370695082L)
+                .ibOrderID(339580463L)
+                .build();
 
         Trade trade = mapper.map(order, Trade.class);
+
         assertNotNull(trade);
         assertNull(trade.getId());
         assertEquals(order.getIbOrderID(), trade.getIbOrderId());

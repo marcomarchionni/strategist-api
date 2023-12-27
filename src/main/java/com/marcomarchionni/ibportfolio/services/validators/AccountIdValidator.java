@@ -1,45 +1,24 @@
 package com.marcomarchionni.ibportfolio.services.validators;
 
-import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.update.UpdateDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class AccountIdValidator implements ConstraintValidator<ValidAccountId, FlexQueryResponseDto> {
+public class AccountIdValidator implements ConstraintValidator<ValidAccountId, UpdateDto> {
 
     @Override
-    public boolean isValid(FlexQueryResponseDto dto, ConstraintValidatorContext constraintValidatorContext) {
-        String accountId = dto.nullSafeGetAccountId();
-        if (accountId == null) {
+    public boolean isValid(UpdateDto dto, ConstraintValidatorContext constraintValidatorContext) {
+        try {
+            String accountId = dto.getFlexStatement().getAccountId();
+            boolean validOpenPositions = dto.getPositions().stream()
+                    .allMatch(position -> position.getAccountId().equals(accountId));
+            boolean validTrades = dto.getTrades().stream()
+                    .allMatch(trade -> trade.getAccountId().equals(accountId));
+            boolean validDividends = dto.getDividends().stream()
+                    .allMatch(dividend -> dividend.getAccountId().equals(accountId));
+            return validOpenPositions && validTrades && validDividends;
+        } catch (NullPointerException e) {
             return false;
         }
-        boolean validOpenPositions = areValidOpenPositions(accountId, dto);
-        boolean validTrades = areValidTrades(accountId, dto);
-        boolean validOrders = areValidOrders(accountId, dto);
-        boolean validChangeInDividendAccruals = areValidChangeInDividendAccruals(accountId, dto);
-        boolean validOpenDividendsAccruals = areValidOpenDividendsAccruals(accountId, dto);
-        return validOpenPositions && validTrades && validOrders && validChangeInDividendAccruals && validOpenDividendsAccruals;
-    }
-
-    private boolean areValidOpenPositions(String accountId, FlexQueryResponseDto dto) {
-        return dto.nullSafeGetOpenPositions().stream()
-                .allMatch(openPosition -> openPosition.getAccountId().equals(accountId));
-    }
-
-    private boolean areValidTrades(String accountId, FlexQueryResponseDto dto) {
-        return dto.nullSafeGetTrades().stream().allMatch(trade -> trade.getAccountId().equals(accountId));
-    }
-
-    private boolean areValidOrders(String accountId, FlexQueryResponseDto dto) {
-        return dto.nullSafeGetOrders().stream().allMatch(order -> order.getAccountId().equals(accountId));
-    }
-
-    private boolean areValidChangeInDividendAccruals(String accountId, FlexQueryResponseDto dto) {
-        return dto.nullSafeGetChangeInDividendAccruals().stream()
-                .allMatch(changeInDividendAccrual -> changeInDividendAccrual.getAccountId().equals(accountId));
-    }
-
-    private boolean areValidOpenDividendsAccruals(String accountId, FlexQueryResponseDto dto) {
-        return dto.nullSafeGetOpenDividendAccruals().stream()
-                .allMatch(openDividendAccrual -> openDividendAccrual.getAccountId().equals(accountId));
     }
 }

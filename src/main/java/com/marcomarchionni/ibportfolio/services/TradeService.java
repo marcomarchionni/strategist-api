@@ -17,5 +17,5 @@ public interface TradeService {
 
     List<TradeSummaryDto> findByFilter(User user, TradeFindDto tradeCriteria);
 
-    UpdateReport<Trade> addOrSkip(User user, List<Trade> trades);
+    UpdateReport<Trade> updateTrades(User user, List<Trade> trades);
 }

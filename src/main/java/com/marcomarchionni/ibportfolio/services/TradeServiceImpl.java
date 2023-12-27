@@ -60,7 +60,12 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public UpdateReport<Trade> addOrSkip(User user, List<Trade> trades) {
+    public UpdateReport<Trade> updateTrades(User user, List<Trade> trades) {
+
+        if (trades.isEmpty()) {
+            return UpdateReport.<Trade>builder().build();
+        }
+
         // Init lists
         List<Trade> tradesToAdd = new ArrayList<>();
         List<Trade> tradesToSkip = new ArrayList<>();

@@ -10,6 +10,6 @@ public interface FlexStatementService {
 
     LocalDate findLatestToDate(User user);
 
-    UpdateReport<FlexStatement> save(User user, FlexStatement flexStatement);
+    UpdateReport<FlexStatement> updateFlexStatements(User user, FlexStatement flexStatement);
 }
 

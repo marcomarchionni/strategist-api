@@ -14,7 +14,7 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEnti
 import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
-import com.marcomarchionni.ibportfolio.services.util.PositionUpdateManager;
+import com.marcomarchionni.ibportfolio.services.util.PositionsCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,30 +50,35 @@ public class PositionServiceImpl implements PositionService{
     @Override
     public UpdateReport<Position> updatePositions(User user, List<Position> positions) {
 
-        // Create a PositionUpdateManager instance to manage the update process
-        PositionUpdateManager updateManager = PositionUpdateManager.createPositionUpdateManager(
-                user.getAccountId(), positionMapper, positionRepository);
+        if (positions.isEmpty()) {
+            return UpdateReport.<Position>builder().build();
+        }
+
+        // Create a DbPositionsCache to map positions in db
+        List<Position> dbPositions = positionRepository.findAllByAccountId(user.getAccountId());
+        PositionsCache cache = PositionsCache.createPositionsCache(dbPositions);
 
         // Select positions to add or merge
-        List<Position> toAdd = new ArrayList<>();
-        List<Position> toMerge = new ArrayList<>();
+        List<Position> newPositions = new ArrayList<>();
+        List<Position> mergedPositions = new ArrayList<>();
 
-        for (Position p : positions) {
-            if (updateManager.existInDb(p)) {
-                toMerge.add(updateManager.getMergedPosition(p));
+        for (Position position : positions) {
+            if (cache.existMatch(position)) {
+                Position positionToMerge = cache.extractMatchingPosition(position);
+                mergedPositions.add(positionMapper.mergeFlexProperties(position, positionToMerge));
             } else {
-                toAdd.add(p);
+                newPositions.add(position);
             }
         }
 
         // Select positions to delete
-        List<Position> toDelete = updateManager.getUnmergedPositions();
+        List<Position> positionsToDelete = cache.getUnmatchedPositions();
 
         // Perform database operations and return the result
         return UpdateReport.<Position>builder()
-                .added(this.saveAll(user, toAdd))
-                .merged(this.saveAll(user, toMerge))
-                .deleted(this.deleteAll(user, toDelete))
+                .added(this.saveAll(user, newPositions))
+                .merged(this.saveAll(user, mergedPositions))
+                .deleted(this.deleteAll(user, positionsToDelete))
                 .build();
     }
 

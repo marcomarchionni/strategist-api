@@ -6,7 +6,7 @@ import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.services.fetchers.DataFetcher;
 import com.marcomarchionni.ibportfolio.services.fetchers.FetchContext;
 import com.marcomarchionni.ibportfolio.services.fetchers.util.DataFetcherResolver;
-import com.marcomarchionni.ibportfolio.services.validators.FlexValidator;
+import com.marcomarchionni.ibportfolio.services.validators.FlexQueryResponseValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,10 +17,10 @@ public class UpdateOrchestratorImpl implements UpdateOrchestrator {
 
     private final DataFetcherResolver dataFetcherResolver;
     private final UpdateService updateService;
-    private final FlexValidator flexValidator;
+    private final FlexQueryResponseValidator flexValidator;
 
     public UpdateOrchestratorImpl(DataFetcherResolver dataFetcherResolver, UpdateService updateService,
-                                  FlexValidator flexValidator) {
+                                  FlexQueryResponseValidator flexValidator) {
         this.dataFetcherResolver = dataFetcherResolver;
         this.updateService = updateService;
         this.flexValidator = flexValidator;
@@ -46,7 +46,7 @@ public class UpdateOrchestratorImpl implements UpdateOrchestrator {
         // Validate dto
         flexValidator.isValid(dto);
         // Save dto data to db
-        return updateService.save(user, dto);
+        return updateService.update(user, dto);
     }
 }
 

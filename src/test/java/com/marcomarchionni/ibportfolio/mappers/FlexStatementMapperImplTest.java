@@ -25,16 +25,19 @@ class FlexStatementMapperImplTest {
 
     @Test
     void toFlexStatement() {
-        FlexQueryResponseDto.FlexStatement flexDto = new FlexQueryResponseDto.FlexStatement();
-        flexDto.setAccountId("U7169936");
-        flexDto.setFromDate(LocalDate.of(2022, 6, 1));
-        flexDto.setToDate(LocalDate.of(2022, 6, 30));
-        flexDto.setWhenGenerated(LocalDateTime.of(2022, 12, 28, 12, 48, 35));
+        FlexQueryResponseDto.FlexStatement flexDto = FlexQueryResponseDto.FlexStatement.builder()
+                .accountId("U7169936")
+                .fromDate(LocalDate.of(2022, 6, 1))
+                .toDate(LocalDate.of(2022, 6, 30))
+                .whenGenerated(LocalDateTime.of(2022, 12, 28, 12, 48, 35))
+                .build();
 
         assertDoesNotThrow(() -> {
             flexStatementMapper.toFlexStatement(flexDto);
         });
+
         FlexStatement flexStatement = flexStatementMapper.toFlexStatement(flexDto);
+
         assertEquals(flexDto.getAccountId(), flexStatement.getAccountId());
         assertEquals(flexDto.getFromDate(), flexStatement.getFromDate());
         assertEquals(flexDto.getToDate(), flexStatement.getToDate());

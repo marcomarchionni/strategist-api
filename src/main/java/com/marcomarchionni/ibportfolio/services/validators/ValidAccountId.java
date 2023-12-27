@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = AccountIdValidator.class)
 public @interface ValidAccountId {
-    String message() default "Account IDs must be consistent across all fields and be equal to the user's account ID.";
+    String message() default "Account IDs must be consistent across all fields.";
 
     Class<?>[] groups() default {};
 

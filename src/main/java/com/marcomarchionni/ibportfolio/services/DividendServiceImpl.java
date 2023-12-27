@@ -13,14 +13,13 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEnti
 import com.marcomarchionni.ibportfolio.mappers.DividendMapper;
 import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
-import com.marcomarchionni.ibportfolio.services.util.OpenDividendsUpdateManager;
+import com.marcomarchionni.ibportfolio.services.util.OpenDividendsCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ public class DividendServiceImpl implements DividendService {
 
     private final DividendRepository dividendRepository;
     private final StrategyRepository strategyRepository;
-    private final DividendMapper dividendMapper;
+    private final DividendMapper mapper;
 
     @Override
     public List<DividendSummaryDto> findByFilter(User user, DividendFindDto dividendFind) {
@@ -41,7 +40,7 @@ public class DividendServiceImpl implements DividendService {
                 dividendFind.getTagged(),
                 dividendFind.getSymbol()
         );
-        return dividends.stream().map(dividendMapper::toDividendListDto).collect(Collectors.toList());
+        return dividends.stream().map(mapper::toDividendListDto).collect(Collectors.toList());
     }
 
     @Override
@@ -57,67 +56,46 @@ public class DividendServiceImpl implements DividendService {
                 () -> new EntityNotFoundException(Strategy.class, strategyId, accountId)
         );
         dividend.setStrategy(strategyToAssign);
-        return dividendMapper.toDividendListDto(this.save(user, dividend));
+        return mapper.toDividendListDto(this.save(user, dividend));
     }
 
     @Override
-    public UpdateReport<Dividend> addOrSkip(User user, List<Dividend> closedDividends) {
-        // Retrieve authenticated user account id
-        String accountId = user.getAccountId();
+    public UpdateReport<Dividend> updateDividends(User user, List<Dividend> dividends) {
 
-        // Init lists
-        List<Dividend> dividendsToAdd = new ArrayList<>();
-        List<Dividend> dividendsToSkip = new ArrayList<>();
-
-        // Only add dividends that are not already in the database
-        for (Dividend cd : closedDividends) {
-            if (existsInDb(accountId, cd)) {
-                dividendsToSkip.add(cd);
-            } else {
-                dividendsToAdd.add(cd);
-            }
+        if (dividends.isEmpty()) {
+            return UpdateReport.<Dividend>builder().build();
         }
-        return UpdateReport.<Dividend>builder()
-                .added(this.saveAll(user, dividendsToAdd))
-                .skipped(dividendsToSkip).build();
-    }
 
-    @Override
-    public UpdateReport<Dividend> updateDividends(User user, List<Dividend> openDividends,
-                                                  List<Dividend> closedDividends) {
         // Retrieve authenticated user account id
         String accountId = user.getAccountId();
-
-        // Combine open dividends and closed dividends into a single list
-        List<Dividend> dividends = Stream.concat(openDividends.stream(), closedDividends.stream())
-                .toList();
 
         // Init target lists
-        List<Dividend> newDividendsToSave = new ArrayList<>();
-        List<Dividend> mergedDividendsToSave = new ArrayList<>();
-        List<Dividend> dividendToSkip = new ArrayList<>();
+        List<Dividend> toAdd = new ArrayList<>();
+        List<Dividend> toMerge = new ArrayList<>();
+        List<Dividend> toSkip = new ArrayList<>();
 
         // Retrieve existing open dividends in an OpenDividendsMap instance
-        OpenDividendsUpdateManager openDividendsMap = OpenDividendsUpdateManager.createOpenDividendMap(accountId,
-                dividendRepository,
-                dividendMapper);
+        List<Dividend> dbOpenDividends = dividendRepository.findOpenDividendsByAccountId(accountId);
+        OpenDividendsCache dbCache = OpenDividendsCache.createOpenDividendCache(
+                dbOpenDividends);
 
         // Assign dividends to target lists
-        for (Dividend d : dividends) {
-            if (openDividendsMap.contains(d)) {
-                mergedDividendsToSave.add(openDividendsMap.getMergedDividend(d));
-            } else if (!existsInDb(accountId, d)) {
-                newDividendsToSave.add(d);
+        for (Dividend dividend : dividends) {
+            if (dbCache.existMatch(dividend)) {
+                var dbDividend = dbCache.getMatchingDividend(dividend);
+                toMerge.add(mapper.mergeFlexProperties(dividend, dbDividend));
+            } else if (!existsInDb(accountId, dividend)) {
+                toAdd.add(dividend);
             } else {
-                dividendToSkip.add(d);
+                toSkip.add(dividend);
             }
         }
 
         // Save target lists and return report
         return UpdateReport.<Dividend>builder()
-                .added(this.saveAll(user, newDividendsToSave))
-                .merged(this.saveAll(user, mergedDividendsToSave))
-                .skipped(dividendToSkip).build();
+                .added(this.saveAll(user, toAdd))
+                .merged(this.saveAll(user, toMerge))
+                .skipped(toSkip).build();
     }
 
     private boolean existsInDb(String accountId, Dividend d) {

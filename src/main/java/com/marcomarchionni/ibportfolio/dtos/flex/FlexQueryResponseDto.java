@@ -3,8 +3,8 @@ package com.marcomarchionni.ibportfolio.dtos.flex;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,6 +30,31 @@ public class FlexQueryResponseDto {
         private int count;
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FlexStatement {
+        @JsonProperty("AccountInformation")
+        private AccountInformation accountInformation;
+        @JsonProperty("OpenPositions")
+        private OpenPositions openPositions;
+        @JsonProperty("Trades")
+        private Trades trades;
+        @JsonProperty("ChangeInDividendAccruals")
+        private ChangeInDividendAccruals changeInDividendAccruals;
+        @JsonProperty("OpenDividendAccruals")
+        private OpenDividendAccruals openDividendAccruals;
+        @NotNull
+        private String accountId;
+        @JsonFormat(pattern = "yyyyMMdd")
+        private LocalDate fromDate;
+        @JsonFormat(pattern = "yyyyMMdd")
+        private LocalDate toDate;
+        private String period;
+        private LocalDateTime whenGenerated;
+    }
+
     // helper methods to avoid null checks
     public FlexQueryResponseDto.FlexStatement nullSafeGetFlexStatement() {
         return Optional.ofNullable(flexStatements)
@@ -38,6 +63,9 @@ public class FlexQueryResponseDto {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AccountInformation {
         private String accountId;
         private String acctAlias;
@@ -87,6 +115,9 @@ public class FlexQueryResponseDto {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class OpenPosition {
         private String accountId;
         private String acctAlias;
@@ -167,6 +198,9 @@ public class FlexQueryResponseDto {
 
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Trade {
         private String accountId;
         private String acctAlias;
@@ -253,6 +287,9 @@ public class FlexQueryResponseDto {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Order {
         private String accountId;
         private String acctAlias;
@@ -352,8 +389,9 @@ public class FlexQueryResponseDto {
             changeInDividendAccrualList.addAll(values);
         }
     }
-
     @Data
+    @SuperBuilder
+    @NoArgsConstructor
     public static abstract class DividendAccrual {
         private String accountId;
         private String acctAlias;
@@ -399,23 +437,25 @@ public class FlexQueryResponseDto {
         private String commodityType;
         private BigDecimal fineness;
         private String weight;
-    }
 
+    }
     @EqualsAndHashCode(callSuper = true)
     @Data
+    @SuperBuilder
+    @NoArgsConstructor
     public static class ChangeInDividendAccrual extends DividendAccrual {
         @JsonFormat(pattern = "yyyyMMdd")
         private LocalDate date;
         @JsonFormat(pattern = "yyyyMMdd")
         private LocalDate reportDate;
         private String levelOfDetail;
-    }
 
+    }
     @Data
     public static class OpenDividendAccruals {
+
         @JsonProperty("OpenDividendAccrual")
         private List<OpenDividendAccrual> openDividendAccrualList;
-
         @SuppressWarnings("unused")
         public void setChangeInDividendAccrualList(List<OpenDividendAccrual> values) {
             if (openDividendAccrualList == null) {
@@ -423,33 +463,23 @@ public class FlexQueryResponseDto {
             }
             openDividendAccrualList.addAll(values);
         }
-    }
 
+    }
     @EqualsAndHashCode(callSuper = true)
     @Data
+    @SuperBuilder
+    @NoArgsConstructor
     public static class OpenDividendAccrual extends DividendAccrual {
+
     }
 
-    public String nullSafeGetAccountId() {
-        return Optional.ofNullable(flexStatements)
-                .map(FlexStatements::getFlexStatement)
-                .map(FlexStatement::getAccountId)
-                .orElse(null);
-    }
+    // helper methods to avoid null checks
 
     public List<FlexQueryResponseDto.OpenPosition> nullSafeGetOpenPositions() {
         return Optional.ofNullable(flexStatements)
                 .map(FlexStatements::getFlexStatement)
                 .map(FlexStatement::getOpenPositions)
                 .map(OpenPositions::getOpenPositionList)
-                .orElse(Collections.emptyList());
-    }
-
-    public List<FlexQueryResponseDto.Trade> nullSafeGetTrades() {
-        return Optional.ofNullable(flexStatements)
-                .map(FlexStatements::getFlexStatement)
-                .map(FlexStatement::getTrades)
-                .map(Trades::getTradeList)
                 .orElse(Collections.emptyList());
     }
 
@@ -475,28 +505,6 @@ public class FlexQueryResponseDto {
                 .map(FlexStatement::getOpenDividendAccruals)
                 .map(OpenDividendAccruals::getOpenDividendAccrualList)
                 .orElse(Collections.emptyList());
-    }
-
-    @Data
-    public static class FlexStatement {
-        @JsonProperty("AccountInformation")
-        private AccountInformation accountInformation;
-        @JsonProperty("OpenPositions")
-        private OpenPositions openPositions;
-        @JsonProperty("Trades")
-        private Trades trades;
-        @JsonProperty("ChangeInDividendAccruals")
-        private ChangeInDividendAccruals changeInDividendAccruals;
-        @JsonProperty("OpenDividendAccruals")
-        private OpenDividendAccruals openDividendAccruals;
-        @NotNull
-        private String accountId;
-        @JsonFormat(pattern = "yyyyMMdd")
-        private LocalDate fromDate;
-        @JsonFormat(pattern = "yyyyMMdd")
-        private LocalDate toDate;
-        private String period;
-        private LocalDateTime whenGenerated;
     }
 }
 

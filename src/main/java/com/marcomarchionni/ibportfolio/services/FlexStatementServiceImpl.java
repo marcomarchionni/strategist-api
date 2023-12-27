@@ -26,7 +26,7 @@ public class FlexStatementServiceImpl implements FlexStatementService {
     }
 
     @Override
-    public UpdateReport<FlexStatement> save(User user, FlexStatement flexStatement) {
+    public UpdateReport<FlexStatement> updateFlexStatements(User user, FlexStatement flexStatement) {
         if (!user.getAccountId().equals(flexStatement.getAccountId())) {
             throw new UnableToSaveEntitiesException("Authenticated User and FlexStatement must have the same " +
                     "accountId");
