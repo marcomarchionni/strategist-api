@@ -28,9 +28,13 @@ public class UpdateServiceImpl implements UpdateService {
 
     private final UpdateDtoValidator updateDtoValidator;
 
+    private final UserService userService;
+
     @Override
     @Transactional
-    public CombinedUpdateReport update(User user, FlexQueryResponseDto dto) {
+    public CombinedUpdateReport update(FlexQueryResponseDto dto) {
+        // TODO: Remove user service
+        User user = userService.getAuthenticatedUser();
 
         // Check if dto has the latest data
         LocalDate latestToDateInDb = flexStatementService.findLatestToDate();
@@ -46,13 +50,14 @@ public class UpdateServiceImpl implements UpdateService {
         }
 
         // Validate update dto
+        String accountId = userService.getUserAccountId();
         updateDtoValidator.isValid(updateDto);
-        updateDtoValidator.hasValidAccountId(updateDto, user.getAccountId());
+        updateDtoValidator.hasValidAccountId(updateDto, accountId);
 
         // Update flex statement, positions, open dividends, closed dividends
         var flexStatementReport = flexStatementService.updateFlexStatements(updateDto.getFlexStatement());
-        var positionReport = positionService.updatePositions(user, updateDto.getPositions());
-        var tradeReport = tradeService.updateTrades(user, updateDto.getTrades());
+        var positionReport = positionService.updatePositions(updateDto.getPositions());
+        var tradeReport = tradeService.updateTrades(updateDto.getTrades());
         var dividendReport = dividendService.updateDividends(user, updateDto.getDividends());
 
         // Return report

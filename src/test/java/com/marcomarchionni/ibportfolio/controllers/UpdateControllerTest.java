@@ -1,7 +1,6 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
 import com.marcomarchionni.ibportfolio.domain.Trade;
-import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.services.JwtService;
@@ -68,7 +67,7 @@ class UpdateControllerTest {
         List<Trade> addedTrades = getSampleTrades();
         UpdateReport<Trade> tradeReport = UpdateReport.<Trade>builder().added(addedTrades).build();
         CombinedUpdateReport combinedUpdateReport = CombinedUpdateReport.builder().trades(tradeReport).build();
-        when(updateOrchestrator.updateFromFile(any(User.class), any(MultipartFile.class))).thenReturn(combinedUpdateReport);
+        when(updateOrchestrator.updateFromFile(any(MultipartFile.class))).thenReturn(combinedUpdateReport);
 
         // setup userService mock
         when(userService.getAuthenticatedUser()).thenReturn(getSampleUser());
@@ -87,7 +86,7 @@ class UpdateControllerTest {
 
 
         // Verify that the method was called with the captured InputStream
-        verify(updateOrchestrator).updateFromFile(any(User.class), mockMultipartFileArgumentCaptor.capture());
+        verify(updateOrchestrator).updateFromFile(mockMultipartFileArgumentCaptor.capture());
 
         // Check if multipart file is not null
         assertNotNull(mockMultipartFileArgumentCaptor.getValue());
@@ -103,7 +102,7 @@ class UpdateControllerTest {
         List<Trade> addedTrades = getSampleTrades();
         UpdateReport<Trade> tradeReport = UpdateReport.<Trade>builder().added(addedTrades).build();
         CombinedUpdateReport combinedUpdateReport = CombinedUpdateReport.builder().trades(tradeReport).build();
-        when(updateOrchestrator.updateFromServer(any(User.class))).thenReturn(combinedUpdateReport);
+        when(updateOrchestrator.updateFromServer()).thenReturn(combinedUpdateReport);
 
         // setup userService mock
         when(userService.getAuthenticatedUser()).thenReturn(getSampleUser());
@@ -115,7 +114,7 @@ class UpdateControllerTest {
                 .andExpect(jsonPath("$.trades").exists());
 
         // Verify that the method was called
-        verify(updateOrchestrator).updateFromServer(any(User.class));
+        verify(updateOrchestrator).updateFromServer();
     }
 
 }

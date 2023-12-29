@@ -45,6 +45,7 @@ class TradeControllerTest {
 
     @MockBean
     TradeService tradeService;
+
     @Autowired
     MockMvc mockMvc;
 
@@ -76,7 +77,7 @@ class TradeControllerTest {
     @Test
     void getTrades() throws Exception {
 
-        when(tradeService.findByFilter(any(User.class), any(TradeFindDto.class))).thenReturn(tradeSummaryDtos);
+        when(tradeService.findByFilter(any(TradeFindDto.class))).thenReturn(tradeSummaryDtos);
 
         mockMvc.perform(get("/trades"))
                 .andExpect(status().isOk())
@@ -88,7 +89,7 @@ class TradeControllerTest {
     @CsvSource({",,,ZM,", ",2022-06-14,true,,"})
     void findTradesSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
-        when(tradeService.findByFilter(any(User.class), any(TradeFindDto.class))).thenReturn(tradeSummaryDtos);
+        when(tradeService.findByFilter(any(TradeFindDto.class))).thenReturn(tradeSummaryDtos);
 
         mockMvc.perform(get("/trades")
                         .param("tradeDateFrom", tradeDateFrom)
@@ -123,7 +124,7 @@ class TradeControllerTest {
         trade.setStrategy(strategy);
         TradeSummaryDto tradeSummaryDto = tradeMapper.toTradeListDto(trade);
 
-        when(tradeService.updateStrategyId(user, tradeUpdate)).thenReturn(tradeSummaryDto);
+        when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(tradeSummaryDto);
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)

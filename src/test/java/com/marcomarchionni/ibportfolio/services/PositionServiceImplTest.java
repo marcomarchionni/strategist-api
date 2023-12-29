@@ -1,5 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.accessservice.PositionAccessService;
+import com.marcomarchionni.ibportfolio.accessservice.StrategyAccessService;
 import com.marcomarchionni.ibportfolio.config.ModelMapperConfig;
 import com.marcomarchionni.ibportfolio.domain.Position;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
@@ -12,8 +14,6 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEn
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.PositionMapper;
 import com.marcomarchionni.ibportfolio.mappers.PositionMapperImpl;
-import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
-import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,10 +35,10 @@ import static org.mockito.Mockito.*;
 class PositionServiceImplTest {
 
     @Mock
-    PositionRepository positionRepository;
+    PositionAccessService positionAccessService;
 
     @Mock
-    StrategyRepository strategyRepository;
+    StrategyAccessService strategyAccessService;
 
     PositionMapper positionMapper;
 
@@ -60,37 +60,37 @@ class PositionServiceImplTest {
         ModelMapperConfig modelMapperConfig = new ModelMapperConfig();
         ModelMapper mapper = modelMapperConfig.modelMapper();
         positionMapper = new PositionMapperImpl(mapper);
-        positionService = new PositionServiceImpl(positionRepository, strategyRepository, positionMapper);
+        positionService = new PositionServiceImpl(positionAccessService, strategyAccessService, positionMapper);
     }
 
     @Test
     void saveAll() {
-        assertDoesNotThrow(() -> positionService.saveAll(user, samplePositions));
+        assertDoesNotThrow(() -> positionService.saveAll(samplePositions));
     }
 
     @Test
     void saveAllException() {
-        doThrow(new RuntimeException()).when(positionRepository).saveAll(any());
+        doThrow(new RuntimeException()).when(positionAccessService).saveAll(any());
 
-        assertThrows(UnableToSaveEntitiesException.class, () -> positionService.saveAll(user, samplePositions));
+        assertThrows(UnableToSaveEntitiesException.class, () -> positionService.saveAll(samplePositions));
     }
 
     @Test
     void deleteAllPositions() {
-        assertDoesNotThrow(() -> positionService.deleteAll(user, samplePositions));
+        assertDoesNotThrow(() -> positionService.deleteAll(samplePositions));
     }
 
     @Test
     void deleteAllPositionsException() {
-        doThrow(new RuntimeException()).when(positionRepository).deleteAll();
+        doThrow(new RuntimeException()).when(positionAccessService).deleteAll(anyList());
 
         assertThrows(UnableToDeleteEntitiesException.class,
-                () -> positionService.deleteAll(user, List.of(getAMZNPosition())));
+                () -> positionService.deleteAll(List.of(getAMZNPosition())));
     }
 
     @Test
     void findWithParameters() {
-        when(positionRepository.findByParams(any(), any(), any())).thenReturn(samplePositions);
+        when(positionAccessService.findByParams(any(), any(), any())).thenReturn(samplePositions);
 
         List<PositionSummaryDto> positions = positionService.findByFilter(positionFind);
 
@@ -103,10 +103,10 @@ class PositionServiceImplTest {
         UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder()
                 .id(samplePosition.getId()).strategyId(sampleStrategy.getId()).build();
 
-        when(positionRepository.findById(any())).thenReturn(Optional.of(samplePosition));
-        when(strategyRepository.findById(any())).thenReturn(Optional.of(sampleStrategy));
+        when(positionAccessService.findById(any())).thenReturn(Optional.of(samplePosition));
+        when(strategyAccessService.findById(any())).thenReturn(Optional.of(sampleStrategy));
         samplePosition.setStrategy(sampleStrategy);
-        when(positionRepository.save(any())).thenReturn(samplePosition);
+        when(positionAccessService.save(any())).thenReturn(samplePosition);
 
         PositionSummaryDto actualPositionSummaryDto = positionService.updateStrategyId(positionUpdate);
 
@@ -139,11 +139,11 @@ class PositionServiceImplTest {
         List<Position> newPositions = List.of(newADYENposition, newAMZNposition);
 
         // mock
-        when(positionRepository.findAllByAccountId(user.getAccountId())).thenReturn(existingPositions);
-        when(positionRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(positionAccessService.findAll()).thenReturn(existingPositions);
+        when(positionAccessService.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // test
-        UpdateReport<Position> result = positionService.updatePositions(user, newPositions);
+        UpdateReport<Position> result = positionService.updatePositions(newPositions);
 
         // verify
         assertEquals(1, result.getAdded().size());
@@ -157,7 +157,7 @@ class PositionServiceImplTest {
 
     @Test
     void updatePositionsEmptyList() {
-        UpdateReport<Position> result = positionService.updatePositions(user, List.of());
+        UpdateReport<Position> result = positionService.updatePositions(List.of());
 
         assertEquals(0, result.getAdded().size());
         assertEquals(0, result.getDeleted().size());

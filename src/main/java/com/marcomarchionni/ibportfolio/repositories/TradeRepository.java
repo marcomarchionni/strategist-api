@@ -30,4 +30,6 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     boolean existsByAccountIdAndIbOrderId(String accountId, Long ibOrderId);
 
     Optional<Trade> findByAccountIdAndIbOrderId(String accountId, Long ibOrderId);
+
+    Optional<Trade> findByIdAndAccountId(Long id, String accountId);
 }

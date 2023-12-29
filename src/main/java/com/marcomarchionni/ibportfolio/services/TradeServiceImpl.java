@@ -1,19 +1,17 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.accessservice.StrategyAccessService;
+import com.marcomarchionni.ibportfolio.accessservice.TradeAccessService;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.domain.Trade;
-import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.TradeSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapper;
-import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
-import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,36 +19,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TradeServiceImpl implements TradeService {
-
-    private final TradeRepository tradeRepository;
-    private final StrategyRepository strategyRepository;
+    private final TradeAccessService tradeAccessService;
+    private final StrategyAccessService strategyAccessService;
     private final TradeMapper tradeMapper;
 
-    @Autowired
-    public TradeServiceImpl(TradeRepository tradeRepository, StrategyRepository strategyRepository, TradeMapper tradeMapper) {
-        this.tradeRepository = tradeRepository;
-        this.strategyRepository = strategyRepository;
-        this.tradeMapper = tradeMapper;
-    }
-
     @Override
-    public TradeSummaryDto updateStrategyId(User user, UpdateStrategyDto tradeUpdate) {
+    public TradeSummaryDto updateStrategyId(UpdateStrategyDto tradeUpdate) {
 
-        Trade trade = tradeRepository.findById(tradeUpdate.getId()).orElseThrow(
-                () -> new EntityNotFoundException("Trade with id: " + tradeUpdate.getId() + " not found")
+        Trade trade = tradeAccessService.findById(tradeUpdate.getId()).orElseThrow(
+                () -> new EntityNotFoundException(Trade.class, tradeUpdate.getId())
         );
-        Strategy strategyToAssign = strategyRepository.findById(tradeUpdate.getStrategyId()).orElseThrow(
-                () -> new EntityNotFoundException("Strategy with id: " + tradeUpdate.getStrategyId() + " not found")
+        Strategy strategyToAssign = strategyAccessService.findById(tradeUpdate.getStrategyId()).orElseThrow(
+                () -> new EntityNotFoundException(Strategy.class, tradeUpdate.getStrategyId())
         );
         trade.setStrategy(strategyToAssign);
-        return tradeMapper.toTradeListDto(tradeRepository.save(trade));
+        return tradeMapper.toTradeListDto(tradeAccessService.save(trade));
     }
 
     @Override
-    public List<TradeSummaryDto> findByFilter(User user, TradeFindDto tradeFind) {
-        List<Trade> trades = tradeRepository.findByParams(
-                user.getAccountId(),
+    public List<TradeSummaryDto> findByFilter(TradeFindDto tradeFind) {
+        List<Trade> trades = tradeAccessService.findByParams(
                 tradeFind.getTradeDateFrom(),
                 tradeFind.getTradeDateTo(),
                 tradeFind.getTagged(),
@@ -60,7 +50,7 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public UpdateReport<Trade> updateTrades(User user, List<Trade> trades) {
+    public UpdateReport<Trade> updateTrades(List<Trade> trades) {
 
         if (trades.isEmpty()) {
             return UpdateReport.<Trade>builder().build();
@@ -72,24 +62,21 @@ public class TradeServiceImpl implements TradeService {
 
         // Check if trade already exists in the database
         for (Trade t : trades) {
-            if (tradeRepository.existsByAccountIdAndIbOrderId(user.getAccountId(), t.getIbOrderId())) {
+            if (tradeAccessService.existsByIbOrderId(t.getIbOrderId())) {
                 tradesToSkip.add(t);
             } else {
                 tradesToAdd.add(t);
             }
         }
         return UpdateReport.<Trade>builder()
-                .added(this.saveAll(user, tradesToAdd))
+                .added(this.saveAll(tradesToAdd))
                 .skipped(tradesToSkip).build();
     }
 
     @Override
-    public List<Trade> saveAll(User user, List<Trade> trades) {
-        if (!trades.stream().allMatch(t -> t.getAccountId().equals(user.getAccountId()))) {
-            throw new InvalidUserDataException();
-        }
+    public List<Trade> saveAll(List<Trade> trades) {
         try {
-            return tradeRepository.saveAll(trades);
+            return tradeAccessService.saveAll(trades);
         } catch (Exception exc) {
             throw new UnableToSaveEntitiesException(exc.getMessage());
         }

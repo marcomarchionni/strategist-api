@@ -17,7 +17,6 @@ public interface StrategyRepository extends JpaRepository<Strategy, Long> {
                     "(:name is null or s.name = :name)")
     List<Strategy> findByParams(@Param("accountId") String accountId, @Param("name") String name);
 
-    //TODO: check if this is needed
     Optional<Strategy> findByAccountIdAndName(String accountId, String expectedSymbol);
 
     Optional<Strategy> findByIdAndAccountId(Long id, String accountId);

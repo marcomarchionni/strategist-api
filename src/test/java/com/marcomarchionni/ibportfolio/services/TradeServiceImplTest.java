@@ -1,5 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.accessservice.StrategyAccessService;
+import com.marcomarchionni.ibportfolio.accessservice.TradeAccessService;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.domain.Trade;
 import com.marcomarchionni.ibportfolio.domain.User;
@@ -11,8 +13,6 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundEx
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapper;
 import com.marcomarchionni.ibportfolio.mappers.TradeMapperImpl;
-import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
-import com.marcomarchionni.ibportfolio.repositories.TradeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,15 +30,11 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TradeServiceImplTest {
-
     @Mock
-    TradeRepository tradeRepository;
-
+    TradeAccessService tradeAccessService;
     @Mock
-    StrategyRepository strategyRepository;
-
+    StrategyAccessService strategyAccessService;
     TradeService tradeService;
-
     List<Trade> trades;
     Trade trade;
     Strategy strategy;
@@ -55,31 +51,31 @@ class TradeServiceImplTest {
         tradeUpdate = UpdateStrategyDto.builder().id(trade.getId()).strategyId(strategy.getId()).build();
         tradeCriteria = getSampleTradeCriteria();
         TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
-        tradeService = new TradeServiceImpl(tradeRepository, strategyRepository, tradeMapper);
+        tradeService = new TradeServiceImpl(tradeAccessService, strategyAccessService, tradeMapper);
     }
 
     @Test
     void saveAllSuccess() {
-        assertDoesNotThrow(() -> tradeService.saveAll(user, trades));
+        assertDoesNotThrow(() -> tradeService.saveAll(trades));
     }
 
     @Test
     void saveAllException() {
-        doThrow(new RuntimeException()).when(tradeRepository).saveAll(any());
+        doThrow(new RuntimeException()).when(tradeAccessService).saveAll(any());
 
-        assertThrows(UnableToSaveEntitiesException.class, () -> tradeService.saveAll(user, trades));
+        assertThrows(UnableToSaveEntitiesException.class, () -> tradeService.saveAll(trades));
     }
 
     @Test
     void updateStrategyIdSuccess() {
 
-        when(tradeRepository.findById(trade.getId())).thenReturn(Optional.of(trade));
-        when(strategyRepository.findById(strategy.getId())).thenReturn(Optional.of(strategy));
-        when(tradeRepository.save(trade)).thenReturn(trade);
+        when(tradeAccessService.findById(trade.getId())).thenReturn(Optional.of(trade));
+        when(strategyAccessService.findById(strategy.getId())).thenReturn(Optional.of(strategy));
+        when(tradeAccessService.save(trade)).thenReturn(trade);
 
-        TradeSummaryDto updatedTrade = tradeService.updateStrategyId(user, tradeUpdate);
+        TradeSummaryDto updatedTrade = tradeService.updateStrategyId(tradeUpdate);
 
-        verify(tradeRepository).save(trade);
+        verify(tradeAccessService).save(trade);
         assertEquals(tradeUpdate.getId(), updatedTrade.getId());
         assertEquals(tradeUpdate.getStrategyId(), updatedTrade.getStrategyId());
     }
@@ -87,19 +83,19 @@ class TradeServiceImplTest {
     @Test
     void updateStrategyIdException() {
 
-        when(tradeRepository.findById(trade.getId())).thenReturn(Optional.of(trade));
-        when(strategyRepository.findById(strategy.getId())).thenReturn(Optional.empty());
+        when(tradeAccessService.findById(trade.getId())).thenReturn(Optional.of(trade));
+        when(strategyAccessService.findById(strategy.getId())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> tradeService.updateStrategyId(user, tradeUpdate));
+        assertThrows(EntityNotFoundException.class, () -> tradeService.updateStrategyId(tradeUpdate));
     }
 
     @Test
     void findWithParametersSuccess() {
 
-        when(tradeRepository.findByParams(anyString(), any(), any(), any(), any(), any())).thenReturn(trades);
+        when(tradeAccessService.findByParams(any(), any(), any(), any(), any())).thenReturn(trades);
         int expectedSize = trades.size();
 
-        List<TradeSummaryDto> actualTrades = tradeService.findByFilter(user, tradeCriteria);
+        List<TradeSummaryDto> actualTrades = tradeService.findByFilter(tradeCriteria);
 
         assertEquals(expectedSize, actualTrades.size());
     }
@@ -110,12 +106,12 @@ class TradeServiceImplTest {
         List<Trade> newTrades = List.of(getTTWO1Trade(), getTTWO2Trade(), getEURUSDTrade());
 
         // setup mock, assuming that TTWO1 and TTWO2 already exist in the database
-        when(tradeRepository.existsByAccountIdAndIbOrderId(user.getAccountId(), getTTWO1Trade().getIbOrderId())).thenReturn(true);
-        when(tradeRepository.existsByAccountIdAndIbOrderId(user.getAccountId(), getTTWO2Trade().getIbOrderId())).thenReturn(true);
-        when(tradeRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(tradeAccessService.existsByIbOrderId(getTTWO1Trade().getIbOrderId())).thenReturn(true);
+        when(tradeAccessService.existsByIbOrderId(getTTWO2Trade().getIbOrderId())).thenReturn(true);
+        when(tradeAccessService.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
-        UpdateReport<Trade> result = tradeService.updateTrades(user, newTrades);
+        UpdateReport<Trade> result = tradeService.updateTrades(newTrades);
 
         // assertions
         assertEquals(1, result.getAdded().size());
@@ -124,8 +120,8 @@ class TradeServiceImplTest {
     }
 
     @Test
-    void updatTradesEmptyList() {
-        UpdateReport<Trade> result = tradeService.updateTrades(user, List.of());
+    void updateTradesEmptyList() {
+        UpdateReport<Trade> result = tradeService.updateTrades(List.of());
         assertEquals(0, result.getAdded().size());
         assertEquals(0, result.getSkipped().size());
         assertEquals(0, result.getMerged().size());

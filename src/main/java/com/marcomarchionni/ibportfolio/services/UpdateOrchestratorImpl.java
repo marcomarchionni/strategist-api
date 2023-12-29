@@ -1,6 +1,5 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.services.fetchers.DataFetcher;
@@ -27,18 +26,18 @@ public class UpdateOrchestratorImpl implements UpdateOrchestrator {
     }
 
     @Override
-    public CombinedUpdateReport updateFromServer(User user) throws IOException {
+    public CombinedUpdateReport updateFromServer() throws IOException {
         var context = FetchContext.builder().sourceType(FetchContext.SourceType.SERVER).build();
-        return this.update(user, context);
+        return this.update(context);
     }
 
     @Override
-    public CombinedUpdateReport updateFromFile(User user, MultipartFile file) throws IOException {
+    public CombinedUpdateReport updateFromFile(MultipartFile file) throws IOException {
         var context = FetchContext.builder().sourceType(FetchContext.SourceType.FILE).file(file).build();
-        return this.update(user, context);
+        return this.update(context);
     }
 
-    private CombinedUpdateReport update(User user, FetchContext context) throws IOException {
+    private CombinedUpdateReport update(FetchContext context) throws IOException {
         // Resolve data fetcher
         DataFetcher fetcher = dataFetcherResolver.resolve(context.getSourceType());
         // Fetch dto
@@ -46,7 +45,7 @@ public class UpdateOrchestratorImpl implements UpdateOrchestrator {
         // Validate dto
         flexValidator.isValid(dto);
         // Save dto data to db
-        return updateService.update(user, dto);
+        return updateService.update(dto);
     }
 }
 

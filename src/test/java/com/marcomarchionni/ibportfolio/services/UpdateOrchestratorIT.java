@@ -42,6 +42,7 @@ public class UpdateOrchestratorIT {
     @Autowired
     UpdateOrchestrator updateOrchestrator;
     MockMultipartFile mockMultipartFile;
+    User user = getSampleUser();
 
     @AfterEach
     public void cleanDb() {
@@ -62,18 +63,15 @@ public class UpdateOrchestratorIT {
                 "text/xml", // content type
                 flexQueryStream // file content
         );
-        User user = getSampleUser();
         Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
     @Test
     void updateFromFileEmptyDbTest() throws IOException {
-        // Get sample user
-        User user = getSampleUser();
 
         // Execute update
-        CombinedUpdateReport report = updateOrchestrator.updateFromFile(user, mockMultipartFile);
+        CombinedUpdateReport report = updateOrchestrator.updateFromFile(mockMultipartFile);
 
         // Verify data
 
@@ -110,9 +108,6 @@ public class UpdateOrchestratorIT {
     @Sql("classpath:dbScripts/insertSampleData.sql")
     void updateFromFilePopulatedDbTest() throws IOException {
 
-        // Get sample user
-        User user = getSampleUser();
-
         // assess db state before update
         List<FlexStatement> existingFlexStatements = flexStatementRepository.findAll();
         List<Trade> existingTrades = tradeRepository.findAll();
@@ -121,7 +116,7 @@ public class UpdateOrchestratorIT {
                 .count();
 
         // execute update db
-        CombinedUpdateReport report = updateOrchestrator.updateFromFile(user, mockMultipartFile);
+        CombinedUpdateReport report = updateOrchestrator.updateFromFile(mockMultipartFile);
 
         // assess db state after update
         List<Trade> updatedTrades = tradeRepository.findAll();
