@@ -1,10 +1,9 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.accessservice.FlexStatementAccessService;
 import com.marcomarchionni.ibportfolio.domain.FlexStatement;
-import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,23 +15,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FlexStatementServiceImpl implements FlexStatementService {
 
-    private final FlexStatementRepository flexStatementRepository;
+    private final FlexStatementAccessService dataGateway;
 
     @Override
-    public LocalDate findLatestToDate(User user) {
+    public LocalDate findLatestToDate() {
         Optional<FlexStatement> optionalLastFlex =
-                flexStatementRepository.findFirstByAccountIdOrderByToDateDesc(user.getAccountId());
+                dataGateway.findFirstOrderByToDateDesc();
         return optionalLastFlex.map(FlexStatement::getToDate).orElse(LocalDate.MIN);
     }
 
     @Override
-    public UpdateReport<FlexStatement> updateFlexStatements(User user, FlexStatement flexStatement) {
-        if (!user.getAccountId().equals(flexStatement.getAccountId())) {
-            throw new UnableToSaveEntitiesException("Authenticated User and FlexStatement must have the same " +
-                    "accountId");
-        }
+    public UpdateReport<FlexStatement> updateFlexStatements(FlexStatement flexStatement) {
         try {
-            FlexStatement savedFlexStatement = flexStatementRepository.save(flexStatement);
+            FlexStatement savedFlexStatement = dataGateway.save(flexStatement);
             return UpdateReport.<FlexStatement>builder()
                     .added(List.of(savedFlexStatement))
                     .build();

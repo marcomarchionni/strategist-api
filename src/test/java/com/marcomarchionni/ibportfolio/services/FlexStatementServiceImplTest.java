@@ -1,33 +1,30 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.accessservice.FlexStatementAccessService;
 import com.marcomarchionni.ibportfolio.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleUser;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
-@DataJpaTest
-@Transactional
-@Sql("classpath:dbScripts/insertSampleData.sql")
+@ExtendWith(MockitoExtension.class)
 class FlexStatementServiceImplTest {
     FlexStatementService flexStatementService;
 
-    @Autowired
-    FlexStatementRepository flexStatementRepository;
+    @Mock
+    FlexStatementAccessService dataGateway;
 
     FlexStatement flexStatement;
     User user = getSampleUser();
@@ -35,7 +32,7 @@ class FlexStatementServiceImplTest {
     @BeforeEach
     void setUp() {
         user = getSampleUser();
-        flexStatementService = new FlexStatementServiceImpl(flexStatementRepository);
+        flexStatementService = new FlexStatementServiceImpl(dataGateway);
 
         flexStatement = FlexStatement.builder()
                 .accountId(user.getAccountId())
@@ -43,46 +40,26 @@ class FlexStatementServiceImplTest {
                 .toDate(LocalDate.now())
                 .whenGenerated(LocalDateTime.now())
                 .build();
-
-
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 
     @Test
     void findLatestToDate() {
-        Optional<FlexStatement> lastFlex =
-                flexStatementRepository.findFirstByAccountIdOrderByToDateDesc(user.getAccountId());
-        assertTrue(lastFlex.isPresent());
-        LocalDate expectedLastFlexDate = lastFlex.get().getToDate();
+        when(dataGateway.findFirstOrderByToDateDesc()).thenReturn(Optional.of(flexStatement));
+        LocalDate expectedLastFlexDate = flexStatement.getToDate();
 
-        LocalDate actualLastFlexDate = flexStatementService.findLatestToDate(user);
+        LocalDate actualLastFlexDate = flexStatementService.findLatestToDate();
 
         assertEquals(expectedLastFlexDate, actualLastFlexDate);
     }
 
     @Test
     void save() {
-        UpdateReport<FlexStatement> report = flexStatementService.updateFlexStatements(user, flexStatement);
+        when(dataGateway.save(flexStatement)).thenReturn(flexStatement);
+
+        UpdateReport<FlexStatement> report = flexStatementService.updateFlexStatements(flexStatement);
 
         assertNotNull(report);
         assertNotNull(report.getAdded());
         assertEquals(user.getAccountId(), report.getAdded().get(0).getAccountId());
-    }
-
-    @Test
-    void saveException() {
-        flexStatement.setAccountId("U2222222");
-        assertThrows(UnableToSaveEntitiesException.class, () -> flexStatementService.updateFlexStatements(user,
-                flexStatement));
-    }
-
-    @Test
-    void saveExceptionNull() {
-        flexStatement.setAccountId(null);
-        assertThrows(UnableToSaveEntitiesException.class, () -> flexStatementService.updateFlexStatements(user,
-                flexStatement));
     }
 }

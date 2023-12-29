@@ -33,7 +33,7 @@ public class UpdateServiceImpl implements UpdateService {
     public CombinedUpdateReport update(User user, FlexQueryResponseDto dto) {
 
         // Check if dto has the latest data
-        LocalDate latestToDateInDb = flexStatementService.findLatestToDate(user);
+        LocalDate latestToDateInDb = flexStatementService.findLatestToDate();
         LocalDate toDateInFlexQuery = dto.nullSafeGetFlexStatement().getToDate();
         boolean flexQueryHasTheLatestData = toDateInFlexQuery.isAfter(latestToDateInDb);
 
@@ -50,7 +50,7 @@ public class UpdateServiceImpl implements UpdateService {
         updateDtoValidator.hasValidAccountId(updateDto, user.getAccountId());
 
         // Update flex statement, positions, open dividends, closed dividends
-        var flexStatementReport = flexStatementService.updateFlexStatements(user, updateDto.getFlexStatement());
+        var flexStatementReport = flexStatementService.updateFlexStatements(updateDto.getFlexStatement());
         var positionReport = positionService.updatePositions(user, updateDto.getPositions());
         var tradeReport = tradeService.updateTrades(user, updateDto.getTrades());
         var dividendReport = dividendService.updateDividends(user, updateDto.getDividends());

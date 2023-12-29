@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.User;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UserNotAuthenticatedException;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UserAuthenticationException;
 import com.marcomarchionni.ibportfolio.repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,7 +31,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (authentication != null && authentication.getPrincipal() instanceof User) {
             return (User) authentication.getPrincipal();
         } else {
-            throw new UserNotAuthenticatedException();
+            throw new UserAuthenticationException();
+        }
+    }
+
+    @Override
+    public String getUserAccountId() {
+        String accountId = getAuthenticatedUser().getAccountId();
+        if (accountId != null) {
+            return accountId;
+        } else {
+            throw new UserAuthenticationException("User account id not found. Please login.");
         }
     }
 }

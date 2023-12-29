@@ -12,7 +12,6 @@ import com.marcomarchionni.ibportfolio.mappers.PortfolioMapper;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapperImpl;
 import com.marcomarchionni.ibportfolio.services.JwtService;
 import com.marcomarchionni.ibportfolio.services.PortfolioService;
-import com.marcomarchionni.ibportfolio.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -46,8 +45,6 @@ class PortfolioControllerTest {
     @MockBean
     JwtService jwtService;
 
-    @MockBean
-    UserService userService;
     ObjectMapper mapper;
     PortfolioMapper portfolioMapper;
     Portfolio userPortfolio;
@@ -60,9 +57,6 @@ class PortfolioControllerTest {
 
         userPortfolio = getSamplePortfolio("MFStockAdvisor");
         user = getSampleUser();
-
-        // setup mock behavior
-        when(userService.getAuthenticatedUser()).thenReturn(user);
     }
 
     @Test
@@ -76,7 +70,7 @@ class PortfolioControllerTest {
                 .toList();
 
         // setup mock behavior
-        when(portfolioService.findAllByUser(user)).thenReturn(portfolioSummaryDtos);
+        when(portfolioService.findAll()).thenReturn(portfolioSummaryDtos);
 
         // Execute test
         mockMvc.perform(get("/portfolios"))
@@ -92,7 +86,7 @@ class PortfolioControllerTest {
         PortfolioDetailDto portfolioDetailDto = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
         // setup mock behavior
-        when(portfolioService.findByUserAndId(user, portfolioId)).thenReturn(portfolioDetailDto);
+        when(portfolioService.findById(portfolioId)).thenReturn(portfolioDetailDto);
 
         // Execute test
         mockMvc.perform(get("/portfolios/{id}", 1L))
@@ -109,11 +103,10 @@ class PortfolioControllerTest {
     void findPortfolioException() throws Exception {
         // setup test data
         Long unknownPortfolioId = 3L;
-        String accountId = user.getAccountId();
 
         // setup mock behavior
-        when(portfolioService.findByUserAndId(user, unknownPortfolioId)).thenThrow(
-                new EntityNotFoundException(Portfolio.class, unknownPortfolioId, accountId));
+        when(portfolioService.findById(unknownPortfolioId)).thenThrow(
+                new EntityNotFoundException(Portfolio.class, unknownPortfolioId));
 
         // Execute test
         mockMvc.perform(get("/portfolios/{id}", unknownPortfolioId))
@@ -129,7 +122,7 @@ class PortfolioControllerTest {
         PortfolioDetailDto portfolioDetailDto = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
         // setup mock behavior
-        when(portfolioService.create(user, portfolioCreateDto)).thenReturn(portfolioDetailDto);
+        when(portfolioService.create(portfolioCreateDto)).thenReturn(portfolioDetailDto);
 
         // Execute test
         mockMvc.perform(post("/portfolios")
@@ -165,7 +158,7 @@ class PortfolioControllerTest {
         PortfolioDetailDto portfolioDetailDto = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
         // setup mock behavior
-        when(portfolioService.updateName(user, updateNameDto)).thenReturn(portfolioDetailDto);
+        when(portfolioService.updateName(updateNameDto)).thenReturn(portfolioDetailDto);
 
         // Execute test
         mockMvc.perform(put("/portfolios")
@@ -182,7 +175,7 @@ class PortfolioControllerTest {
         Long portfolioId = userPortfolio.getId();
 
         // setup mock behavior
-        doNothing().when(portfolioService).deleteByUserAndId(user, portfolioId);
+        doNothing().when(portfolioService).deleteById(portfolioId);
 
         // Execute test
         mockMvc.perform(delete("/portfolios/{id}", portfolioId))
@@ -190,7 +183,6 @@ class PortfolioControllerTest {
                 .andExpect(status().isOk());
 
         // Verify results
-        verify(userService, times(1)).getAuthenticatedUser();
-        verify(portfolioService, times(1)).deleteByUserAndId(user, portfolioId);
+        verify(portfolioService, times(1)).deleteById(portfolioId);
     }
 }

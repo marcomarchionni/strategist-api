@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.io.IOException;
@@ -21,7 +24,7 @@ import java.util.stream.Collectors;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleUser;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 public class UpdateOrchestratorIT {
 
     @Autowired
@@ -36,11 +39,8 @@ public class UpdateOrchestratorIT {
     StrategyRepository strategyRepository;
     @Autowired
     PortfolioRepository portfolioRepository;
-
-
     @Autowired
     UpdateOrchestrator updateOrchestrator;
-
     MockMultipartFile mockMultipartFile;
 
     @AfterEach
@@ -62,6 +62,9 @@ public class UpdateOrchestratorIT {
                 "text/xml", // content type
                 flexQueryStream // file content
         );
+        User user = getSampleUser();
+        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
     @Test
@@ -113,9 +116,9 @@ public class UpdateOrchestratorIT {
         // assess db state before update
         List<FlexStatement> existingFlexStatements = flexStatementRepository.findAll();
         List<Trade> existingTrades = tradeRepository.findAll();
+        List<Dividend> existingDividends = dividendRepository.findAll();
         long countTradesWithStrategyBefore = existingTrades.stream().filter(trade -> trade.getStrategy() != null)
                 .count();
-        List<Dividend> existingDividends = dividendRepository.findAll();
 
         // execute update db
         CombinedUpdateReport report = updateOrchestrator.updateFromFile(user, mockMultipartFile);

@@ -1,6 +1,5 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.StrategyFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
@@ -11,13 +10,13 @@ import java.util.List;
 
 public interface StrategyService {
 
-    List<StrategySummaryDto> findByFilter(User user, StrategyFindDto strategyFind);
+    List<StrategySummaryDto> findByFilter(StrategyFindDto strategyFind);
 
-    StrategyDetailDto updateName(User user, UpdateNameDto updateNameDto);
+    StrategyDetailDto updateName(UpdateNameDto updateNameDto);
 
-    void deleteByUserAndId(User user, Long id);
+    void deleteById(Long id);
 
-    StrategyDetailDto findByUserAndId(User user, Long id);
+    StrategyDetailDto findById(Long id);
 
-    StrategyDetailDto create(User user, StrategyCreateDto strategyCreateDto);
+    StrategyDetailDto create(StrategyCreateDto strategyCreateDto);
 }

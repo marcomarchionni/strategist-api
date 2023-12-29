@@ -74,7 +74,7 @@ class StrategyControllerTest {
         StrategyFindDto strategyFindDto = StrategyFindDto.builder().build();
 
         // mock service calls
-        when(strategyService.findByFilter(user, strategyFindDto)).thenReturn(strategySummaryDtos);
+        when(strategyService.findByFilter(strategyFindDto)).thenReturn(strategySummaryDtos);
 
         mockMvc.perform(get("/strategies")
                         .param("name", strategyFindDto.getName()))
@@ -94,7 +94,7 @@ class StrategyControllerTest {
         StrategyDetailDto strategyDetailDto = strategyMapper.toStrategyDetailDto(userStrategy);
 
         // mock service calls
-        when(strategyService.findByUserAndId(user, strategyId)).thenReturn(strategyDetailDto);
+        when(strategyService.findById(strategyId)).thenReturn(strategyDetailDto);
 
         mockMvc.perform(get("/strategies/{id}", strategyId))
                 .andDo(print())
@@ -114,7 +114,7 @@ class StrategyControllerTest {
         StrategyDetailDto strategyDetailDto = strategyMapper.toStrategyDetailDto(userStrategy);
 
         // mock service calls
-        when(strategyService.updateName(user, updateNameDto)).thenReturn(strategyDetailDto);
+        when(strategyService.updateName(updateNameDto)).thenReturn(strategyDetailDto);
 
         // execute
         mockMvc.perform(put("/strategies")
@@ -140,7 +140,7 @@ class StrategyControllerTest {
         StrategyDetailDto strategyDetailDto = strategyMapper.toStrategyDetailDto(userStrategy);
 
         // mock service calls
-        when(strategyService.create(user, strategyCreateDto)).thenReturn(strategyDetailDto);
+        when(strategyService.create(strategyCreateDto)).thenReturn(strategyDetailDto);
 
         // execute
         mockMvc.perform(post("/strategies")
@@ -165,6 +165,6 @@ class StrategyControllerTest {
                 .andExpect(status().isOk());
 
         // verify that the service method was called
-        verify(strategyService, times(1)).deleteByUserAndId(user, strategyId);
+        verify(strategyService, times(1)).deleteById(strategyId);
     }
 }

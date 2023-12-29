@@ -7,7 +7,7 @@ import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
 
 public interface PortfolioMapper {
 
-    Portfolio toEntity(String accountId, PortfolioCreateDto portfolioCreateDto);
+    Portfolio toEntity(PortfolioCreateDto portfolioCreateDto);
 
     PortfolioSummaryDto toPortfolioListDto(Portfolio portfolio);
 

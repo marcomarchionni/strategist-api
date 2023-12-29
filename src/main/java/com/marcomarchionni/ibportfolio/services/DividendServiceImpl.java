@@ -50,10 +50,10 @@ public class DividendServiceImpl implements DividendService {
         String accountId = user.getAccountId();
 
         Dividend dividend = dividendRepository.findByIdAndAccountId(dividendId, accountId).orElseThrow(
-                () -> new EntityNotFoundException(Dividend.class, dividendId, accountId)
+                () -> new EntityNotFoundException(Dividend.class, dividendId)
         );
         Strategy strategyToAssign = strategyRepository.findByIdAndAccountId(strategyId, accountId).orElseThrow(
-                () -> new EntityNotFoundException(Strategy.class, strategyId, accountId)
+                () -> new EntityNotFoundException(Strategy.class, strategyId)
         );
         dividend.setStrategy(strategyToAssign);
         return mapper.toDividendListDto(this.save(user, dividend));

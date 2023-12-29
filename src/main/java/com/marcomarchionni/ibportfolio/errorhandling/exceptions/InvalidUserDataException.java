@@ -11,4 +11,8 @@ public class InvalidUserDataException extends CustomException {
     public InvalidUserDataException() {
         super(message, title, statusCode);
     }
+
+    public InvalidUserDataException(String message) {
+        super(message, title, statusCode);
+    }
 }

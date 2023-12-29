@@ -10,12 +10,11 @@ public class EntityNotFoundException extends CustomException {
         super(message, DEFAULT_TITLE, DEFAULT_STATUS_CODE);
     }
 
-    public EntityNotFoundException(Class<?> entityClass, Long entityId, String userAccountId) {
-        super(buildMessage(entityClass, entityId, userAccountId), DEFAULT_TITLE, DEFAULT_STATUS_CODE);
+    public EntityNotFoundException(Class<?> entityClass, Long entityId) {
+        super(buildMessage(entityClass, entityId), DEFAULT_TITLE, DEFAULT_STATUS_CODE);
     }
 
-    private static String buildMessage(Class<?> entityClass, Long entityId, String userAccountId) {
-        return String.format("Entity %s with id %d not found for account: %s", entityClass.getSimpleName(), entityId,
-                userAccountId);
+    private static String buildMessage(Class<?> entityClass, Long entityId) {
+        return String.format("Entity %s with id %d not found", entityClass.getSimpleName(), entityId);
     }
 }

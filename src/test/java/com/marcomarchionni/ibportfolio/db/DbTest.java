@@ -108,4 +108,11 @@ public class DbTest {
         dividendRepository.findById(510058320220624L)
                 .ifPresent(dividend -> assertEquals(new BigDecimal("47.05"), dividend.getQuantity()));
     }
+
+    @Test
+    void deleteMissingEntity() {
+        Dividend d = getFDXDividend();
+        d.setId(999999999999999L);
+        assertDoesNotThrow(() -> dividendRepository.delete(d));
+    }
 }

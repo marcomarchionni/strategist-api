@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.accessservice.PortfolioAccessService;
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
-import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.PortfolioCreateDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateNameDto;
 import com.marcomarchionni.ibportfolio.dtos.response.PortfolioDetailDto;
@@ -10,8 +10,7 @@ import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundEx
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.PortfolioMapper;
-import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,87 +18,76 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PortfolioServiceImpl implements PortfolioService {
 
-    PortfolioRepository portfolioRepository;
-    PortfolioMapper portfolioMapper;
-
-    @Autowired
-    public PortfolioServiceImpl(PortfolioRepository portfolioRepository, PortfolioMapper portfolioMapper) {
-        this.portfolioRepository = portfolioRepository;
-        this.portfolioMapper = portfolioMapper;
-    }
+    private final PortfolioAccessService dataGateway;
+    private final PortfolioMapper portfolioMapper;
 
     @Override
-    public List<PortfolioSummaryDto> findAllByUser(User user) {
-        List<Portfolio> portfolios = portfolioRepository.findAllByAccountId(user.getAccountId());
+    public List<PortfolioSummaryDto> findAll() {
+        List<Portfolio> portfolios = dataGateway.findAll();
         return portfolios.stream().map(portfolioMapper::toPortfolioListDto).collect(Collectors.toList());
     }
 
     @Override
-    public PortfolioDetailDto findByUserAndId(User user, Long portfolioId) {
-        String accountId = user.getAccountId();
-        Portfolio portfolio = portfolioRepository.findByIdAndAccountId(portfolioId, accountId).orElseThrow(
-                () -> new EntityNotFoundException(Portfolio.class, portfolioId, accountId)
+    public PortfolioDetailDto findById(Long portfolioId) {
+        Portfolio portfolio = dataGateway.findById(portfolioId).orElseThrow(
+                () -> new EntityNotFoundException(Portfolio.class, portfolioId)
         );
         return portfolioMapper.toPortfolioDetailDto(portfolio);
     }
 
     @Override
-    public void deleteByUserAndId(User user, Long portfolioId) {
-        String accountId = user.getAccountId();
-        Portfolio portfolioToDelete = portfolioRepository.findByIdAndAccountId(portfolioId, accountId).orElseThrow(
-                () -> new EntityNotFoundException(Portfolio.class, portfolioId, accountId)
+    public void deleteById(Long portfolioId) {
+        Portfolio portfolioToDelete = dataGateway.findById(portfolioId).orElseThrow(
+                () -> new EntityNotFoundException(Portfolio.class, portfolioId)
         );
-        if (portfolioToDelete.getStrategies().isEmpty()) {
-            portfolioRepository.deleteById(portfolioId);
-        } else {
+        if (!portfolioToDelete.getStrategies().isEmpty()) {
             throw new UnableToDeleteEntitiesException("Portfolio contains strategies and cannot be deleted");
         }
+        dataGateway.delete(portfolioToDelete);
     }
 
     @Override
     @Transactional
-    public PortfolioDetailDto create(User user, PortfolioCreateDto portfolioCreateDto) {
-        // Get name and account id
-        String accountId = user.getAccountId();
+    public PortfolioDetailDto create(PortfolioCreateDto portfolioCreateDto) {
+
         String portfolioName = portfolioCreateDto.getName();
 
         // Check if portfolio with the same name already exists
-        boolean existsPortfolioWithName = portfolioRepository.existsByAccountIdAndName(accountId,
-                portfolioName);
-        if (existsPortfolioWithName) {
+        boolean existsWithName = dataGateway.existsByName(portfolioName);
+        if (existsWithName) {
             throw new UnableToSaveEntitiesException("Portfolio with name: " + portfolioCreateDto.getName() + " " +
-                    "already exists for account: " + accountId);
+                    "already exists");
         }
+
         // Create portfolio
-        Portfolio savedPortfolio = portfolioRepository.save(portfolioMapper.toEntity(accountId, portfolioCreateDto));
+        Portfolio savedPortfolio = dataGateway.save(portfolioMapper.toEntity(portfolioCreateDto));
         return portfolioMapper.toPortfolioDetailDto(savedPortfolio);
     }
 
     @Override
     @Transactional
-    public PortfolioDetailDto updateName(User user, UpdateNameDto dto) {
+    public PortfolioDetailDto updateName(UpdateNameDto dto) {
 
-        // Get user account id
-        String accountId = user.getAccountId();
+        // Get portfolio id
         Long portfolioId = dto.getId();
 
         // Check if the portfolio to update exists
-        Portfolio portfolio = portfolioRepository.findByIdAndAccountId(portfolioId, accountId).orElseThrow(
-                () -> new EntityNotFoundException(Portfolio.class, portfolioId, accountId)
+        Portfolio portfolio = dataGateway.findById(portfolioId).orElseThrow(
+                () -> new EntityNotFoundException(Portfolio.class, portfolioId)
         );
         // Check if a portfolio with the same name already exists
-        boolean existsPortfolioWithName = portfolioRepository.existsByAccountIdAndName(accountId, dto.getName());
-        if (existsPortfolioWithName) {
-            throw new UnableToSaveEntitiesException("Portfolio with name: " + dto.getName() + " already exists for " +
-                    "account: " + accountId + ".");
+        boolean existsWithName = dataGateway.existsByName(dto.getName());
+        if (existsWithName) {
+            throw new UnableToSaveEntitiesException("Portfolio with name: " + dto.getName() + " already exists.");
         }
         // Update portfolio name
         portfolio.setName(dto.getName());
 
         // Save portfolio
-        Portfolio savedPortfolio = portfolioRepository.save(portfolio);
+        Portfolio savedPortfolio = dataGateway.save(portfolio);
         return portfolioMapper.toPortfolioDetailDto(savedPortfolio);
     }
 }

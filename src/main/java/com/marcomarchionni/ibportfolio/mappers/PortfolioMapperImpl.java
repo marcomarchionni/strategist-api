@@ -19,8 +19,8 @@ public class PortfolioMapperImpl implements PortfolioMapper {
     }
 
     @Override
-    public Portfolio toEntity(String accountId, PortfolioCreateDto portfolioCreateDto) {
-        return Portfolio.builder().name(portfolioCreateDto.getName()).accountId(accountId).strategies(new ArrayList<>())
+    public Portfolio toEntity(PortfolioCreateDto portfolioCreateDto) {
+        return Portfolio.builder().name(portfolioCreateDto.getName()).strategies(new ArrayList<>())
                 .build();
     }
 

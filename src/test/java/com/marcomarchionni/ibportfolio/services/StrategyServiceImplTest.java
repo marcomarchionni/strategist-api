@@ -1,5 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.accessservice.PortfolioAccessService;
+import com.marcomarchionni.ibportfolio.accessservice.StrategyAccessService;
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.domain.User;
@@ -10,8 +12,6 @@ import com.marcomarchionni.ibportfolio.dtos.response.StrategyDetailDto;
 import com.marcomarchionni.ibportfolio.dtos.response.StrategySummaryDto;
 import com.marcomarchionni.ibportfolio.mappers.StrategyMapper;
 import com.marcomarchionni.ibportfolio.mappers.StrategyMapperImpl;
-import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
-import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,9 +31,9 @@ import static org.mockito.Mockito.*;
 class StrategyServiceImplTest {
 
     @Mock
-    StrategyRepository strategyRepository;
+    StrategyAccessService strategyAccessService;
     @Mock
-    PortfolioRepository portfolioRepository;
+    PortfolioAccessService portfolioAccessService;
     StrategyMapper strategyMapper;
     StrategyServiceImpl strategyService;
     List<Strategy> userStrategies;
@@ -43,7 +43,7 @@ class StrategyServiceImplTest {
     @BeforeEach
     void setup() {
         strategyMapper = new StrategyMapperImpl(new ModelMapper());
-        strategyService = new StrategyServiceImpl(strategyRepository, portfolioRepository, strategyMapper);
+        strategyService = new StrategyServiceImpl(strategyAccessService, portfolioAccessService, strategyMapper);
 
         user = getSampleUser();
         userStrategy = getSampleStrategy();
@@ -54,10 +54,10 @@ class StrategyServiceImplTest {
     void findByParams() {
         // setup
         StrategyFindDto strategyFindDto = StrategyFindDto.builder().build();
-        when(strategyRepository.findByParams(user.getAccountId(), strategyFindDto.getName())).thenReturn(userStrategies);
+        when(strategyAccessService.findByParams(strategyFindDto.getName())).thenReturn(userStrategies);
 
         // execute
-        List<StrategySummaryDto> actualStrategies = strategyService.findByFilter(user, strategyFindDto);
+        List<StrategySummaryDto> actualStrategies = strategyService.findByFilter(strategyFindDto);
 
         // verify
         assertNotNull(actualStrategies);
@@ -69,10 +69,10 @@ class StrategyServiceImplTest {
     void findByIdSuccess() {
         // setup
         userStrategy.getTrades().add(getSampleTrade());
-        when(strategyRepository.findByIdAndAccountId(userStrategy.getId(), user.getAccountId())).thenReturn(Optional.of(userStrategy));
+        when(strategyAccessService.findById(userStrategy.getId())).thenReturn(Optional.of(userStrategy));
 
         // execute
-        StrategyDetailDto strategyDetailDto = strategyService.findByUserAndId(user, userStrategy.getId());
+        StrategyDetailDto strategyDetailDto = strategyService.findById(userStrategy.getId());
 
         // verify
         assertNotNull(strategyDetailDto);
@@ -88,16 +88,15 @@ class StrategyServiceImplTest {
                 .portfolioId(userPortfolio.getId()).build();
 
         // setup mocks
-        when(portfolioRepository.findByIdAndAccountId(userPortfolio.getId(), user.getAccountId())).thenReturn(Optional.of(userPortfolio));
-        when(strategyRepository.save(any(Strategy.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(portfolioAccessService.findById(userPortfolio.getId())).thenReturn(Optional.of(userPortfolio));
+        when(strategyAccessService.save(any(Strategy.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute
-        StrategyDetailDto actualStrategy = strategyService.create(user, strategyCreateDto);
+        StrategyDetailDto actualStrategy = strategyService.create(strategyCreateDto);
 
         // verify
         assertNotNull(actualStrategy);
         assertEquals(strategyCreateDto.getName(), actualStrategy.getName());
-        assertEquals(user.getAccountId(), actualStrategy.getAccountId());
         assertEquals(userPortfolio.getId(), actualStrategy.getPortfolioId());
     }
 
@@ -107,11 +106,11 @@ class StrategyServiceImplTest {
         UpdateNameDto updateNameDto = UpdateNameDto.builder().id(userStrategy.getId()).name("NewName").build();
 
         // setup mocks
-        when(strategyRepository.findByIdAndAccountId(userStrategy.getId(), user.getAccountId())).thenReturn(Optional.of(userStrategy));
-        when(strategyRepository.save(any(Strategy.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(strategyAccessService.findById(userStrategy.getId())).thenReturn(Optional.of(userStrategy));
+        when(strategyAccessService.save(any(Strategy.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute
-        StrategyDetailDto renamedStrategy = strategyService.updateName(user, updateNameDto);
+        StrategyDetailDto renamedStrategy = strategyService.updateName(updateNameDto);
 
         // verify
         assertNotNull(renamedStrategy);
@@ -123,17 +122,16 @@ class StrategyServiceImplTest {
     void deleteByIdSuccess() {
         // setup entities
         Long strategyId = userStrategy.getId();
-        String accountId = user.getAccountId();
 
         // setup mocks
-        when(strategyRepository.findByIdAndAccountId(strategyId, accountId)).thenReturn(Optional.of(userStrategy));
-        doNothing().when(strategyRepository).deleteById(strategyId);
+        when(strategyAccessService.findById(strategyId)).thenReturn(Optional.of(userStrategy));
+        doNothing().when(strategyAccessService).delete(userStrategy);
 
         // execute
-        strategyService.deleteByUserAndId(user, strategyId);
+        strategyService.deleteById(strategyId);
 
         // verify
-        verify(strategyRepository, times(1)).findByIdAndAccountId(strategyId, accountId);
-        verify(strategyRepository, times(1)).deleteById(strategyId);
+        verify(strategyAccessService, times(1)).findById(strategyId);
+        verify(strategyAccessService, times(1)).delete(userStrategy);
     }
 }
