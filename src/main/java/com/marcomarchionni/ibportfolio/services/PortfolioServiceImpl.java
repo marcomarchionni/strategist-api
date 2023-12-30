@@ -21,18 +21,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PortfolioServiceImpl implements PortfolioService {
 
-    private final PortfolioAccessService dataGateway;
+    private final PortfolioAccessService portfolioAccessService;
+    private final UserService userService;
     private final PortfolioMapper portfolioMapper;
+
 
     @Override
     public List<PortfolioSummaryDto> findAll() {
-        List<Portfolio> portfolios = dataGateway.findAll();
+        List<Portfolio> portfolios = portfolioAccessService.findAll();
         return portfolios.stream().map(portfolioMapper::toPortfolioListDto).collect(Collectors.toList());
     }
 
     @Override
     public PortfolioDetailDto findById(Long portfolioId) {
-        Portfolio portfolio = dataGateway.findById(portfolioId).orElseThrow(
+        Portfolio portfolio = portfolioAccessService.findById(portfolioId).orElseThrow(
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId)
         );
         return portfolioMapper.toPortfolioDetailDto(portfolio);
@@ -40,13 +42,13 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public void deleteById(Long portfolioId) {
-        Portfolio portfolioToDelete = dataGateway.findById(portfolioId).orElseThrow(
+        Portfolio portfolioToDelete = portfolioAccessService.findById(portfolioId).orElseThrow(
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId)
         );
         if (!portfolioToDelete.getStrategies().isEmpty()) {
             throw new UnableToDeleteEntitiesException("Portfolio contains strategies and cannot be deleted");
         }
-        dataGateway.delete(portfolioToDelete);
+        portfolioAccessService.delete(portfolioToDelete);
     }
 
     @Override
@@ -56,14 +58,20 @@ public class PortfolioServiceImpl implements PortfolioService {
         String portfolioName = portfolioCreateDto.getName();
 
         // Check if portfolio with the same name already exists
-        boolean existsWithName = dataGateway.existsByName(portfolioName);
+        boolean existsWithName = portfolioAccessService.existsByName(portfolioName);
         if (existsWithName) {
             throw new UnableToSaveEntitiesException("Portfolio with name: " + portfolioCreateDto.getName() + " " +
                     "already exists");
         }
 
         // Create portfolio
-        Portfolio savedPortfolio = dataGateway.save(portfolioMapper.toEntity(portfolioCreateDto));
+        Portfolio portfolioToSave = Portfolio.builder()
+                .name(portfolioName)
+                .accountId(userService.getUserAccountId())
+                .build();
+
+        // Save portfolio
+        Portfolio savedPortfolio = portfolioAccessService.save(portfolioToSave);
         return portfolioMapper.toPortfolioDetailDto(savedPortfolio);
     }
 
@@ -75,11 +83,11 @@ public class PortfolioServiceImpl implements PortfolioService {
         Long portfolioId = dto.getId();
 
         // Check if the portfolio to update exists
-        Portfolio portfolio = dataGateway.findById(portfolioId).orElseThrow(
+        Portfolio portfolio = portfolioAccessService.findById(portfolioId).orElseThrow(
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId)
         );
         // Check if a portfolio with the same name already exists
-        boolean existsWithName = dataGateway.existsByName(dto.getName());
+        boolean existsWithName = portfolioAccessService.existsByName(dto.getName());
         if (existsWithName) {
             throw new UnableToSaveEntitiesException("Portfolio with name: " + dto.getName() + " already exists.");
         }
@@ -87,7 +95,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         portfolio.setName(dto.getName());
 
         // Save portfolio
-        Portfolio savedPortfolio = dataGateway.save(portfolio);
+        Portfolio savedPortfolio = portfolioAccessService.save(portfolio);
         return portfolioMapper.toPortfolioDetailDto(savedPortfolio);
     }
 }

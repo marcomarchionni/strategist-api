@@ -4,6 +4,7 @@ import com.marcomarchionni.ibportfolio.domain.Strategy;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.services.UserService;
+import com.marcomarchionni.ibportfolio.services.validators.AccountIdEntityValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,6 @@ import java.util.Optional;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategies;
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleStrategy;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,7 +27,6 @@ class StrategyAccessServiceImplTest {
     @Mock
     UserService userService;
     StrategyAccessService strategyAccessService;
-
     List<Strategy> expectedStrategies;
     Strategy expectedStrategy;
 
@@ -36,8 +35,8 @@ class StrategyAccessServiceImplTest {
     void setUp() {
         expectedStrategies = getSampleStrategies();
         expectedStrategy = getSampleStrategy();
-
-        strategyAccessService = new StrategyAccessServiceImpl(userService, strategyRepository);
+        var accountIdValidator = new AccountIdEntityValidatorImpl<Strategy>();
+        strategyAccessService = new StrategyAccessServiceImpl(userService, strategyRepository, accountIdValidator);
 
         when(userService.getUserAccountId()).thenReturn("U1111111");
     }
@@ -59,13 +58,9 @@ class StrategyAccessServiceImplTest {
     }
 
     @Test
-    void save() {
-        when(strategyRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+    void saveEx() {
         expectedStrategy.setAccountId(null);
-        var savedStrategy = strategyAccessService.save(expectedStrategy);
-
-        assertEquals(expectedStrategies.get(0), savedStrategy);
-        assertEquals("U1111111", savedStrategy.getAccountId());
+        assertThrows(InvalidUserDataException.class, () -> strategyAccessService.save(expectedStrategy));
     }
 
     @Test

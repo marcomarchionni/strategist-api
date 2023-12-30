@@ -1,10 +1,11 @@
 package com.marcomarchionni.ibportfolio.accessservice;
 
 import com.marcomarchionni.ibportfolio.domain.FlexStatement;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
 import com.marcomarchionni.ibportfolio.services.UserService;
+import com.marcomarchionni.ibportfolio.services.validators.AccountIdValidator;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,6 +16,7 @@ public class FlexStatementAccessServiceImpl implements FlexStatementAccessServic
 
     private final FlexStatementRepository flexStatementRepository;
     private final UserService userService;
+    private final AccountIdValidator<FlexStatement> accountIdValidator;
 
     @Override
     public Optional<FlexStatement> findFirstOrderByToDateDesc() {
@@ -23,11 +25,9 @@ public class FlexStatementAccessServiceImpl implements FlexStatementAccessServic
     }
 
     @Override
-    public FlexStatement save(FlexStatement flexStatement) {
+    public FlexStatement save(@NotNull FlexStatement flexStatement) {
         String accountId = userService.getUserAccountId();
-        if (!accountId.equals(flexStatement.getAccountId())) {
-            throw new InvalidUserDataException("Authenticated User and FlexStatement must have the same accountId");
-        }
+        accountIdValidator.hasValidAccountId(flexStatement, accountId);
         return flexStatementRepository.save(flexStatement);
     }
 }

@@ -78,7 +78,7 @@ class DividendControllerTest {
     @Test
     void getWithParameters() throws Exception {
 
-        when(dividendService.findByFilter(any(), any())).thenReturn(dividendSummaryDtos);
+        when(dividendService.findByFilter(any())).thenReturn(dividendSummaryDtos);
 
         mockMvc.perform(get("/dividends"))
                 .andExpect(status().isOk())
@@ -89,7 +89,7 @@ class DividendControllerTest {
     @Test
     void getWithParametersException() throws Exception {
 
-        when(dividendService.findByFilter(any(), any())).thenReturn(dividendSummaryDtos);
+        when(dividendService.findByFilter(any())).thenReturn(dividendSummaryDtos);
 
         mockMvc.perform(get("/dividends"))
                 .andExpect(status().isOk())
@@ -111,7 +111,7 @@ class DividendControllerTest {
         dividend.setStrategy(strategy);
         DividendSummaryDto expectedDividendSummaryDto = dividendMapper.toDividendListDto(dividend);
 
-        when(dividendService.updateStrategyId(user, dividendUpdate)).thenReturn(expectedDividendSummaryDto);
+        when(dividendService.updateStrategyId(dividendUpdate)).thenReturn(expectedDividendSummaryDto);
 
         mockMvc.perform(put("/dividends")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity(name = "dividend")
 @Table(name = "dividend", uniqueConstraints = @UniqueConstraint(columnNames = {"action_id", "account_id"}))
-public class Dividend {
+public class Dividend implements AccountIdEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

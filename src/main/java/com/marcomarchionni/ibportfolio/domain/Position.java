@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 
 @Entity(name = "position")
-public class Position {
+public class Position implements AccountIdEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

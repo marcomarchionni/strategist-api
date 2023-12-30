@@ -1,10 +1,11 @@
 package com.marcomarchionni.ibportfolio.accessservice;
 
 import com.marcomarchionni.ibportfolio.domain.Strategy;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.services.UserService;
+import com.marcomarchionni.ibportfolio.services.validators.AccountIdValidator;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class StrategyAccessServiceImpl implements StrategyAccessService {
 
     private final UserService userService;
     private final StrategyRepository strategyRepository;
+    private final AccountIdValidator<Strategy> accountIdValidator;
 
     @Override
     public List<Strategy> findByParams(String name) {
@@ -24,27 +26,22 @@ public class StrategyAccessServiceImpl implements StrategyAccessService {
     }
 
     @Override
-    public Optional<Strategy> findById(Long id) {
+    public Optional<Strategy> findById(@NotNull Long id) {
         String accountId = userService.getUserAccountId();
         return strategyRepository.findByIdAndAccountId(id, accountId);
     }
 
     @Override
-    public Strategy save(Strategy strategy) {
+    public Strategy save(@NotNull Strategy strategy) {
         String userAccountId = userService.getUserAccountId();
-        if (strategy.getAccountId() != null && !strategy.getAccountId().equals(userAccountId)) {
-            throw new InvalidUserDataException("Strategy with id " + strategy.getId() + " does not belong to user");
-        }
-        strategy.setAccountId(userAccountId);
+        accountIdValidator.hasValidAccountId(strategy, userAccountId);
         return strategyRepository.save(strategy);
     }
 
     @Override
-    public void delete(Strategy strategy) {
+    public void delete(@NotNull Strategy strategy) {
         String accountId = userService.getUserAccountId();
-        if (!strategy.getAccountId().equals(accountId)) {
-            throw new InvalidUserDataException("Strategy with id " + strategy.getId() + " does not belong to user");
-        }
+        accountIdValidator.hasValidAccountId(strategy, accountId);
         strategyRepository.deleteById(strategy.getId());
     }
 }

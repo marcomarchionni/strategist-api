@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.accessservice;
 
 import com.marcomarchionni.ibportfolio.domain.Position;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.services.UserService;
+import com.marcomarchionni.ibportfolio.services.validators.AccountIdValidator;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,14 @@ import java.util.Optional;
 public class PositionAccessServiceImpl implements PositionAccessService {
     private final PositionRepository positionRepository;
     private final UserService userService;
+    private final AccountIdValidator<Position> accountIdValidator;
 
     @Override
     public void deleteAll(@NotNull List<Position> positions) {
         if (positions.isEmpty()) {
             return;
         }
-        validateList(positions);
+        validateAccountIds(positions);
         positionRepository.deleteAll(positions);
     }
 
@@ -32,7 +33,7 @@ public class PositionAccessServiceImpl implements PositionAccessService {
         if (positions.isEmpty()) {
             return Collections.emptyList();
         }
-        validateList(positions);
+        validateAccountIds(positions);
         return positionRepository.saveAll(positions);
     }
 
@@ -49,37 +50,26 @@ public class PositionAccessServiceImpl implements PositionAccessService {
     }
 
     @Override
-    public Optional<Position> findBySymbol(String symbol) {
+    public Optional<Position> findBySymbol(@NotNull String symbol) {
         String accountId = userService.getUserAccountId();
         return positionRepository.findByAccountIdAndSymbol(accountId, symbol);
     }
 
     @Override
-    public Optional<Position> findById(Long id) {
+    public Optional<Position> findById(@NotNull Long id) {
         String accountId = userService.getUserAccountId();
         return positionRepository.findByIdAndAccountId(id, accountId);
     }
 
     @Override
     public Position save(@NotNull Position position) {
-        validatePosition(position);
+        String accountId = userService.getUserAccountId();
+        accountIdValidator.hasValidAccountId(position, accountId);
         return positionRepository.save(position);
     }
 
-    private void validateList(List<Position> positions) {
+    private void validateAccountIds(List<Position> positions) {
         String accountId = userService.getUserAccountId();
-        positions.forEach(position -> validate(accountId, position));
-    }
-
-    private void validatePosition(Position position) {
-        String accountId = userService.getUserAccountId();
-        validate(accountId, position);
-    }
-
-    private void validate(String accountId, Position position) {
-        // Throw InvalidUserDataException if the position does not belong to the user
-        if (!accountId.equals(position.getAccountId())) {
-            throw new InvalidUserDataException("Authenticated User and Position must have the same accountId");
-        }
+        positions.forEach(position -> accountIdValidator.hasValidAccountId(position, accountId));
     }
 }

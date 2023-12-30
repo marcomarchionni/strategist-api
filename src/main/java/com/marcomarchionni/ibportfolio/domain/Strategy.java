@@ -16,7 +16,7 @@ import java.util.List;
         name = "strategy",
         uniqueConstraints = @UniqueConstraint(columnNames = {"name", "account_id"})
 )
-public class Strategy {
+public class Strategy implements AccountIdEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,18 +40,21 @@ public class Strategy {
     @EqualsAndHashCode.Exclude
     @NotNull
     @OneToMany(mappedBy = "strategy", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Position> positions = new ArrayList<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @NotNull
     @OneToMany(mappedBy = "strategy", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Trade> trades = new ArrayList<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @NotNull
     @OneToMany(mappedBy = "strategy", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Dividend> dividends = new ArrayList<>();
 
     public Strategy(Long id, String accountId, Portfolio portfolio, String name, List<Position> positions,

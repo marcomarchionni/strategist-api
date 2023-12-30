@@ -69,6 +69,7 @@ public class StrategyServiceImpl implements StrategyService {
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId)
         );
         Strategy createdStrategy = Strategy.builder().name(strategyCreateDto.getName()).portfolio(portfolio)
+                .accountId(portfolio.getAccountId())
                 .build();
         return strategyMapper.toStrategyDetailDto(this.save(createdStrategy));
     }

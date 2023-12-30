@@ -1,8 +1,10 @@
 package com.marcomarchionni.ibportfolio.accessservice;
 
+import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import com.marcomarchionni.ibportfolio.services.UserService;
+import com.marcomarchionni.ibportfolio.services.validators.AccountIdEntityValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSamplePortfolio;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -23,11 +26,12 @@ class PortfolioAccessServiceImplTest {
     @Mock
     PortfolioRepository portfolioRepository;
 
-    PortfolioAccessServiceImpl dataGateway;
+    PortfolioAccessServiceImpl portfolioAccessService;
 
     @BeforeEach
     void setup() {
-        dataGateway = new PortfolioAccessServiceImpl(portfolioRepository, userService);
+        var accountIdValidator = new AccountIdEntityValidatorImpl<Portfolio>();
+        portfolioAccessService = new PortfolioAccessServiceImpl(portfolioRepository, userService, accountIdValidator);
         when(userService.getUserAccountId()).thenReturn("U1111111");
     }
 
@@ -37,7 +41,7 @@ class PortfolioAccessServiceImplTest {
 
         when(portfolioRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        var savedPortfolio = dataGateway.save(portfolio);
+        var savedPortfolio = portfolioAccessService.save(portfolio);
 
         assertEquals(portfolio, savedPortfolio);
     }
@@ -47,12 +51,7 @@ class PortfolioAccessServiceImplTest {
         var portfolio = getSamplePortfolio("MFStockAdvisor");
         portfolio.setAccountId(null);
 
-        when(portfolioRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-
-        var savedPortfolio = dataGateway.save(portfolio);
-
-        assertNotNull(portfolio.getAccountId());
-        assertEquals("U1111111", savedPortfolio.getAccountId());
+        assertThrows(InvalidUserDataException.class, () -> portfolioAccessService.save(portfolio));
     }
 
     @Test
@@ -60,7 +59,7 @@ class PortfolioAccessServiceImplTest {
         var portfolio = getSamplePortfolio("MFStockAdvisor");
         portfolio.setAccountId("U2222222");
 
-        assertThrows(InvalidUserDataException.class, () -> dataGateway.save(portfolio));
+        assertThrows(InvalidUserDataException.class, () -> portfolioAccessService.save(portfolio));
     }
 
     @Test
@@ -68,7 +67,7 @@ class PortfolioAccessServiceImplTest {
         var portfolio = getSamplePortfolio("MFStockAdvisor");
         portfolio.setAccountId("U1111111");
 
-        dataGateway.delete(portfolio);
+        portfolioAccessService.delete(portfolio);
     }
 
     @Test
@@ -76,6 +75,6 @@ class PortfolioAccessServiceImplTest {
         var portfolio = getSamplePortfolio("MFStockAdvisor");
         portfolio.setAccountId("U2222222");
 
-        assertThrows(InvalidUserDataException.class, () -> dataGateway.delete(portfolio));
+        assertThrows(InvalidUserDataException.class, () -> portfolioAccessService.delete(portfolio));
     }
 }

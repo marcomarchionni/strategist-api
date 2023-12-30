@@ -4,6 +4,7 @@ import com.marcomarchionni.ibportfolio.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
 import com.marcomarchionni.ibportfolio.services.UserService;
+import com.marcomarchionni.ibportfolio.services.validators.AccountIdEntityValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +39,9 @@ class FlexStatementAccessServiceImplTest {
                 .toDate(LocalDate.now())
                 .whenGenerated(LocalDateTime.now())
                 .build();
-        flexStatementAccessService = new FlexStatementAccessServiceImpl(flexStatementRepository, userService);
+        var accountIdValidator = new AccountIdEntityValidatorImpl<FlexStatement>();
+        flexStatementAccessService = new FlexStatementAccessServiceImpl(flexStatementRepository, userService,
+                accountIdValidator);
         when(userService.getUserAccountId()).thenReturn("U1111111");
     }
 

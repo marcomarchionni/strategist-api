@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = AccountIdValidator.class)
+@Constraint(validatedBy = AccountIdConstraintValidator.class)
 public @interface ValidAccountId {
     String message() default "Account IDs must be consistent across all fields.";
 

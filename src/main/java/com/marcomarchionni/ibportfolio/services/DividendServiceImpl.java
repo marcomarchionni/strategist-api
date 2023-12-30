@@ -1,18 +1,16 @@
 package com.marcomarchionni.ibportfolio.services;
 
+import com.marcomarchionni.ibportfolio.accessservice.DividendAccessService;
+import com.marcomarchionni.ibportfolio.accessservice.StrategyAccessService;
 import com.marcomarchionni.ibportfolio.domain.Dividend;
 import com.marcomarchionni.ibportfolio.domain.Strategy;
-import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.request.DividendFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.ibportfolio.dtos.response.DividendSummaryDto;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.ibportfolio.mappers.DividendMapper;
-import com.marcomarchionni.ibportfolio.repositories.DividendRepository;
-import com.marcomarchionni.ibportfolio.repositories.StrategyRepository;
 import com.marcomarchionni.ibportfolio.services.util.OpenDividendsCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,14 +23,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DividendServiceImpl implements DividendService {
 
-    private final DividendRepository dividendRepository;
-    private final StrategyRepository strategyRepository;
+    private final DividendAccessService dividendAccessService;
+    private final StrategyAccessService strategyAccessService;
     private final DividendMapper mapper;
 
     @Override
-    public List<DividendSummaryDto> findByFilter(User user, DividendFindDto dividendFind) {
-        List<Dividend> dividends = dividendRepository.findByParams(
-                user.getAccountId(),
+    public List<DividendSummaryDto> findByFilter(DividendFindDto dividendFind) {
+        List<Dividend> dividends = dividendAccessService.findByParams(
                 dividendFind.getExDateFrom(),
                 dividendFind.getExDateTo(),
                 dividendFind.getPayDateFrom(),
@@ -44,30 +41,26 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public DividendSummaryDto updateStrategyId(User user, UpdateStrategyDto dividendUpdate) {
+    public DividendSummaryDto updateStrategyId(UpdateStrategyDto dividendUpdate) {
         Long dividendId = dividendUpdate.getId();
         Long strategyId = dividendUpdate.getStrategyId();
-        String accountId = user.getAccountId();
 
-        Dividend dividend = dividendRepository.findByIdAndAccountId(dividendId, accountId).orElseThrow(
+        Dividend dividend = dividendAccessService.findById(dividendId).orElseThrow(
                 () -> new EntityNotFoundException(Dividend.class, dividendId)
         );
-        Strategy strategyToAssign = strategyRepository.findByIdAndAccountId(strategyId, accountId).orElseThrow(
+        Strategy strategyToAssign = strategyAccessService.findById(strategyId).orElseThrow(
                 () -> new EntityNotFoundException(Strategy.class, strategyId)
         );
         dividend.setStrategy(strategyToAssign);
-        return mapper.toDividendListDto(this.save(user, dividend));
+        return mapper.toDividendListDto(this.save(dividend));
     }
 
     @Override
-    public UpdateReport<Dividend> updateDividends(User user, List<Dividend> dividends) {
+    public UpdateReport<Dividend> updateDividends(List<Dividend> dividends) {
 
         if (dividends.isEmpty()) {
             return UpdateReport.<Dividend>builder().build();
         }
-
-        // Retrieve authenticated user account id
-        String accountId = user.getAccountId();
 
         // Init target lists
         List<Dividend> toAdd = new ArrayList<>();
@@ -75,7 +68,7 @@ public class DividendServiceImpl implements DividendService {
         List<Dividend> toSkip = new ArrayList<>();
 
         // Retrieve existing open dividends in an OpenDividendsMap instance
-        List<Dividend> dbOpenDividends = dividendRepository.findOpenDividendsByAccountId(accountId);
+        List<Dividend> dbOpenDividends = dividendAccessService.findOpenDividends();
         OpenDividendsCache dbCache = OpenDividendsCache.createOpenDividendCache(
                 dbOpenDividends);
 
@@ -84,7 +77,7 @@ public class DividendServiceImpl implements DividendService {
             if (dbCache.existMatch(dividend)) {
                 var dbDividend = dbCache.getMatchingDividend(dividend);
                 toMerge.add(mapper.mergeFlexProperties(dividend, dbDividend));
-            } else if (!existsInDb(accountId, dividend)) {
+            } else if (!this.existsInDb(dividend)) {
                 toAdd.add(dividend);
             } else {
                 toSkip.add(dividend);
@@ -93,32 +86,26 @@ public class DividendServiceImpl implements DividendService {
 
         // Save target lists and return report
         return UpdateReport.<Dividend>builder()
-                .added(this.saveAll(user, toAdd))
-                .merged(this.saveAll(user, toMerge))
+                .added(this.saveAll(toAdd))
+                .merged(this.saveAll(toMerge))
                 .skipped(toSkip).build();
     }
 
-    private boolean existsInDb(String accountId, Dividend d) {
-        return dividendRepository.existsByAccountIdAndActionId(accountId, d.getActionId());
+    private boolean existsInDb(Dividend d) {
+        return dividendAccessService.existsByActionId(d.getActionId());
     }
 
-    private Dividend save(User user, Dividend dividend) {
-        if (!dividend.getAccountId().equals(user.getAccountId())) {
-            throw new InvalidUserDataException();
-        }
+    private Dividend save(Dividend dividend) {
         try {
-            return dividendRepository.save(dividend);
+            return dividendAccessService.save(dividend);
         } catch (Exception e) {
             throw new UnableToSaveEntitiesException(e.getMessage());
         }
     }
 
-    private List<Dividend> saveAll(User user, List<Dividend> dividends) {
-        if (!dividends.stream().allMatch(dividend -> dividend.getAccountId().equals(user.getAccountId()))) {
-            throw new InvalidUserDataException();
-        }
+    private List<Dividend> saveAll(List<Dividend> dividends) {
         try {
-            return dividendRepository.saveAll(dividends);
+            return dividendAccessService.saveAll(dividends);
         } catch (Exception e) {
             throw new UnableToSaveEntitiesException(e.getMessage());
         }

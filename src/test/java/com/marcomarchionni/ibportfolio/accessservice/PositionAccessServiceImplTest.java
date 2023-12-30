@@ -4,6 +4,7 @@ import com.marcomarchionni.ibportfolio.domain.Position;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.repositories.PositionRepository;
 import com.marcomarchionni.ibportfolio.services.UserService;
+import com.marcomarchionni.ibportfolio.services.validators.AccountIdEntityValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,8 @@ class PositionAccessServiceImplTest {
     void setup() {
         expectedPosition = getSamplePosition();
         expectedPositions = getSamplePositions();
-        positionAccessService = new PositionAccessServiceImpl(positionRepository, userService);
+        var accountIdValidator = new AccountIdEntityValidatorImpl<Position>();
+        positionAccessService = new PositionAccessServiceImpl(positionRepository, userService, accountIdValidator);
 
         when(userService.getUserAccountId()).thenReturn("U1111111");
     }

@@ -30,6 +30,8 @@ class PortfolioServiceImplTest {
 
     @Mock
     PortfolioAccessService dataGateway;
+    @Mock
+    UserService userService;
     PortfolioMapper portfolioMapper;
     PortfolioService portfolioService;
     User user;
@@ -38,7 +40,7 @@ class PortfolioServiceImplTest {
     @BeforeEach
     void setup() {
         portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
-        portfolioService = new PortfolioServiceImpl(dataGateway, portfolioMapper);
+        portfolioService = new PortfolioServiceImpl(dataGateway, userService, portfolioMapper);
 
         user = getSampleUser();
         userPortfolio = getSamplePortfolio("MFStockAdvisor");
@@ -145,5 +147,17 @@ class PortfolioServiceImplTest {
         // verify results
         verify(dataGateway).findById(portfolioId);
         verify(dataGateway).delete(userPortfolio);
+    }
+
+    @Test
+    void deleteByIdException() {
+        // setup test data
+        Long unknownPortfolioId = 1L;
+
+        // setup mocks
+        when(dataGateway.findById(unknownPortfolioId)).thenReturn(Optional.empty());
+
+        // execute service and verify exception
+        assertThrows(EntityNotFoundException.class, () -> portfolioService.deleteById(unknownPortfolioId));
     }
 }

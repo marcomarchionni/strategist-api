@@ -1,6 +1,5 @@
 package com.marcomarchionni.ibportfolio.services;
 
-import com.marcomarchionni.ibportfolio.domain.User;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateDto;
@@ -33,8 +32,6 @@ public class UpdateServiceImpl implements UpdateService {
     @Override
     @Transactional
     public CombinedUpdateReport update(FlexQueryResponseDto dto) {
-        // TODO: Remove user service
-        User user = userService.getAuthenticatedUser();
 
         // Check if dto has the latest data
         LocalDate latestToDateInDb = flexStatementService.findLatestToDate();
@@ -58,7 +55,7 @@ public class UpdateServiceImpl implements UpdateService {
         var flexStatementReport = flexStatementService.updateFlexStatements(updateDto.getFlexStatement());
         var positionReport = positionService.updatePositions(updateDto.getPositions());
         var tradeReport = tradeService.updateTrades(updateDto.getTrades());
-        var dividendReport = dividendService.updateDividends(user, updateDto.getDividends());
+        var dividendReport = dividendService.updateDividends(updateDto.getDividends());
 
         // Return report
         return CombinedUpdateReport.builder().flexStatements(flexStatementReport).trades(tradeReport)

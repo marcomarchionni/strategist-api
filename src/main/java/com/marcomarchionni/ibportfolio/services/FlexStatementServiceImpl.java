@@ -15,19 +15,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FlexStatementServiceImpl implements FlexStatementService {
 
-    private final FlexStatementAccessService dataGateway;
+    private final FlexStatementAccessService flexStatementAccessService;
 
     @Override
     public LocalDate findLatestToDate() {
         Optional<FlexStatement> optionalLastFlex =
-                dataGateway.findFirstOrderByToDateDesc();
+                flexStatementAccessService.findFirstOrderByToDateDesc();
         return optionalLastFlex.map(FlexStatement::getToDate).orElse(LocalDate.MIN);
     }
 
     @Override
     public UpdateReport<FlexStatement> updateFlexStatements(FlexStatement flexStatement) {
         try {
-            FlexStatement savedFlexStatement = dataGateway.save(flexStatement);
+            FlexStatement savedFlexStatement = flexStatementAccessService.save(flexStatement);
             return UpdateReport.<FlexStatement>builder()
                     .added(List.of(savedFlexStatement))
                     .build();

@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UpdateDtoValidator implements UserDtoValidator<UpdateDto> {
+public class UpdateDtoValidator implements AccountIdValidator<UpdateDto>, DtoValidator<UpdateDto> {
 
     private final Validator validator;
 

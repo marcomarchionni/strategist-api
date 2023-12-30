@@ -92,7 +92,7 @@ public class DbTest {
 
     @Test
     void bigDecimalTest() {
-        Dividend FDXdividend = dividendRepository.findBySymbolAndAccountId("FDX", "U1111111").stream().findFirst()
+        Dividend FDXdividend = dividendRepository.findByAccountIdAndSymbol("U1111111", "FDX").stream().findFirst()
                 .get();
         assertNotNull(FDXdividend);
         assertEquals(new BigDecimal("47"), FDXdividend.getQuantity());

@@ -1,9 +1,9 @@
 package com.marcomarchionni.ibportfolio.accessservice;
 
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import com.marcomarchionni.ibportfolio.services.UserService;
+import com.marcomarchionni.ibportfolio.services.validators.AccountIdValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,7 @@ import java.util.Optional;
 public class PortfolioAccessServiceImpl implements PortfolioAccessService {
     private final PortfolioRepository portfolioRepository;
     private final UserService userService;
+    private final AccountIdValidator<Portfolio> accountIdValidator;
 
     @Override
     public List<Portfolio> findAll() {
@@ -37,19 +38,14 @@ public class PortfolioAccessServiceImpl implements PortfolioAccessService {
     @Override
     public Portfolio save(Portfolio portfolio) {
         String userAccountId = userService.getUserAccountId();
-        if (portfolio.getAccountId() != null && !portfolio.getAccountId().equals(userAccountId)) {
-            throw new InvalidUserDataException("Portfolio with id " + portfolio.getId() + " does not belong to user");
-        }
-        portfolio.setAccountId(userAccountId);
+        accountIdValidator.hasValidAccountId(portfolio, userAccountId);
         return portfolioRepository.save(portfolio);
     }
 
     @Override
     public void delete(Portfolio portfolio) {
         String accountId = userService.getUserAccountId();
-        if (!portfolio.getAccountId().equals(accountId)) {
-            throw new InvalidUserDataException("Portfolio with id " + portfolio.getId() + " does not belong to user");
-        }
+        accountIdValidator.hasValidAccountId(portfolio, accountId);
         portfolioRepository.deleteById(portfolio.getId());
     }
 }

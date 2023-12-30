@@ -15,10 +15,6 @@ public interface DividendRepository extends JpaRepository<Dividend, Long> {
 
     List<Dividend> findByOpenClosedAndAccountId(Dividend.OpenClosed openClosed, String accountId);
 
-    default List<Dividend> findOpenDividendsByAccountId(String accountId) {
-        return findByOpenClosedAndAccountId(Dividend.OpenClosed.OPEN, accountId);
-    }
-
   @Query("SELECT d FROM dividend d WHERE " +
           "(d.accountId = :accountId) and " +
           "(:exDateFrom is null or d.exDate > :exDateFrom) and " +
@@ -37,7 +33,7 @@ public interface DividendRepository extends JpaRepository<Dividend, Long> {
 
     Optional<Dividend> findByIdAndAccountId(Long id, String accountId);
 
-    List<Dividend> findBySymbolAndAccountId(String symbol, String accountId);
+  List<Dividend> findByAccountIdAndSymbol(String accountId, String symbol);
 
     boolean existsByAccountIdAndActionId(String accountId, Long actionId);
 }
