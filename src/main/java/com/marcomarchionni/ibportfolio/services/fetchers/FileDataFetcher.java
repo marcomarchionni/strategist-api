@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.services.fetchers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EmptyFileException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidXMLFileException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.NoXMLExtensionException;
@@ -22,7 +23,7 @@ public class FileDataFetcher implements DataFetcher {
     }
 
     @Override
-    public FlexQueryResponseDto fetch(FetchContext context) {
+    public FlexQueryResponseDto fetch(UpdateContextDto context) {
         validateFile(context.getFile());
 
         try (InputStream stream = context.getFile().getInputStream()) {

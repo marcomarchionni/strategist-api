@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.domain;
 
-import com.marcomarchionni.ibportfolio.controllers.validators.StrategyName;
+import com.marcomarchionni.ibportfolio.dtos.validators.StrategyName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

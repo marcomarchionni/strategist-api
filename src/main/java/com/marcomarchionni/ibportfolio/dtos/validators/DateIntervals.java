@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.controllers.validators;
+package com.marcomarchionni.ibportfolio.dtos.validators;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

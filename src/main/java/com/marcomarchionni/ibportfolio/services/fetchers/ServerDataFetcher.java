@@ -2,6 +2,7 @@ package com.marcomarchionni.ibportfolio.services.fetchers;
 
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -15,19 +16,17 @@ import org.springframework.web.client.RestTemplate;
 public class ServerDataFetcher implements DataFetcher {
 
     private final RestTemplate restTemplate;
-    private final String token;
-    private final String queryId;
     private final String authUrl;
     private final String reqPath;
     private final int maxAttempts;
     private final long retryDelay;
-    public ServerDataFetcher(RestTemplate restTemplate, @Value("${ib.token}") String token,
-                             @Value("${ib.query-id}") String queryId, @Value("${ib.auth-url}") String authUrl,
-                             @Value("${ib.req-path}") String reqPath, @Value("${ib.max-attempts}") int maxAttempts,
+
+    public ServerDataFetcher(RestTemplate restTemplate,
+                             @Value("${ib.auth-url}") String authUrl,
+                             @Value("${ib.req-path}") String reqPath,
+                             @Value("${ib.max-attempts}") int maxAttempts,
                              @Value("${ib.retry-delay}") long retryDelay) {
         this.restTemplate = restTemplate;
-        this.token = token;
-        this.queryId = queryId;
         this.authUrl = authUrl;
         this.reqPath = reqPath;
         this.maxAttempts = maxAttempts;
@@ -35,7 +34,10 @@ public class ServerDataFetcher implements DataFetcher {
     }
 
     @Override
-    public FlexQueryResponseDto fetch(FetchContext context) {
+    public FlexQueryResponseDto fetch(UpdateContextDto context) {
+        // Extract token and query id from context
+        String token = context.getToken();
+        String queryId = context.getQueryId();
 
         // Create request entity with headers
         HttpEntity<String> requestEntity = createRequestWithHeaders();

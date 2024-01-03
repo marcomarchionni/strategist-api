@@ -34,3 +34,7 @@ build/
 
 ### OS ###
 .DS_Store
+
+### Private Properties ###
+private.properties
+

@@ -28,11 +28,9 @@ class UpdateControllerIT {
     @Autowired
     MockMvc mockMvc;
 
-    User user;
-
     @BeforeEach
     void setUp() {
-        user = getSampleUser();
+        User user = getSampleUser();
         Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
@@ -51,12 +49,13 @@ class UpdateControllerIT {
                     "text/xml", // content type
                     stream // file content
             );
-            mockMvc.perform(MockMvcRequestBuilders.multipart("/update/from-file")
-                            .file(mockFile))
+            mockMvc.perform(MockMvcRequestBuilders.multipart("/update")
+                            .file(mockFile)
+                            .param("sourceType", "FILE"))
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.trades").exists());
+                    .andExpect(jsonPath("$.trades").isNotEmpty());
         }
     }
 
@@ -69,8 +68,10 @@ class UpdateControllerIT {
                     "text/xml", // content type
                     stream // file content
             );
-            mockMvc.perform(MockMvcRequestBuilders.multipart("/update/from-file")
-                            .file(mockFile))
+            mockMvc.perform(MockMvcRequestBuilders.multipart("/update")
+                            .file(mockFile)
+                            .param("sourceType", "FILE"))
+
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
@@ -87,8 +88,9 @@ class UpdateControllerIT {
                     "text/xml", // content type
                     stream // file content
             );
-            mockMvc.perform(MockMvcRequestBuilders.multipart("/update/from-file")
-                            .file(mockFile))
+            mockMvc.perform(MockMvcRequestBuilders.multipart("/update")
+                            .file(mockFile)
+                            .param("sourceType", "FILE"))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))

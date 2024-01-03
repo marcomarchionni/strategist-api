@@ -27,6 +27,4 @@ public class SignUpDto {
     @NotNull
     @Size(min = 8, max = 8)
     private String accountId;
-    private String token;
-    private String queryId;
 }

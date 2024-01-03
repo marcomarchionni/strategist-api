@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.controllers.validators;
+package com.marcomarchionni.ibportfolio.dtos.validators;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -13,10 +13,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target( {ElementType.FIELD})
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = StrategyNameValidator.class)
-public @interface StrategyName {
-    String message() default "StrategyName must start with capital letter, contain 3-30 characters. Letters, numbers, spaces, underscore and apostrophe allowed";
+@Constraint(validatedBy = AssetCategoryValidator.class)
+public @interface AssetCategory {
+    String message() default "Not a valid asset category";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default {};
 }
-

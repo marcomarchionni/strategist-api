@@ -1,11 +1,12 @@
 package com.marcomarchionni.ibportfolio.controllers;
 
 import com.marcomarchionni.ibportfolio.domain.Trade;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateReport;
 import com.marcomarchionni.ibportfolio.services.JwtService;
 import com.marcomarchionni.ibportfolio.services.UpdateOrchestrator;
-import com.marcomarchionni.ibportfolio.services.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,12 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleTrades;
-import static com.marcomarchionni.ibportfolio.util.TestUtils.getSampleUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,14 +44,19 @@ class UpdateControllerTest {
     @MockBean
     JwtService jwtService;
 
-    @MockBean
-    UserService userService;
+    CombinedUpdateReport combinedUpdateReport;
 
-    @Test
-    void updateFromFile() throws Exception {
-        // Load the file from classpath
-        MockMultipartFile mockFile;
+    MockMultipartFile mockFile;
 
+    ArgumentCaptor<UpdateContextDto> contextDtoArgumentCaptor;
+
+    @BeforeEach
+    void setUp() throws IOException {
+        // setup UpdateReport
+        List<Trade> addedTrades = getSampleTrades();
+        UpdateReport<Trade> tradeReport = UpdateReport.<Trade>builder().added(addedTrades).build();
+        combinedUpdateReport = CombinedUpdateReport.builder().trades(tradeReport).build();
+        // setup mock multipart file
         try (InputStream stream = getClass().getResourceAsStream("flex/Flex.xml")) {
             mockFile = new MockMultipartFile(
                     "file", // the name of the parameter
@@ -60,25 +65,26 @@ class UpdateControllerTest {
                     stream // file content
             );
         }
+        // setup contextDtoArgumentCaptor
+        contextDtoArgumentCaptor =
+                ArgumentCaptor.forClass(UpdateContextDto.class);
+    }
 
-        assertNotNull(mockFile);
+    @Test
+    void updateFromFile() throws Exception {
+        // setup UpdateContextDto
+        UpdateContextDto contextDto = UpdateContextDto.builder()
+                .sourceType(UpdateContextDto.SourceType.FILE)
+                .file(mockFile)
+                .build();
 
         // setup UpdateOrchestrator mock
-        List<Trade> addedTrades = getSampleTrades();
-        UpdateReport<Trade> tradeReport = UpdateReport.<Trade>builder().added(addedTrades).build();
-        CombinedUpdateReport combinedUpdateReport = CombinedUpdateReport.builder().trades(tradeReport).build();
-        when(updateOrchestrator.updateFromFile(any(MultipartFile.class))).thenReturn(combinedUpdateReport);
+        when(updateOrchestrator.update(contextDto)).thenReturn(combinedUpdateReport);
 
-        // setup userService mock
-        when(userService.getAuthenticatedUser()).thenReturn(getSampleUser());
-
-
-        ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor =
-                ArgumentCaptor.forClass(MockMultipartFile.class);
-
-        // Mock the updateFromFile method
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/update/from-file")
-                        .file(mockFile))
+        // Perform the request
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/update")
+                        .file(mockFile)
+                        .param("sourceType", "FILE"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -86,35 +92,62 @@ class UpdateControllerTest {
 
 
         // Verify that the method was called with the captured InputStream
-        verify(updateOrchestrator).updateFromFile(mockMultipartFileArgumentCaptor.capture());
+        verify(updateOrchestrator).update(contextDtoArgumentCaptor.capture());
 
         // Check if multipart file is not null
-        assertNotNull(mockMultipartFileArgumentCaptor.getValue());
+        assertNotNull(contextDtoArgumentCaptor.getValue());
 
         // Compare the contents
-        assertEquals(mockFile, mockMultipartFileArgumentCaptor.getValue());
+        assertEquals(mockFile, contextDtoArgumentCaptor.getValue().getFile());
     }
 
     @Test
     void updateFromServer() throws Exception {
 
         // setup UpdateOrchestrator mock
-        List<Trade> addedTrades = getSampleTrades();
-        UpdateReport<Trade> tradeReport = UpdateReport.<Trade>builder().added(addedTrades).build();
-        CombinedUpdateReport combinedUpdateReport = CombinedUpdateReport.builder().trades(tradeReport).build();
-        when(updateOrchestrator.updateFromServer()).thenReturn(combinedUpdateReport);
+        when(updateOrchestrator.update(any())).thenReturn(combinedUpdateReport);
 
-        // setup userService mock
-        when(userService.getAuthenticatedUser()).thenReturn(getSampleUser());
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/update/from-server"))
+        // need to add two query parameters in the request, queryId and token
+        mockMvc.perform(MockMvcRequestBuilders.post("/update")
+                        .param("sourceType", "SERVER")
+                        .param("queryId", "queryId")
+                        .param("token", "token"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.trades").exists());
+                .andExpect(jsonPath("$.trades").isNotEmpty());
 
         // Verify that the method was called
-        verify(updateOrchestrator).updateFromServer();
+        verify(updateOrchestrator).update(contextDtoArgumentCaptor.capture());
+
+        // Check if queryId and token are not null
+        assertNotNull(contextDtoArgumentCaptor.getValue().getQueryId());
+        assertNotNull(contextDtoArgumentCaptor.getValue().getToken());
+        assertEquals("queryId", contextDtoArgumentCaptor.getValue().getQueryId());
+        assertEquals("token", contextDtoArgumentCaptor.getValue().getToken());
     }
 
+    @Test
+    void updateFromServerException() throws Exception {
+        // Invalid request with no token parameter
+        mockMvc.perform(MockMvcRequestBuilders.post("/update")
+                        .param("sourceType", "SERVER")
+                        .param("queryId", "queryId"))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type").value("invalid-query-parameter"));
+
+    }
+
+    @Test
+    void updateFromFileException() throws Exception {
+        // Invalid request with no file parameter
+        mockMvc.perform(MockMvcRequestBuilders.post("/update")
+                        .param("sourceType", "FILE"))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type").value("invalid-query-parameter"));
+    }
 }

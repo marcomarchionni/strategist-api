@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.services.fetchers;
 
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ class ServerDataFetcherTest {
     void fetch() {
         assertNotNull(serverDataFetcher);
 
-        FlexQueryResponseDto flexQueryResponseDto = serverDataFetcher.fetch(FetchContext.builder().build());
+        FlexQueryResponseDto flexQueryResponseDto = serverDataFetcher.fetch(UpdateContextDto.builder().build());
 
         assertNotNull(flexQueryResponseDto);
         String accountId = flexQueryResponseDto.getFlexStatements().getFlexStatement().getAccountId();

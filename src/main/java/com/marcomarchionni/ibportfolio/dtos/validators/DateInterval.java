@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.controllers.validators;
+package com.marcomarchionni.ibportfolio.dtos.validators;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

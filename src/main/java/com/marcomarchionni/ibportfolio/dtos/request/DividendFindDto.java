@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.dtos.request;
 
-import com.marcomarchionni.ibportfolio.controllers.validators.DateInterval;
-import com.marcomarchionni.ibportfolio.controllers.validators.NullOrNotBlank;
+import com.marcomarchionni.ibportfolio.dtos.validators.DateInterval;
+import com.marcomarchionni.ibportfolio.dtos.validators.NullOrNotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;

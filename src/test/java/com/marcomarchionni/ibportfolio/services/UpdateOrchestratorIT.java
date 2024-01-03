@@ -1,6 +1,7 @@
 package com.marcomarchionni.ibportfolio.services;
 
 import com.marcomarchionni.ibportfolio.domain.*;
+import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.repositories.*;
 import org.junit.jupiter.api.AfterEach;
@@ -41,7 +42,7 @@ public class UpdateOrchestratorIT {
     PortfolioRepository portfolioRepository;
     @Autowired
     UpdateOrchestrator updateOrchestrator;
-    MockMultipartFile mockMultipartFile;
+    UpdateContextDto updateContextDto;
     User user = getSampleUser();
 
     @AfterEach
@@ -56,22 +57,30 @@ public class UpdateOrchestratorIT {
 
     @BeforeEach
     public void setUp() throws IOException {
-        InputStream flexQueryStream = getClass().getResourceAsStream("/flex/Flex.xml");
-        mockMultipartFile = new MockMultipartFile(
-                "file", // the name of the parameter
-                "Flex.xml", // filename
-                "text/xml", // content type
-                flexQueryStream // file content
-        );
+        // Set up UpdateContextDto
+        try (InputStream flexQueryStream = getClass().getResourceAsStream("/flex/Flex.xml")) {
+            MockMultipartFile mockMultipartFile = new MockMultipartFile(
+                    "file", // the name of the parameter
+                    "Flex.xml", // filename
+                    "text/xml", // content type
+                    flexQueryStream // file content
+            );
+            updateContextDto = UpdateContextDto.builder()
+                    .sourceType(UpdateContextDto.SourceType.FILE)
+                    .file(mockMultipartFile)
+                    .build();
+        }
+        // Set up user
         Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
+
     }
 
     @Test
     void updateFromFileEmptyDbTest() throws IOException {
 
         // Execute update
-        CombinedUpdateReport report = updateOrchestrator.updateFromFile(mockMultipartFile);
+        CombinedUpdateReport report = updateOrchestrator.update(updateContextDto);
 
         // Verify data
 
@@ -116,7 +125,7 @@ public class UpdateOrchestratorIT {
                 .count();
 
         // execute update db
-        CombinedUpdateReport report = updateOrchestrator.updateFromFile(mockMultipartFile);
+        CombinedUpdateReport report = updateOrchestrator.update(updateContextDto);
 
         // assess db state after update
         List<Trade> updatedTrades = tradeRepository.findAll();

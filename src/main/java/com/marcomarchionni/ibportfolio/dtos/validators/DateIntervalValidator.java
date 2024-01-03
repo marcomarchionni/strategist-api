@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.controllers.validators;
+package com.marcomarchionni.ibportfolio.dtos.validators;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -7,8 +7,6 @@ import java.lang.reflect.Field;
 import java.time.LocalDate;
 
 public class DateIntervalValidator implements ConstraintValidator<DateInterval, Object> {
-
-    //TODO: get min, max date from application properties
     final LocalDate MIN_DATE = LocalDate.EPOCH;
     final LocalDate MAX_DATE = LocalDate.now().plusYears(5);
     String fromDateFieldName;
@@ -41,8 +39,6 @@ public class DateIntervalValidator implements ConstraintValidator<DateInterval, 
 
             return validBothNull || validOneDateNullOtherDateInRange || validInterval;
         } catch (Exception e) {
-            //TODO: log exception
-            e.printStackTrace();
             return false;
         }
     }

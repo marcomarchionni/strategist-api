@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.dtos.request;
 
-import com.marcomarchionni.ibportfolio.controllers.validators.NullOrNotBlank;
+import com.marcomarchionni.ibportfolio.dtos.validators.NullOrNotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
