@@ -6,6 +6,7 @@ import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.EmptyFileException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidXMLFileException;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.NoXMLExtensionException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,13 +15,10 @@ import java.util.Objects;
 
 
 @Component
+@RequiredArgsConstructor
 public class FileDataFetcher implements DataFetcher {
 
-    XmlMapper xmlMapper;
-
-    public FileDataFetcher(XmlMapper xmlMapper) {
-        this.xmlMapper = xmlMapper;
-    }
+    private final XmlMapper xmlMapper;
 
     @Override
     public FlexQueryResponseDto fetch(UpdateContextDto context) {

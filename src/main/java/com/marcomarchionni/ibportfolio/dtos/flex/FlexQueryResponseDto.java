@@ -55,13 +55,6 @@ public class FlexQueryResponseDto {
         private LocalDateTime whenGenerated;
     }
 
-    // helper methods to avoid null checks
-    public FlexQueryResponseDto.FlexStatement nullSafeGetFlexStatement() {
-        return Optional.ofNullable(flexStatements)
-                .map(FlexStatements::getFlexStatement)
-                .orElse(null);
-    }
-
     @Data
     @Builder
     @NoArgsConstructor
@@ -474,6 +467,11 @@ public class FlexQueryResponseDto {
     }
 
     // helper methods to avoid null checks
+    public FlexQueryResponseDto.FlexStatement nullSafeGetFlexStatement() {
+        return Optional.ofNullable(flexStatements)
+                .map(FlexStatements::getFlexStatement)
+                .orElse(null);
+    }
 
     public List<FlexQueryResponseDto.OpenPosition> nullSafeGetOpenPositions() {
         return Optional.ofNullable(flexStatements)
@@ -488,6 +486,14 @@ public class FlexQueryResponseDto {
                 .map(FlexStatements::getFlexStatement)
                 .map(FlexStatement::getTrades)
                 .map(Trades::getOrderList)
+                .orElse(Collections.emptyList());
+    }
+
+    public List<FlexQueryResponseDto.Trade> nullSafeGetTrades() {
+        return Optional.ofNullable(flexStatements)
+                .map(FlexStatements::getFlexStatement)
+                .map(FlexStatement::getTrades)
+                .map(Trades::getTradeList)
                 .orElse(Collections.emptyList());
     }
 

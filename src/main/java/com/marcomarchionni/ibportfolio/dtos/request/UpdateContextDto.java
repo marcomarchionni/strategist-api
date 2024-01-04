@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @ValidUpdateContext
 public class UpdateContextDto {
     public enum SourceType {
-        FILE, SERVER
+        FILE, SERVER, SAMPLEDATA
     }
 
     @NotNull

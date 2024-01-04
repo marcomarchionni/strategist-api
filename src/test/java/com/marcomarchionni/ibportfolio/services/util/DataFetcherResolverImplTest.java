@@ -3,6 +3,7 @@ package com.marcomarchionni.ibportfolio.services.util;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
 import com.marcomarchionni.ibportfolio.services.fetchers.DataFetcher;
 import com.marcomarchionni.ibportfolio.services.fetchers.FileDataFetcher;
+import com.marcomarchionni.ibportfolio.services.fetchers.SampleDataFetcher;
 import com.marcomarchionni.ibportfolio.services.fetchers.ServerDataFetcher;
 import com.marcomarchionni.ibportfolio.services.fetchers.util.DataFetcherResolver;
 import com.marcomarchionni.ibportfolio.services.fetchers.util.DataFetcherResolverImpl;
@@ -24,11 +25,14 @@ class DataFetcherResolverImplTest {
     @Mock
     ServerDataFetcher serverDataFetcher;
 
+    @Mock
+    SampleDataFetcher sampleDataFetcher;
+
     DataFetcherResolver dataFetcherResolver;
 
     @BeforeEach
     void setUp() {
-        dataFetcherResolver = new DataFetcherResolverImpl(fileDataFetcher, serverDataFetcher);
+        dataFetcherResolver = new DataFetcherResolverImpl(fileDataFetcher, serverDataFetcher, sampleDataFetcher);
     }
 
     @Test

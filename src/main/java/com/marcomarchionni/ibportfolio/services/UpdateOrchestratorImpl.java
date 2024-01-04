@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+/**
+ * This class is responsible for orchestrating the update process.
+ */
 @Service
 @RequiredArgsConstructor
 public class UpdateOrchestratorImpl implements UpdateOrchestrator {

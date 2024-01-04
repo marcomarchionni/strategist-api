@@ -150,4 +150,23 @@ class UpdateControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.type").value("invalid-query-parameter"));
     }
+
+    @Test
+    void updateWithSampleData() throws Exception {
+        // setup UpdateContextDto
+        UpdateContextDto contextDto = UpdateContextDto.builder()
+                .sourceType(UpdateContextDto.SourceType.SAMPLEDATA)
+                .build();
+
+        // setup UpdateOrchestrator mock
+        when(updateOrchestrator.update(contextDto)).thenReturn(combinedUpdateReport);
+
+        // Perform the request
+        mockMvc.perform(MockMvcRequestBuilders.post("/update")
+                        .param("sourceType", "SAMPLEDATA"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.trades").exists());
+    }
 }

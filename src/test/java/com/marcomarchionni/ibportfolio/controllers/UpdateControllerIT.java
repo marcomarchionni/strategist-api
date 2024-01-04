@@ -97,4 +97,14 @@ class UpdateControllerIT {
                     .andExpect(jsonPath("$.type").value("invalid-xml-file"));
         }
     }
+
+    @Test
+    void updateWithSampleData() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/update")
+                        .param("sourceType", "SAMPLEDATA"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.trades").isNotEmpty());
+    }
 }

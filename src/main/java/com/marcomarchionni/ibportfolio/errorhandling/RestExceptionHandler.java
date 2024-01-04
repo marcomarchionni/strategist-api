@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.errorhandling;
 
-import com.marcomarchionni.ibportfolio.errorhandling.exceptions.*;
+import com.marcomarchionni.ibportfolio.errorhandling.exceptions.CustomException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
@@ -24,16 +24,7 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({
-            EntityNotFoundException.class,
-            UnableToSaveEntitiesException.class,
-            UnableToDeleteEntitiesException.class,
-            EmptyFileException.class,
-            InvalidXMLFileException.class,
-            NoXMLExtensionException.class,
-            UserAuthenticationException.class,
-            IbServerErrorException.class}
-    )
+    @ExceptionHandler(CustomException.class)
     public ResponseEntity<Object> handleCustomExceptions(ErrorResponse ex) {
         return ResponseEntity.status(ex.getStatusCode()).body(ex.getBody());
     }
