@@ -10,12 +10,14 @@ public abstract class CustomException extends RuntimeException implements ErrorR
     private final String message;
     private final String title;
     private final HttpStatusCode statusCode;
+    private final Throwable cause;
 
     public CustomException(String message, String title, HttpStatusCode statusCode) {
         super(message);
         this.message = message;
         this.title = title;
         this.statusCode = statusCode;
+        this.cause = null;
     }
 
     public CustomException(String message, String title, HttpStatusCode statusCode, Throwable cause) {
@@ -23,6 +25,7 @@ public abstract class CustomException extends RuntimeException implements ErrorR
         this.message = message;
         this.title = title;
         this.statusCode = statusCode;
+        this.cause = cause;
     }
 
     @Override
@@ -32,7 +35,8 @@ public abstract class CustomException extends RuntimeException implements ErrorR
 
     @Override
     public ProblemDetail getBody() {
-        ProblemDetail pd = ProblemDetail.forStatusAndDetail(statusCode, message);
+        String details = (cause == null) ? message : (message + ". Cause: " + cause.getMessage());
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(statusCode, details);
         pd.setType(getType(title));
         pd.setTitle(title);
         return pd;

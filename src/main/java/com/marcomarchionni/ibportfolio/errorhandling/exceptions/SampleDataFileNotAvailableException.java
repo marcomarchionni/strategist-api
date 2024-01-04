@@ -9,7 +9,7 @@ public class SampleDataFileNotAvailableException extends CustomException {
     private static final String title = "Sample data not available";
     private static final HttpStatusCode statusCode = HttpStatus.SERVICE_UNAVAILABLE;
 
-    public SampleDataFileNotAvailableException() {
-        super(message, title, statusCode);
+    public SampleDataFileNotAvailableException(Exception e) {
+        super(message, title, statusCode, e);
     }
 }
