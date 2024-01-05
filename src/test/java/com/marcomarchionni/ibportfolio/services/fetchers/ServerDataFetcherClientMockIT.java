@@ -4,6 +4,7 @@ import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
 import com.marcomarchionni.ibportfolio.services.fetchers.util.FlexServiceClient;
+import com.marcomarchionni.ibportfolio.services.fetchers.util.FlexServiceClientManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +29,8 @@ class ServerDataFetcherClientMockIT {
             .token("token").build();
     @Autowired
     ServerDataFetcher serverDataFetcher;
+    @Autowired
+    FlexServiceClientManager flexServiceClientManager;
     @MockBean
     FlexServiceClient flexServiceClient;
 

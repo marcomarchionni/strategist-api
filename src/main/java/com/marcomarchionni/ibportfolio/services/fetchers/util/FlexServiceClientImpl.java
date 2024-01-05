@@ -19,8 +19,8 @@ public class FlexServiceClientImpl implements FlexServiceClient {
     private final HttpEntity<String> requestEntity = createRequestWithHeaders();
 
     public FlexServiceClientImpl(RestTemplate restTemplate,
-                                 @Value("${ib.auth-url}") String authUrl,
-                                 @Value("${ib.req-path}") String reqPath) {
+                                 @Value("${flexservice.auth-url}") String authUrl,
+                                 @Value("${flexservice.req-path}") String reqPath) {
         this.restTemplate = restTemplate;
         this.authUrl = authUrl;
         this.reqPath = reqPath;

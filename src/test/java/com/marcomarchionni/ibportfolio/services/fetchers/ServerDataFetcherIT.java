@@ -16,10 +16,10 @@ class ServerDataFetcherIT {
     @Autowired
     ServerDataFetcher serverDataFetcher;
 
-    @Value("${ib.token}")
+    @Value("${flexservice.token}")
     private String token;
 
-    @Value("${ib.query-id}")
+    @Value("${flexservice.query-id}")
     private String queryId;
 
     @Test

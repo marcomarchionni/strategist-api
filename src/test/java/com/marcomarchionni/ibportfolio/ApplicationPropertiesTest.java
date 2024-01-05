@@ -9,10 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @SpringBootTest
 public class ApplicationPropertiesTest {
 
-    @Value("${ib.token}")
+    @Value("${flexservice.token}")
     private String token;
 
-    @Value("${ib.query-id}")
+    @Value("${flexservice.query-id}")
     private String queryId;
 
     @Value("${token.signing.key}")
