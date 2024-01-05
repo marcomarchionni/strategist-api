@@ -1,6 +1,8 @@
 package com.marcomarchionni.ibportfolio.util;
 
 import com.marcomarchionni.ibportfolio.domain.*;
+import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.request.DividendFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.PositionFindDto;
 import com.marcomarchionni.ibportfolio.dtos.request.TradeFindDto;
@@ -380,6 +382,41 @@ public class TestUtils {
                 .tradePrice(BigDecimal.valueOf(1.0174))
                 .tradeMoney(BigDecimal.valueOf(1.0174))
                 .fifoPnlRealized(BigDecimal.valueOf(-0.6919))
+                .build();
+    }
+
+    public static FlexStatementResponseDto getPopulatedFlexStatementResponseDto() {
+        return FlexStatementResponseDto.builder()
+                .url("https://gdcdyn.interactivebrokers.com/Universal/servlet/FlexStatementService.SendRequest?t=xml")
+                .referenceCode("123456789")
+                .build();
+    }
+
+    public static FlexStatementResponseDto getEmptyFlexStatementResponseDto() {
+        return FlexStatementResponseDto.builder()
+                .url(null)
+                .referenceCode(null)
+                .build();
+    }
+
+    public static FlexQueryResponseDto getPopulatedFlexQueryResponseDto() {
+        var flexStatement = FlexQueryResponseDto.FlexStatement.builder()
+                .accountId("U7169936")
+                .fromDate(LocalDate.of(2022, 6, 1))
+                .toDate(LocalDate.of(2022, 6, 30))
+                .whenGenerated(LocalDateTime.of(2022, 7, 1, 0, 0, 0))
+                .build();
+        var flexStatements = FlexQueryResponseDto.FlexStatements.builder().flexStatement(flexStatement).build();
+        return FlexQueryResponseDto.builder()
+                .queryName("name")
+                .flexStatements(flexStatements)
+                .build();
+    }
+
+    public static FlexQueryResponseDto getEmptyFlexQueryResponseDto() {
+        return FlexQueryResponseDto.builder()
+                .queryName(null)
+                .flexStatements(null)
                 .build();
     }
 }

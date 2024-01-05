@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.services.validators;
+package com.marcomarchionni.ibportfolio.validators;
 
 import com.marcomarchionni.ibportfolio.domain.AccountIdEntity;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;

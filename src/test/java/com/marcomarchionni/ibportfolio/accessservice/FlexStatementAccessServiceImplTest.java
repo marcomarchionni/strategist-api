@@ -4,7 +4,7 @@ import com.marcomarchionni.ibportfolio.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.InvalidUserDataException;
 import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
 import com.marcomarchionni.ibportfolio.services.UserService;
-import com.marcomarchionni.ibportfolio.services.validators.AccountIdEntityValidatorImpl;
+import com.marcomarchionni.ibportfolio.validators.AccountIdEntityValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

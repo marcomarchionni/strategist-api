@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.dtos.request;
 
-import com.marcomarchionni.ibportfolio.dtos.validators.ValidUpdateContext;
+import com.marcomarchionni.ibportfolio.validators.ValidUpdateContext;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;

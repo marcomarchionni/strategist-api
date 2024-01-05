@@ -1,7 +1,7 @@
 package com.marcomarchionni.ibportfolio.dtos.request;
 
-import com.marcomarchionni.ibportfolio.dtos.validators.AssetCategory;
-import com.marcomarchionni.ibportfolio.dtos.validators.NullOrNotBlank;
+import com.marcomarchionni.ibportfolio.validators.AssetCategory;
+import com.marcomarchionni.ibportfolio.validators.NullOrNotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

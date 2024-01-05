@@ -5,23 +5,19 @@ import org.springframework.http.ResponseEntity;
 
 public class IbServerErrorException extends CustomException {
 
-    public IbServerErrorException(ResponseEntity<?> response) {
-        this(getMessage(response));
+    public IbServerErrorException(ResponseEntity<?> response, Class<?> clazz) {
+        this(getMessage(response, clazz));
     }
 
     public IbServerErrorException(String message) {
         super(message, "IB server error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private static String getMessage(ResponseEntity<?> response) {
-        String message;
-        if (response.getStatusCode() != HttpStatus.OK) {
-            message = "IB server responded with status code " + response.getStatusCode();
-        } else if (response.getBody() == null) {
-            message = "IB server responded with an empty body";
-        } else {
-            message = "IB server error";
-        }
-        return message;
+    private static String getMessage(ResponseEntity<?> response, Class<?> clazz) {
+        String baseMessage = "Error while fetching " + clazz.getSimpleName() + ". ";
+        String statusCodeMessage = "IB server responded with status code " + response.getStatusCode() + ". ";
+        String bodyMessage = response.getBody() == null ? "IB server responded with an empty body" : "Response body: "
+                + response.getBody();
+        return baseMessage + statusCodeMessage + bodyMessage;
     }
 }

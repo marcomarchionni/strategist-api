@@ -3,7 +3,7 @@ package com.marcomarchionni.ibportfolio.accessservice;
 import com.marcomarchionni.ibportfolio.domain.Portfolio;
 import com.marcomarchionni.ibportfolio.repositories.PortfolioRepository;
 import com.marcomarchionni.ibportfolio.services.UserService;
-import com.marcomarchionni.ibportfolio.services.validators.AccountIdValidator;
+import com.marcomarchionni.ibportfolio.validators.AccountIdValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -4,12 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @JacksonXmlRootElement(localName = "FlexStatementResponse")
-public class FlexStatementResponseDto {
+public class FlexStatementResponseDto implements FlexResponse {
 
     @JsonProperty("Status")
     private String status;
@@ -24,4 +30,9 @@ public class FlexStatementResponseDto {
 
     @JacksonXmlProperty(isAttribute = true)
     private String timestamp;
+
+    @Override
+    public boolean isPopulated() {
+        return getUrl() != null && getReferenceCode() != null;
+    }
 }

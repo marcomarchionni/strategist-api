@@ -3,7 +3,7 @@ package com.marcomarchionni.ibportfolio.accessservice;
 import com.marcomarchionni.ibportfolio.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.repositories.FlexStatementRepository;
 import com.marcomarchionni.ibportfolio.services.UserService;
-import com.marcomarchionni.ibportfolio.services.validators.AccountIdValidator;
+import com.marcomarchionni.ibportfolio.validators.AccountIdValidator;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;

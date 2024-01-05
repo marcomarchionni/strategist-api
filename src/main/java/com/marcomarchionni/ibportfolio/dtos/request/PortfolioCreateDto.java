@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.dtos.request;
 
-import com.marcomarchionni.ibportfolio.dtos.validators.PortfolioName;
+import com.marcomarchionni.ibportfolio.validators.PortfolioName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

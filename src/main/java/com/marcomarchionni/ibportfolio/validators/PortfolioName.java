@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.dtos.validators;
+package com.marcomarchionni.ibportfolio.validators;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -13,9 +13,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target( {ElementType.FIELD})
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = NullOrNotBlankValidator.class)
-public @interface NullOrNotBlank {
-    String message() default "Value must be null or not blank";
+@Constraint(validatedBy = PortfolioNameValidator.class)
+public @interface PortfolioName {
+    String message() default "PortfolioName must start with capital letter, contain 3-30 characters. Letters, numbers, spaces, underscore and apostrophe allowed";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default {};
 }

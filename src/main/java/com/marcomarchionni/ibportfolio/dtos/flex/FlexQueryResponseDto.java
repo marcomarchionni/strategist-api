@@ -15,14 +15,25 @@ import java.util.List;
 import java.util.Optional;
 
 @Data
-public class FlexQueryResponseDto {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class FlexQueryResponseDto implements FlexResponse {
     @NotNull
     @JsonProperty("FlexStatements")
     private FlexStatements flexStatements;
     private String queryName;
     private String type;
 
+    @Override
+    public boolean isPopulated() {
+        return getQueryName() != null && getFlexStatements().getFlexStatement() != null;
+    }
+
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class FlexStatements {
         @NotNull
         @JsonProperty("FlexStatement")

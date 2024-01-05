@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.services.validators;
+package com.marcomarchionni.ibportfolio.validators;
 
 import com.marcomarchionni.ibportfolio.domain.FlexStatement;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateDto;

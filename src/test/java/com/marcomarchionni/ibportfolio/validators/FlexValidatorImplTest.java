@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.services.validators;
+package com.marcomarchionni.ibportfolio.validators;
 
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import jakarta.validation.ConstraintViolationException;
@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FlexValidatorImplTest {
 
-    FlexQueryResponseValidator flexValidator;
+    DtoValidator<FlexQueryResponseDto> flexValidator;
 
     Validator validator;
 
@@ -20,14 +20,16 @@ class FlexValidatorImplTest {
     void setUp() {
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             validator = factory.getValidator();
-            flexValidator = new FlexQueryResponseValidator(validator);
+            flexValidator = new DtoValidatorImpl<>(validator) {
+
+            };
         }
     }
 
     @Test
     void isValidNullDto() {
 
-        var dto = new FlexQueryResponseDto();
+        var dto = FlexQueryResponseDto.builder().build();
         // Act
         assertThrows(ConstraintViolationException.class, () -> flexValidator.isValid(dto));
     }

@@ -1,31 +1,54 @@
 package com.marcomarchionni.ibportfolio.services.fetchers;
 
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
-import org.junit.jupiter.api.Disabled;
+import com.marcomarchionni.ibportfolio.services.fetchers.util.FlexServiceClientManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getPopulatedFlexQueryResponseDto;
+import static com.marcomarchionni.ibportfolio.util.TestUtils.getPopulatedFlexStatementResponseDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@Disabled
+@ExtendWith(MockitoExtension.class)
 class ServerDataFetcherTest {
+    @Mock
+    FlexServiceClientManager clientManager;
 
-    @Autowired
     ServerDataFetcher serverDataFetcher;
+
+    UpdateContextDto updateContextDto;
+
+    FlexStatementResponseDto flexStatementResponseDto;
+    FlexQueryResponseDto flexQueryResponseDto;
+
+    @BeforeEach
+    void setUp() {
+        updateContextDto = UpdateContextDto.builder().sourceType(UpdateContextDto.SourceType.SERVER).queryId("queryId")
+                .token("token").build();
+        flexStatementResponseDto = getPopulatedFlexStatementResponseDto();
+        flexQueryResponseDto = getPopulatedFlexQueryResponseDto();
+        serverDataFetcher = new ServerDataFetcher(clientManager);
+    }
 
     @Test
     void fetch() {
-        assertNotNull(serverDataFetcher);
+        // setup mock
+        when(clientManager.fetchFlexStatementResponseWithRetry(any(), any()))
+                .thenReturn(flexStatementResponseDto);
+        when(clientManager.fetchFlexQueryResponseWithRetry(any(), any()))
+                .thenReturn(flexQueryResponseDto);
 
-        FlexQueryResponseDto flexQueryResponseDto = serverDataFetcher.fetch(UpdateContextDto.builder().build());
+        FlexQueryResponseDto responseDto = serverDataFetcher.fetch(updateContextDto);
 
-        assertNotNull(flexQueryResponseDto);
-        String accountId = flexQueryResponseDto.getFlexStatements().getFlexStatement().getAccountId();
-        assertEquals("U7169936", accountId);
-
+        assertNotNull(responseDto);
+        assertEquals(flexQueryResponseDto, responseDto);
     }
 }

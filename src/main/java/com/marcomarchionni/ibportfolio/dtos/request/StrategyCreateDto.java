@@ -1,6 +1,6 @@
 package com.marcomarchionni.ibportfolio.dtos.request;
 
-import com.marcomarchionni.ibportfolio.dtos.validators.StrategyName;
+import com.marcomarchionni.ibportfolio.validators.StrategyName;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,13 +1,12 @@
-package com.marcomarchionni.ibportfolio.services.validators;
+package com.marcomarchionni.ibportfolio.validators;
 
-import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class FlexQueryResponseValidator implements DtoValidator<FlexQueryResponseDto> {
+public class DtoValidatorImpl<T> implements DtoValidator<T> {
 
     private final Validator validator;
 

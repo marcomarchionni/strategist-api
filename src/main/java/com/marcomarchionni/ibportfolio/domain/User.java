@@ -31,10 +31,6 @@ public class User implements UserDetails {
     String password;
     @Column(name = "account_id", unique = true, nullable = false)
     String accountId;
-    @Column(name = "token")
-    String token;
-    @Column(name = "query_id")
-    String queryId;
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     Role role;

@@ -4,7 +4,7 @@ import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.dtos.update.UpdateDto;
 import com.marcomarchionni.ibportfolio.services.parsers.ResponseParser;
-import com.marcomarchionni.ibportfolio.services.validators.UpdateDtoValidator;
+import com.marcomarchionni.ibportfolio.validators.UpdateDtoValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

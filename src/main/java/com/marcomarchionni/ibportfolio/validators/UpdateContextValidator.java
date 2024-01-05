@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.dtos.validators;
+package com.marcomarchionni.ibportfolio.validators;
 
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
 import jakarta.validation.ConstraintValidator;

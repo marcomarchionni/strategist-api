@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.services.validators;
+package com.marcomarchionni.ibportfolio.validators;
 
 public interface AccountIdValidator<T> {
     boolean hasValidAccountId(T dto, String accountId);
