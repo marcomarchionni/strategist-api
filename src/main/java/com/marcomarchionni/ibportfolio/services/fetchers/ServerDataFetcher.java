@@ -3,7 +3,7 @@ package com.marcomarchionni.ibportfolio.services.fetchers;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
-import com.marcomarchionni.ibportfolio.services.fetchers.util.FlexServiceClientManager;
+import com.marcomarchionni.ibportfolio.services.fetchers.flexserviceclientmanagers.FlexServiceClientManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.marcomarchionni.ibportfolio.services.fetchers.util;
+package com.marcomarchionni.ibportfolio.services.fetchers.flexserviceclientmanagers;
 
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;

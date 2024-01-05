@@ -1,8 +1,10 @@
-package com.marcomarchionni.ibportfolio.services.fetchers.util;
+package com.marcomarchionni.ibportfolio.services.fetchers.datafetcherresolvers;
 
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
+import com.marcomarchionni.ibportfolio.services.fetchers.flexserviceclientmanagers.FlexServiceClientManager;
+import com.marcomarchionni.ibportfolio.services.fetchers.flexserviceclients.FlexServiceClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

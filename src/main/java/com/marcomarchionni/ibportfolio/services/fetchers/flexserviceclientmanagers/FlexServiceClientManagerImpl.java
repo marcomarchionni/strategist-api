@@ -1,9 +1,10 @@
-package com.marcomarchionni.ibportfolio.services.fetchers.util;
+package com.marcomarchionni.ibportfolio.services.fetchers.flexserviceclientmanagers;
 
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexResponse;
 import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
+import com.marcomarchionni.ibportfolio.services.fetchers.flexserviceclients.FlexServiceClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

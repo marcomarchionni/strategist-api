@@ -57,4 +57,5 @@ public class Pointcuts {
 
     @Pointcut("execution(* com.marcomarchionni.ibportfolio.controllers.*.updateStrategyId(..))")
     public void controllerUpdateStrategyId() {}
+
 }

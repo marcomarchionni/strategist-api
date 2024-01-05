@@ -4,7 +4,7 @@ import com.marcomarchionni.ibportfolio.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.ibportfolio.dtos.request.UpdateContextDto;
 import com.marcomarchionni.ibportfolio.dtos.update.CombinedUpdateReport;
 import com.marcomarchionni.ibportfolio.services.fetchers.DataFetcher;
-import com.marcomarchionni.ibportfolio.services.fetchers.util.DataFetcherResolver;
+import com.marcomarchionni.ibportfolio.services.fetchers.datafetcherresolvers.DataFetcherResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
