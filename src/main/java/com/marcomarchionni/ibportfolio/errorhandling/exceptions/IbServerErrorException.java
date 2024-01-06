@@ -9,6 +9,10 @@ public class IbServerErrorException extends CustomException {
         this(getMessage(response, clazz));
     }
 
+    public IbServerErrorException(Exception e) {
+        super("Ib server error: " + e.getMessage(), "IB server error", HttpStatus.INTERNAL_SERVER_ERROR, e);
+    }
+
     public IbServerErrorException(String message) {
         super(message, "IB server error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
