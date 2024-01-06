@@ -6,7 +6,7 @@ import com.marcomarchionni.ibportfolio.dtos.response.PortfolioSummaryDto;
 
 public interface PortfolioMapper {
 
-    PortfolioSummaryDto toPortfolioListDto(Portfolio portfolio);
+    PortfolioSummaryDto toPortfolioSummaryDto(Portfolio portfolio);
 
     PortfolioDetailDto toPortfolioDetailDto(Portfolio portfolio);
 }

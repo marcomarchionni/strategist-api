@@ -29,7 +29,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public List<PortfolioSummaryDto> findAll() {
         List<Portfolio> portfolios = portfolioAccessService.findAll();
-        return portfolios.stream().map(portfolioMapper::toPortfolioListDto).collect(Collectors.toList());
+        return portfolios.stream().map(portfolioMapper::toPortfolioSummaryDto).collect(Collectors.toList());
     }
 
     @Override

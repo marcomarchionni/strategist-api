@@ -16,8 +16,8 @@ public class PortfolioMapperImpl implements PortfolioMapper {
     }
 
     @Override
-    public PortfolioSummaryDto toPortfolioListDto(Portfolio portfolio) {
-        return PortfolioSummaryDto.builder().id(portfolio.getId()).name(portfolio.getName()).build();
+    public PortfolioSummaryDto toPortfolioSummaryDto(Portfolio portfolio) {
+        return modelMapper.map(portfolio, PortfolioSummaryDto.class);
     }
 
     @Override

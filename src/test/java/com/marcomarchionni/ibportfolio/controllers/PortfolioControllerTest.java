@@ -66,7 +66,7 @@ class PortfolioControllerTest {
         List<PortfolioSummaryDto> portfolioSummaryDtos = getSamplePortfolios()
                 .stream()
                 .peek(portfolio -> portfolio.setAccountId(accountId))
-                .map(portfolioMapper::toPortfolioListDto)
+                .map(portfolioMapper::toPortfolioSummaryDto)
                 .toList();
 
         // setup mock behavior
