@@ -6,7 +6,6 @@ import com.marcomarchionni.ibportfolio.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.ibportfolio.errorhandling.exceptions.IbServerErrorException;
 import com.marcomarchionni.ibportfolio.services.fetchers.flexserviceclients.FlexServiceClient;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
@@ -14,7 +13,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 @Component
-@Slf4j
 @RequiredArgsConstructor
 public class FlexServiceClientManagerImpl implements FlexServiceClientManager {
     private final FlexServiceClient flexServiceClient;
@@ -22,14 +20,11 @@ public class FlexServiceClientManagerImpl implements FlexServiceClientManager {
     @Override
     @Retryable(backoff = @Backoff(delayExpression = "${flexservice.retry-delay}"))
     public FlexStatementResponseDto fetchFlexStatementResponseWithRetry(String queryId, String token) {
-        log.info("Fetching flex statement response with queryId: {} and token: {}", queryId, token);
         var statementResponse = flexServiceClient.fetchFlexStatementResponse(queryId, token);
 
         if (hasErrors(statementResponse)) {
-            log.warn("Flex statement response has errors: {}", statementResponse);
             throw new IbServerErrorException(statementResponse, FlexStatementResponseDto.class);
         }
-        log.info("Flex statement response fetched successfully");
         return statementResponse.getBody();
     }
 
@@ -37,15 +32,11 @@ public class FlexServiceClientManagerImpl implements FlexServiceClientManager {
     @Retryable(backoff = @Backoff(delayExpression = "${flexservice.retry-delay}"))
     public FlexQueryResponseDto fetchFlexQueryResponseWithRetry(FlexStatementResponseDto statementResponse,
                                                                 String token) {
-        log.info("Fetching flex query response with url: {} and code: {}", statementResponse.getUrl(),
-                statementResponse.getReferenceCode());
         var queryResponse = flexServiceClient.fetchFlexQueryResponse(statementResponse, token);
 
         if (hasErrors(queryResponse)) {
-            log.warn("Flex query response has errors: {}", queryResponse);
-            throw new IbServerErrorException("Flex query response has errors");
+            throw new IbServerErrorException(queryResponse, FlexQueryResponseDto.class);
         }
-        log.info("Flex query response fetched successfully");
         return queryResponse.getBody();
     }
 

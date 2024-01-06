@@ -2,9 +2,12 @@ package com.marcomarchionni.ibportfolio.logging;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.CodeSignature;
+import org.aspectj.lang.reflect.MethodSignature;
 
 import java.util.List;
+
 
 @Slf4j
 public class LoggingUtils {
@@ -40,6 +43,14 @@ public class LoggingUtils {
             paramNamesAndValues.append(paramNames[i]).append(": ").append(paramValues[i]).append(" ");
         }
         return paramNamesAndValues.toString();
+    }
+
+    public static String getReturnTypeName(JoinPoint joinPoint) {
+        Signature signature = joinPoint.getSignature();
+        if (signature instanceof MethodSignature) {
+            return ((MethodSignature) signature).getReturnType().getSimpleName();
+        }
+        return "";
     }
 
     public static void logCall(String string) {

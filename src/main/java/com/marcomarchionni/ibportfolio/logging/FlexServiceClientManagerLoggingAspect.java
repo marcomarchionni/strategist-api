@@ -1,9 +1,7 @@
 package com.marcomarchionni.ibportfolio.logging;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
 import static com.marcomarchionni.ibportfolio.logging.LoggingUtils.*;
@@ -20,6 +18,22 @@ public class FlexServiceClientManagerLoggingAspect {
     public void logMethodCall(JoinPoint joinPoint) {
         String classAndMethodName = getClassAndMethodName(joinPoint);
         String parameterAndValues = getParamNamesAndValues(joinPoint);
+        String returnTypeName = getReturnTypeName(joinPoint);
         logCall(classAndMethodName + " called with param(s) " + parameterAndValues);
+        logOk("Fetching " + returnTypeName + " from Flex Service");
+    }
+
+    @AfterReturning("flexServiceClientManagers()")
+    public void logMethodReturn(JoinPoint joinPoint) {
+        String classAndMethodName = getClassAndMethodName(joinPoint);
+        String returnTypeName = getReturnTypeName(joinPoint);
+        logReturn(returnTypeName + " returned successfully by " + classAndMethodName);
+    }
+
+    @AfterThrowing(value = "flexServiceClientManagers()", throwing = "ex")
+    public void logMethodException(JoinPoint joinPoint, Exception ex) {
+        String classAndMethodName = getClassAndMethodName(joinPoint);
+        String message = ex.getMessage();
+        logWarning("Exception thrown by " + classAndMethodName + ". Message: " + message);
     }
 }
