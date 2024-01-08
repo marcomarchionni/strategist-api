@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.marcomarchionni</groupId>
-    <artifactId>ib-portfolio</artifactId>
+    <artifactId>strategist-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ib-portfolio</name>
+    <name>strategist-api</name>
     <description>Portfolio Manager for Interactive Brokers</description>
     <properties>
         <java.version>17</java.version>
