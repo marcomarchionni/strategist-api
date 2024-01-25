@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.services.fetchers;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.marcomarchionni.strategistapi.config.XMLConverterConfig;
+import com.marcomarchionni.strategistapi.config.XMLConfig;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.InvalidXMLFileException;
@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {XMLConverterConfig.class, FileDataFetcher.class})
+@ContextConfiguration(classes = {XMLConfig.class, FileDataFetcher.class})
 class FileDataFetcherTest {
 
     @Autowired

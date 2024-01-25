@@ -3,7 +3,7 @@ package com.marcomarchionni.strategistapi.services.fetchers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.marcomarchionni.strategistapi.config.WebMvcConfig;
-import com.marcomarchionni.strategistapi.config.XMLConverterConfig;
+import com.marcomarchionni.strategistapi.config.XMLConfig;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.SampleDataFileNotAvailableException;
 import com.marcomarchionni.strategistapi.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,8 +40,8 @@ class SampleDataFetcherTest {
         objectMapper = webMvcConfig.objectMapper();
 
         // Configure dependencies
-        XMLConverterConfig xmlConverterConfig = new XMLConverterConfig();
-        xmlMapper = xmlConverterConfig.XmlMapper();
+        XMLConfig xmlConfig = new XMLConfig();
+        xmlMapper = xmlConfig.XmlMapper();
         resourceLoader = new DefaultResourceLoader();
     }
 

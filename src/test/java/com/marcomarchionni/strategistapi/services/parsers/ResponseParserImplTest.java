@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.services.parsers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.marcomarchionni.strategistapi.config.ModelMapperConfig;
-import com.marcomarchionni.strategistapi.config.XMLConverterConfig;
+import com.marcomarchionni.strategistapi.config.XMLConfig;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.strategistapi.dtos.update.UpdateDto;
 import com.marcomarchionni.strategistapi.mappers.*;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {XMLConverterConfig.class})
+@ContextConfiguration(classes = {XMLConfig.class})
 class ResponseParserImplTest {
 
     @Autowired
