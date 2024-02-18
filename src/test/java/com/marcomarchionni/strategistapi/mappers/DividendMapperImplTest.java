@@ -4,7 +4,7 @@ import com.marcomarchionni.strategistapi.config.ModelMapperConfig;
 import com.marcomarchionni.strategistapi.domain.Dividend;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.response.DividendSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -34,7 +34,7 @@ class DividendMapperImplTest {
         source.setStrategy(strategy);
 
         // Map to DTO
-        DividendSummaryDto dto = dividendMapper.toDividendListDto(source);
+        DividendSummary dto = dividendMapper.toDividendListDto(source);
 
         // Assert
         assertNotNull(dto);

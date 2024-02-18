@@ -4,10 +4,10 @@ import com.marcomarchionni.strategistapi.accessservice.DividendAccessService;
 import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Dividend;
 import com.marcomarchionni.strategistapi.domain.Strategy;
-import com.marcomarchionni.strategistapi.dtos.request.DividendFindDto;
+import com.marcomarchionni.strategistapi.dtos.request.DividendFind;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.strategistapi.dtos.response.DividendSummaryDto;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.strategistapi.mappers.DividendMapper;
@@ -28,7 +28,7 @@ public class DividendServiceImpl implements DividendService {
     private final DividendMapper mapper;
 
     @Override
-    public List<DividendSummaryDto> findByFilter(DividendFindDto dividendFind) {
+    public List<DividendSummary> findByFilter(DividendFind dividendFind) {
         List<Dividend> dividends = dividendAccessService.findByParams(
                 dividendFind.getExDateFrom(),
                 dividendFind.getExDateTo(),
@@ -41,7 +41,7 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public DividendSummaryDto updateStrategyId(UpdateStrategyDto dividendUpdate) {
+    public DividendSummary updateStrategyId(UpdateStrategyDto dividendUpdate) {
         Long dividendId = dividendUpdate.getId();
         Long strategyId = dividendUpdate.getStrategyId();
 

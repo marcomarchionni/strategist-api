@@ -12,20 +12,23 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DividendSummaryDto {
+public class TradeSummary {
 
     private Long id;
-    private Long conId;
     private Long strategyId;
     private String strategyName;
     private String symbol;
     private String description;
-    private LocalDate exDate;
-    private LocalDate payDate;
-    private BigDecimal grossRate;
+    private String assetCategory;
+    private Integer multiplier;
+    private BigDecimal strike;
+    private LocalDate expiry;
+    private String putCall;
+    private LocalDate tradeDate;
     private BigDecimal quantity;
-    private BigDecimal grossAmount;
-    private BigDecimal tax;
-    private BigDecimal netAmount;
-    private String openClosed;
+    private BigDecimal tradePrice;
+    private BigDecimal tradeMoney;
+    private BigDecimal fifoPnlRealized;
+    private BigDecimal ibCommission;
+    private String buySell;
 }

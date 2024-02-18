@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.strategistapi.dtos.request.StrategyFindDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateNameDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
 import com.marcomarchionni.strategistapi.repositories.StrategyRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -71,10 +71,10 @@ class StrategyControllerIT {
     @ParameterizedTest
     @CsvSource({"ZM long,1", ",7", "ADBE long,0"})
     void findByParamsSuccess(String strategyName, int expectedSize) throws Exception {
-        StrategyFindDto strategyFindDto = StrategyFindDto.builder().name(strategyName).build();
+        StrategyFind strategyFind = StrategyFind.builder().name(strategyName).build();
 
         mockMvc.perform(get("/strategies")
-                        .param("name", strategyFindDto.getName()))
+                        .param("name", strategyFind.getName()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -84,10 +84,10 @@ class StrategyControllerIT {
     @ParameterizedTest
     @ValueSource(strings = {"   ", ""})
     void findByParamsException(String strategyName) throws Exception {
-        StrategyFindDto strategyFindDto = StrategyFindDto.builder().name(strategyName).build();
+        StrategyFind strategyFind = StrategyFind.builder().name(strategyName).build();
 
         mockMvc.perform(get("/strategies")
-                        .param("name", strategyFindDto.getName()))
+                        .param("name", strategyFind.getName()))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
@@ -114,12 +114,12 @@ class StrategyControllerIT {
         Optional<Portfolio> portfolio = portfolioRepository.findByAccountIdAndName("U1111111", "Saver Portfolio");
         assertTrue(portfolio.isPresent());
         Long portfolioId = portfolio.get().getId();
-        StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("AAPL long").portfolioId(portfolioId)
+        StrategyCreate strategyCreate = StrategyCreate.builder().name("AAPL long").portfolioId(portfolioId)
                 .build();
 
         mockMvc.perform(post("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(strategyCreateDto)))
+                        .content(mapper.writeValueAsString(strategyCreate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -130,26 +130,26 @@ class StrategyControllerIT {
     void updateNameSuccess() throws Exception {
         Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), "ZM long").get().getId();
 
-        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(strategyId).name("ZM leap").build();
+        UpdateName updateName = UpdateName.builder().id(strategyId).name("ZM leap").build();
 
         mockMvc.perform(put("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(updateNameDto)))
+                        .content(mapper.writeValueAsString(updateName)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(Math.toIntExact(updateNameDto.getId()))))
-                .andExpect(jsonPath("$.name", is(updateNameDto.getName())));
+                .andExpect(jsonPath("$.id", is(Math.toIntExact(updateName.getId()))))
+                .andExpect(jsonPath("$.name", is(updateName.getName())));
     }
 
     @Test
     void updateNameException() throws Exception {
 
-        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(1L).name("12NewName").build();
+        UpdateName updateName = UpdateName.builder().id(1L).name("12NewName").build();
 
         mockMvc.perform(put("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(updateNameDto)))
+                        .content(mapper.writeValueAsString(updateName)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));

@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.mappers;
 
 import com.marcomarchionni.strategistapi.domain.Trade;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.response.TradeSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +16,8 @@ public class TradeMapperImpl implements TradeMapper {
     }
 
     @Override
-    public TradeSummaryDto toTradeListDto(Trade trade) {
-        return modelMapper.map(trade, TradeSummaryDto.class);
+    public TradeSummary toTradeListDto(Trade trade) {
+        return modelMapper.map(trade, TradeSummary.class);
     }
 
     @Override

@@ -3,8 +3,8 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreateDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateNameDto;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,11 +88,11 @@ class PortfolioControllerIT {
 
     @Test
     void createPortfolioSuccess() throws Exception {
-        PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name("Super Saver").build();
+        PortfolioCreate portfolioCreate = PortfolioCreate.builder().name("Super Saver").build();
 
         mockMvc.perform(post("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(portfolioCreateDto)))
+                        .content(mapper.writeValueAsString(portfolioCreate)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", notNullValue()))
@@ -103,7 +103,7 @@ class PortfolioControllerIT {
     @CsvSource({"U1111111, Super Portfolio", "U1111111, Marco's Portfolio", "U1111111, Zipp"})
     void updatePortfolioNameSuccess(String accountId, String portfolioName) throws Exception {
         Long portfolioId = portfolioRepository.findByAccountIdAndName(accountId, "Saver Portfolio").get().getId();
-        UpdateNameDto updateName = UpdateNameDto.builder().id(portfolioId).name(portfolioName).build();
+        UpdateName updateName = UpdateName.builder().id(portfolioId).name(portfolioName).build();
 
         mockMvc.perform(put("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -116,7 +116,7 @@ class PortfolioControllerIT {
     @ParameterizedTest
     @ValueSource(strings = {"Saver Portfolio", ","})
     void createPortfolioException(String portfolioName) throws Exception {
-        UpdateNameDto badUpdateName = UpdateNameDto.builder().name(portfolioName).build();
+        UpdateName badUpdateName = UpdateName.builder().name(portfolioName).build();
 
         mockMvc.perform(post("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -1,4 +1,4 @@
-package com.marcomarchionni.strategistapi.dtos.update;
+package com.marcomarchionni.strategistapi.dtos.response.update;
 
 import lombok.Builder;
 import lombok.Getter;

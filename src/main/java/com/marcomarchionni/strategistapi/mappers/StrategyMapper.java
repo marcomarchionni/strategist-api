@@ -1,15 +1,15 @@
 package com.marcomarchionni.strategistapi.mappers;
 
 import com.marcomarchionni.strategistapi.domain.Strategy;
-import com.marcomarchionni.strategistapi.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategySummaryDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
+import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
+import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 
 public interface StrategyMapper {
 
-    Strategy toEntity(StrategyCreateDto strategyCreateDto);
+    Strategy toEntity(StrategyCreate strategyCreate);
 
-    StrategySummaryDto toStrategySummaryDto(Strategy strategy);
+    StrategySummary toStrategySummaryDto(Strategy strategy);
 
-    StrategyDetailDto toStrategyDetailDto(Strategy strategy);
+    StrategyDetail toStrategyDetailDto(Strategy strategy);
 }

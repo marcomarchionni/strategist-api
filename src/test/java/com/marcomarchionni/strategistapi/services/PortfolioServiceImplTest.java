@@ -3,10 +3,10 @@ package com.marcomarchionni.strategistapi.services;
 import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreateDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateNameDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapper;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapperImpl;
@@ -57,7 +57,7 @@ class PortfolioServiceImplTest {
         when(dataGateway.findAll()).thenReturn(portfolios);
 
         // Execute service
-        List<PortfolioSummaryDto> actualPortfolios = portfolioService.findAll();
+        List<PortfolioSummary> actualPortfolios = portfolioService.findAll();
 
         // Verify results
         assertEquals(actualPortfolios.size(), portfolios.size());
@@ -72,7 +72,7 @@ class PortfolioServiceImplTest {
         when(dataGateway.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
 
         // Execute service
-        PortfolioDetailDto actualPortfolioDto = portfolioService.findById(portfolioId);
+        PortfolioDetail actualPortfolioDto = portfolioService.findById(portfolioId);
 
         // Verify results
         assertEquals(actualPortfolioDto.getId(), userPortfolio.getId());
@@ -94,15 +94,15 @@ class PortfolioServiceImplTest {
     @Test
     void createPortfolioSuccess() {
         // Setup test data
-        PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name("NewPortfolioName").build();
-        String portfolioName = portfolioCreateDto.getName();
+        PortfolioCreate portfolioCreate = PortfolioCreate.builder().name("NewPortfolioName").build();
+        String portfolioName = portfolioCreate.getName();
 
         // Setup mocks
         when(dataGateway.existsByName(portfolioName)).thenReturn(false);
         when(dataGateway.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Execute service
-        PortfolioDetailDto createdPortfolioDto = portfolioService.create(portfolioCreateDto);
+        PortfolioDetail createdPortfolioDto = portfolioService.create(portfolioCreate);
 
         // Verify results
         assertNotNull(createdPortfolioDto);
@@ -115,7 +115,7 @@ class PortfolioServiceImplTest {
         String accountId = user.getAccountId();
         Long portfolioId = userPortfolio.getId();
         String newPortfolioName = "NewName";
-        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(portfolioId).name(newPortfolioName).build();
+        UpdateName updateName = UpdateName.builder().id(portfolioId).name(newPortfolioName).build();
 
         // Setup mocks
         when(dataGateway.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
@@ -123,7 +123,7 @@ class PortfolioServiceImplTest {
         when(dataGateway.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Execute service
-        PortfolioDetailDto actualPortfolioDto = portfolioService.updateName(updateNameDto);
+        PortfolioDetail actualPortfolioDto = portfolioService.updateName(updateName);
 
         // Verify results
         assertNotNull(actualPortfolioDto);

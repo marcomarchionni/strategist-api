@@ -6,10 +6,10 @@ import com.marcomarchionni.strategistapi.config.ModelMapperConfig;
 import com.marcomarchionni.strategistapi.domain.Position;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.PositionFindDto;
+import com.marcomarchionni.strategistapi.dtos.request.PositionFind;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.strategistapi.dtos.response.PositionSummaryDto;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.strategistapi.mappers.PositionMapper;
@@ -47,7 +47,7 @@ class PositionServiceImplTest {
     List<Position> samplePositions;
     Position samplePosition;
     Strategy sampleStrategy;
-    PositionFindDto positionFind;
+    PositionFind positionFind;
     User user;
 
     @BeforeEach
@@ -92,7 +92,7 @@ class PositionServiceImplTest {
     void findWithParameters() {
         when(positionAccessService.findByParams(any(), any(), any())).thenReturn(samplePositions);
 
-        List<PositionSummaryDto> positions = positionService.findByFilter(positionFind);
+        List<PositionSummary> positions = positionService.findByFilter(positionFind);
 
         assertNotNull(positions);
         assertEquals(positions.size(), samplePositions.size());
@@ -108,11 +108,11 @@ class PositionServiceImplTest {
         samplePosition.setStrategy(sampleStrategy);
         when(positionAccessService.save(any())).thenReturn(samplePosition);
 
-        PositionSummaryDto actualPositionSummaryDto = positionService.updateStrategyId(positionUpdate);
+        PositionSummary actualPositionSummary = positionService.updateStrategyId(positionUpdate);
 
-        assertNotNull(actualPositionSummaryDto);
-        assertEquals(samplePosition.getId(), actualPositionSummaryDto.getId());
-        assertEquals(sampleStrategy.getId(), actualPositionSummaryDto.getStrategyId());
+        assertNotNull(actualPositionSummary);
+        assertEquals(samplePosition.getId(), actualPositionSummary.getId());
+        assertEquals(sampleStrategy.getId(), actualPositionSummary.getStrategyId());
     }
 
     @Test

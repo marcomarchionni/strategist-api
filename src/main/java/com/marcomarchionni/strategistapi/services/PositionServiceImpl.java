@@ -4,10 +4,10 @@ import com.marcomarchionni.strategistapi.accessservice.PositionAccessService;
 import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Position;
 import com.marcomarchionni.strategistapi.domain.Strategy;
-import com.marcomarchionni.strategistapi.dtos.request.PositionFindDto;
+import com.marcomarchionni.strategistapi.dtos.request.PositionFind;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.strategistapi.dtos.response.PositionSummaryDto;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
@@ -29,7 +29,7 @@ public class PositionServiceImpl implements PositionService {
     private final PositionMapper positionMapper;
 
     @Override
-    public List<PositionSummaryDto> findByFilter(PositionFindDto positionFind) {
+    public List<PositionSummary> findByFilter(PositionFind positionFind) {
         List<Position> positions = positionAccessService.findByParams(
                 positionFind.getTagged(),
                 positionFind.getSymbol(),
@@ -75,7 +75,7 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public PositionSummaryDto updateStrategyId(UpdateStrategyDto positionUpdate) {
+    public PositionSummary updateStrategyId(UpdateStrategyDto positionUpdate) {
         Position position = positionAccessService.findById(positionUpdate.getId()).orElseThrow(
                 () -> new EntityNotFoundException(Position.class, positionUpdate.getId())
         );

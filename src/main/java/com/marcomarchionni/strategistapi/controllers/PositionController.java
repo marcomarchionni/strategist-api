@@ -1,33 +1,27 @@
 package com.marcomarchionni.strategistapi.controllers;
 
-import com.marcomarchionni.strategistapi.dtos.request.PositionFindDto;
+import com.marcomarchionni.strategistapi.dtos.request.PositionFind;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.strategistapi.dtos.response.PositionSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
 import com.marcomarchionni.strategistapi.services.PositionService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/positions")
-public class PositionController {
+@RequiredArgsConstructor
+public class PositionController implements PositionApi {
 
-    PositionService positionService;
+    private final PositionService positionService;
 
-    @Autowired
-    public PositionController(PositionService positionService) {
-        this.positionService = positionService;
-    }
-
-    @GetMapping
-    public List<PositionSummaryDto> findByFilter(@Valid PositionFindDto positionFind) {
+    public List<PositionSummary> findByFilter(@Valid PositionFind positionFind) {
         return positionService.findByFilter(positionFind);
     }
 
-    @PutMapping
-    public PositionSummaryDto updateStrategyId(@RequestBody @Valid UpdateStrategyDto positionUpdate) {
+    public PositionSummary updateStrategyId(@RequestBody @Valid UpdateStrategyDto positionUpdate) {
         return positionService.updateStrategyId(positionUpdate);
     }
 }

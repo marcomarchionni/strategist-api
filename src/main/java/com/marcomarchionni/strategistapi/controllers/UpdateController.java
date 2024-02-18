@@ -1,24 +1,20 @@
 package com.marcomarchionni.strategistapi.controllers;
 
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
-import com.marcomarchionni.strategistapi.dtos.update.CombinedUpdateReport;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
+import com.marcomarchionni.strategistapi.dtos.response.update.CombinedUpdateReport;
 import com.marcomarchionni.strategistapi.services.UpdateOrchestrator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/update")
-public class UpdateController {
+public class UpdateController implements UpdateApi {
 
     private final UpdateOrchestrator updateOrchestrator;
 
-    @PostMapping()
-    public CombinedUpdateReport update(@Valid UpdateContextDto dto) throws Exception {
+    public CombinedUpdateReport update(@Valid UpdateContextReq dto) throws Exception {
         return updateOrchestrator.update(dto);
     }
 }

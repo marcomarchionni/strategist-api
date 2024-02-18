@@ -1,44 +1,40 @@
 package com.marcomarchionni.strategistapi.controllers;
 
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreateDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateNameDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.services.PortfolioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/portfolios")
-public class PortfolioController {
+public class PortfolioController implements PortfolioApi {
 
     private final PortfolioService portfolioService;
 
-    @GetMapping
-    public List<PortfolioSummaryDto> findAllByUser() {
+    public List<PortfolioSummary> findAllByUser() {
         return portfolioService.findAll();
     }
 
-    @GetMapping("/{id}")
-    public PortfolioDetailDto findById(@PathVariable Long id) {
+    public PortfolioDetail findById(@PathVariable Long id) {
         return portfolioService.findById(id);
     }
 
-    @PostMapping
-    public PortfolioDetailDto create(@RequestBody @Valid PortfolioCreateDto portfolioCreate) {
+    public PortfolioDetail create(@RequestBody @Valid PortfolioCreate portfolioCreate) {
         return portfolioService.create(portfolioCreate);
     }
 
-    @PutMapping
-    public PortfolioDetailDto updateName(@RequestBody @Valid UpdateNameDto updateName) {
+    public PortfolioDetail updateName(@RequestBody @Valid UpdateName updateName) {
         return portfolioService.updateName(updateName);
     }
 
-    @DeleteMapping("/{id}")
     public void deletePortfolio(@PathVariable Long id) {
         portfolioService.deleteById(id);
     }

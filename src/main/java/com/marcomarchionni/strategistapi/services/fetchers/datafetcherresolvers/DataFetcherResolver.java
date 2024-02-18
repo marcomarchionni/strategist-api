@@ -1,9 +1,9 @@
 package com.marcomarchionni.strategistapi.services.fetchers.datafetcherresolvers;
 
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
 import com.marcomarchionni.strategistapi.services.fetchers.DataFetcher;
 
 public interface DataFetcherResolver {
 
-    DataFetcher resolve(UpdateContextDto.SourceType type);
+    DataFetcher resolve(UpdateContextReq.SourceType type);
 }

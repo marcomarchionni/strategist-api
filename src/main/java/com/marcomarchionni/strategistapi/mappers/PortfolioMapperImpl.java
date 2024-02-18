@@ -1,8 +1,8 @@
 package com.marcomarchionni.strategistapi.mappers;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -16,12 +16,12 @@ public class PortfolioMapperImpl implements PortfolioMapper {
     }
 
     @Override
-    public PortfolioSummaryDto toPortfolioSummaryDto(Portfolio portfolio) {
-        return modelMapper.map(portfolio, PortfolioSummaryDto.class);
+    public PortfolioSummary toPortfolioSummaryDto(Portfolio portfolio) {
+        return modelMapper.map(portfolio, PortfolioSummary.class);
     }
 
     @Override
-    public PortfolioDetailDto toPortfolioDetailDto(Portfolio portfolio) {
-        return modelMapper.map(portfolio, PortfolioDetailDto.class);
+    public PortfolioDetail toPortfolioDetailDto(Portfolio portfolio) {
+        return modelMapper.map(portfolio, PortfolioDetail.class);
     }
 }

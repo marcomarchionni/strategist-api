@@ -40,10 +40,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
                                 mvc.pattern("/auth/**"),
-                                mvc.pattern("/docs/**"),
                                 mvc.pattern("/error"),
                                 mvc.pattern("/api-docs/**"),
                                 mvc.pattern("/swagger-ui/**"),
+                                mvc.pattern("/strategist.yaml"),
                                 mvc.pattern("/"))
                         .permitAll()
                         .anyRequest().authenticated())
@@ -52,9 +52,6 @@ public class SecurityConfig {
                 .addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(httpConfigurer -> httpConfigurer.authenticationEntryPoint(delegatedAuthenticationEntryPoint));
-
-        // To allow H2 console frames
-        http.headers(AbstractHttpConfigurer::disable);
 
         return http.build();
     }

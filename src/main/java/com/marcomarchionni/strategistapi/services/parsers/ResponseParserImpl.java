@@ -5,7 +5,7 @@ import com.marcomarchionni.strategistapi.domain.FlexStatement;
 import com.marcomarchionni.strategistapi.domain.Position;
 import com.marcomarchionni.strategistapi.domain.Trade;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateDto;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateDto;
 import com.marcomarchionni.strategistapi.mappers.DividendMapper;
 import com.marcomarchionni.strategistapi.mappers.FlexStatementMapper;
 import com.marcomarchionni.strategistapi.mappers.PositionMapper;

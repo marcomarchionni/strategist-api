@@ -3,9 +3,9 @@ package com.marcomarchionni.strategistapi.util;
 import com.marcomarchionni.strategistapi.domain.*;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexStatementResponseDto;
-import com.marcomarchionni.strategistapi.dtos.request.DividendFindDto;
-import com.marcomarchionni.strategistapi.dtos.request.PositionFindDto;
-import com.marcomarchionni.strategistapi.dtos.request.TradeFindDto;
+import com.marcomarchionni.strategistapi.dtos.request.DividendFind;
+import com.marcomarchionni.strategistapi.dtos.request.PositionFind;
+import com.marcomarchionni.strategistapi.dtos.request.TradeFind;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -102,8 +102,8 @@ public class TestUtils {
                 .build();
     }
 
-    public static TradeFindDto getSampleTradeCriteria() {
-        return TradeFindDto.builder()
+    public static TradeFind getSampleTradeCriteria() {
+        return TradeFind.builder()
                 .tradeDateFrom(LocalDate.of(2022, 6, 5))
                 .tradeDateTo(LocalDate.of(2022, 6, 25))
                 .tagged(false)
@@ -112,15 +112,15 @@ public class TestUtils {
                 .build();
     }
 
-    public static PositionFindDto getSamplePositionCriteria() {
-        return PositionFindDto.builder()
+    public static PositionFind getSamplePositionCriteria() {
+        return PositionFind.builder()
                 .tagged(true)
                 .symbol("AAPL")
                 .build();
     }
 
-    public static DividendFindDto getSampleDividendCriteria() {
-        return DividendFindDto.builder()
+    public static DividendFind getSampleDividendCriteria() {
+        return DividendFind.builder()
                 .exDateFrom(LocalDate.of(2022, 6, 5))
                 .build();
     }

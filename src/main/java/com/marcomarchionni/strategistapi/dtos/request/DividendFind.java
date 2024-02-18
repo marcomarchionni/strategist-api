@@ -1,36 +1,35 @@
 package com.marcomarchionni.strategistapi.dtos.request;
 
-import com.marcomarchionni.strategistapi.validators.AssetCategory;
 import com.marcomarchionni.strategistapi.validators.DateInterval;
 import com.marcomarchionni.strategistapi.validators.NullOrNotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@DateInterval(dateFrom = "tradeDateFrom", dateTo = "tradeDateTo")
-public class TradeFindDto {
+@DateInterval(dateFrom = "exDateFrom", dateTo = "exDateTo")
+@DateInterval(dateFrom = "payDateFrom", dateTo = "payDateTo")
+public class DividendFind {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate tradeDateFrom;
+    private LocalDate exDateFrom;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate tradeDateTo;
+    private LocalDate exDateTo;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate payDateFrom;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate payDateTo;
 
     private Boolean tagged;
 
-    @Size(max = 5)
     @NullOrNotBlank
+    @Size(max=20)
     private String symbol;
-
-    @AssetCategory
-    private String assetCategory;
 }

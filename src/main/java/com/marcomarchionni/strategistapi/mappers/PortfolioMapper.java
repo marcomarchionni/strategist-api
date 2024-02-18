@@ -1,12 +1,12 @@
 package com.marcomarchionni.strategistapi.mappers;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 
 public interface PortfolioMapper {
 
-    PortfolioSummaryDto toPortfolioSummaryDto(Portfolio portfolio);
+    PortfolioSummary toPortfolioSummaryDto(Portfolio portfolio);
 
-    PortfolioDetailDto toPortfolioDetailDto(Portfolio portfolio);
+    PortfolioDetail toPortfolioDetailDto(Portfolio portfolio);
 }

@@ -1,21 +1,21 @@
 package com.marcomarchionni.strategistapi.services;
 
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreateDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateNameDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import jakarta.validation.Valid;
 
 import java.util.List;
 
 public interface PortfolioService {
-    List<PortfolioSummaryDto> findAll();
+    List<PortfolioSummary> findAll();
 
-    PortfolioDetailDto findById(Long id);
+    PortfolioDetail findById(Long id);
 
-    PortfolioDetailDto create(PortfolioCreateDto portfolioCreateDto);
+    PortfolioDetail create(PortfolioCreate portfolioCreate);
 
     void deleteById(Long id);
 
-    PortfolioDetailDto updateName(@Valid UpdateNameDto dto);
+    PortfolioDetail updateName(@Valid UpdateName dto);
 }

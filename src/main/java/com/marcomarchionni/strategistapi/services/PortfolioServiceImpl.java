@@ -2,10 +2,10 @@ package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreateDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateNameDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
@@ -27,13 +27,13 @@ public class PortfolioServiceImpl implements PortfolioService {
 
 
     @Override
-    public List<PortfolioSummaryDto> findAll() {
+    public List<PortfolioSummary> findAll() {
         List<Portfolio> portfolios = portfolioAccessService.findAll();
         return portfolios.stream().map(portfolioMapper::toPortfolioSummaryDto).collect(Collectors.toList());
     }
 
     @Override
-    public PortfolioDetailDto findById(Long portfolioId) {
+    public PortfolioDetail findById(Long portfolioId) {
         Portfolio portfolio = portfolioAccessService.findById(portfolioId).orElseThrow(
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId)
         );
@@ -53,14 +53,14 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     @Transactional
-    public PortfolioDetailDto create(PortfolioCreateDto portfolioCreateDto) {
+    public PortfolioDetail create(PortfolioCreate portfolioCreate) {
 
-        String portfolioName = portfolioCreateDto.getName();
+        String portfolioName = portfolioCreate.getName();
 
         // Check if portfolio with the same name already exists
         boolean existsWithName = portfolioAccessService.existsByName(portfolioName);
         if (existsWithName) {
-            throw new UnableToSaveEntitiesException("Portfolio with name: " + portfolioCreateDto.getName() + " " +
+            throw new UnableToSaveEntitiesException("Portfolio with name: " + portfolioCreate.getName() + " " +
                     "already exists");
         }
 
@@ -77,7 +77,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     @Transactional
-    public PortfolioDetailDto updateName(UpdateNameDto dto) {
+    public PortfolioDetail updateName(UpdateName dto) {
 
         // Get portfolio id
         Long portfolioId = dto.getId();

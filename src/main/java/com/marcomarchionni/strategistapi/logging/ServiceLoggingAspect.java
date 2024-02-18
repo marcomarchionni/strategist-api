@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.logging;
 
-import com.marcomarchionni.strategistapi.dtos.update.CombinedUpdateReport;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.update.CombinedUpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;

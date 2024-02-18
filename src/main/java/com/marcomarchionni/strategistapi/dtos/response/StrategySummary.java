@@ -1,5 +1,6 @@
-package com.marcomarchionni.strategistapi.dtos.request;
+package com.marcomarchionni.strategistapi.dtos.response;
 
+import com.marcomarchionni.strategistapi.validators.PortfolioName;
 import com.marcomarchionni.strategistapi.validators.StrategyName;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,11 +12,20 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StrategyCreateDto {
+public class StrategySummary {
+
+    @NotNull
+    private Long id;
 
     @StrategyName
     private String name;
 
     @NotNull
     private Long portfolioId;
+
+    @NotNull
+    private String accountId;
+
+    @PortfolioName
+    private String portfolioName;
 }

@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.mappers;
 
 import com.marcomarchionni.strategistapi.domain.Dividend;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.response.DividendSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +16,8 @@ public class DividendMapperImpl implements DividendMapper {
     }
 
     @Override
-    public DividendSummaryDto toDividendListDto(Dividend dividend) {
-        return mapper.map(dividend, DividendSummaryDto.class);
+    public DividendSummary toDividendListDto(Dividend dividend) {
+        return mapper.map(dividend, DividendSummary.class);
     }
 
     @Override

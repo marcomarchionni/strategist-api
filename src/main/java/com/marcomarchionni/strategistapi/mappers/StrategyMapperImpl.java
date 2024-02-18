@@ -2,9 +2,9 @@ package com.marcomarchionni.strategistapi.mappers;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
-import com.marcomarchionni.strategistapi.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategySummaryDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
+import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
+import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -18,18 +18,18 @@ public class StrategyMapperImpl implements StrategyMapper {
     }
 
     @Override
-    public Strategy toEntity(StrategyCreateDto strategyCreateDto) {
-        Portfolio portfolio = Portfolio.builder().id(strategyCreateDto.getPortfolioId()).build();
-        return Strategy.builder().name(strategyCreateDto.getName()).portfolio(portfolio).build();
+    public Strategy toEntity(StrategyCreate strategyCreate) {
+        Portfolio portfolio = Portfolio.builder().id(strategyCreate.getPortfolioId()).build();
+        return Strategy.builder().name(strategyCreate.getName()).portfolio(portfolio).build();
     }
 
     @Override
-    public StrategySummaryDto toStrategySummaryDto(Strategy strategy) {
-        return modelMapper.map(strategy, StrategySummaryDto.class);
+    public StrategySummary toStrategySummaryDto(Strategy strategy) {
+        return modelMapper.map(strategy, StrategySummary.class);
     }
 
     @Override
-    public StrategyDetailDto toStrategyDetailDto(Strategy strategy) {
-        return modelMapper.map(strategy, StrategyDetailDto.class);
+    public StrategyDetail toStrategyDetailDto(Strategy strategy) {
+        return modelMapper.map(strategy, StrategyDetail.class);
     }
 }

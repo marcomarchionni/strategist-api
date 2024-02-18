@@ -2,11 +2,11 @@ package com.marcomarchionni.strategistapi.mappers;
 
 import com.marcomarchionni.strategistapi.domain.Dividend;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.response.DividendSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 
 public interface DividendMapper {
 
-    DividendSummaryDto toDividendListDto(Dividend dividend);
+    DividendSummary toDividendListDto(Dividend dividend);
 
     Dividend mergeFlexProperties(Dividend source, Dividend target);
 

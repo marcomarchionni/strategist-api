@@ -6,7 +6,7 @@ import com.marcomarchionni.strategistapi.domain.Dividend;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.strategistapi.dtos.response.DividendSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 import com.marcomarchionni.strategistapi.mappers.DividendMapper;
 import com.marcomarchionni.strategistapi.mappers.DividendMapperImpl;
 import com.marcomarchionni.strategistapi.services.DividendService;
@@ -52,8 +52,8 @@ class DividendControllerTest {
     UserService userService;
 
     DividendMapper dividendMapper;
-    List<DividendSummaryDto> dividendSummaryDtos;
-    DividendSummaryDto dividendSummaryDto;
+    List<DividendSummary> dividendSummaryList;
+    DividendSummary dividendSummary;
     User user;
 
     @BeforeEach
@@ -65,11 +65,11 @@ class DividendControllerTest {
 
         //setup data
         user = getSampleUser();
-        dividendSummaryDtos = TestUtils.getSampleDividends()
+        dividendSummaryList = TestUtils.getSampleDividends()
                 .stream()
                 .map(dividendMapper::toDividendListDto)
                 .toList();
-        dividendSummaryDto = dividendMapper.toDividendListDto(getSampleClosedDividend());
+        dividendSummary = dividendMapper.toDividendListDto(getSampleClosedDividend());
 
         //setup mocks
         when(userService.getAuthenticatedUser()).thenReturn(user);
@@ -78,23 +78,23 @@ class DividendControllerTest {
     @Test
     void getWithParameters() throws Exception {
 
-        when(dividendService.findByFilter(any())).thenReturn(dividendSummaryDtos);
+        when(dividendService.findByFilter(any())).thenReturn(dividendSummaryList);
 
         mockMvc.perform(get("/dividends"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(dividendSummaryDtos.size())));
+                .andExpect(jsonPath("$", hasSize(dividendSummaryList.size())));
     }
 
     @Test
     void getWithParametersException() throws Exception {
 
-        when(dividendService.findByFilter(any())).thenReturn(dividendSummaryDtos);
+        when(dividendService.findByFilter(any())).thenReturn(dividendSummaryList);
 
         mockMvc.perform(get("/dividends"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(dividendSummaryDtos.size())));
+                .andExpect(jsonPath("$", hasSize(dividendSummaryList.size())));
     }
 
     @Test
@@ -109,9 +109,9 @@ class DividendControllerTest {
                 .strategyId(strategy.getId())
                 .build();
         dividend.setStrategy(strategy);
-        DividendSummaryDto expectedDividendSummaryDto = dividendMapper.toDividendListDto(dividend);
+        DividendSummary expectedDividendSummary = dividendMapper.toDividendListDto(dividend);
 
-        when(dividendService.updateStrategyId(dividendUpdate)).thenReturn(expectedDividendSummaryDto);
+        when(dividendService.updateStrategyId(dividendUpdate)).thenReturn(expectedDividendSummary);
 
         mockMvc.perform(put("/dividends")
                         .contentType(MediaType.APPLICATION_JSON)

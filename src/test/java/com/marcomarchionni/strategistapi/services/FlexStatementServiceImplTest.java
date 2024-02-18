@@ -3,7 +3,7 @@ package com.marcomarchionni.strategistapi.services;
 import com.marcomarchionni.strategistapi.accessservice.FlexStatementAccessService;
 import com.marcomarchionni.strategistapi.domain.FlexStatement;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

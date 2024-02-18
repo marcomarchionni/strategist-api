@@ -3,10 +3,10 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreateDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateNameDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapper;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapperImpl;
@@ -63,30 +63,30 @@ class PortfolioControllerTest {
     void findPortfolios() throws Exception {
         // setup test data
         String accountId = user.getAccountId();
-        List<PortfolioSummaryDto> portfolioSummaryDtos = getSamplePortfolios()
+        List<PortfolioSummary> portfolioSummaries = getSamplePortfolios()
                 .stream()
                 .peek(portfolio -> portfolio.setAccountId(accountId))
                 .map(portfolioMapper::toPortfolioSummaryDto)
                 .toList();
 
         // setup mock behavior
-        when(portfolioService.findAll()).thenReturn(portfolioSummaryDtos);
+        when(portfolioService.findAll()).thenReturn(portfolioSummaries);
 
         // Execute test
         mockMvc.perform(get("/portfolios"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(portfolioSummaryDtos.size())));
+                .andExpect(jsonPath("$", hasSize(portfolioSummaries.size())));
     }
 
     @Test
     void findPortfolioSuccess() throws Exception {
         // setup test data
         Long portfolioId = userPortfolio.getId();
-        PortfolioDetailDto portfolioDetailDto = portfolioMapper.toPortfolioDetailDto(userPortfolio);
+        PortfolioDetail portfolioDetail = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
         // setup mock behavior
-        when(portfolioService.findById(portfolioId)).thenReturn(portfolioDetailDto);
+        when(portfolioService.findById(portfolioId)).thenReturn(portfolioDetail);
 
         // Execute test
         mockMvc.perform(get("/portfolios/{id}", 1L))
@@ -118,16 +118,16 @@ class PortfolioControllerTest {
     @Test
     void createPortfolioSuccess() throws Exception {
         // setup test data
-        PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name(userPortfolio.getName()).build();
-        PortfolioDetailDto portfolioDetailDto = portfolioMapper.toPortfolioDetailDto(userPortfolio);
+        PortfolioCreate portfolioCreate = PortfolioCreate.builder().name(userPortfolio.getName()).build();
+        PortfolioDetail portfolioDetail = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
         // setup mock behavior
-        when(portfolioService.create(portfolioCreateDto)).thenReturn(portfolioDetailDto);
+        when(portfolioService.create(portfolioCreate)).thenReturn(portfolioDetail);
 
         // Execute test
         mockMvc.perform(post("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(portfolioCreateDto)))
+                        .content(mapper.writeValueAsString(portfolioCreate)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name", is(userPortfolio.getName())))
@@ -138,12 +138,12 @@ class PortfolioControllerTest {
     @Test
     void createPortfolioInvalidNameException() throws Exception {
         // setup test data
-        PortfolioCreateDto portfolioCreateDto = PortfolioCreateDto.builder().name("A").build();
+        PortfolioCreate portfolioCreate = PortfolioCreate.builder().name("A").build();
 
         // execute test
         mockMvc.perform(post("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(portfolioCreateDto)))
+                        .content(mapper.writeValueAsString(portfolioCreate)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
@@ -153,20 +153,20 @@ class PortfolioControllerTest {
     @Test
     void updatePortfolioName() throws Exception {
         // setup test
-        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(userPortfolio.getId()).name("NewPortfolioName")
+        UpdateName updateName = UpdateName.builder().id(userPortfolio.getId()).name("NewPortfolioName")
                 .build();
-        PortfolioDetailDto portfolioDetailDto = portfolioMapper.toPortfolioDetailDto(userPortfolio);
+        PortfolioDetail portfolioDetail = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
         // setup mock behavior
-        when(portfolioService.updateName(updateNameDto)).thenReturn(portfolioDetailDto);
+        when(portfolioService.updateName(updateName)).thenReturn(portfolioDetail);
 
         // Execute test
         mockMvc.perform(put("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(updateNameDto)))
+                        .content(mapper.writeValueAsString(updateName)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(portfolioDetailDto.getName())));
+                .andExpect(jsonPath("$.name", is(portfolioDetail.getName())));
     }
 
     @Test

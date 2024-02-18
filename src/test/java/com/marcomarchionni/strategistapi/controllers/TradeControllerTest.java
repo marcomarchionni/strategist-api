@@ -5,9 +5,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.Trade;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.TradeFindDto;
+import com.marcomarchionni.strategistapi.dtos.request.TradeFind;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.strategistapi.dtos.response.TradeSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import com.marcomarchionni.strategistapi.mappers.TradeMapper;
 import com.marcomarchionni.strategistapi.mappers.TradeMapperImpl;
 import com.marcomarchionni.strategistapi.services.JwtService;
@@ -58,7 +58,7 @@ class TradeControllerTest {
     TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
     Trade trade = getSampleTrade();
     Strategy strategy = getSampleStrategy();
-    List<TradeSummaryDto> tradeSummaryDtos;
+    List<TradeSummary> tradeSummaries;
 
     User user;
 
@@ -67,7 +67,7 @@ class TradeControllerTest {
         user = TestUtils.getSampleUser();
         objectMapper.registerModule(new JavaTimeModule());
         tradeMapper = new TradeMapperImpl(new ModelMapper());
-        tradeSummaryDtos = TestUtils.getSampleTrades()
+        tradeSummaries = TestUtils.getSampleTrades()
                 .stream()
                 .map(tradeMapper::toTradeListDto)
                 .toList();
@@ -77,19 +77,19 @@ class TradeControllerTest {
     @Test
     void getTrades() throws Exception {
 
-        when(tradeService.findByFilter(any(TradeFindDto.class))).thenReturn(tradeSummaryDtos);
+        when(tradeService.findByFilter(any(TradeFind.class))).thenReturn(tradeSummaries);
 
         mockMvc.perform(get("/trades"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(tradeSummaryDtos.size())));
+                .andExpect(jsonPath("$", hasSize(tradeSummaries.size())));
     }
 
     @ParameterizedTest
     @CsvSource({",,,ZM,", ",2022-06-14,true,,"})
     void findTradesSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
-        when(tradeService.findByFilter(any(TradeFindDto.class))).thenReturn(tradeSummaryDtos);
+        when(tradeService.findByFilter(any(TradeFind.class))).thenReturn(tradeSummaries);
 
         mockMvc.perform(get("/trades")
                         .param("tradeDateFrom", tradeDateFrom)
@@ -100,7 +100,7 @@ class TradeControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(tradeSummaryDtos.size())));
+                .andExpect(jsonPath("$", hasSize(tradeSummaries.size())));
     }
 
     @ParameterizedTest
@@ -122,9 +122,9 @@ class TradeControllerTest {
 
         UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(trade.getId()).strategyId(strategy.getId()).build();
         trade.setStrategy(strategy);
-        TradeSummaryDto tradeSummaryDto = tradeMapper.toTradeListDto(trade);
+        TradeSummary tradeSummary = tradeMapper.toTradeListDto(trade);
 
-        when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(tradeSummaryDto);
+        when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(tradeSummary);
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)

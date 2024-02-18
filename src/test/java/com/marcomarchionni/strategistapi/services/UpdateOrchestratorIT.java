@@ -1,8 +1,8 @@
 package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.domain.*;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
-import com.marcomarchionni.strategistapi.dtos.update.CombinedUpdateReport;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
+import com.marcomarchionni.strategistapi.dtos.response.update.CombinedUpdateReport;
 import com.marcomarchionni.strategistapi.repositories.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +42,7 @@ public class UpdateOrchestratorIT {
     PortfolioRepository portfolioRepository;
     @Autowired
     UpdateOrchestrator updateOrchestrator;
-    UpdateContextDto updateContextDto;
+    UpdateContextReq updateContextReq;
     User user = getSampleUser();
 
     @AfterEach
@@ -57,7 +57,7 @@ public class UpdateOrchestratorIT {
 
     @BeforeEach
     public void setUp() throws IOException {
-        // Set up UpdateContextDto
+        // Set up UpdateContextReq
         try (InputStream flexQueryStream = getClass().getResourceAsStream("/flex/Flex.xml")) {
             MockMultipartFile mockMultipartFile = new MockMultipartFile(
                     "file", // the name of the parameter
@@ -65,8 +65,8 @@ public class UpdateOrchestratorIT {
                     "text/xml", // content type
                     flexQueryStream // file content
             );
-            updateContextDto = UpdateContextDto.builder()
-                    .sourceType(UpdateContextDto.SourceType.FILE)
+            updateContextReq = UpdateContextReq.builder()
+                    .sourceType(UpdateContextReq.SourceType.FILE)
                     .file(mockMultipartFile)
                     .build();
         }
@@ -80,7 +80,7 @@ public class UpdateOrchestratorIT {
     void updateFromFileEmptyDbTest() throws IOException {
 
         // Execute update
-        CombinedUpdateReport report = updateOrchestrator.update(updateContextDto);
+        CombinedUpdateReport report = updateOrchestrator.update(updateContextReq);
 
         // Verify data
 
@@ -125,7 +125,7 @@ public class UpdateOrchestratorIT {
                 .count();
 
         // execute update db
-        CombinedUpdateReport report = updateOrchestrator.update(updateContextDto);
+        CombinedUpdateReport report = updateOrchestrator.update(updateContextReq);
 
         // assess db state after update
         List<Trade> updatedTrades = tradeRepository.findAll();

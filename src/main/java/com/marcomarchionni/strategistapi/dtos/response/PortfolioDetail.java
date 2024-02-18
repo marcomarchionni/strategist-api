@@ -11,10 +11,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PortfolioDetailDto {
+public class PortfolioDetail {
 
     private Long id;
     private String accountId;
     private String name;
-    private List<StrategySummaryDto> strategies;
+    private List<StrategySummary> strategies;
 }

@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.services.fetchers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.SampleDataFileNotAvailableException;
 import com.marcomarchionni.strategistapi.services.UserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class SampleDataFetcher implements DataFetcher {
     }
 
     @Override
-    public FlexQueryResponseDto fetch(UpdateContextDto context) {
+    public FlexQueryResponseDto fetch(UpdateContextReq context) {
 
         try (InputStream stream = resourceLoader.getResource(path).getInputStream()) {
             // Read data from the sample xml file

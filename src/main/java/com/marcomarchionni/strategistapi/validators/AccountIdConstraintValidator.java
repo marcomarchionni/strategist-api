@@ -1,6 +1,6 @@
 package com.marcomarchionni.strategistapi.validators;
 
-import com.marcomarchionni.strategistapi.dtos.update.UpdateDto;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

@@ -4,7 +4,7 @@ import com.marcomarchionni.strategistapi.config.ModelMapperConfig;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.Trade;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.response.TradeSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -32,10 +32,10 @@ class TradeMapperTest {
         Trade trade = getSampleTrade();
         trade.setStrategy(strategy);
 
-        TradeSummaryDto tradeSummaryDto = tradeMapper.toTradeListDto(trade);
+        TradeSummary tradeSummary = tradeMapper.toTradeListDto(trade);
 
-        assertEquals(trade.getId(), tradeSummaryDto.getId());
-        assertEquals(trade.getStrategy().getName(), tradeSummaryDto.getStrategyName());
+        assertEquals(trade.getId(), tradeSummary.getId());
+        assertEquals(trade.getStrategy().getName(), tradeSummary.getStrategyName());
     }
 
     @Test

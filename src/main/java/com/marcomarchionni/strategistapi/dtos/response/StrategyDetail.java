@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StrategyDetailDto {
+public class StrategyDetail {
 
     @NotNull
     private Long id;
@@ -32,11 +32,11 @@ public class StrategyDetailDto {
     private String accountId;
 
     @NotNull
-    private List<TradeSummaryDto> trades;
+    private List<TradeSummary> trades;
 
     @NotNull
-    private List<PositionSummaryDto> positions;
+    private List<PositionSummary> positions;
 
     @NotNull
-    private List<DividendSummaryDto> dividends;
+    private List<DividendSummary> dividends;
 }

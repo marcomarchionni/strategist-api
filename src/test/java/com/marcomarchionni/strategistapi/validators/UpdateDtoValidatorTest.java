@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.validators;
 
 import com.marcomarchionni.strategistapi.domain.Position;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateDto;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateDto;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

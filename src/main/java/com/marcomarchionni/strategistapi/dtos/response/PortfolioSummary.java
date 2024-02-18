@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PortfolioSummaryDto {
+public class PortfolioSummary {
 
     private Long id;
     private String accountId;

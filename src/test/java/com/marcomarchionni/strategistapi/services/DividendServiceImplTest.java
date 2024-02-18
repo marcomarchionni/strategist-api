@@ -6,10 +6,10 @@ import com.marcomarchionni.strategistapi.config.ModelMapperConfig;
 import com.marcomarchionni.strategistapi.domain.Dividend;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.DividendFindDto;
+import com.marcomarchionni.strategistapi.dtos.request.DividendFind;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.strategistapi.dtos.response.DividendSummaryDto;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.mappers.DividendMapper;
 import com.marcomarchionni.strategistapi.mappers.DividendMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ class DividendServiceImplTest {
     List<Dividend> userDividends;
     Dividend dividend;
     Strategy strategy;
-    DividendFindDto dividendFind;
+    DividendFind dividendFind;
     User user;
 
     @BeforeEach
@@ -70,7 +70,7 @@ class DividendServiceImplTest {
                 dividendFind.getSymbol())).thenReturn(userDividends);
 
         // execute method
-        List<DividendSummaryDto> foundDividends = dividendService.findByFilter(
+        List<DividendSummary> foundDividends = dividendService.findByFilter(
                 dividendFind);
 
         // assertions
@@ -90,7 +90,7 @@ class DividendServiceImplTest {
         when(dividendAccessService.save(any(Dividend.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
-        DividendSummaryDto actualDividendDto = dividendService.updateStrategyId(dividendUpdate);
+        DividendSummary actualDividendDto = dividendService.updateStrategyId(dividendUpdate);
 
         // assertions
         assertNotNull(actualDividendDto);

@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.strategistapi.dtos.request.StrategyFindDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateNameDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategySummaryDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
+import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
+import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 import com.marcomarchionni.strategistapi.mappers.StrategyMapper;
 import com.marcomarchionni.strategistapi.mappers.StrategyMapperImpl;
 import com.marcomarchionni.strategistapi.services.JwtService;
@@ -67,22 +67,22 @@ class StrategyControllerTest {
     void findByParams() throws Exception {
         // setup test data
         List<Strategy> userStrategies = getSampleStrategies();
-        List<StrategySummaryDto> strategySummaryDtos = userStrategies
+        List<StrategySummary> strategySummaries = userStrategies
                 .stream()
                 .map(strategyMapper::toStrategySummaryDto)
                 .toList();
-        StrategyFindDto strategyFindDto = StrategyFindDto.builder().build();
+        StrategyFind strategyFind = StrategyFind.builder().build();
 
         // mock service calls
-        when(strategyService.findByFilter(strategyFindDto)).thenReturn(strategySummaryDtos);
+        when(strategyService.findByFilter(strategyFind)).thenReturn(strategySummaries);
 
         mockMvc.perform(get("/strategies")
-                        .param("name", strategyFindDto.getName()))
+                        .param("name", strategyFind.getName()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(userStrategies.size())))
-                .andExpect(jsonPath("$[0].accountId", is(strategySummaryDtos.get(0).getAccountId())));
+                .andExpect(jsonPath("$[0].accountId", is(strategySummaries.get(0).getAccountId())));
     }
 
     @Test
@@ -91,16 +91,16 @@ class StrategyControllerTest {
         userStrategy.getTrades().add(getSampleTrade());
         userStrategy.getPositions().add(getSamplePosition());
         Long strategyId = userStrategy.getId();
-        StrategyDetailDto strategyDetailDto = strategyMapper.toStrategyDetailDto(userStrategy);
+        StrategyDetail strategyDetail = strategyMapper.toStrategyDetailDto(userStrategy);
 
         // mock service calls
-        when(strategyService.findById(strategyId)).thenReturn(strategyDetailDto);
+        when(strategyService.findById(strategyId)).thenReturn(strategyDetail);
 
         mockMvc.perform(get("/strategies/{id}", strategyId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(strategyDetailDto.getName())))
+                .andExpect(jsonPath("$.name", is(strategyDetail.getName())))
                 .andExpect(jsonPath("$.trades", hasSize(1)))
                 .andExpect(jsonPath("$.positions", hasSize(1)));
     }
@@ -109,22 +109,22 @@ class StrategyControllerTest {
     void updateNameSuccess() throws Exception {
         // setup test data
         Long strategyId = userStrategy.getId();
-        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(strategyId).name("NewName").build();
-        userStrategy.setName(updateNameDto.getName());
-        StrategyDetailDto strategyDetailDto = strategyMapper.toStrategyDetailDto(userStrategy);
+        UpdateName updateName = UpdateName.builder().id(strategyId).name("NewName").build();
+        userStrategy.setName(updateName.getName());
+        StrategyDetail strategyDetail = strategyMapper.toStrategyDetailDto(userStrategy);
 
         // mock service calls
-        when(strategyService.updateName(updateNameDto)).thenReturn(strategyDetailDto);
+        when(strategyService.updateName(updateName)).thenReturn(strategyDetail);
 
         // execute
         mockMvc.perform(put("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(updateNameDto)))
+                        .content(mapper.writeValueAsString(updateName)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(Math.toIntExact(strategyId))))
-                .andExpect(jsonPath("$.name", is(updateNameDto.getName())))
+                .andExpect(jsonPath("$.name", is(updateName.getName())))
                 .andExpect(jsonPath("$.accountId", is(user.getAccountId())));
     }
 
@@ -133,23 +133,23 @@ class StrategyControllerTest {
         // setup test data
         Portfolio userPortfolio = getSamplePortfolio("Saver");
         userStrategy.setPortfolio(userPortfolio);
-        StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder()
+        StrategyCreate strategyCreate = StrategyCreate.builder()
                 .name(userStrategy.getName())
                 .portfolioId(userPortfolio.getId())
                 .build();
-        StrategyDetailDto strategyDetailDto = strategyMapper.toStrategyDetailDto(userStrategy);
+        StrategyDetail strategyDetail = strategyMapper.toStrategyDetailDto(userStrategy);
 
         // mock service calls
-        when(strategyService.create(strategyCreateDto)).thenReturn(strategyDetailDto);
+        when(strategyService.create(strategyCreate)).thenReturn(strategyDetail);
 
         // execute
         mockMvc.perform(post("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(strategyCreateDto)))
+                        .content(mapper.writeValueAsString(strategyCreate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(strategyCreateDto.getName())))
+                .andExpect(jsonPath("$.name", is(strategyCreate.getName())))
                 .andExpect(jsonPath("$.id", is(Math.toIntExact(userStrategy.getId()))))
                 .andExpect(jsonPath("$.accountId", is(user.getAccountId())))
                 .andExpect(jsonPath("$.portfolioId", is(Math.toIntExact(userPortfolio.getId()))));

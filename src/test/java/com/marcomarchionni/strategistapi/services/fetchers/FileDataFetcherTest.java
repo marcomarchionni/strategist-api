@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.marcomarchionni.strategistapi.config.XMLConfig;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.InvalidXMLFileException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +41,7 @@ class FileDataFetcherTest {
                 stream // file content
         );
         assertNotNull(stream);
-        UpdateContextDto context = UpdateContextDto.builder().build();
+        UpdateContextReq context = UpdateContextReq.builder().build();
         context.setFile(file);
 
         // Fetch data
@@ -65,7 +65,7 @@ class FileDataFetcherTest {
                 "text/xml", // content type
                 stream // file content
         );
-        UpdateContextDto context = UpdateContextDto.builder().build();
+        UpdateContextReq context = UpdateContextReq.builder().build();
         context.setFile(mockMultipartFile);
 
         // Fetch data

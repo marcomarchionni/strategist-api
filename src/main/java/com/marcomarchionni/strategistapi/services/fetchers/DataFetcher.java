@@ -1,8 +1,8 @@
 package com.marcomarchionni.strategistapi.services.fetchers;
 
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
 
 public interface DataFetcher {
-    FlexQueryResponseDto fetch(UpdateContextDto context);
+    FlexQueryResponseDto fetch(UpdateContextReq context);
 }

@@ -4,11 +4,11 @@ import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
-import com.marcomarchionni.strategistapi.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.strategistapi.dtos.request.StrategyFindDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateNameDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategySummaryDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
+import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
+import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
@@ -27,7 +27,7 @@ public class StrategyServiceImpl implements StrategyService {
     private final StrategyMapper strategyMapper;
 
     @Override
-    public List<StrategySummaryDto> findByFilter(StrategyFindDto strategyFind) {
+    public List<StrategySummary> findByFilter(StrategyFind strategyFind) {
         List<Strategy> strategies = strategyAccessService.findByParams(strategyFind.getName());
         return strategies.stream().map(strategyMapper::toStrategySummaryDto).collect(Collectors.toList());
     }
@@ -45,7 +45,7 @@ public class StrategyServiceImpl implements StrategyService {
     }
 
     @Override
-    public StrategyDetailDto findById(Long strategyId) {
+    public StrategyDetail findById(Long strategyId) {
         Strategy strategy = strategyAccessService.findById(strategyId).orElseThrow(
                 () -> new EntityNotFoundException(Strategy.class, strategyId)
         );
@@ -53,22 +53,22 @@ public class StrategyServiceImpl implements StrategyService {
     }
 
     @Override
-    public StrategyDetailDto updateName(UpdateNameDto updateNameDto) {
-        Long strategyId = updateNameDto.getId();
+    public StrategyDetail updateName(UpdateName updateName) {
+        Long strategyId = updateName.getId();
         Strategy strategy = strategyAccessService.findById(strategyId).orElseThrow(
                 () -> new EntityNotFoundException(Strategy.class, strategyId)
         );
-        strategy.setName(updateNameDto.getName());
+        strategy.setName(updateName.getName());
         return strategyMapper.toStrategyDetailDto(this.save(strategy));
     }
 
     @Override
-    public StrategyDetailDto create(StrategyCreateDto strategyCreateDto) {
-        long portfolioId = strategyCreateDto.getPortfolioId();
+    public StrategyDetail create(StrategyCreate strategyCreate) {
+        long portfolioId = strategyCreate.getPortfolioId();
         Portfolio portfolio = portfolioAccessService.findById(portfolioId).orElseThrow(
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId)
         );
-        Strategy createdStrategy = Strategy.builder().name(strategyCreateDto.getName()).portfolio(portfolio)
+        Strategy createdStrategy = Strategy.builder().name(strategyCreate.getName()).portfolio(portfolio)
                 .accountId(portfolio.getAccountId())
                 .build();
         return strategyMapper.toStrategyDetailDto(this.save(createdStrategy));

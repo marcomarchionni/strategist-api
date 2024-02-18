@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateNameDto {
+public class UpdateName {
 
     @NotNull
     private Long id;

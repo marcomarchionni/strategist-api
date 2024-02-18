@@ -1,6 +1,6 @@
 package com.marcomarchionni.strategistapi.services.util;
 
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
 import com.marcomarchionni.strategistapi.services.fetchers.DataFetcher;
 import com.marcomarchionni.strategistapi.services.fetchers.FileDataFetcher;
 import com.marcomarchionni.strategistapi.services.fetchers.SampleDataFetcher;
@@ -37,10 +37,10 @@ class DataFetcherResolverImplTest {
 
     @Test
     void resolve() {
-        DataFetcher dataFetcher = dataFetcherResolver.resolve(UpdateContextDto.SourceType.FILE);
+        DataFetcher dataFetcher = dataFetcherResolver.resolve(UpdateContextReq.SourceType.FILE);
         assertNotNull(dataFetcher);
         assertInstanceOf(FileDataFetcher.class, dataFetcher);
-        dataFetcher = dataFetcherResolver.resolve(UpdateContextDto.SourceType.SERVER);
+        dataFetcher = dataFetcherResolver.resolve(UpdateContextReq.SourceType.SERVER);
         assertNotNull(dataFetcher);
         assertInstanceOf(ServerDataFetcher.class, dataFetcher);
     }

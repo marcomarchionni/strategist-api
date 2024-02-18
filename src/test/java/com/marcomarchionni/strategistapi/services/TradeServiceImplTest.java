@@ -5,10 +5,10 @@ import com.marcomarchionni.strategistapi.accessservice.TradeAccessService;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.Trade;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.TradeFindDto;
+import com.marcomarchionni.strategistapi.dtos.request.TradeFind;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.strategistapi.dtos.response.TradeSummaryDto;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.strategistapi.mappers.TradeMapper;
@@ -39,7 +39,7 @@ class TradeServiceImplTest {
     Trade trade;
     Strategy strategy;
     UpdateStrategyDto tradeUpdate;
-    TradeFindDto tradeCriteria;
+    TradeFind tradeCriteria;
     User user;
 
     @BeforeEach
@@ -73,7 +73,7 @@ class TradeServiceImplTest {
         when(strategyAccessService.findById(strategy.getId())).thenReturn(Optional.of(strategy));
         when(tradeAccessService.save(trade)).thenReturn(trade);
 
-        TradeSummaryDto updatedTrade = tradeService.updateStrategyId(tradeUpdate);
+        TradeSummary updatedTrade = tradeService.updateStrategyId(tradeUpdate);
 
         verify(tradeAccessService).save(trade);
         assertEquals(tradeUpdate.getId(), updatedTrade.getId());
@@ -95,7 +95,7 @@ class TradeServiceImplTest {
         when(tradeAccessService.findByParams(any(), any(), any(), any(), any())).thenReturn(trades);
         int expectedSize = trades.size();
 
-        List<TradeSummaryDto> actualTrades = tradeService.findByFilter(tradeCriteria);
+        List<TradeSummary> actualTrades = tradeService.findByFilter(tradeCriteria);
 
         assertEquals(expectedSize, actualTrades.size());
     }

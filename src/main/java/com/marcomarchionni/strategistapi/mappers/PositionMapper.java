@@ -2,11 +2,11 @@ package com.marcomarchionni.strategistapi.mappers;
 
 import com.marcomarchionni.strategistapi.domain.Position;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.response.PositionSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
 
 public interface PositionMapper {
 
-    PositionSummaryDto toPositionListDto(Position position);
+    PositionSummary toPositionListDto(Position position);
 
     Position toPosition(FlexQueryResponseDto.OpenPosition openPosition);
 

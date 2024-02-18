@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.mappers;
 
 import com.marcomarchionni.strategistapi.domain.Position;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.response.PositionSummaryDto;
+import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +16,8 @@ public class PositionMapperImpl implements PositionMapper {
     }
 
     @Override
-    public PositionSummaryDto toPositionListDto(Position position) {
-        return modelMapper.map(position, PositionSummaryDto.class);
+    public PositionSummary toPositionListDto(Position position) {
+        return modelMapper.map(position, PositionSummary.class);
     }
 
     @Override

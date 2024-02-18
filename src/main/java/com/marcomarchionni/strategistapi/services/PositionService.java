@@ -1,10 +1,10 @@
 package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.domain.Position;
-import com.marcomarchionni.strategistapi.dtos.request.PositionFindDto;
+import com.marcomarchionni.strategistapi.dtos.request.PositionFind;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.strategistapi.dtos.response.PositionSummaryDto;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface PositionService {
 
     UpdateReport<Position> updatePositions(List<Position> positions);
 
-    PositionSummaryDto updateStrategyId(UpdateStrategyDto position);
+    PositionSummary updateStrategyId(UpdateStrategyDto position);
 
-    List<PositionSummaryDto> findByFilter(PositionFindDto positionCriteria);
+    List<PositionSummary> findByFilter(PositionFind positionCriteria);
 }

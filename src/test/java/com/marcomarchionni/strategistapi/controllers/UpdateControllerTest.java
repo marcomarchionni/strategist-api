@@ -1,9 +1,9 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.domain.Trade;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
-import com.marcomarchionni.strategistapi.dtos.update.CombinedUpdateReport;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateReport;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
+import com.marcomarchionni.strategistapi.dtos.response.update.CombinedUpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.services.JwtService;
 import com.marcomarchionni.strategistapi.services.UpdateOrchestrator;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +48,7 @@ class UpdateControllerTest {
 
     MockMultipartFile mockFile;
 
-    ArgumentCaptor<UpdateContextDto> contextDtoArgumentCaptor;
+    ArgumentCaptor<UpdateContextReq> contextDtoArgumentCaptor;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -67,14 +67,14 @@ class UpdateControllerTest {
         }
         // setup contextDtoArgumentCaptor
         contextDtoArgumentCaptor =
-                ArgumentCaptor.forClass(UpdateContextDto.class);
+                ArgumentCaptor.forClass(UpdateContextReq.class);
     }
 
     @Test
     void updateFromFile() throws Exception {
-        // setup UpdateContextDto
-        UpdateContextDto contextDto = UpdateContextDto.builder()
-                .sourceType(UpdateContextDto.SourceType.FILE)
+        // setup UpdateContextReq
+        UpdateContextReq contextDto = UpdateContextReq.builder()
+                .sourceType(UpdateContextReq.SourceType.FILE)
                 .file(mockFile)
                 .build();
 
@@ -153,9 +153,9 @@ class UpdateControllerTest {
 
     @Test
     void updateWithSampleData() throws Exception {
-        // setup UpdateContextDto
-        UpdateContextDto contextDto = UpdateContextDto.builder()
-                .sourceType(UpdateContextDto.SourceType.SAMPLEDATA)
+        // setup UpdateContextReq
+        UpdateContextReq contextDto = UpdateContextReq.builder()
+                .sourceType(UpdateContextReq.SourceType.SAMPLEDATA)
                 .build();
 
         // setup UpdateOrchestrator mock

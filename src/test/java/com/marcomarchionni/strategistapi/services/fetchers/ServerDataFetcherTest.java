@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.services.fetchers;
 
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexStatementResponseDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
 import com.marcomarchionni.strategistapi.services.fetchers.flexserviceclientmanagers.FlexServiceClientManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,14 +24,14 @@ class ServerDataFetcherTest {
 
     ServerDataFetcher serverDataFetcher;
 
-    UpdateContextDto updateContextDto;
+    UpdateContextReq updateContextReq;
 
     FlexStatementResponseDto flexStatementResponseDto;
     FlexQueryResponseDto flexQueryResponseDto;
 
     @BeforeEach
     void setUp() {
-        updateContextDto = UpdateContextDto.builder().sourceType(UpdateContextDto.SourceType.SERVER).queryId("queryId")
+        updateContextReq = UpdateContextReq.builder().sourceType(UpdateContextReq.SourceType.SERVER).queryId("queryId")
                 .token("token").build();
         flexStatementResponseDto = getPopulatedFlexStatementResponseDto();
         flexQueryResponseDto = getPopulatedFlexQueryResponseDto();
@@ -46,7 +46,7 @@ class ServerDataFetcherTest {
         when(clientManager.fetchFlexQueryResponseWithRetry(any(), any()))
                 .thenReturn(flexQueryResponseDto);
 
-        FlexQueryResponseDto responseDto = serverDataFetcher.fetch(updateContextDto);
+        FlexQueryResponseDto responseDto = serverDataFetcher.fetch(updateContextReq);
 
         assertNotNull(responseDto);
         assertEquals(flexQueryResponseDto, responseDto);

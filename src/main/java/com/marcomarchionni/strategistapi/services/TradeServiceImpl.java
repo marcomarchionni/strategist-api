@@ -4,10 +4,10 @@ import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.accessservice.TradeAccessService;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.Trade;
-import com.marcomarchionni.strategistapi.dtos.request.TradeFindDto;
+import com.marcomarchionni.strategistapi.dtos.request.TradeFind;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
-import com.marcomarchionni.strategistapi.dtos.response.TradeSummaryDto;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.strategistapi.mappers.TradeMapper;
@@ -26,7 +26,7 @@ public class TradeServiceImpl implements TradeService {
     private final TradeMapper tradeMapper;
 
     @Override
-    public TradeSummaryDto updateStrategyId(UpdateStrategyDto tradeUpdate) {
+    public TradeSummary updateStrategyId(UpdateStrategyDto tradeUpdate) {
 
         Trade trade = tradeAccessService.findById(tradeUpdate.getId()).orElseThrow(
                 () -> new EntityNotFoundException(Trade.class, tradeUpdate.getId())
@@ -39,7 +39,7 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public List<TradeSummaryDto> findByFilter(TradeFindDto tradeFind) {
+    public List<TradeSummary> findByFilter(TradeFind tradeFind) {
         List<Trade> trades = tradeAccessService.findByParams(
                 tradeFind.getTradeDateFrom(),
                 tradeFind.getTradeDateTo(),

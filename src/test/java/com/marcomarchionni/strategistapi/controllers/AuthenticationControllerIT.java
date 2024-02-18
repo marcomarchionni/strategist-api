@@ -2,8 +2,8 @@ package com.marcomarchionni.strategistapi.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.auth.SignInDto;
-import com.marcomarchionni.strategistapi.dtos.request.auth.SignUpDto;
+import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
+import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
 import com.marcomarchionni.strategistapi.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ class AuthenticationControllerIT {
 
     @Test
     void signup() throws Exception {
-        SignUpDto signUpDto = SignUpDto.builder()
+        SignUpReq signUpReq = SignUpReq.builder()
                 .firstName("Marco")
                 .lastName("Marchionni")
                 .email("marco99@gmail.com")
@@ -49,7 +49,7 @@ class AuthenticationControllerIT {
 
         mockMvc.perform(post("/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(signUpDto)))
+                        .content(mapper.writeValueAsString(signUpReq)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -69,12 +69,12 @@ class AuthenticationControllerIT {
 
         userRepository.save(user);
 
-        SignInDto signInDto = SignInDto.builder()
+        SignInReq signInReq = SignInReq.builder()
                 .email("marco99@gmail.com").password("password").build();
 
         mockMvc.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(signInDto)))
+                        .content(mapper.writeValueAsString(signInReq)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -84,12 +84,12 @@ class AuthenticationControllerIT {
     @Test
     void unauthorized() throws Exception {
 
-        SignInDto signInDto = SignInDto.builder()
+        SignInReq signInReq = SignInReq.builder()
                 .email("marco99@gmail.com").password("password").build();
 
         mockMvc.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(signInDto)))
+                        .content(mapper.writeValueAsString(signInReq)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))

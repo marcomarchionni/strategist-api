@@ -3,7 +3,7 @@ package com.marcomarchionni.strategistapi.mappers;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.Trade;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetailDto;
+import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -36,7 +36,7 @@ class PortfolioMapperImplTest {
         Strategy strategy = Strategy.builder().id(1L).name("EBAYlong").trades(trades).build();
         Portfolio portfolio = Portfolio.builder().id(1L).name("Saver").strategies(List.of(strategy)).build();
 
-        PortfolioDetailDto portfolioDto = portfolioMapper.toPortfolioDetailDto(portfolio);
+        PortfolioDetail portfolioDto = portfolioMapper.toPortfolioDetailDto(portfolio);
 
         assertNotNull(portfolioDto);
     }

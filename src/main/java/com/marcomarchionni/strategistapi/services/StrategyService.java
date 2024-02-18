@@ -1,22 +1,22 @@
 package com.marcomarchionni.strategistapi.services;
 
-import com.marcomarchionni.strategistapi.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.strategistapi.dtos.request.StrategyFindDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateNameDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategySummaryDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
+import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
+import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 
 import java.util.List;
 
 public interface StrategyService {
 
-    List<StrategySummaryDto> findByFilter(StrategyFindDto strategyFind);
+    List<StrategySummary> findByFilter(StrategyFind strategyFind);
 
-    StrategyDetailDto updateName(UpdateNameDto updateNameDto);
+    StrategyDetail updateName(UpdateName updateName);
 
     void deleteById(Long id);
 
-    StrategyDetailDto findById(Long id);
+    StrategyDetail findById(Long id);
 
-    StrategyDetailDto create(StrategyCreateDto strategyCreateDto);
+    StrategyDetail create(StrategyCreate strategyCreate);
 }

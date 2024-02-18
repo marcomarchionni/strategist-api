@@ -1,8 +1,8 @@
 package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.update.CombinedUpdateReport;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateDto;
+import com.marcomarchionni.strategistapi.dtos.response.update.CombinedUpdateReport;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateDto;
 import com.marcomarchionni.strategistapi.services.parsers.ResponseParser;
 import com.marcomarchionni.strategistapi.validators.UpdateDtoValidator;
 import lombok.RequiredArgsConstructor;

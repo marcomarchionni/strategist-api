@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.services.fetchers;
 
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ class ServerDataFetcherIT {
     @Test
     @Disabled
     void fetch() {
-        UpdateContextDto context = UpdateContextDto.builder().token(token).queryId(queryId).build();
+        UpdateContextReq context = UpdateContextReq.builder().token(token).queryId(queryId).build();
         FlexQueryResponseDto flexQueryResponseDto = serverDataFetcher.fetch(context);
 
         assertNotNull(flexQueryResponseDto);

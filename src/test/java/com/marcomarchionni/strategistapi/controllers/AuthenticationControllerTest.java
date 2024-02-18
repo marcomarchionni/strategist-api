@@ -2,8 +2,8 @@ package com.marcomarchionni.strategistapi.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.auth.SignInDto;
-import com.marcomarchionni.strategistapi.dtos.request.auth.SignUpDto;
+import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
+import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
 import com.marcomarchionni.strategistapi.dtos.response.auth.JwtAuthenticationResponse;
 import com.marcomarchionni.strategistapi.services.AuthenticationService;
 import com.marcomarchionni.strategistapi.services.DividendService;
@@ -64,7 +64,7 @@ class AuthenticationControllerTest {
     @Test
     void signupValidParameters() throws Exception {
         // setup data
-        SignUpDto signUpDto = SignUpDto.builder()
+        SignUpReq signUpReq = SignUpReq.builder()
                 .firstName("Marco")
                 .lastName("Marchionni")
                 .email("marco99@gmail.com")
@@ -74,7 +74,7 @@ class AuthenticationControllerTest {
 
         mockMvc.perform(post("/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(signUpDto)))
+                        .content(mapper.writeValueAsString(signUpReq)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -87,7 +87,7 @@ class AuthenticationControllerTest {
             "Marco, Marchionni,marco@gmail.com,password,U111"
     })
     void signupInvalidParameters(String firstName, String lastName, String email, String password, String accountId) throws Exception {
-        SignUpDto signUpDto = SignUpDto.builder()
+        SignUpReq signUpReq = SignUpReq.builder()
                 .firstName(firstName)
                 .lastName(lastName)
                 .email(email)
@@ -97,7 +97,7 @@ class AuthenticationControllerTest {
 
         mockMvc.perform(post("/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(signUpDto)))
+                        .content(mapper.writeValueAsString(signUpReq)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
@@ -106,7 +106,7 @@ class AuthenticationControllerTest {
 
     @Test
     void signinValidData() throws Exception {
-        var signInDto = SignInDto.builder()
+        var signInDto = SignInReq.builder()
                 .email("marco@gmail.com")
                 .password("password")
                 .build();
@@ -125,7 +125,7 @@ class AuthenticationControllerTest {
             "marco@gmail.com, pass",
     })
     void signinInvalidData(String email, String password) throws Exception {
-        var signInDto = SignInDto.builder()
+        var signInDto = SignInReq.builder()
                 .email(email)
                 .password(password)
                 .build();

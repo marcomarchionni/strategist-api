@@ -5,11 +5,11 @@ import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.StrategyCreateDto;
-import com.marcomarchionni.strategistapi.dtos.request.StrategyFindDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateNameDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategyDetailDto;
-import com.marcomarchionni.strategistapi.dtos.response.StrategySummaryDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
+import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
+import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 import com.marcomarchionni.strategistapi.mappers.StrategyMapper;
 import com.marcomarchionni.strategistapi.mappers.StrategyMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,11 +53,11 @@ class StrategyServiceImplTest {
     @Test
     void findByParams() {
         // setup
-        StrategyFindDto strategyFindDto = StrategyFindDto.builder().build();
-        when(strategyAccessService.findByParams(strategyFindDto.getName())).thenReturn(userStrategies);
+        StrategyFind strategyFind = StrategyFind.builder().build();
+        when(strategyAccessService.findByParams(strategyFind.getName())).thenReturn(userStrategies);
 
         // execute
-        List<StrategySummaryDto> actualStrategies = strategyService.findByFilter(strategyFindDto);
+        List<StrategySummary> actualStrategies = strategyService.findByFilter(strategyFind);
 
         // verify
         assertNotNull(actualStrategies);
@@ -72,19 +72,19 @@ class StrategyServiceImplTest {
         when(strategyAccessService.findById(userStrategy.getId())).thenReturn(Optional.of(userStrategy));
 
         // execute
-        StrategyDetailDto strategyDetailDto = strategyService.findById(userStrategy.getId());
+        StrategyDetail strategyDetail = strategyService.findById(userStrategy.getId());
 
         // verify
-        assertNotNull(strategyDetailDto);
-        assertEquals(userStrategy.getId(), strategyDetailDto.getId());
-        assertEquals(userStrategy.getTrades().size(), strategyDetailDto.getTrades().size());
+        assertNotNull(strategyDetail);
+        assertEquals(userStrategy.getId(), strategyDetail.getId());
+        assertEquals(userStrategy.getTrades().size(), strategyDetail.getTrades().size());
     }
 
     @Test
     void create() {
         // setup test data
         Portfolio userPortfolio = getSamplePortfolio("MyPortfolio");
-        StrategyCreateDto strategyCreateDto = StrategyCreateDto.builder().name("ZM long")
+        StrategyCreate strategyCreate = StrategyCreate.builder().name("ZM long")
                 .portfolioId(userPortfolio.getId()).build();
 
         // setup mocks
@@ -92,30 +92,30 @@ class StrategyServiceImplTest {
         when(strategyAccessService.save(any(Strategy.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute
-        StrategyDetailDto actualStrategy = strategyService.create(strategyCreateDto);
+        StrategyDetail actualStrategy = strategyService.create(strategyCreate);
 
         // verify
         assertNotNull(actualStrategy);
-        assertEquals(strategyCreateDto.getName(), actualStrategy.getName());
+        assertEquals(strategyCreate.getName(), actualStrategy.getName());
         assertEquals(userPortfolio.getId(), actualStrategy.getPortfolioId());
     }
 
     @Test
     void updateName() {
         // setup test data
-        UpdateNameDto updateNameDto = UpdateNameDto.builder().id(userStrategy.getId()).name("NewName").build();
+        UpdateName updateName = UpdateName.builder().id(userStrategy.getId()).name("NewName").build();
 
         // setup mocks
         when(strategyAccessService.findById(userStrategy.getId())).thenReturn(Optional.of(userStrategy));
         when(strategyAccessService.save(any(Strategy.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute
-        StrategyDetailDto renamedStrategy = strategyService.updateName(updateNameDto);
+        StrategyDetail renamedStrategy = strategyService.updateName(updateName);
 
         // verify
         assertNotNull(renamedStrategy);
         assertEquals(userStrategy.getId(), renamedStrategy.getId());
-        assertEquals(updateNameDto.getName(), renamedStrategy.getName());
+        assertEquals(updateName.getName(), renamedStrategy.getName());
     }
 
     @Test

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PortfolioCreateDto {
+public class PortfolioCreate {
 
     @PortfolioName
     private String name;

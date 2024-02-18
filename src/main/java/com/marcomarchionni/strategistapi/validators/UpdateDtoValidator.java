@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.validators;
 
 import com.marcomarchionni.strategistapi.domain.FlexStatement;
-import com.marcomarchionni.strategistapi.dtos.update.UpdateDto;
+import com.marcomarchionni.strategistapi.dtos.response.update.UpdateDto;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.InvalidUserDataException;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;

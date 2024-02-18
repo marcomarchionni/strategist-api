@@ -1,21 +1,21 @@
 package com.marcomarchionni.strategistapi.validators;
 
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextDto;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class UpdateContextValidator implements ConstraintValidator<ValidUpdateContext, UpdateContextDto> {
+public class UpdateContextValidator implements ConstraintValidator<ValidUpdateContext, UpdateContextReq> {
     @Override
-    public boolean isValid(UpdateContextDto dto, ConstraintValidatorContext context) {
-        if (dto.getSourceType() == UpdateContextDto.SourceType.FILE) {
+    public boolean isValid(UpdateContextReq dto, ConstraintValidatorContext context) {
+        if (dto.getSourceType() == UpdateContextReq.SourceType.FILE) {
             return checkFileParameter(dto, context);
-        } else if (dto.getSourceType() == UpdateContextDto.SourceType.SERVER) {
+        } else if (dto.getSourceType() == UpdateContextReq.SourceType.SERVER) {
             return checkQueryIdAndTokenParameters(dto, context);
         }
         return true;
     }
 
-    private boolean checkFileParameter(UpdateContextDto dto, ConstraintValidatorContext context) {
+    private boolean checkFileParameter(UpdateContextReq dto, ConstraintValidatorContext context) {
         if (dto.getFile() == null) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("File parameter is required")
@@ -25,7 +25,7 @@ public class UpdateContextValidator implements ConstraintValidator<ValidUpdateCo
         return true;
     }
 
-    private boolean checkQueryIdAndTokenParameters(UpdateContextDto dto, ConstraintValidatorContext context) {
+    private boolean checkQueryIdAndTokenParameters(UpdateContextReq dto, ConstraintValidatorContext context) {
         if (dto.getQueryId() == null) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("QueryId parameter is required")
