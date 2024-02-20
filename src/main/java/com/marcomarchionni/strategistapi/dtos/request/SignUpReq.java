@@ -37,4 +37,7 @@ public class SignUpReq {
     @Size(min = 8, max = 8, message = "Account ID must be 8 characters")
     @Schema(description = "Account ID", example = "U1234567")
     private String accountId;
+
+    @Schema(description = "Admin Key", example = "xzy1234")
+    private String adminKey;
 }

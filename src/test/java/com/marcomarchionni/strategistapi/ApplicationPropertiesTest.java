@@ -18,10 +18,14 @@ public class ApplicationPropertiesTest {
     @Value("${token.signing.key}")
     private String tokenSigningKey;
 
+    @Value("${signup.adminKey}")
+    private String adminKey;
+
     @Test
     void testPrivateProperties() {
         assertNotEquals("SET_IN_PRIVATE_PROPERTIES", token);
         assertNotEquals("SET_IN_PRIVATE_PROPERTIES", queryId);
         assertNotEquals("SET_IN_PRIVATE_PROPERTIES", tokenSigningKey);
+        assertNotEquals("SET_IN_PRIVATE_PROPERTIES", adminKey);
     }
 }
