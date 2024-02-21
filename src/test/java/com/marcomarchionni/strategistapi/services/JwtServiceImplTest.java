@@ -69,4 +69,23 @@ class JwtServiceImplTest {
         String expiredToken = invalidService.generateToken(user);
         assertThrows(ExpiredJwtException.class, () -> invalidService.isTokenValid(expiredToken, user));
     }
+
+    @Test
+    void generateAdminToken() {
+        // setup
+        new JwtServiceImpl("secretsecretsecretsecretsecretsecretsecretsecret", 1000 * 60 * 24);
+        User testAdmin = User.builder()
+                .id(1L)
+                .firstName("test.admin")
+                .lastName("test.admin")
+                .email("test.admin").password("test.admin").role(User.Role.ADMIN).build();
+
+        // execute
+        String token = jwtService.generateToken(testAdmin);
+        String userName = jwtService.extractUserName(token);
+
+        // verify
+        assertEquals(testAdmin.getEmail(), userName);
+    }
+
 }

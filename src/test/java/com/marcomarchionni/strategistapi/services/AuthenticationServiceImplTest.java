@@ -40,7 +40,7 @@ class AuthenticationServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        authenticationServiceImpl = new AuthenticationServiceImpl("adminKey", userRepository, passwordEncoder,
+        authenticationServiceImpl = new AuthenticationServiceImpl(userRepository, passwordEncoder,
                 jwtService,
                 authenticationManager);
     }
@@ -71,7 +71,7 @@ class AuthenticationServiceImplTest {
     void adminSignUp() {
         // set up
         SignUpReq signUpReq = SignUpReq.builder().firstName("Marco").lastName("Marchionni").email("marco99@gmail.com")
-                .password("password").adminKey("adminKey").build();
+                .password("password").role("ADMIN").build();
 
         when(passwordEncoder.encode(any(String.class))).thenReturn("encodedPassword");
         when(jwtService.generateToken(any(User.class))).thenReturn("jwtToken");

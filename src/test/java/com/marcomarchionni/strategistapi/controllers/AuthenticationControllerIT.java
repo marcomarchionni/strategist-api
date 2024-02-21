@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +42,18 @@ class AuthenticationControllerIT {
 
     @Test
     void signup() throws Exception {
+
+        // Set up context holder with admin user
+        User user = User.builder()
+                .firstName("test-admin")
+                .lastName("test-admin")
+                .email("test.admin")
+                .password(passwordEncoder.encode("test.admin"))
+                .role(User.Role.ADMIN)
+                .build();
+        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         SignUpReq signUpReq = SignUpReq.builder()
                 .firstName("Marco")
                 .lastName("Marchionni")

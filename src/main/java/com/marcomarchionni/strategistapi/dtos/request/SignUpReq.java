@@ -3,6 +3,7 @@ package com.marcomarchionni.strategistapi.dtos.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,7 @@ public class SignUpReq {
     @Schema(description = "Account ID", example = "U1234567")
     private String accountId;
 
-    @Schema(description = "Admin Key", example = "xzy1234")
-    private String adminKey;
+    @Schema(description = "Role", example = "USER")
+    @Pattern(regexp = "^(USER|ADMIN|)$", message = "Role must be either USER, ADMIN or null (defaults to USER)")
+    private String role;
 }

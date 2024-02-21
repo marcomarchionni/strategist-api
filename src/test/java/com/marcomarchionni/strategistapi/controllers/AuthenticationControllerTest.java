@@ -82,17 +82,20 @@ class AuthenticationControllerTest {
 
     @ParameterizedTest
     @CsvSource({
-            "Marco, Marchionni,email,password,U1234567",
-            "M, Marchionni,marco@gmail.com,password,U1234567",
-            "Marco, Marchionni,marco@gmail.com,password,U111"
+            "Marco,Marchionni,email,password,U1234567,USER",
+            "M, Marchionni,marco@gmail.com,password,U1234567,USER",
+            "Marco,Marchionni,marco@gmail.com,password,U111,USER",
+            "Marco,Marchionni,marco@gmail.com,password,U1234567,INVALID"
     })
-    void signupInvalidParameters(String firstName, String lastName, String email, String password, String accountId) throws Exception {
+    void signupInvalidParameters(String firstName, String lastName, String email, String password, String accountId,
+                                 String role) throws Exception {
         SignUpReq signUpReq = SignUpReq.builder()
                 .firstName(firstName)
                 .lastName(lastName)
                 .email(email)
                 .password(password)
                 .accountId(accountId)
+                .role(role)
                 .build();
 
         mockMvc.perform(post("/auth/signup")
