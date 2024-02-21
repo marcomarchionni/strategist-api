@@ -46,7 +46,11 @@ public class SecurityConfig {
                                 mvc.pattern("/strategist.yaml"),
                                 mvc.pattern("/"))
                         .permitAll()
-                        .requestMatchers(mvc.pattern("/auth/signup")).hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(
+                                mvc.pattern("/auth/signup"),
+                                mvc.pattern("/admin/**")
+                        )
+                        .hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())

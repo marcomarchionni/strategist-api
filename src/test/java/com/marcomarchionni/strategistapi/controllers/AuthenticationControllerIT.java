@@ -48,7 +48,7 @@ class AuthenticationControllerIT {
                 .firstName("test-admin")
                 .lastName("test-admin")
                 .email("test.admin")
-                .password(passwordEncoder.encode("test.admin"))
+                .password("test.admin")
                 .role(User.Role.ADMIN)
                 .build();
         Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());

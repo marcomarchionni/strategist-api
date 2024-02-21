@@ -58,4 +58,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (requestedRole.equals("ADMIN")) return User.Role.ADMIN;
         else return User.Role.USER;
     }
+
+
 }

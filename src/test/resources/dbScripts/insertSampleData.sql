@@ -13,8 +13,14 @@ DELETE
 FROM `strategy`;
 DELETE
 FROM `portfolio`;
+DELETE
+FROM `user_details`;
 
 -- Insert sample data in ibTestDb
+INSERT INTO `user_details` (`first_name`, `last_name`, `email`, `password`, `role`, `account_id`)
+VALUES ('John', 'Doe', 'john.doe@gmail.com', 'password', 'USER', 'U1111111');
+INSERT INTO `user_details` (`first_name`, `last_name`, `email`, `password`, `role`, `account_id`)
+VALUES ('Jane', 'Doe', 'jane.doe@gmail.com', 'password', 'USER', 'U2222222');
 
 INSERT INTO `flex_statement` (`account_id`, `from_date`, `to_date`, `period`, `when_generated`)
 VALUES ('U1111111', '2022-06-01', '2022-06-30', 'LastMonth', '2022-07-08 12:04:33');
