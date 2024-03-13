@@ -39,15 +39,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
-                                mvc.pattern("/auth/signin"),
                                 mvc.pattern("/error"),
                                 mvc.pattern("/api-docs/**"),
                                 mvc.pattern("/swagger-ui/**"),
-                                mvc.pattern("/strategist.yaml"),
                                 mvc.pattern("/"))
                         .permitAll()
                         .requestMatchers(
-                                mvc.pattern("/auth/signup"),
+                                mvc.pattern("/auth/**"),
                                 mvc.pattern("/admin/**")
                         )
                         .hasAuthority("ROLE_ADMIN")

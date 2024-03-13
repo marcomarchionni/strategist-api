@@ -6,6 +6,7 @@ import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Tag(name = "4. Strategies", description = "Create or edit user defined strategies")
 @RequestMapping("/strategies")
+@SecurityRequirement(name = "bearerAuth")
 public interface StrategyApi {
 
     @GetMapping

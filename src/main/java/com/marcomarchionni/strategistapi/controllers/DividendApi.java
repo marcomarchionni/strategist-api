@@ -4,6 +4,7 @@ import com.marcomarchionni.strategistapi.dtos.request.DividendFind;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Tag(name = "7. Dividends", description = "List dividends or assign them to a strategy")
 @RequestMapping("/dividends")
+@SecurityRequirement(name = "bearerAuth")
 public interface DividendApi {
     @GetMapping
     @Operation(summary = "Find dividends by filter")

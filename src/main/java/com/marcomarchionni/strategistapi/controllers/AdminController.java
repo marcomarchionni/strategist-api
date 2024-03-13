@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.services.UserService;
+import com.marcomarchionni.strategistapi.services.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,15 +11,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController implements AdminApi {
 
-    private final UserService userService;
+    private final AdminService adminService;
 
     @Override
     public List<User> findAllUsers() {
-        return userService.findAllUsers();
+        return adminService.findAllUsers();
     }
 
     @Override
     public void deleteUser(String email) {
-        userService.deleteUser(email);
+        adminService.deleteUserAndUserData(email);
     }
 }

@@ -32,4 +32,8 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
     Optional<Trade> findByAccountIdAndIbOrderId(String accountId, Long ibOrderId);
 
     Optional<Trade> findByIdAndAccountId(Long id, String accountId);
+
+    void deleteByAccountId(String accountId);
+
+    List<Trade> findAllByAccountId(String accountId);
 }

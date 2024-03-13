@@ -20,4 +20,8 @@ public interface StrategyRepository extends JpaRepository<Strategy, Long> {
     Optional<Strategy> findByAccountIdAndName(String accountId, String expectedSymbol);
 
     Optional<Strategy> findByIdAndAccountId(Long id, String accountId);
+
+    void deleteByAccountId(String accountId);
+
+    List<Strategy> findAllByAccountId(String accountId);
 }

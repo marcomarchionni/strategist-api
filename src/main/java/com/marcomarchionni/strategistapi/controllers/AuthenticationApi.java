@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "1. Authentication", description = "User signin or signup")
 @RequestMapping("/auth")
+@SecurityRequirement(name = "bearerAuth")
 public interface AuthenticationApi {
     @PostMapping("/signup")
-    @Operation(summary = "Create a new user")
+    @Operation(summary = "Create a new user (not for test users)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType =
                     "application/json", examples = @ExampleObject(value = "{\"token\": \"eyJhbGciOiJIUzI1NiJ9" +
@@ -34,7 +36,7 @@ public interface AuthenticationApi {
     ResponseEntity<JwtAuthenticationResponse> signup(@Valid @RequestBody SignUpReq request);
 
     @PostMapping("/signin")
-    @Operation(summary = "Signin with an existing user")
+    @Operation(summary = "Signin with an existing user (not for test users)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType =
                     "application/json", examples = {@ExampleObject(value = "{\"token\": \"eyJhbGciOiJIUzI1NiJ9" +

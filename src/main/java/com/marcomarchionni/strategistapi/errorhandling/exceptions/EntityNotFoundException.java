@@ -11,6 +11,10 @@ public class EntityNotFoundException extends CustomException {
         super(buildMessage(entityClass, entityId), DEFAULT_TITLE, DEFAULT_STATUS_CODE);
     }
 
+    public EntityNotFoundException(String email) {
+        super("User with email " + email + "not found", DEFAULT_TITLE, DEFAULT_STATUS_CODE);
+    }
+
     private static String buildMessage(Class<?> entityClass, Long entityId) {
         return String.format("Entity %s with id %d not found", entityClass.getSimpleName(), entityId);
     }

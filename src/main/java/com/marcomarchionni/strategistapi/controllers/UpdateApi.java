@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "2. Update", description = "Load trading data from an external source")
 @RequestMapping("/update")
+@SecurityRequirement(name = "bearerAuth")
 public interface UpdateApi {
     @PostMapping()
     @Operation(summary = "Update data from an external source")
-    @SecurityRequirement(name = "bearerAuth")
     CombinedUpdateReport update(@Valid UpdateContextReq dto) throws Exception;
 }

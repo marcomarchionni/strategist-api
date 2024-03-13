@@ -37,19 +37,6 @@ public class DividendServiceImplIT {
         closedDividend.setOpenClosed(Dividend.OpenClosed.CLOSED);
     }
 
-//    @Test
-//    void saveClosedDividendOpenClosedEqualsClosed() {
-//        List<Dividend> dividends = new ArrayList<>();
-//        dividends.add(closedDividend);
-//
-//        dividendService.saveDividends(dividends);
-//
-//        Optional<Dividend> optDbDividend = dividendRepository.findById(26754720220603L);
-//        assertTrue(optDbDividend.isPresent());
-//        Dividend dbDividend = optDbDividend.get();
-//        assertEquals(Dividend.OpenClosed.CLOSED, dbDividend.getOpenClosed());
-//    }
-
     @AfterEach
     void cleanup() {
         dividendRepository.deleteById(26754720220603L);

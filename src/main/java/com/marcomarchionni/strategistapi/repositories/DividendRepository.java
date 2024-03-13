@@ -36,5 +36,9 @@ public interface DividendRepository extends JpaRepository<Dividend, Long> {
   List<Dividend> findByAccountIdAndSymbol(String accountId, String symbol);
 
     boolean existsByAccountIdAndActionId(String accountId, Long actionId);
+
+    void deleteByAccountId(String accountId);
+
+    List<Dividend> findAllByAccountId(String accountId);
 }
 

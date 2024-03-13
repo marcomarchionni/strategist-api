@@ -3,12 +3,16 @@ package com.marcomarchionni.strategistapi.dtos.request;
 import com.marcomarchionni.strategistapi.validators.ValidUpdateContext;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ValidUpdateContext
 public class UpdateContextReq {
     public enum SourceType {

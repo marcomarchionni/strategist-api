@@ -29,4 +29,5 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
 
     Optional<Position> findByIdAndAccountId(Long id, String accountId);
 
+    void deleteByAccountId(String accountId);
 }

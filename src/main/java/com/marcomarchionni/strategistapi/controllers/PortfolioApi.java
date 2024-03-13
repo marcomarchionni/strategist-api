@@ -5,6 +5,7 @@ import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Tag(name = "3. Portfolios", description = "Create or edit user defined portfolios.")
 @RequestMapping("/portfolios")
+@SecurityRequirement(name = "bearerAuth")
 public interface PortfolioApi {
     @GetMapping
     @Operation(summary = "Find all user's portfolios")

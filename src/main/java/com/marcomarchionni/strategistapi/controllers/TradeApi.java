@@ -4,6 +4,7 @@ import com.marcomarchionni.strategistapi.dtos.request.TradeFind;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Tag(name = "5. Trades", description = "List trades or assign them to a strategy")
 @RequestMapping("/trades")
+@SecurityRequirement(name = "bearerAuth")
 public interface TradeApi {
 
     @GetMapping

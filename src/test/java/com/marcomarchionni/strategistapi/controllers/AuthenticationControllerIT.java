@@ -5,6 +5,7 @@ import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
 import com.marcomarchionni.strategistapi.repositories.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,19 +41,21 @@ class AuthenticationControllerIT {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Test
-    void signup() throws Exception {
-
-        // Set up context holder with admin user
+    @BeforeEach
+    void setUp() {
         User user = User.builder()
                 .firstName("test-admin")
                 .lastName("test-admin")
                 .email("test.admin")
-                .password("test.admin")
+                .password(passwordEncoder.encode("test.admin"))
                 .role(User.Role.ADMIN)
                 .build();
         Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    @Test
+    void signup() throws Exception {
 
         SignUpReq signUpReq = SignUpReq.builder()
                 .firstName("Marco")

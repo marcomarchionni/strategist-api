@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.repositories.UserRepository;
+import com.marcomarchionni.strategistapi.repositories.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +32,20 @@ class AdminControllerIT {
 
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    FlexStatementRepository flexStatementRepository;
+    @Autowired
+    PortfolioRepository portfolioRepository;
+    @Autowired
+    StrategyRepository strategyRepository;
+    @Autowired
+    TradeRepository tradeRepository;
+    @Autowired
+    PositionRepository positionRepository;
+    @Autowired
+    DividendRepository dividendRepository;
 
     @BeforeEach
     void setUp() {
@@ -67,6 +78,7 @@ class AdminControllerIT {
         List<User> users = userRepository.findAll();
         assertEquals(2, users.size());
         String email = users.get(0).getEmail();
+        String accountId = users.get(0).getAccountId();
 
         mockMvc.perform(delete("/admin/users/{email}", email))
                 .andDo(print())
@@ -75,5 +87,11 @@ class AdminControllerIT {
         List<User> usersAfterDelete = userRepository.findAll();
 
         assertEquals(users.size() - 1, usersAfterDelete.size());
+        assertEquals(0, flexStatementRepository.findAllByAccountId(accountId).size());
+        assertEquals(0, portfolioRepository.findAllByAccountId(accountId).size());
+        assertEquals(0, strategyRepository.findAllByAccountId(accountId).size());
+        assertEquals(0, positionRepository.findAllByAccountId(accountId).size());
+        assertEquals(0, tradeRepository.findAllByAccountId(accountId).size());
+        assertEquals(0, dividendRepository.findAllByAccountId(accountId).size());
     }
 }
