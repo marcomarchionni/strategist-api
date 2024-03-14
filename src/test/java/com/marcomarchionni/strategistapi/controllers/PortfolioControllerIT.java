@@ -3,8 +3,8 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
+import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -103,24 +103,24 @@ class PortfolioControllerIT {
     @CsvSource({"U1111111, Super Portfolio", "U1111111, Marco's Portfolio", "U1111111, Zipp"})
     void updatePortfolioNameSuccess(String accountId, String portfolioName) throws Exception {
         Long portfolioId = portfolioRepository.findByAccountIdAndName(accountId, "Saver Portfolio").get().getId();
-        UpdateName updateName = UpdateName.builder().id(portfolioId).name(portfolioName).build();
+        NameUpdate nameUpdate = NameUpdate.builder().id(portfolioId).name(portfolioName).build();
 
         mockMvc.perform(put("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(updateName)))
+                        .content(mapper.writeValueAsString(nameUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(updateName.getName())));
+                .andExpect(jsonPath("$.name", is(nameUpdate.getName())));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"Saver Portfolio", ","})
     void createPortfolioException(String portfolioName) throws Exception {
-        UpdateName badUpdateName = UpdateName.builder().name(portfolioName).build();
+        NameUpdate badNameUpdate = NameUpdate.builder().name(portfolioName).build();
 
         mockMvc.perform(post("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(badUpdateName)))
+                        .content(mapper.writeValueAsString(badNameUpdate)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));

@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContext;
 import com.marcomarchionni.strategistapi.dtos.response.update.CombinedUpdateReport;
 import com.marcomarchionni.strategistapi.services.fetchers.DataFetcher;
 import com.marcomarchionni.strategistapi.services.fetchers.datafetcherresolvers.DataFetcherResolver;
@@ -21,7 +21,7 @@ public class UpdateOrchestratorImpl implements UpdateOrchestrator {
     private final UpdateService updateService;
 
     @Override
-    public CombinedUpdateReport update(UpdateContextReq context) throws IOException {
+    public CombinedUpdateReport update(UpdateContext context) throws IOException {
         // Resolve data fetcher
         DataFetcher fetcher = dataFetcherResolver.resolve(context.getSourceType());
         // Fetch dto

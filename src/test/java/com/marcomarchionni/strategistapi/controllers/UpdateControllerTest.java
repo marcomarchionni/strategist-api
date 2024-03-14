@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.domain.Trade;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContext;
 import com.marcomarchionni.strategistapi.dtos.response.update.CombinedUpdateReport;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.services.JwtService;
@@ -48,7 +48,7 @@ class UpdateControllerTest {
 
     MockMultipartFile mockFile;
 
-    ArgumentCaptor<UpdateContextReq> contextDtoArgumentCaptor;
+    ArgumentCaptor<UpdateContext> contextDtoArgumentCaptor;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -67,14 +67,14 @@ class UpdateControllerTest {
         }
         // setup contextDtoArgumentCaptor
         contextDtoArgumentCaptor =
-                ArgumentCaptor.forClass(UpdateContextReq.class);
+                ArgumentCaptor.forClass(UpdateContext.class);
     }
 
     @Test
     void updateFromFile() throws Exception {
-        // setup UpdateContextReq
-        UpdateContextReq contextDto = UpdateContextReq.builder()
-                .sourceType(UpdateContextReq.SourceType.FILE)
+        // setup UpdateContext
+        UpdateContext contextDto = UpdateContext.builder()
+                .sourceType(UpdateContext.SourceType.FILE)
                 .file(mockFile)
                 .build();
 
@@ -153,9 +153,9 @@ class UpdateControllerTest {
 
     @Test
     void updateWithSampleData() throws Exception {
-        // setup UpdateContextReq
-        UpdateContextReq contextDto = UpdateContextReq.builder()
-                .sourceType(UpdateContextReq.SourceType.SAMPLEDATA)
+        // setup UpdateContext
+        UpdateContext contextDto = UpdateContext.builder()
+                .sourceType(UpdateContext.SourceType.SAMPLEDATA)
                 .build();
 
         // setup UpdateOrchestrator mock

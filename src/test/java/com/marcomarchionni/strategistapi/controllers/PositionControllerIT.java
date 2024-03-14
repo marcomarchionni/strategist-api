@@ -3,7 +3,7 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.config.WebMvcConfig;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.repositories.PositionRepository;
 import com.marcomarchionni.strategistapi.repositories.StrategyRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -110,7 +110,7 @@ class PositionControllerIT {
         Long positionId = positionRepository.findByAccountIdAndSymbol(user.getAccountId(), expectedSymbol).get()
                 .getId();
 
-        UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(positionId).strategyId(strategyId).build();
+        StrategyAssign positionUpdate = StrategyAssign.builder().id(positionId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/positions")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -127,7 +127,7 @@ class PositionControllerIT {
     @CsvSource({"265598, 3455", "20, 1", ",,"})
     void updateStrategyIdExceptions(Long positionId, Long strategyId) throws Exception {
 
-        UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(positionId).strategyId(strategyId).build();
+        StrategyAssign positionUpdate = StrategyAssign.builder().id(positionId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/positions")
                         .contentType(MediaType.APPLICATION_JSON)

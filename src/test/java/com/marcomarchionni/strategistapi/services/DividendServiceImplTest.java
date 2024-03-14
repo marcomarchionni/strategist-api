@@ -7,7 +7,7 @@ import com.marcomarchionni.strategistapi.domain.Dividend;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.DividendFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.mappers.DividendMapper;
@@ -81,7 +81,7 @@ class DividendServiceImplTest {
     @Test
     void updateStrategyId() {
         // setup test data
-        UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder()
+        StrategyAssign dividendUpdate = StrategyAssign.builder()
                 .id(dividend.getId()).strategyId(strategy.getId()).build();
 
         // setup mocks

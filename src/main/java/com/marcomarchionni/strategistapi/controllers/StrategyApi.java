@@ -1,11 +1,13 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,7 +21,12 @@ import java.util.List;
 public interface StrategyApi {
 
     @GetMapping
-    @Operation(summary = "Find strategies by filter")
+    @Operation(summary = "Find strategies by filter",
+            parameters = {
+                    @Parameter(name = "name", description = "Strategy name", example = "AAPL bullcall Jan26", schema
+                            = @Schema(type = "string")),
+            })
+    @Parameter(name = "strategyFind", hidden = true)
     List<StrategySummary> findByFilter(@Valid StrategyFind strategyFind);
 
     @GetMapping("/{id}")
@@ -32,7 +39,7 @@ public interface StrategyApi {
 
     @PutMapping
     @Operation(summary = "Update strategy name")
-    StrategyDetail updateName(@RequestBody @Valid UpdateName updateName);
+    StrategyDetail updateName(@RequestBody @Valid NameUpdate nameUpdate);
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete strategy by id")

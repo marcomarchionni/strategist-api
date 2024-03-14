@@ -14,21 +14,20 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 @ValidUpdateContext
-public class UpdateContextReq {
+public class UpdateContext {
+    @NotNull(message = "Source type is required")
+    @Schema(description = "Allowed values: SERVER (fetch data from Interactive Brokers WebFlexService), " +
+            "FILE (fetch data from a flex query xml file), SAMPLEDATA (fetch sample data for testing " +
+            "purposes)", example = "SAMPLEDATA")
+    SourceType sourceType;
+    @Schema(description = "Query id (ignored if sourceType is not SERVER)")
+    String queryId;
+    @Schema(description = "Token (ignored if sourceType is not SERVER)")
+    String token;
+    @Schema(name = "file", description = "File (ignored if sourceType is not FILE)", type = "string", format = "binary")
+    MultipartFile file;
+
     public enum SourceType {
         FILE, SERVER, SAMPLEDATA
     }
-
-    @NotNull
-    @Schema(description = "Source type", example = "SAMPLEDATA")
-    SourceType sourceType;
-
-    @Schema(description = "File (ignored if sourceType is not FILE)")
-    MultipartFile file;
-
-    @Schema(description = "Query id (ignored if sourceType is not SERVER)")
-    String queryId;
-
-    @Schema(description = "Token (ignored if sourceType is not SERVER)")
-    String token;
 }

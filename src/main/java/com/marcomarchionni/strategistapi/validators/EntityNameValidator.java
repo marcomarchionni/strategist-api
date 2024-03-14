@@ -3,9 +3,9 @@ package com.marcomarchionni.strategistapi.validators;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class PortfolioNameValidator implements ConstraintValidator<PortfolioName, String> {
+public class EntityNameValidator implements ConstraintValidator<EntityName, String> {
 
-    public void initialize(PortfolioName parameters) {
+    public void initialize(EntityName parameters) {
     }
 
     public boolean isValid(String portfolioName, ConstraintValidatorContext constraintValidatorContext) {

@@ -35,8 +35,7 @@ public class OpenApiConfig {
     @Bean
     public OpenApiCustomizer customiseSchemas() {
         return openApi -> {
-            List<String> schemasToRemove = List.of("Trade", "Position", "Dividend", "Strategy", "Portfolio",
-                    "FlexStatement");
+            List<String> schemasToRemove = List.of("TradeFind");
             schemasToRemove.forEach(openApi.getComponents().getSchemas()::remove);
         };
     }

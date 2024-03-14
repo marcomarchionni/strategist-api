@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.dtos.request.PositionFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
 import com.marcomarchionni.strategistapi.services.PositionService;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ public class PositionController implements PositionApi {
         return positionService.findByFilter(positionFind);
     }
 
-    public PositionSummary updateStrategyId(@RequestBody @Valid UpdateStrategyDto positionUpdate) {
+    public PositionSummary updateStrategyId(@RequestBody @Valid StrategyAssign positionUpdate) {
         return positionService.updateStrategyId(positionUpdate);
     }
 }

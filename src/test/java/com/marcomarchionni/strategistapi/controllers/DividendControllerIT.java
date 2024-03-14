@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.repositories.DividendRepository;
 import com.marcomarchionni.strategistapi.repositories.StrategyRepository;
 import com.marcomarchionni.strategistapi.repositories.UserRepository;
@@ -118,7 +118,7 @@ class DividendControllerIT {
 
         Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), strategyName).get().getId();
 
-        UpdateStrategyDto dividendUpdate = UpdateStrategyDto.builder().id(dividendId).strategyId(strategyId).build();
+        StrategyAssign dividendUpdate = StrategyAssign.builder().id(dividendId).strategyId(strategyId).build();
 
         // execute request
         mockMvc.perform(put("/dividends")

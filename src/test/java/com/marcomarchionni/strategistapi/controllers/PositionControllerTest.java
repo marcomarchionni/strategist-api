@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Position;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
 import com.marcomarchionni.strategistapi.mappers.PositionMapper;
 import com.marcomarchionni.strategistapi.mappers.PositionMapperImpl;
@@ -84,7 +84,7 @@ class PositionControllerTest {
 
         mapper = new ObjectMapper();
 
-        UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder().id(position.getId()).strategyId(2L).build();
+        StrategyAssign positionUpdate = StrategyAssign.builder().id(position.getId()).strategyId(2L).build();
         when(positionService.updateStrategyId(any())).thenReturn(positionSummary);
 
         mockMvc.perform(put("/positions")

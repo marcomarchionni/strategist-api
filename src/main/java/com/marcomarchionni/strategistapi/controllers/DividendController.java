@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.dtos.request.DividendFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 import com.marcomarchionni.strategistapi.services.DividendService;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ public class DividendController implements DividendApi {
         return dividendService.findByFilter(dividendFind);
     }
 
-    public DividendSummary updateStrategyId(@RequestBody @Valid UpdateStrategyDto dividendUpdate) {
+    public DividendSummary updateStrategyId(@RequestBody @Valid StrategyAssign dividendUpdate) {
         return dividendService.updateStrategyId(dividendUpdate);
     }
 }

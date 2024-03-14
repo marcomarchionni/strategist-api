@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.services.fetchers;
 
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexStatementResponseDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContext;
 import com.marcomarchionni.strategistapi.services.fetchers.flexserviceclientmanagers.FlexServiceClientManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ public class ServerDataFetcher implements DataFetcher {
     private final FlexServiceClientManager clientManager;
 
     @Override
-    public FlexQueryResponseDto fetch(UpdateContextReq context) {
+    public FlexQueryResponseDto fetch(UpdateContext context) {
         // Extract token and query id from context
         String token = context.getToken();
         String queryId = context.getQueryId();

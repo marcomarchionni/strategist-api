@@ -3,8 +3,8 @@ package com.marcomarchionni.strategistapi.services;
 import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
+import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -115,7 +115,7 @@ class PortfolioServiceImplTest {
         String accountId = user.getAccountId();
         Long portfolioId = userPortfolio.getId();
         String newPortfolioName = "NewName";
-        UpdateName updateName = UpdateName.builder().id(portfolioId).name(newPortfolioName).build();
+        NameUpdate nameUpdate = NameUpdate.builder().id(portfolioId).name(newPortfolioName).build();
 
         // Setup mocks
         when(dataGateway.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
@@ -123,7 +123,7 @@ class PortfolioServiceImplTest {
         when(dataGateway.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Execute service
-        PortfolioDetail actualPortfolioDto = portfolioService.updateName(updateName);
+        PortfolioDetail actualPortfolioDto = portfolioService.updateName(nameUpdate);
 
         // Verify results
         assertNotNull(actualPortfolioDto);

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.Trade;
 import com.marcomarchionni.strategistapi.domain.User;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.request.TradeFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import com.marcomarchionni.strategistapi.mappers.TradeMapper;
 import com.marcomarchionni.strategistapi.mappers.TradeMapperImpl;
@@ -108,8 +108,8 @@ class TradeControllerTest {
     void findTradesBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/trades")
-                        .param("tradeDateFrom", tradeDateFrom)
-                        .param("tradeDateTo", tradeDateTo)
+                        .param("tradeDateAfter", tradeDateFrom)
+                        .param("tradeDateBefore", tradeDateTo)
                         .param("tagged", tagged)
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
@@ -120,7 +120,7 @@ class TradeControllerTest {
     @Test
     void updateStrategyIdTest() throws Exception {
 
-        UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(trade.getId()).strategyId(strategy.getId()).build();
+        StrategyAssign tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
         trade.setStrategy(strategy);
         TradeSummary tradeSummary = tradeMapper.toTradeListDto(trade);
 

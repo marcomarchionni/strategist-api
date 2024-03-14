@@ -4,9 +4,9 @@ import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
+import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -53,12 +53,12 @@ public class StrategyServiceImpl implements StrategyService {
     }
 
     @Override
-    public StrategyDetail updateName(UpdateName updateName) {
-        Long strategyId = updateName.getId();
+    public StrategyDetail updateName(NameUpdate nameUpdate) {
+        Long strategyId = nameUpdate.getId();
         Strategy strategy = strategyAccessService.findById(strategyId).orElseThrow(
                 () -> new EntityNotFoundException(Strategy.class, strategyId)
         );
-        strategy.setName(updateName.getName());
+        strategy.setName(nameUpdate.getName());
         return strategyMapper.toStrategyDetailDto(this.save(strategy));
     }
 

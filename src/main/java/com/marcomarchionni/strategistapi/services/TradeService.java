@@ -1,8 +1,8 @@
 package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.domain.Trade;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.request.TradeFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 
@@ -12,7 +12,7 @@ public interface TradeService {
 
     List<Trade> saveAll(List<Trade> trades);
 
-    TradeSummary updateStrategyId(UpdateStrategyDto trade);
+    TradeSummary updateStrategyId(StrategyAssign trade);
 
     List<TradeSummary> findByFilter(TradeFind tradeCriteria);
 

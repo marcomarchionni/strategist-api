@@ -104,8 +104,8 @@ public class TestUtils {
 
     public static TradeFind getSampleTradeCriteria() {
         return TradeFind.builder()
-                .tradeDateFrom(LocalDate.of(2022, 6, 5))
-                .tradeDateTo(LocalDate.of(2022, 6, 25))
+                .tradeDateAfter(LocalDate.of(2022, 6, 5))
+                .tradeDateBefore(LocalDate.of(2022, 6, 25))
                 .tagged(false)
                 .symbol("AAPL")
                 .assetCategory("STK")

@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.services.PortfolioService;
@@ -19,7 +19,7 @@ public class PortfolioController implements PortfolioApi {
 
     private final PortfolioService portfolioService;
 
-    public List<PortfolioSummary> findAllByUser() {
+    public List<PortfolioSummary> findAll() {
         return portfolioService.findAll();
     }
 
@@ -31,8 +31,8 @@ public class PortfolioController implements PortfolioApi {
         return portfolioService.create(portfolioCreate);
     }
 
-    public PortfolioDetail updateName(@RequestBody @Valid UpdateName updateName) {
-        return portfolioService.updateName(updateName);
+    public PortfolioDetail updateName(@RequestBody @Valid NameUpdate nameUpdate) {
+        return portfolioService.updateName(nameUpdate);
     }
 
     public void deletePortfolio(@PathVariable Long id) {

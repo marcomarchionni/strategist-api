@@ -5,8 +5,8 @@ import com.marcomarchionni.strategistapi.accessservice.TradeAccessService;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.Trade;
 import com.marcomarchionni.strategistapi.domain.User;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.request.TradeFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -38,7 +38,7 @@ class TradeServiceImplTest {
     List<Trade> trades;
     Trade trade;
     Strategy strategy;
-    UpdateStrategyDto tradeUpdate;
+    StrategyAssign tradeUpdate;
     TradeFind tradeCriteria;
     User user;
 
@@ -48,7 +48,7 @@ class TradeServiceImplTest {
         trades = getSampleTrades();
         trade = getSampleTrade();
         strategy = getSampleStrategy();
-        tradeUpdate = UpdateStrategyDto.builder().id(trade.getId()).strategyId(strategy.getId()).build();
+        tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
         tradeCriteria = getSampleTradeCriteria();
         TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
         tradeService = new TradeServiceImpl(tradeAccessService, strategyAccessService, tradeMapper);

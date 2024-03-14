@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.services;
 
+import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import jakarta.validation.Valid;
@@ -17,5 +17,5 @@ public interface PortfolioService {
 
     void deleteById(Long id);
 
-    PortfolioDetail updateName(@Valid UpdateName dto);
+    PortfolioDetail updateName(@Valid NameUpdate dto);
 }

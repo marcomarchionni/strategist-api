@@ -5,7 +5,7 @@ import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Dividend;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.dtos.request.DividendFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -41,7 +41,7 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public DividendSummary updateStrategyId(UpdateStrategyDto dividendUpdate) {
+    public DividendSummary updateStrategyId(StrategyAssign dividendUpdate) {
         Long dividendId = dividendUpdate.getId();
         Long strategyId = dividendUpdate.getStrategyId();
 

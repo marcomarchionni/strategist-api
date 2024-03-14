@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.request.TradeFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import com.marcomarchionni.strategistapi.services.TradeService;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ public class TradeController implements TradeApi {
         return tradeService.findByFilter(tradeFind);
     }
 
-    public TradeSummary updateStrategyId(@RequestBody @Valid UpdateStrategyDto tradeUpdate) {
-        return tradeService.updateStrategyId(tradeUpdate);
+    public TradeSummary updateStrategyId(@RequestBody @Valid StrategyAssign strategyAssign) {
+        return tradeService.updateStrategyId(strategyAssign);
     }
 }

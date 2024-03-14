@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
+import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
 import com.marcomarchionni.strategistapi.repositories.StrategyRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -130,26 +130,26 @@ class StrategyControllerIT {
     void updateNameSuccess() throws Exception {
         Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), "ZM long").get().getId();
 
-        UpdateName updateName = UpdateName.builder().id(strategyId).name("ZM leap").build();
+        NameUpdate nameUpdate = NameUpdate.builder().id(strategyId).name("ZM leap").build();
 
         mockMvc.perform(put("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(updateName)))
+                        .content(mapper.writeValueAsString(nameUpdate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(Math.toIntExact(updateName.getId()))))
-                .andExpect(jsonPath("$.name", is(updateName.getName())));
+                .andExpect(jsonPath("$.id", is(Math.toIntExact(nameUpdate.getId()))))
+                .andExpect(jsonPath("$.name", is(nameUpdate.getName())));
     }
 
     @Test
     void updateNameException() throws Exception {
 
-        UpdateName updateName = UpdateName.builder().id(1L).name("12NewName").build();
+        NameUpdate nameUpdate = NameUpdate.builder().id(1L).name("12NewName").build();
 
         mockMvc.perform(put("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(updateName)))
+                        .content(mapper.writeValueAsString(nameUpdate)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));

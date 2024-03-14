@@ -4,8 +4,8 @@ import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.accessservice.TradeAccessService;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.Trade;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.request.TradeFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
 import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -26,7 +26,7 @@ public class TradeServiceImpl implements TradeService {
     private final TradeMapper tradeMapper;
 
     @Override
-    public TradeSummary updateStrategyId(UpdateStrategyDto tradeUpdate) {
+    public TradeSummary updateStrategyId(StrategyAssign tradeUpdate) {
 
         Trade trade = tradeAccessService.findById(tradeUpdate.getId()).orElseThrow(
                 () -> new EntityNotFoundException(Trade.class, tradeUpdate.getId())
@@ -41,8 +41,8 @@ public class TradeServiceImpl implements TradeService {
     @Override
     public List<TradeSummary> findByFilter(TradeFind tradeFind) {
         List<Trade> trades = tradeAccessService.findByParams(
-                tradeFind.getTradeDateFrom(),
-                tradeFind.getTradeDateTo(),
+                tradeFind.getTradeDateAfter(),
+                tradeFind.getTradeDateBefore(),
                 tradeFind.getTagged(),
                 tradeFind.getSymbol(),
                 tradeFind.getAssetCategory());

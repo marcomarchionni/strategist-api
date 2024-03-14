@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +18,7 @@ import java.util.List;
 public interface PortfolioApi {
     @GetMapping
     @Operation(summary = "Find all user's portfolios")
-    List<PortfolioSummary> findAllByUser();
+    List<PortfolioSummary> findAll();
 
     @GetMapping("/{id}")
     @Operation(summary = "Find portfolio by id")
@@ -30,7 +30,7 @@ public interface PortfolioApi {
 
     @PutMapping
     @Operation(summary = "Update portfolio name")
-    PortfolioDetail updateName(@RequestBody @Valid UpdateName updateName);
+    PortfolioDetail updateName(@RequestBody @Valid NameUpdate nameUpdate);
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete portfolio by id")

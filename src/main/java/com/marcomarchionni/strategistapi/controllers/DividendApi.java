@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.dtos.request.DividendFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,5 +24,5 @@ public interface DividendApi {
 
     @PutMapping
     @Operation(summary = "Assign dividend to a strategy")
-    DividendSummary updateStrategyId(@RequestBody @Valid UpdateStrategyDto dividendUpdate);
+    DividendSummary updateStrategyId(@RequestBody @Valid StrategyAssign dividendUpdate);
 }

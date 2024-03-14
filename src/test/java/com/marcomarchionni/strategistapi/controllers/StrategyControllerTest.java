@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
+import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 import com.marcomarchionni.strategistapi.mappers.StrategyMapper;
@@ -109,22 +109,22 @@ class StrategyControllerTest {
     void updateNameSuccess() throws Exception {
         // setup test data
         Long strategyId = userStrategy.getId();
-        UpdateName updateName = UpdateName.builder().id(strategyId).name("NewName").build();
-        userStrategy.setName(updateName.getName());
+        NameUpdate nameUpdate = NameUpdate.builder().id(strategyId).name("NewName").build();
+        userStrategy.setName(nameUpdate.getName());
         StrategyDetail strategyDetail = strategyMapper.toStrategyDetailDto(userStrategy);
 
         // mock service calls
-        when(strategyService.updateName(updateName)).thenReturn(strategyDetail);
+        when(strategyService.updateName(nameUpdate)).thenReturn(strategyDetail);
 
         // execute
         mockMvc.perform(put("/strategies")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(updateName)))
+                        .content(mapper.writeValueAsString(nameUpdate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(Math.toIntExact(strategyId))))
-                .andExpect(jsonPath("$.name", is(updateName.getName())))
+                .andExpect(jsonPath("$.name", is(nameUpdate.getName())))
                 .andExpect(jsonPath("$.accountId", is(user.getAccountId())));
     }
 

@@ -7,7 +7,7 @@ import com.marcomarchionni.strategistapi.domain.Position;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.PositionFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDeleteEntitiesException;
@@ -100,7 +100,7 @@ class PositionServiceImplTest {
 
     @Test
     void updateStrategyId() {
-        UpdateStrategyDto positionUpdate = UpdateStrategyDto.builder()
+        StrategyAssign positionUpdate = StrategyAssign.builder()
                 .id(samplePosition.getId()).strategyId(sampleStrategy.getId()).build();
 
         when(positionAccessService.findById(any())).thenReturn(Optional.of(samplePosition));

@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.services.fetchers;
 
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexStatementResponseDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContext;
 import com.marcomarchionni.strategistapi.services.fetchers.flexserviceclientmanagers.FlexServiceClientManager;
 import com.marcomarchionni.strategistapi.services.fetchers.flexserviceclients.FlexServiceClient;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class ServerDataFetcherClientMockIT {
             ResponseEntity.ok(getPopulatedFlexStatementResponseDto());
     final ResponseEntity<FlexQueryResponseDto> validFlexQueryResponse =
             ResponseEntity.ok(getPopulatedFlexQueryResponseDto());
-    final UpdateContextReq updateContextReq = UpdateContextReq.builder().sourceType(UpdateContextReq.SourceType.SERVER)
+    final UpdateContext updateContext = UpdateContext.builder().sourceType(UpdateContext.SourceType.SERVER)
             .queryId("queryId")
             .token("token").build();
     @Autowired
@@ -41,7 +41,7 @@ class ServerDataFetcherClientMockIT {
         when(flexServiceClient.fetchFlexQueryResponse(any(), any()))
                 .thenReturn(validFlexQueryResponse);
 
-        FlexQueryResponseDto responseDto = serverDataFetcher.fetch(updateContextReq);
+        FlexQueryResponseDto responseDto = serverDataFetcher.fetch(updateContext);
 
         assertNotNull(responseDto);
         assertEquals(validFlexQueryResponse.getBody(), responseDto);
@@ -55,7 +55,7 @@ class ServerDataFetcherClientMockIT {
         when(flexServiceClient.fetchFlexQueryResponse(any(), any()))
                 .thenReturn(validFlexQueryResponse);
 
-        FlexQueryResponseDto responseDto = serverDataFetcher.fetch(updateContextReq);
+        FlexQueryResponseDto responseDto = serverDataFetcher.fetch(updateContext);
 
         assertNotNull(responseDto);
         assertEquals(validFlexQueryResponse.getBody(), responseDto);
@@ -71,7 +71,7 @@ class ServerDataFetcherClientMockIT {
                 .thenReturn(ResponseEntity.ok(getEmptyFlexQueryResponseDto()))
                 .thenReturn(validFlexQueryResponse);
 
-        FlexQueryResponseDto responseDto = serverDataFetcher.fetch(updateContextReq);
+        FlexQueryResponseDto responseDto = serverDataFetcher.fetch(updateContext);
 
         assertNotNull(responseDto);
         assertEquals(validFlexQueryResponse.getBody(), responseDto);

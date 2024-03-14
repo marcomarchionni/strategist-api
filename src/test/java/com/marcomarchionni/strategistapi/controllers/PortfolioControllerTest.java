@@ -3,8 +3,8 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
+import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -153,17 +153,17 @@ class PortfolioControllerTest {
     @Test
     void updatePortfolioName() throws Exception {
         // setup test
-        UpdateName updateName = UpdateName.builder().id(userPortfolio.getId()).name("NewPortfolioName")
+        NameUpdate nameUpdate = NameUpdate.builder().id(userPortfolio.getId()).name("NewPortfolioName")
                 .build();
         PortfolioDetail portfolioDetail = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
         // setup mock behavior
-        when(portfolioService.updateName(updateName)).thenReturn(portfolioDetail);
+        when(portfolioService.updateName(nameUpdate)).thenReturn(portfolioDetail);
 
         // Execute test
         mockMvc.perform(put("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(updateName)))
+                        .content(mapper.writeValueAsString(nameUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name", is(portfolioDetail.getName())));

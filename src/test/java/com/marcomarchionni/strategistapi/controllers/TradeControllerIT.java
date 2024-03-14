@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.repositories.StrategyRepository;
 import com.marcomarchionni.strategistapi.repositories.TradeRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -67,8 +67,8 @@ class TradeControllerIT {
     void findByFilterSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/trades")
-                        .param("tradeDateFrom", tradeDateFrom)
-                        .param("tradeDateTo", tradeDateTo)
+                        .param("tradeDateAfter", tradeDateFrom)
+                        .param("tradeDateBefore", tradeDateTo)
                         .param("tagged", tagged)
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
@@ -82,8 +82,8 @@ class TradeControllerIT {
     void findByFilterBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/trades")
-                        .param("tradeDateFrom", tradeDateFrom)
-                        .param("tradeDateTo", tradeDateTo)
+                        .param("tradeDateAfter", tradeDateFrom)
+                        .param("tradeDateBefore", tradeDateTo)
                         .param("tagged", tagged)
                         .param("symbol", symbol)
                         .param("assetCategory", assetCategory))
@@ -101,7 +101,7 @@ class TradeControllerIT {
         Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), strategyName).get().getId();
         Long tradeId = tradeRepository.findByAccountIdAndIbOrderId(user.getAccountId(), ibOrderId).get().getId();
 
-        UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(tradeId).strategyId(strategyId).build();
+        StrategyAssign tradeUpdate = StrategyAssign.builder().id(tradeId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -117,7 +117,7 @@ class TradeControllerIT {
     @CsvSource({"1180780161, 20", "20, 1", ",,"})
     void updateStrategyIdExceptions(Long tradeId, Long strategyId) throws Exception {
 
-        UpdateStrategyDto tradeUpdate = UpdateStrategyDto.builder().id(tradeId).strategyId(strategyId).build();
+        StrategyAssign tradeUpdate = StrategyAssign.builder().id(tradeId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/trades")
                         .contentType(MediaType.APPLICATION_JSON)

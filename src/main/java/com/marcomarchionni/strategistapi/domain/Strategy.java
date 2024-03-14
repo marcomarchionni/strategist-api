@@ -1,6 +1,6 @@
 package com.marcomarchionni.strategistapi.domain;
 
-import com.marcomarchionni.strategistapi.validators.StrategyName;
+import com.marcomarchionni.strategistapi.validators.EntityName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -32,7 +32,7 @@ public class Strategy implements AccountIdEntity {
     @JoinColumn(name= "strategy_portfolio_id")
     private Portfolio portfolio;
 
-    @StrategyName
+    @EntityName
     @Column(name = "name")
     private String name;
 

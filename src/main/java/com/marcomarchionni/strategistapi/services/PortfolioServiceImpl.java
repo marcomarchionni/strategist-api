@@ -2,8 +2,8 @@ package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
+import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateName;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -77,7 +77,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     @Transactional
-    public PortfolioDetail updateName(UpdateName dto) {
+    public PortfolioDetail updateName(NameUpdate dto) {
 
         // Get portfolio id
         Long portfolioId = dto.getId();

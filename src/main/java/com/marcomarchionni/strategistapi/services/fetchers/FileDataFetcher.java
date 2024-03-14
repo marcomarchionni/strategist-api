@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.services.fetchers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateContextReq;
+import com.marcomarchionni.strategistapi.dtos.request.UpdateContext;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EmptyFileException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.InvalidXMLFileException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.NoXMLExtensionException;
@@ -21,7 +21,7 @@ public class FileDataFetcher implements DataFetcher {
     private final XmlMapper xmlMapper;
 
     @Override
-    public FlexQueryResponseDto fetch(UpdateContextReq context) {
+    public FlexQueryResponseDto fetch(UpdateContext context) {
         validateFile(context.getFile());
 
         try (InputStream stream = context.getFile().getInputStream()) {

@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.dtos.request.PositionFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,5 +24,5 @@ public interface PositionApi {
 
     @PutMapping
     @Operation(summary = "Assign position to a strategy")
-    PositionSummary updateStrategyId(@RequestBody @Valid UpdateStrategyDto positionUpdate);
+    PositionSummary updateStrategyId(@RequestBody @Valid StrategyAssign positionUpdate);
 }

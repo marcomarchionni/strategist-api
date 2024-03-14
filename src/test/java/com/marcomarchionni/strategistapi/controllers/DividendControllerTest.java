@@ -5,7 +5,7 @@ import com.marcomarchionni.strategistapi.config.ModelMapperConfig;
 import com.marcomarchionni.strategistapi.domain.Dividend;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 import com.marcomarchionni.strategistapi.mappers.DividendMapper;
 import com.marcomarchionni.strategistapi.mappers.DividendMapperImpl;
@@ -103,7 +103,7 @@ class DividendControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         Strategy strategy = getSampleStrategy();
         Dividend dividend = getSampleClosedDividend();
-        UpdateStrategyDto dividendUpdate = UpdateStrategyDto
+        StrategyAssign dividendUpdate = StrategyAssign
                 .builder()
                 .id(dividend.getId())
                 .strategyId(strategy.getId())

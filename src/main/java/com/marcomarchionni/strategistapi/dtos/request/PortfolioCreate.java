@@ -1,6 +1,7 @@
 package com.marcomarchionni.strategistapi.dtos.request;
 
-import com.marcomarchionni.strategistapi.validators.PortfolioName;
+import com.marcomarchionni.strategistapi.validators.EntityName;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PortfolioCreate {
 
-    @PortfolioName
+    @EntityName
+    @Schema(description = "Portfolio name must start with capital letter, contain 3-30 characters. Letters, numbers, " +
+            "spaces, underscore and apostrophe allowed.", example = "Rule Makers")
     private String name;
 }

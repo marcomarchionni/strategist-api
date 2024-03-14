@@ -13,9 +13,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target( {ElementType.FIELD})
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = StrategyNameValidator.class)
-public @interface StrategyName {
-    String message() default "StrategyName must start with capital letter, contain 3-30 characters. Letters, numbers, spaces, underscore and apostrophe allowed";
+@Constraint(validatedBy = EntityNameValidator.class)
+public @interface EntityName {
+    String message() default "Name must start with capital letter, contain 3-30 characters. Letters, numbers, spaces," +
+            " underscore and apostrophe allowed";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default {};
 }

@@ -5,7 +5,7 @@ import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Position;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.dtos.request.PositionFind;
-import com.marcomarchionni.strategistapi.dtos.request.UpdateStrategyDto;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -75,7 +75,7 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public PositionSummary updateStrategyId(UpdateStrategyDto positionUpdate) {
+    public PositionSummary updateStrategyId(StrategyAssign positionUpdate) {
         Position position = positionAccessService.findById(positionUpdate.getId()).orElseThrow(
                 () -> new EntityNotFoundException(Position.class, positionUpdate.getId())
         );
