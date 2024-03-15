@@ -10,6 +10,7 @@ import com.marcomarchionni.strategistapi.dtos.request.DividendFind;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
+import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.mappers.DividendMapper;
 import com.marcomarchionni.strategistapi.mappers.DividendMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.marcomarchionni.strategistapi.util.TestUtils.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
@@ -62,10 +62,10 @@ class DividendServiceImplTest {
     void findByParams() {
         // setup mocks
         when(dividendAccessService.findByParams(
-                dividendFind.getExDateFrom(),
-                dividendFind.getExDateTo(),
-                dividendFind.getPayDateFrom(),
-                dividendFind.getPayDateTo(),
+                dividendFind.getExDateAfter(),
+                dividendFind.getExDateBefore(),
+                dividendFind.getPayDateAfter(),
+                dividendFind.getPayDateBefore(),
                 dividendFind.getTagged(),
                 dividendFind.getSymbol())).thenReturn(userDividends);
 
@@ -96,6 +96,39 @@ class DividendServiceImplTest {
         assertNotNull(actualDividendDto);
         assertEquals(dividend.getId(), actualDividendDto.getId());
         assertEquals(strategy.getId(), actualDividendDto.getStrategyId());
+    }
+
+    @Test
+    void updateStrategyIdNullSuccess() {
+        // setup test data
+        StrategyAssign dividendUpdate = StrategyAssign.builder()
+                .id(dividend.getId()).strategyId(null).build();
+
+        // setup mocks
+        when(dividendAccessService.findById(dividend.getId())).thenReturn(Optional.of(dividend));
+        when(dividendAccessService.save(any(Dividend.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // execute method
+        DividendSummary actualDividendDto = dividendService.updateStrategyId(dividendUpdate);
+
+        // assertions
+        assertNotNull(actualDividendDto);
+        assertEquals(dividend.getId(), actualDividendDto.getId());
+        assertNull(actualDividendDto.getStrategyId());
+    }
+
+    @Test
+    void updateStrategyIdException() {
+        // setup test data
+        StrategyAssign dividendUpdate = StrategyAssign.builder()
+                .id(dividend.getId()).strategyId(strategy.getId()).build();
+
+        // setup mocks
+        when(dividendAccessService.findById(dividend.getId())).thenReturn(Optional.of(dividend));
+        when(strategyAccessService.findById(strategy.getId())).thenReturn(Optional.empty());
+
+        // execute method
+        assertThrows(EntityNotFoundException.class, () -> dividendService.updateStrategyId(dividendUpdate));
     }
 
     @Test

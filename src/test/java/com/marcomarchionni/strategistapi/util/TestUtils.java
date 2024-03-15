@@ -121,7 +121,7 @@ public class TestUtils {
 
     public static DividendFind getSampleDividendCriteria() {
         return DividendFind.builder()
-                .exDateFrom(LocalDate.of(2022, 6, 5))
+                .exDateAfter(LocalDate.of(2022, 6, 5))
                 .build();
     }
 

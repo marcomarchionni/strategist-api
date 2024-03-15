@@ -78,10 +78,10 @@ class DividendControllerIT {
             , String symbol, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/dividends")
-                        .param("exDateFrom", exDateFrom)
-                        .param("exDateTo", exDateTo)
-                        .param("payDateFrom", payDateFrom)
-                        .param("payDateTo", payDateTo)
+                        .param("exDateAfter", exDateFrom)
+                        .param("exDateBefore", exDateTo)
+                        .param("payDateAfter", payDateFrom)
+                        .param("payDateBefore", payDateTo)
                         .param("tagged", tagged)
                         .param("symbol", symbol))
                 .andDo(print())
@@ -96,10 +96,10 @@ class DividendControllerIT {
                                  String tagged, String symbol) throws Exception {
 
         mockMvc.perform(get("/dividends")
-                        .param("exDateFrom", exDateFrom)
-                        .param("exDateTo", exDateTo)
-                        .param("payDateFrom", payDateFrom)
-                        .param("payDateTo", payDateTo)
+                        .param("exDateAfter", exDateFrom)
+                        .param("exDateBefore", exDateTo)
+                        .param("payDateAfter", payDateFrom)
+                        .param("payDateBefore", payDateTo)
                         .param("tagged", tagged)
                         .param("symbol", symbol))
                 .andDo(print())

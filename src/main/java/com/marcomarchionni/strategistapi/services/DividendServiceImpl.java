@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,10 +31,10 @@ public class DividendServiceImpl implements DividendService {
     @Override
     public List<DividendSummary> findByFilter(DividendFind dividendFind) {
         List<Dividend> dividends = dividendAccessService.findByParams(
-                dividendFind.getExDateFrom(),
-                dividendFind.getExDateTo(),
-                dividendFind.getPayDateFrom(),
-                dividendFind.getPayDateTo(),
+                dividendFind.getExDateAfter(),
+                dividendFind.getExDateBefore(),
+                dividendFind.getPayDateAfter(),
+                dividendFind.getPayDateBefore(),
                 dividendFind.getTagged(),
                 dividendFind.getSymbol()
         );
@@ -48,9 +49,12 @@ public class DividendServiceImpl implements DividendService {
         Dividend dividend = dividendAccessService.findById(dividendId).orElseThrow(
                 () -> new EntityNotFoundException(Dividend.class, dividendId)
         );
-        Strategy strategyToAssign = strategyAccessService.findById(strategyId).orElseThrow(
-                () -> new EntityNotFoundException(Strategy.class, strategyId)
-        );
+
+        Strategy strategyToAssign = Optional.ofNullable(strategyId)
+                .map(id -> strategyAccessService.findById(id).orElseThrow(
+                        () -> new EntityNotFoundException(Strategy.class, id)
+                )).orElse(null);
+
         dividend.setStrategy(strategyToAssign);
         return mapper.toDividendListDto(this.save(dividend));
     }

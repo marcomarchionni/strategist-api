@@ -11,21 +11,21 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-@DateInterval(dateFrom = "exDateFrom", dateTo = "exDateTo")
-@DateInterval(dateFrom = "payDateFrom", dateTo = "payDateTo")
+@DateInterval(dateFrom = "exDateAfter", dateTo = "exDateBefore")
+@DateInterval(dateFrom = "payDateAfter", dateTo = "payDateBefore")
 public class DividendFind {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate exDateFrom;
+    private LocalDate exDateAfter;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate exDateTo;
+    private LocalDate exDateBefore;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate payDateFrom;
+    private LocalDate payDateAfter;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate payDateTo;
+    private LocalDate payDateBefore;
 
     private Boolean tagged;
 
