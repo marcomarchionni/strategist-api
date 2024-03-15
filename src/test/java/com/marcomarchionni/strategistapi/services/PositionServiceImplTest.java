@@ -116,6 +116,21 @@ class PositionServiceImplTest {
     }
 
     @Test
+    void updateStrategyIdNullSuccess() {
+        StrategyAssign positionUpdate = StrategyAssign.builder()
+                .id(samplePosition.getId()).strategyId(null).build();
+
+        when(positionAccessService.findById(any())).thenReturn(Optional.of(samplePosition));
+        when(positionAccessService.save(any())).thenReturn(samplePosition);
+
+        PositionSummary actualPositionSummary = positionService.updateStrategyId(positionUpdate);
+
+        assertNotNull(actualPositionSummary);
+        assertEquals(samplePosition.getId(), actualPositionSummary.getId());
+        assertNull(actualPositionSummary.getStrategyId());
+    }
+
+    @Test
     void updatePositionsTest() {
         // data setup
         Position existingADYENposition = getADYENPosition();

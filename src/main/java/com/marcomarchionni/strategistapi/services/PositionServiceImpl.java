@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,11 +80,16 @@ public class PositionServiceImpl implements PositionService {
         Position position = positionAccessService.findById(positionUpdate.getId()).orElseThrow(
                 () -> new EntityNotFoundException(Position.class, positionUpdate.getId())
         );
-        Strategy strategyToAssign = strategyAccessService.findById(positionUpdate.getStrategyId()).orElseThrow(
-                () -> new EntityNotFoundException(Strategy.class, positionUpdate.getStrategyId())
-        );
+        Strategy strategyToAssign = getStrategyToAssign(positionUpdate.getStrategyId());
         position.setStrategy(strategyToAssign);
         return positionMapper.toPositionListDto(positionAccessService.save(position));
+    }
+
+    private Strategy getStrategyToAssign(Long strategyId) {
+        return Optional.ofNullable(strategyId)
+                .map(id -> strategyAccessService.findById(strategyId).orElseThrow(
+                        () -> new EntityNotFoundException(Strategy.class, strategyId)))
+                .orElse(null);
     }
 
     @Override
