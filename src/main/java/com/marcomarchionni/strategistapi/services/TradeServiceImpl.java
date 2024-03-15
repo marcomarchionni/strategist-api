@@ -36,7 +36,7 @@ public class TradeServiceImpl implements TradeService {
         Strategy strategyToAssign = getStrategyToAssign(strategyAssign.getStrategyId());
 
         trade.setStrategy(strategyToAssign);
-        return tradeMapper.toTradeListDto(tradeAccessService.save(trade));
+        return tradeMapper.toTradeSummary(tradeAccessService.save(trade));
     }
 
     private Strategy getStrategyToAssign(Long strategyId) {
@@ -54,7 +54,7 @@ public class TradeServiceImpl implements TradeService {
                 tradeFind.getTagged(),
                 tradeFind.getSymbol(),
                 tradeFind.getAssetCategory());
-        return trades.stream().map(tradeMapper::toTradeListDto).collect(Collectors.toList());
+        return trades.stream().map(tradeMapper::toTradeSummary).collect(Collectors.toList());
     }
 
     @Override

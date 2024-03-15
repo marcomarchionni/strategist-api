@@ -69,7 +69,7 @@ class TradeControllerTest {
         tradeMapper = new TradeMapperImpl(new ModelMapper());
         tradeSummaries = TestUtils.getSampleTrades()
                 .stream()
-                .map(tradeMapper::toTradeListDto)
+                .map(tradeMapper::toTradeSummary)
                 .toList();
         when(userService.getAuthenticatedUser()).thenReturn(user);
     }
@@ -122,7 +122,7 @@ class TradeControllerTest {
 
         StrategyAssign tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
         trade.setStrategy(strategy);
-        TradeSummary tradeSummary = tradeMapper.toTradeListDto(trade);
+        TradeSummary tradeSummary = tradeMapper.toTradeSummary(trade);
 
         when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(tradeSummary);
 

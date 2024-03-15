@@ -16,7 +16,7 @@ public class PositionMapperImpl implements PositionMapper {
     }
 
     @Override
-    public PositionSummary toPositionListDto(Position position) {
+    public PositionSummary toPositionSummary(Position position) {
         return modelMapper.map(position, PositionSummary.class);
     }
 

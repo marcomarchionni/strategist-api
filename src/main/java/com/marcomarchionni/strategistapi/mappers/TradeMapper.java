@@ -6,7 +6,7 @@ import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 
 public interface TradeMapper {
 
-    TradeSummary toTradeListDto(Trade trade);
+    TradeSummary toTradeSummary(Trade trade);
 
     Trade toTrade(FlexQueryResponseDto.Order orderDto);
 }

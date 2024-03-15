@@ -67,9 +67,9 @@ class DividendControllerTest {
         user = getSampleUser();
         dividendSummaryList = TestUtils.getSampleDividends()
                 .stream()
-                .map(dividendMapper::toDividendListDto)
+                .map(dividendMapper::toDividendSummary)
                 .toList();
-        dividendSummary = dividendMapper.toDividendListDto(getSampleClosedDividend());
+        dividendSummary = dividendMapper.toDividendSummary(getSampleClosedDividend());
 
         //setup mocks
         when(userService.getAuthenticatedUser()).thenReturn(user);
@@ -109,7 +109,7 @@ class DividendControllerTest {
                 .strategyId(strategy.getId())
                 .build();
         dividend.setStrategy(strategy);
-        DividendSummary expectedDividendSummary = dividendMapper.toDividendListDto(dividend);
+        DividendSummary expectedDividendSummary = dividendMapper.toDividendSummary(dividend);
 
         when(dividendService.updateStrategyId(dividendUpdate)).thenReturn(expectedDividendSummary);
 

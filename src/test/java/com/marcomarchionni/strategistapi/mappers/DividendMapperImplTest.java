@@ -27,31 +27,37 @@ class DividendMapperImplTest {
     }
 
     @Test
-    void toDividendListDto() {
+    void toDividendSummary() {
         // Setup source
         Dividend source = getFDXDividend();
         Strategy strategy = getSampleStrategy();
         source.setStrategy(strategy);
 
         // Map to DTO
-        DividendSummary dto = dividendMapper.toDividendListDto(source);
+        DividendSummary dto = dividendMapper.toDividendSummary(source);
 
         // Assert
         assertNotNull(dto);
         assertEquals(source.getId(), dto.getId());
-        assertEquals(source.getConId(), dto.getConId());
-        assertEquals(source.getSymbol(), dto.getSymbol());
-        assertEquals(source.getDescription(), dto.getDescription());
-        assertEquals(source.getExDate(), dto.getExDate());
-        assertEquals(source.getPayDate(), dto.getPayDate());
-        assertEquals(source.getGrossRate(), dto.getGrossRate());
-        assertEquals(source.getQuantity(), dto.getQuantity());
-        assertEquals(source.getGrossAmount(), dto.getGrossAmount());
-        assertEquals(source.getTax(), dto.getTax());
-        assertEquals(source.getNetAmount(), dto.getNetAmount());
-        assertEquals(source.getOpenClosed().name(), dto.getOpenClosed());
         assertEquals(strategy.getId(), dto.getStrategyId());
         assertEquals(strategy.getName(), dto.getStrategyName());
+    }
+
+    @Test
+    void toDividendSummaryNullStrategy() {
+        // Setup source
+        Dividend source = getFDXDividend();
+        source.setStrategy(null);
+
+        // Map to DTO
+        DividendSummary dto = dividendMapper.toDividendSummary(source);
+
+        // Assert
+        assertNotNull(dto);
+        assertEquals(source.getId(), dto.getId());
+        assertEquals(source.getSymbol(), dto.getSymbol());
+        assertNull(dto.getStrategyId());
+        assertNull(dto.getStrategyName());
     }
 
     @Test

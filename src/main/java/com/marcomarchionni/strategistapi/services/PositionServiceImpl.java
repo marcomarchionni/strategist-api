@@ -36,7 +36,7 @@ public class PositionServiceImpl implements PositionService {
                 positionFind.getSymbol(),
                 positionFind.getAssetCategory()
         );
-        return positions.stream().map(positionMapper::toPositionListDto).collect(Collectors.toList());
+        return positions.stream().map(positionMapper::toPositionSummary).collect(Collectors.toList());
     }
 
 
@@ -82,7 +82,7 @@ public class PositionServiceImpl implements PositionService {
         );
         Strategy strategyToAssign = getStrategyToAssign(positionUpdate.getStrategyId());
         position.setStrategy(strategyToAssign);
-        return positionMapper.toPositionListDto(positionAccessService.save(position));
+        return positionMapper.toPositionSummary(positionAccessService.save(position));
     }
 
     private Strategy getStrategyToAssign(Long strategyId) {

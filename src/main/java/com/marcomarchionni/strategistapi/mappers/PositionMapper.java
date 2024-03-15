@@ -6,7 +6,7 @@ import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
 
 public interface PositionMapper {
 
-    PositionSummary toPositionListDto(Position position);
+    PositionSummary toPositionSummary(Position position);
 
     Position toPosition(FlexQueryResponseDto.OpenPosition openPosition);
 

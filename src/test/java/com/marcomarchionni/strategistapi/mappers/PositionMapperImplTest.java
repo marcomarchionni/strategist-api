@@ -4,6 +4,7 @@ import com.marcomarchionni.strategistapi.config.ModelMapperConfig;
 import com.marcomarchionni.strategistapi.domain.Position;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -27,7 +28,29 @@ class PositionMapperImplTest {
     }
 
     @Test
-    void toPositionListDto() {
+    void toPositionSummary() {
+        Position position = getSamplePosition();
+        Strategy strategy = getSampleStrategy();
+        position.setStrategy(strategy);
+
+        PositionSummary positionSummary = positionMapper.toPositionSummary(position);
+
+        assertEquals(position.getId(), positionSummary.getId());
+        assertEquals(position.getStrategy().getId(), positionSummary.getStrategyId());
+        assertEquals(position.getStrategy().getName(), positionSummary.getStrategyName());
+    }
+
+    @Test
+    void toPositionSummaryNullStrategy() {
+        Position position = getSamplePosition();
+        position.setStrategy(null);
+
+        PositionSummary positionSummary = positionMapper.toPositionSummary(position);
+
+        assertEquals(position.getId(), positionSummary.getId());
+        assertEquals(position.getSymbol(), positionSummary.getSymbol());
+        assertNull(positionSummary.getStrategyId());
+        assertNull(positionSummary.getStrategyName());
     }
 
     @Test

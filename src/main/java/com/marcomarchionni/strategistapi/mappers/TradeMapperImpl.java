@@ -16,7 +16,7 @@ public class TradeMapperImpl implements TradeMapper {
     }
 
     @Override
-    public TradeSummary toTradeListDto(Trade trade) {
+    public TradeSummary toTradeSummary(Trade trade) {
         return modelMapper.map(trade, TradeSummary.class);
     }
 

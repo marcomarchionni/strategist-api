@@ -16,7 +16,7 @@ public class DividendMapperImpl implements DividendMapper {
     }
 
     @Override
-    public DividendSummary toDividendListDto(Dividend dividend) {
+    public DividendSummary toDividendSummary(Dividend dividend) {
         return mapper.map(dividend, DividendSummary.class);
     }
 

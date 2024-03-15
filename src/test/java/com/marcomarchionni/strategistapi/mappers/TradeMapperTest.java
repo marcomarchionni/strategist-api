@@ -27,15 +27,29 @@ class TradeMapperTest {
     }
 
     @Test
-    void toTradeListDto() {
+    void toTradeSummary() {
         Strategy strategy = getSampleStrategy();
         Trade trade = getSampleTrade();
         trade.setStrategy(strategy);
 
-        TradeSummary tradeSummary = tradeMapper.toTradeListDto(trade);
+        TradeSummary tradeSummary = tradeMapper.toTradeSummary(trade);
 
         assertEquals(trade.getId(), tradeSummary.getId());
+        assertEquals(trade.getStrategy().getId(), tradeSummary.getStrategyId());
         assertEquals(trade.getStrategy().getName(), tradeSummary.getStrategyName());
+    }
+
+    @Test
+    void toTradeSummaryNullStrategy() {
+        Trade trade = getSampleTrade();
+        trade.setStrategy(null);
+
+        TradeSummary tradeSummary = tradeMapper.toTradeSummary(trade);
+
+        assertEquals(trade.getId(), tradeSummary.getId());
+        assertEquals(trade.getSymbol(), tradeSummary.getSymbol());
+        assertNull(tradeSummary.getStrategyId());
+        assertNull(tradeSummary.getStrategyName());
     }
 
     @Test

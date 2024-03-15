@@ -61,10 +61,10 @@ class PositionControllerTest {
         positionMapper = new PositionMapperImpl(new ModelMapper());
         positionSummaries = positions
                 .stream()
-                .map(positionMapper::toPositionListDto)
+                .map(positionMapper::toPositionSummary)
                 .toList();
         position = getSamplePosition();
-        positionSummary = positionMapper.toPositionListDto(position);
+        positionSummary = positionMapper.toPositionSummary(position);
     }
 
     @Test

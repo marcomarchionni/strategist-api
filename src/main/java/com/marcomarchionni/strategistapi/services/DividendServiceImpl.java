@@ -38,7 +38,7 @@ public class DividendServiceImpl implements DividendService {
                 dividendFind.getTagged(),
                 dividendFind.getSymbol()
         );
-        return dividends.stream().map(mapper::toDividendListDto).collect(Collectors.toList());
+        return dividends.stream().map(mapper::toDividendSummary).collect(Collectors.toList());
     }
 
     @Override
@@ -56,7 +56,7 @@ public class DividendServiceImpl implements DividendService {
                 )).orElse(null);
 
         dividend.setStrategy(strategyToAssign);
-        return mapper.toDividendListDto(this.save(dividend));
+        return mapper.toDividendSummary(this.save(dividend));
     }
 
     @Override
