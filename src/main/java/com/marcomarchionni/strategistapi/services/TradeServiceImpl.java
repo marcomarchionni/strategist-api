@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,16 +27,23 @@ public class TradeServiceImpl implements TradeService {
     private final TradeMapper tradeMapper;
 
     @Override
-    public TradeSummary updateStrategyId(StrategyAssign tradeUpdate) {
+    public TradeSummary updateStrategyId(StrategyAssign strategyAssign) {
 
-        Trade trade = tradeAccessService.findById(tradeUpdate.getId()).orElseThrow(
-                () -> new EntityNotFoundException(Trade.class, tradeUpdate.getId())
+        Trade trade = tradeAccessService.findById(strategyAssign.getId()).orElseThrow(
+                () -> new EntityNotFoundException(Trade.class, strategyAssign.getId())
         );
-        Strategy strategyToAssign = strategyAccessService.findById(tradeUpdate.getStrategyId()).orElseThrow(
-                () -> new EntityNotFoundException(Strategy.class, tradeUpdate.getStrategyId())
-        );
+
+        Strategy strategyToAssign = getStrategyToAssign(strategyAssign.getStrategyId());
+
         trade.setStrategy(strategyToAssign);
         return tradeMapper.toTradeListDto(tradeAccessService.save(trade));
+    }
+
+    private Strategy getStrategyToAssign(Long strategyId) {
+        return Optional.ofNullable(strategyId)
+                .map(id -> strategyAccessService.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException(Strategy.class, id)))
+                .orElse(null);
     }
 
     @Override

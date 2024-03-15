@@ -17,7 +17,6 @@ public class StrategyAssign {
     @Schema(description = "Trade id", example = "1")
     private Long id;
 
-    @NotNull(message = "'strategyId' cannot be null.")
     @Schema(description = "Strategy id", example = "1")
     private Long strategyId;
 }

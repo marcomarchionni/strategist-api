@@ -21,7 +21,7 @@ import java.util.List;
 public interface StrategyApi {
 
     @GetMapping
-    @Operation(summary = "Find strategies by filter",
+    @Operation(summary = "Find strategies by name",
             parameters = {
                     @Parameter(name = "name", description = "Strategy name", example = "AAPL bullcall Jan26", schema
                             = @Schema(type = "string")),

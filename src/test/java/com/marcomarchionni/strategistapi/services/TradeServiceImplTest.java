@@ -48,7 +48,6 @@ class TradeServiceImplTest {
         trades = getSampleTrades();
         trade = getSampleTrade();
         strategy = getSampleStrategy();
-        tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
         tradeCriteria = getSampleTradeCriteria();
         TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
         tradeService = new TradeServiceImpl(tradeAccessService, strategyAccessService, tradeMapper);
@@ -68,6 +67,7 @@ class TradeServiceImplTest {
 
     @Test
     void updateStrategyIdSuccess() {
+        tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
 
         when(tradeAccessService.findById(trade.getId())).thenReturn(Optional.of(trade));
         when(strategyAccessService.findById(strategy.getId())).thenReturn(Optional.of(strategy));
@@ -81,7 +81,24 @@ class TradeServiceImplTest {
     }
 
     @Test
+    void updateStrategyIdNullSuccess() {
+        tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(null).build();
+
+        when(tradeAccessService.findById(trade.getId())).thenReturn(Optional.of(trade));
+        when(tradeAccessService.save(trade)).thenReturn(trade);
+
+        TradeSummary updatedTrade = tradeService.updateStrategyId(tradeUpdate);
+        verify(tradeAccessService).save(trade);
+        assertEquals(tradeUpdate.getId(), updatedTrade.getId());
+        assertNull(updatedTrade.getStrategyId());
+    }
+
+
+
+    @Test
     void updateStrategyIdException() {
+
+        tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
 
         when(tradeAccessService.findById(trade.getId())).thenReturn(Optional.of(trade));
         when(strategyAccessService.findById(strategy.getId())).thenReturn(Optional.empty());

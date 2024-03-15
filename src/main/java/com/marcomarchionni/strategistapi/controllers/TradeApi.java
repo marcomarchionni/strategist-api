@@ -40,6 +40,7 @@ public interface TradeApi {
     List<TradeSummary> findByFilter(@Valid TradeFind tradeFind);
 
     @PutMapping
-    @Operation(summary = "Assign a strategy to a trade. Make the trade part of a strategy")
+    @Operation(summary = "Assign a trade to a strategy. If strategyId is null, the trade will be unassigned from any " +
+            "strategy.")
     TradeSummary updateStrategyId(@RequestBody @Valid StrategyAssign strategyAssign);
 }
