@@ -21,6 +21,9 @@ public class PositionSummary {
     @Schema(description = "Contract id", example = "10564")
     private Long conId;
 
+    @Schema(description = "Report date", example = "2024-01-15")
+    private LocalDate reportDate;
+
     @Schema(description = "Strategy id", example = "1")
     private Long strategyId;
 

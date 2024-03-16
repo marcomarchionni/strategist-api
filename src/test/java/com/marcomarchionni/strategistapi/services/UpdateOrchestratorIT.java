@@ -2,7 +2,9 @@ package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.domain.*;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateContext;
+import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 import com.marcomarchionni.strategistapi.dtos.response.update.CombinedUpdateReport;
+import com.marcomarchionni.strategistapi.mappers.DividendMapper;
 import com.marcomarchionni.strategistapi.repositories.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +44,8 @@ public class UpdateOrchestratorIT {
     PortfolioRepository portfolioRepository;
     @Autowired
     UpdateOrchestrator updateOrchestrator;
+    @Autowired
+    DividendMapper dividendMapper;
     UpdateContext updateContext;
     User user = getSampleUser();
 
@@ -158,7 +162,7 @@ public class UpdateOrchestratorIT {
         // assert dividends are updated
         assertEquals(existingDividends.size() + report.getDividends().getAdded().size(), updatedDividends.size());
         if (!report.getDividends().getMerged().isEmpty()) {
-            Dividend reportedMergedDividend = report.getDividends().getMerged().get(0);
+            DividendSummary reportedMergedDividend = report.getDividends().getMerged().get(0);
             Dividend dividendBeforeMerge = existingDividends.stream()
                     .filter(dividend -> dividend.getId().equals(reportedMergedDividend.getId())).findFirst()
                     .orElse(null);
@@ -167,8 +171,9 @@ public class UpdateOrchestratorIT {
                     .filter(dividend -> dividend.getId().equals(reportedMergedDividend.getId())).findFirst()
                     .orElse(null);
             assertNotNull(dividendAfterMerge);
+
             assertEquals(Dividend.OpenClosed.OPEN, dividendBeforeMerge.getOpenClosed());
-            assertEquals(reportedMergedDividend, dividendAfterMerge);
+            assertEquals(reportedMergedDividend, dividendMapper.toDividendSummary(dividendAfterMerge));
         }
     }
 }

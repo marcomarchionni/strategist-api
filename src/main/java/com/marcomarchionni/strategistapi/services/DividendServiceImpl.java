@@ -60,16 +60,16 @@ public class DividendServiceImpl implements DividendService {
     }
 
     @Override
-    public UpdateReport<Dividend> updateDividends(List<Dividend> dividends) {
+    public UpdateReport<DividendSummary> updateDividends(List<Dividend> dividends) {
 
         if (dividends.isEmpty()) {
-            return UpdateReport.<Dividend>builder().build();
+            return UpdateReport.<DividendSummary>builder().build();
         }
 
         // Init target lists
         List<Dividend> toAdd = new ArrayList<>();
         List<Dividend> toMerge = new ArrayList<>();
-        List<Dividend> toSkip = new ArrayList<>();
+        List<Dividend> skipped = new ArrayList<>();
 
         // Retrieve existing open dividends in an OpenDividendsMap instance
         List<Dividend> dbOpenDividends = dividendAccessService.findOpenDividends();
@@ -84,15 +84,15 @@ public class DividendServiceImpl implements DividendService {
             } else if (!this.existsInDb(dividend)) {
                 toAdd.add(dividend);
             } else {
-                toSkip.add(dividend);
+                skipped.add(dividend);
             }
         }
 
         // Save target lists and return report
-        return UpdateReport.<Dividend>builder()
-                .added(this.saveAll(toAdd))
-                .merged(this.saveAll(toMerge))
-                .skipped(toSkip).build();
+        return createUpdateReport(
+                this.saveAll(toAdd),
+                this.saveAll(toMerge),
+                skipped);
     }
 
     private boolean existsInDb(Dividend d) {
@@ -113,5 +113,14 @@ public class DividendServiceImpl implements DividendService {
         } catch (Exception e) {
             throw new UnableToSaveEntitiesException(e.getMessage());
         }
+    }
+
+    private UpdateReport<DividendSummary> createUpdateReport(List<Dividend> added, List<Dividend> merged,
+                                                             List<Dividend> skipped) {
+        return UpdateReport.<DividendSummary>builder()
+                .added(added.stream().map(mapper::toDividendSummary).toList())
+                .merged(merged.stream().map(mapper::toDividendSummary).toList())
+                .skipped(skipped.stream().map(mapper::toDividendSummary).toList())
+                .build();
     }
 }

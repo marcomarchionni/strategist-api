@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface TradeService {
 
-    List<Trade> saveAll(List<Trade> trades);
+    List<TradeSummary> saveAll(List<Trade> trades);
 
     TradeSummary updateStrategyId(StrategyAssign trade);
 
     List<TradeSummary> findByFilter(TradeFind tradeCriteria);
 
-    UpdateReport<Trade> updateTrades(List<Trade> trades);
+    UpdateReport<TradeSummary> updateTrades(List<Trade> trades);
 }

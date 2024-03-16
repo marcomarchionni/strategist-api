@@ -41,10 +41,10 @@ public class PositionServiceImpl implements PositionService {
 
 
     @Override
-    public UpdateReport<Position> updatePositions(List<Position> positions) {
+    public UpdateReport<PositionSummary> updatePositions(List<Position> positions) {
 
         if (positions.isEmpty()) {
-            return UpdateReport.<Position>builder().build();
+            return UpdateReport.<PositionSummary>builder().build();
         }
 
         // Create a DbPositionsCache to map positions in db
@@ -68,7 +68,7 @@ public class PositionServiceImpl implements PositionService {
         List<Position> positionsToDelete = cache.getUnmatchedPositions();
 
         // Perform database operations and return the result
-        return UpdateReport.<Position>builder()
+        return UpdateReport.<PositionSummary>builder()
                 .added(this.saveAll(newPositions))
                 .merged(this.saveAll(mergedPositions))
                 .deleted(this.deleteAll(positionsToDelete))
@@ -93,19 +93,20 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public List<Position> saveAll(List<Position> positions) {
+    public List<PositionSummary> saveAll(List<Position> positions) {
         try {
-            return positionAccessService.saveAll(positions);
+            List<Position> savedPositions = positionAccessService.saveAll(positions);
+            return savedPositions.stream().map(positionMapper::toPositionSummary).toList();
         } catch (Exception e) {
             throw new UnableToSaveEntitiesException(e.getMessage());
         }
     }
 
     @Override
-    public List<Position> deleteAll(List<Position> positions) {
+    public List<PositionSummary> deleteAll(List<Position> positions) {
         try {
             positionAccessService.deleteAll(positions);
-            return positions;
+            return positions.stream().map(positionMapper::toPositionSummary).toList();
         } catch (Exception e) {
             throw new UnableToDeleteEntitiesException(e.getMessage());
         }

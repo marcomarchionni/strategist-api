@@ -58,33 +58,35 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public UpdateReport<Trade> updateTrades(List<Trade> trades) {
+    public UpdateReport<TradeSummary> updateTrades(List<Trade> trades) {
 
         if (trades.isEmpty()) {
-            return UpdateReport.<Trade>builder().build();
+            return UpdateReport.<TradeSummary>builder().build();
         }
 
         // Init lists
         List<Trade> tradesToAdd = new ArrayList<>();
-        List<Trade> tradesToSkip = new ArrayList<>();
+        List<TradeSummary> tradesToSkip = new ArrayList<>();
 
         // Check if trade already exists in the database
         for (Trade t : trades) {
             if (tradeAccessService.existsByIbOrderId(t.getIbOrderId())) {
-                tradesToSkip.add(t);
+                tradesToSkip.add(tradeMapper.toTradeSummary(t));
             } else {
                 tradesToAdd.add(t);
             }
         }
-        return UpdateReport.<Trade>builder()
+
+        return UpdateReport.<TradeSummary>builder()
                 .added(this.saveAll(tradesToAdd))
                 .skipped(tradesToSkip).build();
     }
 
     @Override
-    public List<Trade> saveAll(List<Trade> trades) {
+    public List<TradeSummary> saveAll(List<Trade> trades) {
         try {
-            return tradeAccessService.saveAll(trades);
+            List<Trade> savedTrades = tradeAccessService.saveAll(trades);
+            return savedTrades.stream().map(tradeMapper::toTradeSummary).toList();
         } catch (Exception exc) {
             throw new UnableToSaveEntitiesException(exc.getMessage());
         }

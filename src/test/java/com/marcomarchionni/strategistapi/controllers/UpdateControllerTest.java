@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.controllers;
 
-import com.marcomarchionni.strategistapi.domain.Trade;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateContext;
+import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import com.marcomarchionni.strategistapi.dtos.response.update.CombinedUpdateReport;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.services.JwtService;
@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleTrades;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,8 +52,11 @@ class UpdateControllerTest {
     @BeforeEach
     void setUp() throws IOException {
         // setup UpdateReport
-        List<Trade> addedTrades = getSampleTrades();
-        UpdateReport<Trade> tradeReport = UpdateReport.<Trade>builder().added(addedTrades).build();
+        List<TradeSummary> addedTrades = List.of(
+                TradeSummary.builder().id(1L).build(),
+                TradeSummary.builder().id(2L).build()
+        );
+        UpdateReport<TradeSummary> tradeReport = UpdateReport.<TradeSummary>builder().added(addedTrades).build();
         combinedUpdateReport = CombinedUpdateReport.builder().trades(tradeReport).build();
         // setup mock multipart file
         try (InputStream stream = getClass().getResourceAsStream("flex/Flex.xml")) {

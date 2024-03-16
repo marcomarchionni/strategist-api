@@ -128,7 +128,7 @@ class TradeServiceImplTest {
         when(tradeAccessService.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
-        UpdateReport<Trade> result = tradeService.updateTrades(newTrades);
+        UpdateReport<TradeSummary> result = tradeService.updateTrades(newTrades);
 
         // assertions
         assertEquals(1, result.getAdded().size());
@@ -138,7 +138,7 @@ class TradeServiceImplTest {
 
     @Test
     void updateTradesEmptyList() {
-        UpdateReport<Trade> result = tradeService.updateTrades(List.of());
+        UpdateReport<TradeSummary> result = tradeService.updateTrades(List.of());
         assertEquals(0, result.getAdded().size());
         assertEquals(0, result.getSkipped().size());
         assertEquals(0, result.getMerged().size());

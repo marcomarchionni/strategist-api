@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface PositionService {
 
-    List<Position> saveAll(List<Position> positions);
+    List<PositionSummary> saveAll(List<Position> positions);
 
-    List<Position> deleteAll(List<Position> positions);
+    List<PositionSummary> deleteAll(List<Position> positions);
 
-    UpdateReport<Position> updatePositions(List<Position> positions);
+    UpdateReport<PositionSummary> updatePositions(List<Position> positions);
 
     PositionSummary updateStrategyId(StrategyAssign position);
 

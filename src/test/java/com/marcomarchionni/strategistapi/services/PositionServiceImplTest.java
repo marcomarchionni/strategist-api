@@ -158,7 +158,7 @@ class PositionServiceImplTest {
         when(positionAccessService.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // test
-        UpdateReport<Position> result = positionService.updatePositions(newPositions);
+        UpdateReport<PositionSummary> result = positionService.updatePositions(newPositions);
 
         // verify
         assertEquals(1, result.getAdded().size());
@@ -167,12 +167,12 @@ class PositionServiceImplTest {
         assertEquals(result.getAdded().get(0).getSymbol(), "AMZN");
         assertEquals(result.getDeleted().get(0).getSymbol(), "ADBE");
         assertEquals(LocalDate.of(2022, 7, 7), result.getMerged().get(0).getReportDate());
-        assertEquals(sampleStrategy, result.getMerged().get(0).getStrategy());
+        assertEquals(sampleStrategy.getId(), result.getMerged().get(0).getStrategyId());
     }
 
     @Test
     void updatePositionsEmptyList() {
-        UpdateReport<Position> result = positionService.updatePositions(List.of());
+        UpdateReport<PositionSummary> result = positionService.updatePositions(List.of());
 
         assertEquals(0, result.getAdded().size());
         assertEquals(0, result.getDeleted().size());

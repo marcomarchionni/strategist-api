@@ -153,7 +153,7 @@ class DividendServiceImplTest {
         when(dividendAccessService.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // execute method
-        UpdateReport<Dividend> result = dividendService.updateDividends(newDividends);
+        UpdateReport<DividendSummary> result = dividendService.updateDividends(newDividends);
 
         // assertions
         assertEquals(1, result.getAdded().size());

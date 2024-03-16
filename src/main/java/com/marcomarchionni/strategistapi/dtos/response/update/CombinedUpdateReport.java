@@ -1,9 +1,9 @@
 package com.marcomarchionni.strategistapi.dtos.response.update;
 
-import com.marcomarchionni.strategistapi.domain.Dividend;
 import com.marcomarchionni.strategistapi.domain.FlexStatement;
-import com.marcomarchionni.strategistapi.domain.Position;
-import com.marcomarchionni.strategistapi.domain.Trade;
+import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
+import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
+import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class CombinedUpdateReport {
     private final UpdateReport<FlexStatement> flexStatements;
-    private final UpdateReport<Trade> trades;
-    private final UpdateReport<Position> positions;
-    private final UpdateReport<Dividend> dividends;
+    private final UpdateReport<TradeSummary> trades;
+    private final UpdateReport<PositionSummary> positions;
+    private final UpdateReport<DividendSummary> dividends;
 }

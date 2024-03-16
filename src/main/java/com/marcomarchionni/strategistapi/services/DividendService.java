@@ -13,5 +13,5 @@ public interface DividendService {
 
     List<DividendSummary> findByFilter(DividendFind dividendCriteria);
 
-    UpdateReport<Dividend> updateDividends(List<Dividend> dividends);
+    UpdateReport<DividendSummary> updateDividends(List<Dividend> dividends);
 }
