@@ -12,7 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "2. Update", description = "Load trading data from an external source")
+@Tag(name = "1. Update", description = "Load trading data from an external source")
 @RequestMapping("/update")
 @SecurityRequirement(name = "bearerAuth")
 public interface UpdateApi {

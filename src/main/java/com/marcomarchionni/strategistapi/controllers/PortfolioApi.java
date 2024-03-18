@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "3. Portfolios", description = "Create or edit user defined portfolios.")
+@Tag(name = "2. Portfolios", description = "Create or edit user defined portfolios.")
 @RequestMapping("/portfolios")
 @SecurityRequirement(name = "bearerAuth")
 public interface PortfolioApi {

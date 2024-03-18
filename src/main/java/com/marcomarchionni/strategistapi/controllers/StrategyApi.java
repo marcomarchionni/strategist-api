@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "4. Strategies", description = "Create or edit user defined strategies")
+@Tag(name = "3. Strategies", description = "Create or edit user defined strategies")
 @RequestMapping("/strategies")
 @SecurityRequirement(name = "bearerAuth")
 public interface StrategyApi {

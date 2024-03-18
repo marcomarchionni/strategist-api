@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-@Tag(name = "7. Dividends", description = "List dividends or assign them to a strategy")
+@Tag(name = "6. Dividends", description = "List dividends or assign them to a strategy")
 @RequestMapping("/dividends")
 @SecurityRequirement(name = "bearerAuth")
 public interface DividendApi {

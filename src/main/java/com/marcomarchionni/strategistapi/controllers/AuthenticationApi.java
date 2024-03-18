@@ -3,6 +3,7 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
 import com.marcomarchionni.strategistapi.dtos.response.auth.JwtAuthenticationResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Tag(name = "1. Authentication", description = "User signin or signup")
 @RequestMapping("/auth")
 @SecurityRequirement(name = "bearerAuth")
+@Hidden
 public interface AuthenticationApi {
     @PostMapping("/signup")
     @Operation(summary = "Create a new user (not for test users)")

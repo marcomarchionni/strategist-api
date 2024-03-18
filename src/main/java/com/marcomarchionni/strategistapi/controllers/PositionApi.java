@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-@Tag(name = "6. Positions", description = "List positions or assign them to a strategy")
+@Tag(name = "5. Positions", description = "List positions or assign them to a strategy")
 @RequestMapping("/positions")
 @SecurityRequirement(name = "bearerAuth")
 public interface PositionApi {

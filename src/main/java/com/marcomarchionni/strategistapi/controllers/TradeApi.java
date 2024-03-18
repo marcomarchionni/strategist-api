@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-@Tag(name = "5. Trades", description = "List trades or assign them to a strategy")
+@Tag(name = "4. Trades", description = "List trades or assign them to a strategy")
 @RequestMapping("/trades")
 @SecurityRequirement(name = "bearerAuth")
 public interface TradeApi {
