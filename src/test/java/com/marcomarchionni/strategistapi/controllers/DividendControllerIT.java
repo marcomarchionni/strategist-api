@@ -106,7 +106,7 @@ class DividendControllerIT {
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.status", is(400)))
-                .andExpect(jsonPath("$.type", is("invalid-query-parameter")));
+                .andExpect(jsonPath("$.type", is("invalid-parameter")));
     }
 
     @ParameterizedTest

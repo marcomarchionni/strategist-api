@@ -70,7 +70,7 @@ public class UpdateOrchestratorIT {
                     flexQueryStream // file content
             );
             updateContext = UpdateContext.builder()
-                    .sourceType(UpdateContext.SourceType.FILE)
+                    .sourceType("FILE")
                     .file(mockMultipartFile)
                     .build();
         }

@@ -31,7 +31,7 @@ class ServerDataFetcherTest {
 
     @BeforeEach
     void setUp() {
-        updateContext = UpdateContext.builder().sourceType(UpdateContext.SourceType.SERVER).queryId("queryId")
+        updateContext = UpdateContext.builder().sourceType("SERVER").queryId("queryId")
                 .token("token").build();
         flexStatementResponseDto = getPopulatedFlexStatementResponseDto();
         flexQueryResponseDto = getPopulatedFlexQueryResponseDto();

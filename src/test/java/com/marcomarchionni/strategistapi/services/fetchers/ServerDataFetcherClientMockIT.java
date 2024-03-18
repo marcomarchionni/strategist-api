@@ -24,7 +24,7 @@ class ServerDataFetcherClientMockIT {
             ResponseEntity.ok(getPopulatedFlexStatementResponseDto());
     final ResponseEntity<FlexQueryResponseDto> validFlexQueryResponse =
             ResponseEntity.ok(getPopulatedFlexQueryResponseDto());
-    final UpdateContext updateContext = UpdateContext.builder().sourceType(UpdateContext.SourceType.SERVER)
+    final UpdateContext updateContext = UpdateContext.builder().sourceType("SERVER")
             .queryId("queryId")
             .token("token").build();
     @Autowired

@@ -10,8 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.marcomarchionni.strategistapi.util.TestUtils.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UpdateDtoValidatorTest {
 
@@ -36,14 +36,14 @@ class UpdateDtoValidatorTest {
 
     @Test
     void isValid() {
-        assertTrue(dtoValidator.isValid(dto));
+        assertDoesNotThrow(() -> dtoValidator.validate(dto));
     }
 
     @Test
     void invalidData() {
         dto.setPositions(null);
         // Act
-        assertThrows(ConstraintViolationException.class, () -> dtoValidator.isValid(dto));
+        assertThrows(ConstraintViolationException.class, () -> dtoValidator.validate(dto));
     }
 
     @Test
@@ -52,6 +52,6 @@ class UpdateDtoValidatorTest {
         position.setAccountId("U22222");
         dto.getPositions().add(position);
         // Act
-        assertThrows(ConstraintViolationException.class, () -> dtoValidator.isValid(dto));
+        assertThrows(ConstraintViolationException.class, () -> dtoValidator.validate(dto));
     }
 }

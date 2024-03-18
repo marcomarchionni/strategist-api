@@ -31,6 +31,6 @@ class FlexValidatorImplTest {
 
         var dto = FlexQueryResponseDto.builder().build();
         // Act
-        assertThrows(ConstraintViolationException.class, () -> flexValidator.isValid(dto));
+        assertThrows(ConstraintViolationException.class, () -> flexValidator.validate(dto));
     }
 }

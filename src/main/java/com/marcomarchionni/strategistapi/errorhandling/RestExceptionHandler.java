@@ -1,7 +1,8 @@
 package com.marcomarchionni.strategistapi.errorhandling;
 
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.CustomException;
-import org.hibernate.exception.ConstraintViolationException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -43,7 +44,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({DataIntegrityViolationException.class})
     public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
 
-        if (ex.getCause() instanceof ConstraintViolationException constraintViolationEx) {
+        if (ex.getCause() instanceof org.hibernate.exception.ConstraintViolationException constraintViolationEx) {
             String constraintName = constraintViolationEx.getConstraintName();
             ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, constraintName);
             pd.setType(URI.create("data-integrity-violation"));
@@ -69,6 +70,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(pd.getStatus()).body(pd);
     }
 
+    @ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
+        // Combine all the constraint violations into a single string
+        String detail = ex.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining("; "));
+
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
+        pd.setType(URI.create("invalid-parameter"));
+        pd.setTitle("Invalid parameter(s)");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(pd);
+    }
+
 
     @Override
     @Nullable
@@ -84,8 +98,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         ProblemDetail body = ex.getBody();
-        body.setType(URI.create("invalid-query-parameter"));
-        body.setTitle("Invalid query parameter(s)");
+        body.setType(URI.create("invalid-parameter"));
+        body.setTitle("Invalid parameter(s)");
         String detail = ex.getBindingResult().getAllErrors().stream().map(ObjectError::getDefaultMessage)
                 .collect(Collectors.joining(" - "));
         if (!detail.isEmpty()) {

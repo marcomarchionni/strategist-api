@@ -48,7 +48,7 @@ public class UpdateServiceImpl implements UpdateService {
 
         // Validate update dto
         String accountId = userService.getUserAccountId();
-        updateDtoValidator.isValid(updateDto);
+        updateDtoValidator.validate(updateDto);
         updateDtoValidator.hasValidAccountId(updateDto, accountId);
 
         // Update flex statement, positions, open dividends, closed dividends

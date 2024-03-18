@@ -6,6 +6,9 @@ import com.marcomarchionni.strategistapi.dtos.response.update.CombinedUpdateRepo
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
 import com.marcomarchionni.strategistapi.services.JwtService;
 import com.marcomarchionni.strategistapi.services.UpdateOrchestrator;
+import com.marcomarchionni.strategistapi.validators.DtoValidator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,13 +23,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -36,6 +40,9 @@ class UpdateControllerTest {
 
     @MockBean
     UpdateOrchestrator updateOrchestrator;
+
+    @MockBean
+    DtoValidator<UpdateContext> updateContextDtoValidator;
 
     @Autowired
     MockMvc mockMvc;
@@ -58,6 +65,7 @@ class UpdateControllerTest {
         );
         UpdateReport<TradeSummary> tradeReport = UpdateReport.<TradeSummary>builder().added(addedTrades).build();
         combinedUpdateReport = CombinedUpdateReport.builder().trades(tradeReport).build();
+
         // setup mock multipart file
         try (InputStream stream = getClass().getResourceAsStream("flex/Flex.xml")) {
             mockFile = new MockMultipartFile(
@@ -76,7 +84,7 @@ class UpdateControllerTest {
     void updateFromFile() throws Exception {
         // setup UpdateContext
         UpdateContext contextDto = UpdateContext.builder()
-                .sourceType(UpdateContext.SourceType.FILE)
+                .sourceType("FILE")
                 .file(mockFile)
                 .build();
 
@@ -131,6 +139,14 @@ class UpdateControllerTest {
 
     @Test
     void updateFromServerException() throws Exception {
+        // Create a mock set of ConstraintViolations
+        Set<ConstraintViolation<UpdateContext>> violations = new HashSet<>();
+        ConstraintViolation<UpdateContext> violation = mock(ConstraintViolation.class);
+        violations.add(violation);
+
+        // Setup the mock to throw the ConstraintViolationException
+        doThrow(new ConstraintViolationException(violations)).when(updateContextDtoValidator).validate(any());
+
         // Invalid request with no token parameter
         mockMvc.perform(MockMvcRequestBuilders.post("/update")
                         .param("sourceType", "SERVER")
@@ -138,26 +154,34 @@ class UpdateControllerTest {
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type").value("invalid-query-parameter"));
+                .andExpect(jsonPath("$.type").value("invalid-parameter"));
 
     }
 
     @Test
     void updateFromFileException() throws Exception {
+        // Create a mock set of ConstraintViolations
+        Set<ConstraintViolation<UpdateContext>> violations = new HashSet<>();
+        ConstraintViolation<UpdateContext> violation = mock(ConstraintViolation.class);
+        violations.add(violation);
+
+        // Setup the mock to throw the ConstraintViolationException
+        doThrow(new ConstraintViolationException(violations)).when(updateContextDtoValidator).validate(any());
+
         // Invalid request with no file parameter
         mockMvc.perform(MockMvcRequestBuilders.post("/update")
                         .param("sourceType", "FILE"))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type").value("invalid-query-parameter"));
+                .andExpect(jsonPath("$.type").value("invalid-parameter"));
     }
 
     @Test
     void updateWithSampleData() throws Exception {
         // setup UpdateContext
         UpdateContext contextDto = UpdateContext.builder()
-                .sourceType(UpdateContext.SourceType.SAMPLEDATA)
+                .sourceType("SAMPLEDATA")
                 .build();
 
         // setup UpdateOrchestrator mock

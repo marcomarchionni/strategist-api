@@ -104,7 +104,7 @@ class AuthenticationControllerTest {
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(content().json("{\"type\":\"invalid-query-parameter\"}"));
+                .andExpect(content().json("{\"type\":\"invalid-parameter\"}"));
     }
 
     @Test
@@ -139,7 +139,7 @@ class AuthenticationControllerTest {
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(content().json("{\"type\":\"invalid-query-parameter\"}"));
+                .andExpect(content().json("{\"type\":\"invalid-parameter\"}"));
     }
 }
 
