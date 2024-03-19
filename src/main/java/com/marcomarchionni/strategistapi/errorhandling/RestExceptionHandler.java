@@ -1,6 +1,8 @@
 package com.marcomarchionni.strategistapi.errorhandling;
 
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.CustomException;
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Objects;
@@ -73,6 +76,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(pd.getStatus()).body(pd);
     }
 
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<Object> handleExpiredJwtException(ExpiredJwtException ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED,
+                "The token has expired. " + ex.getMessage());
+        pd.setType(URI.create("token-expired"));
+        pd.setTitle("Token Expired");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(pd);
+    }
+
     @ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
         // Combine all the constraint violations into a single string
@@ -96,6 +108,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         pd.setType(URI.create("parameter-type-mismatch"));
         pd.setTitle("Parameter Type Mismatch");
 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(pd);
+    }
+
+    @ExceptionHandler({ServletException.class, IOException.class})
+    public final ResponseEntity<Object> handleServerExceptions(Exception ex) {
+        String detail = "An internal server error occurred. " + ex.getMessage();
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, detail);
+        pd.setType(URI.create("internal-server-error"));
+        pd.setTitle("Internal Server Error");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(pd);
     }
 
