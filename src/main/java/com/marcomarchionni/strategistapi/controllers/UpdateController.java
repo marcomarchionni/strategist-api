@@ -20,7 +20,7 @@ public class UpdateController implements UpdateApi {
     private final DtoValidator<UpdateContext> contextValidator;
 
     public CombinedUpdateReport updateWithFile(
-            @RequestParam("sourceType") String sourceType,
+            @RequestParam("sourceType") UpdateContext.SourceType sourceType,
             @RequestParam(value = "file", required = false) MultipartFile file,
             @RequestParam(value = "queryId", required = false) String queryId,
             @RequestParam(value = "token", required = false) String token
@@ -33,8 +33,7 @@ public class UpdateController implements UpdateApi {
                 .build());
     }
 
-    @Override
-    public CombinedUpdateReport updateWithoutFile(String sourceType, String queryId, String token) throws Exception {
+    public CombinedUpdateReport updateWithoutFile(UpdateContext.SourceType sourceType, String queryId, String token) throws Exception {
         return update(UpdateContext.builder()
                 .sourceType(sourceType)
                 .queryId(queryId)

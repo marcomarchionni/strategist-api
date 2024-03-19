@@ -84,7 +84,7 @@ class UpdateControllerTest {
     void updateFromFile() throws Exception {
         // setup UpdateContext
         UpdateContext contextDto = UpdateContext.builder()
-                .sourceType("FILE")
+                .sourceType(UpdateContext.SourceType.FILE)
                 .file(mockFile)
                 .build();
 
@@ -178,10 +178,21 @@ class UpdateControllerTest {
     }
 
     @Test
+    void updateTypeMismatchException() throws Exception {
+        // Invalid request with no file parameter
+        mockMvc.perform(MockMvcRequestBuilders.post("/update")
+                        .param("sourceType", "INVALID"))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type").value("parameter-type-mismatch"));
+    }
+
+    @Test
     void updateWithSampleData() throws Exception {
         // setup UpdateContext
         UpdateContext contextDto = UpdateContext.builder()
-                .sourceType("SAMPLEDATA")
+                .sourceType(UpdateContext.SourceType.SAMPLEDATA)
                 .build();
 
         // setup UpdateOrchestrator mock

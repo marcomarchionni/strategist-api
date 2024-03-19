@@ -26,18 +26,19 @@ public class UpdateContextValidator implements ConstraintValidator<ValidUpdateCo
     }
 
     private boolean checkQueryIdAndTokenParameters(UpdateContext dto, ConstraintValidatorContext context) {
+        boolean valid = true;
         if (dto.getQueryId() == null) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("QueryId parameter is required")
                     .addConstraintViolation();
-            return false;
+            valid = false;
         }
         if (dto.getToken() == null) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("Token parameter is required")
                     .addConstraintViolation();
-            return false;
+            valid = false;
         }
-        return true;
+        return valid;
     }
 }
