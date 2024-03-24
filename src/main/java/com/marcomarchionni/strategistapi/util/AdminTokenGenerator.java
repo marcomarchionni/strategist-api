@@ -10,7 +10,7 @@ import java.util.Properties;
 public class AdminTokenGenerator {
 
     public static void main(String[] args) {
-        try (FileInputStream fileInputStream = new FileInputStream("src/main/resources/private.application" +
+        try (FileInputStream fileInputStream = new FileInputStream("src/main/resources/application-aws" +
                 ".properties")) {
             // Access application.properties without invoking the Spring context
             Properties properties = new Properties();
