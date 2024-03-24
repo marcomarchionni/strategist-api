@@ -8,7 +8,7 @@
 
 **Portfolio Strategist API**, serving as the backend of the application, is accountable for:
 
-- Fetching user data directly from Interactive Brokers accounts.
+- Fetching user data directly from an Interactive Brokers account.
 
 - Exposing a rich API to facilitate data querying for the frontend.
 
@@ -31,10 +31,8 @@ The Portfolio Strategist API leverages the following technology stack:
     - Data Validation
     - Advanced Error Handling
     - AOP Logging
-
-### API Documentation
-
-The API documentation is available [here](https://htmlpreview.github.io/?https://github.com/marcomarchionni/portfolio-strategist-api/blob/main/src/main/resources/static/index.html).
+  - JWT Authentication
+  - Swagger API Documentation
 
 ### Database Schema
 
@@ -46,7 +44,7 @@ The application is under active development and is not yet primed for production
 
 ### Upcoming Features
 
-- **Security**: Implementation of Authentication and Authorization utilizing Spring Security and JWT.
+- **Google Authentication**: Sign in with Google.
 
 - **Advanced Analytics**: Enhanced strategy and performance analysis.
 
