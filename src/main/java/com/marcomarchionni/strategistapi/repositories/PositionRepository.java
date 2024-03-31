@@ -14,7 +14,7 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
 
     @Query("SELECT p FROM position p WHERE " +
             "(p.accountId = :accountId) and" +
-            "(:symbol is null or p.symbol = :symbol) and" +
+            "(:symbol is null or LOWER(p.symbol) LIKE LOWER(CONCAT('%', :symbol, '%'))) and" +
             "(:assetCategory is null or p.assetCategory = :assetCategory) and" +
             "(:tagged is null or ((:tagged = true and p.strategy is not null ) or (:tagged = false and p.strategy is " +
             "null)))")

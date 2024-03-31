@@ -17,7 +17,7 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
             "(t.accountId = :accountId) and" +
             "(:startDate is null or t.tradeDate >= :startDate) and" +
             "(:endDate is null or t.tradeDate <= :endDate) and" +
-            "(:symbol is null or t.symbol = :symbol) and" +
+            "(:symbol is null or LOWER(t.symbol) LIKE LOWER(CONCAT('%', :symbol, '%'))) and" +
             "(:assetCategory is null or t.assetCategory = :assetCategory) and" +
             "(:tagged is null or ((:tagged = true and t.strategy is not null ) or (:tagged = false and t.strategy is null)))")
     List<Trade> findByParams(@Param("accountId") String accountId,
