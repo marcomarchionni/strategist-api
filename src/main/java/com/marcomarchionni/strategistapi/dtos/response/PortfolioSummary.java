@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,6 +18,10 @@ public class PortfolioSummary {
     private Long id;
     @Schema(description = "Account id", example = "U1111111")
     private String accountId;
+    @Schema(description = "Portfolio creation date", example = "2021-01-01")
+    private LocalDate createdAt;
     @Schema(description = "Portfolio name", example = "Rule Makers")
     private String name;
+    @Schema(description = "Portfolio description", example = "Rule Makers portfolio")
+    private String description;
 }

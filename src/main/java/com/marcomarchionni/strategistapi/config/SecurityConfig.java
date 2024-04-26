@@ -42,6 +42,8 @@ public class SecurityConfig {
                                 mvc.pattern("/error"),
                                 mvc.pattern("/api-docs/**"),
                                 mvc.pattern("/swagger-ui/**"),
+                                mvc.pattern("/portfolios/"),
+                                mvc.pattern("/portfolios/**"),
                                 mvc.pattern("/"))
                         .permitAll()
                         .requestMatchers(

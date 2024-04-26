@@ -3,6 +3,7 @@ package com.marcomarchionni.strategistapi.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +26,15 @@ public class Portfolio implements AccountIdEntity {
     @Column(name = "account_id")
     private String accountId;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "created_at")
+    private LocalDate createdAt;
+
     @Column(name = "name")
     private String name;
+
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
