@@ -1,14 +1,15 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "2. Portfolios", description = "Create or edit user defined portfolios.")
@@ -23,9 +24,9 @@ public interface PortfolioApi {
     @Operation(summary = "Find portfolio by id")
     PortfolioDetail findById(@PathVariable Long id);
 
-    @PostMapping
+    @PostMapping("/$batch")
     @Operation(summary = "Create a new portfolio")
-    PortfolioDetail create(@RequestBody @Valid PortfolioCreate portfolioCreate);
+    ResponseEntity<String> handleBatchRequest(HttpServletRequest request) throws Exception;
 
     @PutMapping
     @Operation(summary = "Update portfolio name")

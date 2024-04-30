@@ -6,7 +6,7 @@
                                 accountType="Individual" customerType="Individual" accountCapabilities="Margin"
                                 tradingPermissions="Stocks,Options,Warrants,Bonds,Forex,Futures,Futures Options,Fully Paid Stock Loan"
                                 dateOpened="20210129" dateFunded="20130225" dateClosed=""
-                                street="via Alfonso Marchesani 56" street2="" city="Vasto" state="IT-65" country="Italy"
+                                street="via Alfonso Marchesani 56" street2="" city="Vasto" stage="IT-65" country="Italy"
                                 postalCode="66054" streetResidentialAddress="via Alfonso Marchesani 56"
                                 street2ResidentialAddress="" cityResidentialAddress="Vasto"
                                 stateResidentialAddress="IT-65" countryResidentialAddress="Italy"

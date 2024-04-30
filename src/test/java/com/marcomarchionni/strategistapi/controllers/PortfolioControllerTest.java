@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -118,16 +118,16 @@ class PortfolioControllerTest {
     @Test
     void createPortfolioSuccess() throws Exception {
         // setup test data
-        PortfolioCreate portfolioCreate = PortfolioCreate.builder().name(userPortfolio.getName()).build();
+        PortfolioSave portfolioSave = PortfolioSave.builder().name(userPortfolio.getName()).build();
         PortfolioDetail portfolioDetail = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
         // setup mock behavior
-        when(portfolioService.create(portfolioCreate)).thenReturn(portfolioDetail);
+        when(portfolioService.create(portfolioSave)).thenReturn(portfolioDetail);
 
         // Execute test
         mockMvc.perform(post("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(portfolioCreate)))
+                        .content(mapper.writeValueAsString(portfolioSave)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name", is(userPortfolio.getName())))
@@ -138,12 +138,12 @@ class PortfolioControllerTest {
     @Test
     void createPortfolioInvalidNameException() throws Exception {
         // setup test data
-        PortfolioCreate portfolioCreate = PortfolioCreate.builder().name("A").build();
+        PortfolioSave portfolioSave = PortfolioSave.builder().name("A").build();
 
         // execute test
         mockMvc.perform(post("/portfolios")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(portfolioCreate)))
+                        .content(mapper.writeValueAsString(portfolioSave)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))

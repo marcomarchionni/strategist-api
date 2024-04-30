@@ -3,7 +3,7 @@ package com.marcomarchionni.strategistapi.services;
 import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -53,14 +53,14 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     @Transactional
-    public PortfolioDetail create(PortfolioCreate portfolioCreate) {
+    public PortfolioDetail create(PortfolioSave portfolioSave) {
 
-        String portfolioName = portfolioCreate.getName();
+        String portfolioName = portfolioSave.getName();
 
         // Check if portfolio with the same name already exists
         boolean existsWithName = portfolioAccessService.existsByName(portfolioName);
         if (existsWithName) {
-            throw new UnableToSaveEntitiesException("Portfolio with name: " + portfolioCreate.getName() + " " +
+            throw new UnableToSaveEntitiesException("Portfolio with name: " + portfolioSave.getName() + " " +
                     "already exists");
         }
 

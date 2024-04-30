@@ -6,7 +6,7 @@
                                 accountType="XXX" customerType="XXX" accountCapabilities="XXX"
                                 tradingPermissions="XXX"
                                 dateOpened="20220101" dateFunded="20220101" dateClosed=""
-                                street="XXX XXX" street2="" city="XXX" state="XXX" country="XXX"
+                                street="XXX XXX" street2="" city="XXX" stage="XXX" country="XXX"
                                 postalCode="XXX" streetResidentialAddress="XXX"
                                 street2ResidentialAddress="" cityResidentialAddress="XXX"
                                 stateResidentialAddress="XXX" countryResidentialAddress="XXX"

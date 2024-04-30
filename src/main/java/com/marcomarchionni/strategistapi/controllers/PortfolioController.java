@@ -1,21 +1,30 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import com.marcomarchionni.strategistapi.dtos.request.BatchOperation;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.services.PortfolioService;
+import com.marcomarchionni.strategistapi.services.parsers.BatchRequestParser;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/portfolios/")
 public class PortfolioController implements PortfolioApi {
 
     private final PortfolioService portfolioService;
+    private final BatchRequestParser batchRequestParser;
 
     @GetMapping
     public ApiResponse<PortfolioSummary> findAll(@RequestParam(value = "$inlinecount", required = false) String inlineCount) {
@@ -29,9 +38,11 @@ public class PortfolioController implements PortfolioApi {
         return portfolioService.findById(id);
     }
 
-    @PostMapping
-    public PortfolioDetail create(@RequestBody @Valid PortfolioCreate portfolioCreate) {
-        return portfolioService.create(portfolioCreate);
+    @PostMapping("/$batch")
+    public ResponseEntity<String> handleBatchRequest(HttpServletRequest request) throws Exception {
+        List<BatchOperation<PortfolioSave>> operations = batchRequestParser.parseRequest(request, PortfolioSave.class);
+        log.info("Operations: {}", operations);
+        return ResponseEntity.ok().body("Batch request processed");
     }
 
     @PutMapping

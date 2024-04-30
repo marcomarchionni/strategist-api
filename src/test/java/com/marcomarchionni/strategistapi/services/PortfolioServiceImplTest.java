@@ -4,7 +4,7 @@ import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -94,15 +94,15 @@ class PortfolioServiceImplTest {
     @Test
     void createPortfolioSuccess() {
         // Setup test data
-        PortfolioCreate portfolioCreate = PortfolioCreate.builder().name("NewPortfolioName").build();
-        String portfolioName = portfolioCreate.getName();
+        PortfolioSave portfolioSave = PortfolioSave.builder().name("NewPortfolioName").build();
+        String portfolioName = portfolioSave.getName();
 
         // Setup mocks
         when(dataGateway.existsByName(portfolioName)).thenReturn(false);
         when(dataGateway.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Execute service
-        PortfolioDetail createdPortfolioDto = portfolioService.create(portfolioCreate);
+        PortfolioDetail createdPortfolioDto = portfolioService.create(portfolioSave);
 
         // Verify results
         assertNotNull(createdPortfolioDto);

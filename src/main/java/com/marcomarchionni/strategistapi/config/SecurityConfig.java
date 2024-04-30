@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 mvc.pattern("/api-docs/**"),
                                 mvc.pattern("/swagger-ui/**"),
                                 mvc.pattern("/portfolios/"),
-                                mvc.pattern("/portfolios/**"),
+                                mvc.pattern("/portfolios/$batch"),
                                 mvc.pattern("/"))
                         .permitAll()
                         .requestMatchers(

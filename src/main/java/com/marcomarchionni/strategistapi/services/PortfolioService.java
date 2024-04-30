@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioCreate;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import jakarta.validation.Valid;
@@ -13,7 +13,7 @@ public interface PortfolioService {
 
     PortfolioDetail findById(Long id);
 
-    PortfolioDetail create(PortfolioCreate portfolioCreate);
+    PortfolioDetail create(PortfolioSave portfolioSave);
 
     void deleteById(Long id);
 

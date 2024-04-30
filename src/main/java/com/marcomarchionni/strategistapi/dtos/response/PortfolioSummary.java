@@ -1,5 +1,6 @@
 package com.marcomarchionni.strategistapi.dtos.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,7 @@ public class PortfolioSummary {
     @Schema(description = "Account id", example = "U1111111")
     private String accountId;
     @Schema(description = "Portfolio creation date", example = "2021-01-01")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate createdAt;
     @Schema(description = "Portfolio name", example = "Rule Makers")
     private String name;
