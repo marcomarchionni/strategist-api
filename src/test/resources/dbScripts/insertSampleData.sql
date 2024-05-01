@@ -29,14 +29,12 @@ VALUES ('U1111111', '2022-06-01', '2022-07-08', 'Custom', '2022-07-08 13:04:33')
 INSERT INTO `flex_statement` (`account_id`, `from_date`, `to_date`, `period`, `when_generated`)
 VALUES ('U2222222', '2022-06-01', '2022-07-09', 'Custom', '2022-07-08 13:04:33');
 
-INSERT INTO `portfolio` (`name`, `account_id`)
-VALUES ('Saver Portfolio', 'U1111111');
-INSERT INTO `portfolio` (`name`, `account_id`)
-VALUES ('Saver Portfolio', 'U2222222');
-INSERT INTO `portfolio` (`name`, `account_id`)
-VALUES ('Trader Portfolio', 'U1111111');
-INSERT INTO `portfolio` (`name`, `account_id`)
-VALUES ('Millionaire Portfolio', 'U1111111');
+INSERT INTO `portfolio` (`created_at`, `name`, `description`, `account_id`)
+VALUES ('2021-01-01', 'Saver Portfolio', 'This is a Savers Portfolio', 'U1111111'),
+       ('2021-01-01', 'Trader Portfolio', 'This is a Traders Portfolio', 'U1111111'),
+       ('2021-01-01', 'Millionaire Portfolio', 'This is a Millionaires Portfolio', 'U1111111'),
+       ('2021-01-01', 'Saver Portfolio', 'This is a Savers Portfolio', 'U2222222'),
+       ('2021-01-01', 'Option Portfolio', 'This is a Traders Portfolio', 'U1111111');
 
 SELECT @SaverId1 := id
 FROM `portfolio`

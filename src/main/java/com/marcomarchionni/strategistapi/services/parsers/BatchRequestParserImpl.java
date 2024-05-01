@@ -2,6 +2,7 @@ package com.marcomarchionni.strategistapi.services.parsers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.dtos.request.BatchOperation;
+import com.marcomarchionni.strategistapi.dtos.request.EntitySave;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class BatchRequestParserImpl implements BatchRequestParser {
     private final ObjectMapper mapper;
 
     @Override
-    public <T> List<BatchOperation<T>> parseRequest(HttpServletRequest request, Class<T> dtoClass) throws IOException {
+    public <T extends EntitySave> List<BatchOperation<T>> parseRequest(HttpServletRequest request, Class<T> dtoClass) throws IOException {
 
         List<BatchOperation<T>> operations = new ArrayList<>();
         BatchOperation<T> currentOperation = null;
@@ -102,7 +103,7 @@ public class BatchRequestParserImpl implements BatchRequestParser {
         return operations;
     }
 
-    private <T> void parseOperationLine(BatchOperation<T> operation, String line) {
+    private <T extends EntitySave> void parseOperationLine(BatchOperation<T> operation, String line) {
         String[] parts = line.split(" ");
         String method = parts[0];
         operation.setMethod(method); // POST, PUT, DELETE

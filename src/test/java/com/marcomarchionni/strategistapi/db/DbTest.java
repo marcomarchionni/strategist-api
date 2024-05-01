@@ -44,7 +44,7 @@ public class DbTest {
     @Test
     void dbFindPortfoliosTest() {
         List<Portfolio> portfolios = portfolioRepository.findAllByAccountId("U1111111");
-        assertEquals(3, portfolios.size());
+        assertEquals(4, portfolios.size());
     }
 
     @Test

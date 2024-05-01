@@ -3,14 +3,17 @@ package com.marcomarchionni.strategistapi.mappers;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.Trade;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import static com.marcomarchionni.strategistapi.config.ModelMapperConfig.configureModelMapper;
 import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleTrades;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PortfolioMapperImplTest {
@@ -19,7 +22,7 @@ class PortfolioMapperImplTest {
 
     @BeforeEach
     void setup() {
-        portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
+        portfolioMapper = new PortfolioMapperImpl(configureModelMapper());
     }
 
     @Test
@@ -39,5 +42,21 @@ class PortfolioMapperImplTest {
         PortfolioDetail portfolioDto = portfolioMapper.toPortfolioDetailDto(portfolio);
 
         assertNotNull(portfolioDto);
+    }
+
+    @Test
+    void mergePortfolioSaveToPortfolio() {
+        PortfolioSave portfolioSave = PortfolioSave.builder().name("Saver").createdAt(LocalDate.now())
+                .description("description").build();
+        Portfolio portfolio = Portfolio.builder().id(1L).accountId("U1111111").build();
+
+        portfolioMapper.mergePortfolioSaveToPortfolio(portfolioSave, portfolio);
+
+        assertNotNull(portfolio);
+        assertEquals(portfolioSave.getName(), portfolio.getName());
+        assertEquals(portfolioSave.getCreatedAt(), portfolio.getCreatedAt());
+        assertEquals(portfolioSave.getDescription(), portfolio.getDescription());
+        assertEquals("U1111111", portfolio.getAccountId(), "accountId should not be updated");
+        assertEquals(1L, portfolio.getId(), "id should not be updated");
     }
 }

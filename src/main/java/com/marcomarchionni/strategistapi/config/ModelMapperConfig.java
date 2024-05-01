@@ -1,10 +1,8 @@
 package com.marcomarchionni.strategistapi.config;
 
-import com.marcomarchionni.strategistapi.domain.Dividend;
-import com.marcomarchionni.strategistapi.domain.FlexStatement;
-import com.marcomarchionni.strategistapi.domain.Position;
-import com.marcomarchionni.strategistapi.domain.Trade;
+import com.marcomarchionni.strategistapi.domain.*;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -15,8 +13,10 @@ import java.math.BigDecimal;
 
 @Configuration
 public class ModelMapperConfig {
-    @Bean
-    public ModelMapper modelMapper() {
+    private static final Converter<BigDecimal, BigDecimal> absValue =
+            ctx -> ctx.getSource() == null ? null : ctx.getSource().abs();
+
+    public static ModelMapper configureModelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(getFlexStatementPropertyMap());
         modelMapper.addMappings(getTradePropertyMap());
@@ -25,13 +25,11 @@ public class ModelMapperConfig {
         modelMapper.addMappings(getClosedDividendPropertyMap());
         modelMapper.addMappings(getOpenDividendPropertyMap());
         modelMapper.addMappings(getMergeDividendPropertyMap());
+        modelMapper.addMappings(getPortfolioSaveToPortfolioPropertyMap());
         return modelMapper;
     }
 
-    private final Converter<BigDecimal, BigDecimal> absValue =
-            ctx -> ctx.getSource() == null ? null : ctx.getSource().abs();
-
-    private PropertyMap<FlexQueryResponseDto.Order, Trade> getTradePropertyMap() {
+    private static PropertyMap<FlexQueryResponseDto.Order, Trade> getTradePropertyMap() {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
@@ -41,7 +39,7 @@ public class ModelMapperConfig {
         };
     }
 
-    private PropertyMap<FlexQueryResponseDto.FlexStatement, FlexStatement> getFlexStatementPropertyMap() {
+    private static PropertyMap<FlexQueryResponseDto.FlexStatement, FlexStatement> getFlexStatementPropertyMap() {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
@@ -50,7 +48,7 @@ public class ModelMapperConfig {
         };
     }
 
-    private PropertyMap<FlexQueryResponseDto.OpenPosition, Position> getPositionPropertyMap() {
+    private static PropertyMap<FlexQueryResponseDto.OpenPosition, Position> getPositionPropertyMap() {
         return new PropertyMap<>() {
             protected void configure() {
                 skip().setId(null);
@@ -60,7 +58,7 @@ public class ModelMapperConfig {
         };
     }
 
-    private PropertyMap<Position, Position> getMergePositionPropertyMap() {
+    private static PropertyMap<Position, Position> getMergePositionPropertyMap() {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
@@ -71,7 +69,7 @@ public class ModelMapperConfig {
     }
 
     // Extract a unique dividend id from the flex query dto to avoid duplicates in the update process
-    private PropertyMap<FlexQueryResponseDto.ChangeInDividendAccrual, Dividend> getClosedDividendPropertyMap() {
+    private static PropertyMap<FlexQueryResponseDto.ChangeInDividendAccrual, Dividend> getClosedDividendPropertyMap() {
         return new PropertyMap<>() {
             protected void configure() {
                 skip().setId(null);
@@ -84,7 +82,7 @@ public class ModelMapperConfig {
         };
     }
 
-    private PropertyMap<FlexQueryResponseDto.OpenDividendAccrual, Dividend> getOpenDividendPropertyMap() {
+    private static PropertyMap<FlexQueryResponseDto.OpenDividendAccrual, Dividend> getOpenDividendPropertyMap() {
         return new PropertyMap<>() {
             @Override
             protected void configure() {
@@ -95,12 +93,25 @@ public class ModelMapperConfig {
         };
     }
 
-    private PropertyMap<Dividend, Dividend> getMergeDividendPropertyMap() {
+    private static PropertyMap<Dividend, Dividend> getMergeDividendPropertyMap() {
         return new PropertyMap<>() {
             protected void configure() {
                 skip().setId(null);
                 skip().setStrategy(null);
             }
         };
+    }
+
+    private static PropertyMap<PortfolioSave, Portfolio> getPortfolioSaveToPortfolioPropertyMap() {
+        return new PropertyMap<>() {
+            protected void configure() {
+                skip().setId(null);
+            }
+        };
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return configureModelMapper();
     }
 }

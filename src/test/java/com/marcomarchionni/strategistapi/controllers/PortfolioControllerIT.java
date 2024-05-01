@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleUser;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -65,10 +65,10 @@ class PortfolioControllerIT {
     void findAllSuccess() throws Exception {
         int expectedSize = portfolioRepository.findAllByAccountId(user.getAccountId()).size();
 
-        mockMvc.perform(get("/portfolios"))
+        mockMvc.perform(get("/portfolios/"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(expectedSize)));
+                .andExpect(jsonPath("$.result", hasSize(expectedSize)));
     }
 
     @ParameterizedTest
@@ -84,33 +84,6 @@ class PortfolioControllerIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(Math.toIntExact(portfolioId))))
                 .andExpect(jsonPath("$.strategies", hasSize(expectedSize)));
-    }
-
-    @Test
-    void createPortfolioSuccess() throws Exception {
-        PortfolioSave portfolioSave = PortfolioSave.builder().name("Super Saver").build();
-
-        mockMvc.perform(post("/portfolios")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(portfolioSave)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", notNullValue()))
-                .andExpect(jsonPath("$.name", is("Super Saver")));
-    }
-
-    @ParameterizedTest
-    @CsvSource({"U1111111, Super Portfolio", "U1111111, Marco's Portfolio", "U1111111, Zipp"})
-    void updatePortfolioNameSuccess(String accountId, String portfolioName) throws Exception {
-        Long portfolioId = portfolioRepository.findByAccountIdAndName(accountId, "Saver Portfolio").get().getId();
-        NameUpdate nameUpdate = NameUpdate.builder().id(portfolioId).name(portfolioName).build();
-
-        mockMvc.perform(put("/portfolios")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(nameUpdate)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(nameUpdate.getName())));
     }
 
     @ParameterizedTest

@@ -20,6 +20,10 @@ public class PortfolioDetail {
     private String accountId;
     @Schema(description = "Portfolio name", example = "Rule Makers")
     private String name;
+    @Schema(description = "Portfolio creation date", example = "2021-01-01")
+    private String createdAt;
+    @Schema(description = "Portfolio description", example = "Rule Makers portfolio")
+    private String description;
     @Schema(description = "List of strategies in the portfolio")
     private List<StrategySummary> strategies;
 }

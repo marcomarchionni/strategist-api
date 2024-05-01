@@ -2,7 +2,6 @@ package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
-import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
@@ -29,7 +28,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public List<PortfolioSummary> findAll() {
         List<Portfolio> portfolios = portfolioAccessService.findAll();
-        return portfolios.stream().map(portfolioMapper::toPortfolioSummaryDto).collect(Collectors.toList());
+        return portfolios.stream().map(portfolioMapper::portfolioToPortfolioSummary).collect(Collectors.toList());
     }
 
     @Override
@@ -38,6 +37,11 @@ public class PortfolioServiceImpl implements PortfolioService {
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId)
         );
         return portfolioMapper.toPortfolioDetailDto(portfolio);
+    }
+
+    @Override
+    public ServiceType getServiceType() {
+        return ServiceType.PORTFOLIO;
     }
 
     @Override
@@ -51,51 +55,45 @@ public class PortfolioServiceImpl implements PortfolioService {
         portfolioAccessService.delete(portfolioToDelete);
     }
 
+
     @Override
     @Transactional
-    public PortfolioDetail create(PortfolioSave portfolioSave) {
-
-        String portfolioName = portfolioSave.getName();
+    public PortfolioSummary create(PortfolioSave portfolioSave) {
 
         // Check if portfolio with the same name already exists
-        boolean existsWithName = portfolioAccessService.existsByName(portfolioName);
-        if (existsWithName) {
-            throw new UnableToSaveEntitiesException("Portfolio with name: " + portfolioSave.getName() + " " +
-                    "already exists");
-        }
-
-        // Create portfolio
-        Portfolio portfolioToSave = Portfolio.builder()
-                .name(portfolioName)
-                .accountId(userService.getUserAccountId())
-                .build();
+        checkIfPortfolioNameExists(portfolioSave.getName());
 
         // Save portfolio
-        Portfolio savedPortfolio = portfolioAccessService.save(portfolioToSave);
-        return portfolioMapper.toPortfolioDetailDto(savedPortfolio);
+        var portfolio = Portfolio.builder().accountId(userService.getUserAccountId()).build();
+        return mergeAndSave(portfolioSave, portfolio);
     }
 
     @Override
     @Transactional
-    public PortfolioDetail updateName(NameUpdate dto) {
+    public PortfolioSummary update(PortfolioSave portfolioDto) {
 
         // Get portfolio id
-        Long portfolioId = dto.getId();
+        Long portfolioId = portfolioDto.getId();
 
         // Check if the portfolio to update exists
         Portfolio portfolio = portfolioAccessService.findById(portfolioId).orElseThrow(
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId)
         );
         // Check if a portfolio with the same name already exists
-        boolean existsWithName = portfolioAccessService.existsByName(dto.getName());
-        if (existsWithName) {
-            throw new UnableToSaveEntitiesException("Portfolio with name: " + dto.getName() + " already exists.");
-        }
-        // Update portfolio name
-        portfolio.setName(dto.getName());
+        checkIfPortfolioNameExists(portfolioDto.getName());
 
-        // Save portfolio
+        return mergeAndSave(portfolioDto, portfolio);
+    }
+
+    private void checkIfPortfolioNameExists(String name) {
+        if (portfolioAccessService.existsByName(name)) {
+            throw new UnableToSaveEntitiesException("Portfolio with name: " + name + " already exists.");
+        }
+    }
+
+    private PortfolioSummary mergeAndSave(PortfolioSave dto, Portfolio portfolio) {
+        portfolioMapper.mergePortfolioSaveToPortfolio(dto, portfolio);
         Portfolio savedPortfolio = portfolioAccessService.save(portfolio);
-        return portfolioMapper.toPortfolioDetailDto(savedPortfolio);
+        return portfolioMapper.portfolioToPortfolioSummary(savedPortfolio);
     }
 }

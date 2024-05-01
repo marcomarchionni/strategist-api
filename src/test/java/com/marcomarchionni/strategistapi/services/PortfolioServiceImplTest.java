@@ -3,7 +3,6 @@ package com.marcomarchionni.strategistapi.services;
 import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
@@ -29,7 +28,7 @@ import static org.mockito.Mockito.*;
 class PortfolioServiceImplTest {
 
     @Mock
-    PortfolioAccessService dataGateway;
+    PortfolioAccessService portfolioAccessService;
     @Mock
     UserService userService;
     PortfolioMapper portfolioMapper;
@@ -40,7 +39,7 @@ class PortfolioServiceImplTest {
     @BeforeEach
     void setup() {
         portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
-        portfolioService = new PortfolioServiceImpl(dataGateway, userService, portfolioMapper);
+        portfolioService = new PortfolioServiceImpl(portfolioAccessService, userService, portfolioMapper);
 
         user = getSampleUser();
         userPortfolio = getSamplePortfolio("MFStockAdvisor");
@@ -54,7 +53,7 @@ class PortfolioServiceImplTest {
         portfolios.forEach(portfolio -> portfolio.setAccountId(accountId));
 
         // Setup mocks
-        when(dataGateway.findAll()).thenReturn(portfolios);
+        when(portfolioAccessService.findAll()).thenReturn(portfolios);
 
         // Execute service
         List<PortfolioSummary> actualPortfolios = portfolioService.findAll();
@@ -69,7 +68,7 @@ class PortfolioServiceImplTest {
         Long portfolioId = userPortfolio.getId();
 
         // Setup mocks
-        when(dataGateway.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
+        when(portfolioAccessService.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
 
         // Execute service
         PortfolioDetail actualPortfolioDto = portfolioService.findById(portfolioId);
@@ -85,7 +84,7 @@ class PortfolioServiceImplTest {
         Long unknownPortfolioId = 1L;
 
         // Setup mocks
-        when(dataGateway.findById(unknownPortfolioId)).thenReturn(Optional.empty());
+        when(portfolioAccessService.findById(unknownPortfolioId)).thenReturn(Optional.empty());
 
         // Execute service and verify exception
         assertThrows(EntityNotFoundException.class, () -> portfolioService.findById(unknownPortfolioId));
@@ -98,36 +97,39 @@ class PortfolioServiceImplTest {
         String portfolioName = portfolioSave.getName();
 
         // Setup mocks
-        when(dataGateway.existsByName(portfolioName)).thenReturn(false);
-        when(dataGateway.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(portfolioAccessService.existsByName(portfolioName)).thenReturn(false);
+        when(portfolioAccessService.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userService.getUserAccountId()).thenReturn(user.getAccountId());
 
         // Execute service
-        PortfolioDetail createdPortfolioDto = portfolioService.create(portfolioSave);
+        PortfolioSummary createdPortfolioDto = portfolioService.create(portfolioSave);
 
         // Verify results
         assertNotNull(createdPortfolioDto);
         assertEquals(portfolioName, createdPortfolioDto.getName());
+        assertEquals(user.getAccountId(), createdPortfolioDto.getAccountId());
     }
 
     @Test
-    void updatePortfolioNameSuccess() {
+    void updatePortfolioSuccess() {
         // Setup test data
         String accountId = user.getAccountId();
         Long portfolioId = userPortfolio.getId();
-        String newPortfolioName = "NewName";
-        NameUpdate nameUpdate = NameUpdate.builder().id(portfolioId).name(newPortfolioName).build();
+        var portfolioUpdate = PortfolioSave.builder().id(portfolioId).name("NewName").description("New Description")
+                .build();
 
         // Setup mocks
-        when(dataGateway.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
-        when(dataGateway.existsByName(newPortfolioName)).thenReturn(false);
-        when(dataGateway.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(portfolioAccessService.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
+        when(portfolioAccessService.existsByName("NewName")).thenReturn(false);
+        when(portfolioAccessService.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Execute service
-        PortfolioDetail actualPortfolioDto = portfolioService.updateName(nameUpdate);
+        PortfolioSummary actualPortfolioDto = portfolioService.update(portfolioUpdate);
 
         // Verify results
         assertNotNull(actualPortfolioDto);
-        assertEquals(newPortfolioName, actualPortfolioDto.getName());
+        assertEquals("NewName", actualPortfolioDto.getName());
+        assertEquals("New Description", actualPortfolioDto.getDescription());
         assertEquals(portfolioId, actualPortfolioDto.getId());
         assertEquals(accountId, actualPortfolioDto.getAccountId());
     }
@@ -138,15 +140,15 @@ class PortfolioServiceImplTest {
         Long portfolioId = userPortfolio.getId();
 
         // setup mocks
-        when(dataGateway.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
-        doNothing().when(dataGateway).delete(userPortfolio);
+        when(portfolioAccessService.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
+        doNothing().when(portfolioAccessService).delete(userPortfolio);
 
         // execute service
         assertDoesNotThrow(() -> portfolioService.deleteById(portfolioId));
 
         // verify results
-        verify(dataGateway).findById(portfolioId);
-        verify(dataGateway).delete(userPortfolio);
+        verify(portfolioAccessService).findById(portfolioId);
+        verify(portfolioAccessService).delete(userPortfolio);
     }
 
     @Test
@@ -155,7 +157,7 @@ class PortfolioServiceImplTest {
         Long unknownPortfolioId = 1L;
 
         // setup mocks
-        when(dataGateway.findById(unknownPortfolioId)).thenReturn(Optional.empty());
+        when(portfolioAccessService.findById(unknownPortfolioId)).thenReturn(Optional.empty());
 
         // execute service and verify exception
         assertThrows(EntityNotFoundException.class, () -> portfolioService.deleteById(unknownPortfolioId));

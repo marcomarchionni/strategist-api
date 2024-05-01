@@ -3,15 +3,17 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
+import com.marcomarchionni.strategistapi.dtos.request.BatchOperation;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapper;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapperImpl;
+import com.marcomarchionni.strategistapi.services.BatchOperationService;
 import com.marcomarchionni.strategistapi.services.JwtService;
 import com.marcomarchionni.strategistapi.services.PortfolioService;
+import com.marcomarchionni.strategistapi.services.parsers.BatchRequestParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -38,6 +40,12 @@ class PortfolioControllerTest {
 
     @MockBean
     PortfolioService portfolioService;
+
+    @MockBean
+    BatchRequestParser batchRequestParser;
+
+    @MockBean
+    BatchOperationService batchOperationService;
 
     @Autowired
     MockMvc mockMvc;
@@ -66,17 +74,17 @@ class PortfolioControllerTest {
         List<PortfolioSummary> portfolioSummaries = getSamplePortfolios()
                 .stream()
                 .peek(portfolio -> portfolio.setAccountId(accountId))
-                .map(portfolioMapper::toPortfolioSummaryDto)
+                .map(portfolioMapper::portfolioToPortfolioSummary)
                 .toList();
 
         // setup mock behavior
         when(portfolioService.findAll()).thenReturn(portfolioSummaries);
 
         // Execute test
-        mockMvc.perform(get("/portfolios"))
+        mockMvc.perform(get("/portfolios/"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(portfolioSummaries.size())));
+                .andExpect(jsonPath("$.result", hasSize(portfolioSummaries.size())));
     }
 
     @Test
@@ -116,57 +124,20 @@ class PortfolioControllerTest {
     }
 
     @Test
-    void createPortfolioSuccess() throws Exception {
+    void batchRequest() throws Exception {
         // setup test data
         PortfolioSave portfolioSave = PortfolioSave.builder().name(userPortfolio.getName()).build();
-        PortfolioDetail portfolioDetail = portfolioMapper.toPortfolioDetailDto(userPortfolio);
+        List<BatchOperation<PortfolioSave>> operations = List.of(BatchOperation.<PortfolioSave>builder().method("POST")
+                .dto(portfolioSave).build());
 
         // setup mock behavior
-        when(portfolioService.create(portfolioSave)).thenReturn(portfolioDetail);
+        when(batchRequestParser.parseRequest(any(), eq(PortfolioSave.class))).thenReturn(operations);
 
         // Execute test
-        mockMvc.perform(post("/portfolios")
+        mockMvc.perform(post("/portfolios/$batch")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(portfolioSave)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(userPortfolio.getName())))
-                .andExpect(jsonPath("$.id", is(userPortfolio.getId().intValue())))
-                .andExpect(jsonPath("$.accountId", is(userPortfolio.getAccountId())));
-    }
-
-    @Test
-    void createPortfolioInvalidNameException() throws Exception {
-        // setup test data
-        PortfolioSave portfolioSave = PortfolioSave.builder().name("A").build();
-
-        // execute test
-        mockMvc.perform(post("/portfolios")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(portfolioSave)))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type", is("invalid-parameter")));
-    }
-
-    @Test
-    void updatePortfolioName() throws Exception {
-        // setup test
-        NameUpdate nameUpdate = NameUpdate.builder().id(userPortfolio.getId()).name("NewPortfolioName")
-                .build();
-        PortfolioDetail portfolioDetail = portfolioMapper.toPortfolioDetailDto(userPortfolio);
-
-        // setup mock behavior
-        when(portfolioService.updateName(nameUpdate)).thenReturn(portfolioDetail);
-
-        // Execute test
-        mockMvc.perform(put("/portfolios")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(nameUpdate)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(portfolioDetail.getName())));
+                .andExpect(status().isOk());
     }
 
     @Test
