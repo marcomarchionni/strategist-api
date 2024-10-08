@@ -1,6 +1,8 @@
 package com.marcomarchionni.strategistapi.repositories;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +17,11 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
 
     List<Portfolio> findAllByAccountId(String accountId);
 
+    Page<Portfolio> findAllByAccountId(String accountId, Pageable pageable);
+
     Optional<Portfolio> findByIdAndAccountId(Long id, String accountId);
 
     void deleteByAccountId(String accountId);
+
+    int countByAccountId(String accountId);
 }

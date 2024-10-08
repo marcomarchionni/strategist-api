@@ -17,4 +17,7 @@ public interface PortfolioService extends EntityService<PortfolioSave, Portfolio
 
     void deleteById(Long id);
 
+    List<PortfolioSummary> findAllWithPaging(int skip, int top);
+
+    int getTotalCount();
 }

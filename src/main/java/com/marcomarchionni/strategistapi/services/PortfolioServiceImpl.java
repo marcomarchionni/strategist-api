@@ -10,11 +10,13 @@ import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDelete
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +28,22 @@ public class PortfolioServiceImpl implements PortfolioService {
 
 
     @Override
+    public int getTotalCount() {
+        return portfolioAccessService.count();
+    }
+
+    @Override
     public List<PortfolioSummary> findAll() {
         List<Portfolio> portfolios = portfolioAccessService.findAll();
-        return portfolios.stream().map(portfolioMapper::portfolioToPortfolioSummary).collect(Collectors.toList());
+        return portfolios.stream().map(portfolioMapper::portfolioToPortfolioSummary).toList();
+    }
+
+    @Override
+    public List<PortfolioSummary> findAllWithPaging(int skip, int top) {
+        int pageNumber = skip / top;
+        Pageable pageable = PageRequest.of(pageNumber, top);
+        Page<Portfolio> portfolios = portfolioAccessService.findAll(pageable);
+        return portfolios.stream().map(portfolioMapper::portfolioToPortfolioSummary).toList();
     }
 
     @Override

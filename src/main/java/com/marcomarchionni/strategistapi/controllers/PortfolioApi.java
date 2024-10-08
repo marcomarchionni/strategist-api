@@ -1,13 +1,13 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
+import com.marcomarchionni.strategistapi.dtos.response.BatchReport;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "2. Portfolios", description = "Create or edit user defined portfolios.")
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public interface PortfolioApi {
     @GetMapping
     @Operation(summary = "Find all user's portfolios")
-    ApiResponse<PortfolioSummary> findAll(String inlineCount);
+    ApiResponse<PortfolioSummary> findAll(String inlineCount, int skip, int top);
 
     @GetMapping("/{id}")
     @Operation(summary = "Find portfolio by id")
@@ -24,7 +24,7 @@ public interface PortfolioApi {
 
     @PostMapping("/$batch")
     @Operation(summary = "Create a new portfolio")
-    ResponseEntity<String> handleBatchRequest(HttpServletRequest request) throws Exception;
+    BatchReport handleBatchRequest(HttpServletRequest request) throws Exception;
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete portfolio by id")

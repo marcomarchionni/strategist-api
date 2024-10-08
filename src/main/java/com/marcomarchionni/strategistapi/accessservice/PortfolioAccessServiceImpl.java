@@ -5,6 +5,8 @@ import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
 import com.marcomarchionni.strategistapi.services.UserService;
 import com.marcomarchionni.strategistapi.validators.AccountIdValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +23,12 @@ public class PortfolioAccessServiceImpl implements PortfolioAccessService {
     public List<Portfolio> findAll() {
         String accountId = userService.getUserAccountId();
         return portfolioRepository.findAllByAccountId(accountId);
+    }
+
+    @Override
+    public Page<Portfolio> findAll(Pageable pageable) {
+        String accountId = userService.getUserAccountId();
+        return portfolioRepository.findAllByAccountId(accountId, pageable);
     }
 
     @Override
@@ -47,6 +55,12 @@ public class PortfolioAccessServiceImpl implements PortfolioAccessService {
         String accountId = userService.getUserAccountId();
         accountIdValidator.hasValidAccountId(portfolio, accountId);
         portfolioRepository.deleteById(portfolio.getId());
+    }
+
+    @Override
+    public int count() {
+        String accountId = userService.getUserAccountId();
+        return portfolioRepository.countByAccountId(accountId);
     }
 }
 

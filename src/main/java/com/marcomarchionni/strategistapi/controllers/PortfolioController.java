@@ -3,6 +3,7 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.marcomarchionni.strategistapi.dtos.request.BatchOperation;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
+import com.marcomarchionni.strategistapi.dtos.response.BatchReport;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.services.BatchOperationService;
@@ -11,7 +12,6 @@ import com.marcomarchionni.strategistapi.services.parsers.BatchRequestParser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,10 +27,17 @@ public class PortfolioController implements PortfolioApi {
     private final BatchOperationService batchOperationService;
 
     @GetMapping
-    public ApiResponse<PortfolioSummary> findAll(@RequestParam(value = "$inlinecount", required = false) String inlineCount) {
-        var results = portfolioService.findAll();
-        var count = results.size();
-        return ApiResponse.<PortfolioSummary>builder().result(results).count(count).build();
+    public ApiResponse<PortfolioSummary> findAll(
+            @RequestParam(value = "$inlinecount", required = false) String inlineCount,
+            @RequestParam(value = "$skip", required = false, defaultValue = "0") int skip,
+            @RequestParam(value = "$top", required = false, defaultValue = "10") int top) {
+
+        var results = portfolioService.findAllWithPaging(skip, top);
+        var count = portfolioService.getTotalCount();
+        return ApiResponse.<PortfolioSummary>builder()
+                .result(results)
+                .count(count)
+                .build();
     }
 
     @GetMapping("/{id}")
@@ -39,11 +46,10 @@ public class PortfolioController implements PortfolioApi {
     }
 
     @PostMapping("/$batch")
-    public ResponseEntity<String> handleBatchRequest(HttpServletRequest request) throws Exception {
+    public BatchReport<PortfolioSummary> handleBatchRequest(HttpServletRequest request) throws Exception {
         List<BatchOperation<PortfolioSave>> operations = batchRequestParser.parseRequest(request, PortfolioSave.class);
         log.info("Operations: {}", operations);
-        batchOperationService.executeBatchOperations(operations);
-        return ResponseEntity.ok().body("Batch request processed");
+        return batchOperationService.executeBatchOperations(operations);
     }
 
     @DeleteMapping("/{id}")
