@@ -3,6 +3,7 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
 import com.marcomarchionni.strategistapi.dtos.response.auth.JwtAuthenticationResponse;
+import com.marcomarchionni.strategistapi.dtos.response.auth.SigninResponse;
 import com.marcomarchionni.strategistapi.services.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class AuthenticationController implements AuthenticationApi {
         return ResponseEntity.ok(authenticationService.signUp(request));
     }
 
-    public ResponseEntity<JwtAuthenticationResponse> signin(@Valid @RequestBody SignInReq request) {
+    public ResponseEntity<SigninResponse> signin(@Valid @RequestBody SignInReq request) {
         return ResponseEntity.ok(authenticationService.signIn(request));
     }
 }

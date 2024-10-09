@@ -3,6 +3,8 @@ package com.marcomarchionni.strategistapi.services;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
+import com.marcomarchionni.strategistapi.mappers.UserMapper;
+import com.marcomarchionni.strategistapi.mappers.UserMapperImpl;
 import com.marcomarchionni.strategistapi.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,8 @@ class AuthenticationServiceImplTest {
     @Mock
     AuthenticationManager authenticationManager;
 
+    UserMapper userMapper = new UserMapperImpl();
+
     AuthenticationServiceImpl authenticationServiceImpl;
 
     @Captor
@@ -40,9 +44,10 @@ class AuthenticationServiceImplTest {
 
     @BeforeEach
     void setUp() {
+
         authenticationServiceImpl = new AuthenticationServiceImpl(userRepository, passwordEncoder,
                 jwtService,
-                authenticationManager);
+                authenticationManager, userMapper);
     }
 
 

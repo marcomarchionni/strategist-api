@@ -3,6 +3,7 @@ package com.marcomarchionni.strategistapi.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -46,12 +47,12 @@ public class SecurityConfig {
                                 mvc.pattern("/error"),
                                 mvc.pattern("/api-docs/**"),
                                 mvc.pattern("/swagger-ui/**"),
-                                mvc.pattern("/portfolios/"),
-                                mvc.pattern("/portfolios/$batch"),
+                                mvc.pattern("/auth/**"),
                                 mvc.pattern("/"))
                         .permitAll()
+                        .requestMatchers(mvc.pattern(HttpMethod.OPTIONS, "/**"))
+                        .permitAll() // Allow all OPTIONS requests globally
                         .requestMatchers(
-                                mvc.pattern("/auth/**"),
                                 mvc.pattern("/admin/**")
                         )
                         .hasAuthority("ROLE_ADMIN")

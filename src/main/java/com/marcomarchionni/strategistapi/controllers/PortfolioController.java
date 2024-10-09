@@ -12,21 +12,21 @@ import com.marcomarchionni.strategistapi.services.parsers.BatchRequestParser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/portfolios/")
 public class PortfolioController implements PortfolioApi {
 
     private final PortfolioService portfolioService;
     private final BatchRequestParser batchRequestParser;
     private final BatchOperationService batchOperationService;
 
-    @GetMapping
     public ApiResponse<PortfolioSummary> findAll(
             @RequestParam(value = "$inlinecount", required = false) String inlineCount,
             @RequestParam(value = "$skip", required = false, defaultValue = "0") int skip,
@@ -40,19 +40,16 @@ public class PortfolioController implements PortfolioApi {
                 .build();
     }
 
-    @GetMapping("/{id}")
     public PortfolioDetail findById(@PathVariable Long id) {
         return portfolioService.findById(id);
     }
 
-    @PostMapping("/$batch")
     public BatchReport<PortfolioSummary> handleBatchRequest(HttpServletRequest request) throws Exception {
         List<BatchOperation<PortfolioSave>> operations = batchRequestParser.parseRequest(request, PortfolioSave.class);
         log.info("Operations: {}", operations);
         return batchOperationService.executeBatchOperations(operations);
     }
 
-    @DeleteMapping("/{id}")
     public void deletePortfolio(@PathVariable Long id) {
         portfolioService.deleteById(id);
     }

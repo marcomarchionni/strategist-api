@@ -5,9 +5,10 @@ import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
 import com.marcomarchionni.strategistapi.dtos.response.auth.JwtAuthenticationResponse;
+import com.marcomarchionni.strategistapi.dtos.response.auth.SigninResponse;
+import com.marcomarchionni.strategistapi.mappers.UserMapper;
+import com.marcomarchionni.strategistapi.mappers.UserMapperImpl;
 import com.marcomarchionni.strategistapi.services.AuthenticationService;
-import com.marcomarchionni.strategistapi.services.DividendService;
-import com.marcomarchionni.strategistapi.services.JwtService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,17 +33,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class AuthenticationControllerTest {
 
-    @MockBean
-    DividendService dividendService;
-
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
-    JwtService jwtService;
-
-    @MockBean
     AuthenticationService authenticationService;
+
+    UserMapper userMapper = new UserMapperImpl();
 
     ObjectMapper mapper;
 
@@ -51,10 +48,12 @@ class AuthenticationControllerTest {
     @BeforeEach
     void setUp() {
         user = getSampleUser();
+        var userSummary = userMapper.toUserSummary(user);
         mapper = new ObjectMapper();
         var authToken = JwtAuthenticationResponse.builder().token("token").build();
+        var signInResponse = SigninResponse.builder().user(userSummary).token("token").build();
         when(authenticationService.signUp(any())).thenReturn(authToken);
-        when(authenticationService.signIn(any())).thenReturn(authToken);
+        when(authenticationService.signIn(any())).thenReturn(signInResponse);
     }
 
     @AfterEach

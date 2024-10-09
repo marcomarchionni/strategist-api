@@ -3,6 +3,7 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
 import com.marcomarchionni.strategistapi.dtos.response.auth.JwtAuthenticationResponse;
+import com.marcomarchionni.strategistapi.dtos.response.auth.SigninResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -50,5 +51,5 @@ public interface AuthenticationApi {
                     "between 8" +
                     " and 20\", \"instance\": \"/api/v1/auth/signin\"}")})),
     })
-    ResponseEntity<JwtAuthenticationResponse> signin(@Valid @RequestBody SignInReq request);
+    ResponseEntity<SigninResponse> signin(@Valid @RequestBody SignInReq request);
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/portfolios")
 @SecurityRequirement(name = "bearerAuth")
 public interface PortfolioApi {
-    @GetMapping
+    @GetMapping("/")
     @Operation(summary = "Find all user's portfolios")
     ApiResponse<PortfolioSummary> findAll(String inlineCount, int skip, int top);
 

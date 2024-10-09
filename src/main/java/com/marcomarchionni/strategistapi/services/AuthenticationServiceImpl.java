@@ -4,29 +4,23 @@ import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
 import com.marcomarchionni.strategistapi.dtos.response.auth.JwtAuthenticationResponse;
+import com.marcomarchionni.strategistapi.dtos.response.auth.SigninResponse;
+import com.marcomarchionni.strategistapi.mappers.UserMapper;
 import com.marcomarchionni.strategistapi.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
-    public AuthenticationServiceImpl(UserRepository userRepository,
-                                     PasswordEncoder passwordEncoder,
-                                     JwtService jwtService,
-                                     AuthenticationManager authenticationManager
-    ) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-    }
+    private final UserMapper userMapper;
 
     @Override
     public JwtAuthenticationResponse signUp(SignUpReq request) {
@@ -44,13 +38,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public JwtAuthenticationResponse signIn(SignInReq request) {
+    public SigninResponse signIn(SignInReq request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password")); //TODO: custom exception
         var jwt = jwtService.generateToken(user);
-        return JwtAuthenticationResponse.builder().token(jwt).build();
+        var userSummary = userMapper.toUserSummary(user);
+        return SigninResponse.builder().user(userSummary).token(jwt).build();
     }
 
     private User.Role determineRole(String requestedRole) {
