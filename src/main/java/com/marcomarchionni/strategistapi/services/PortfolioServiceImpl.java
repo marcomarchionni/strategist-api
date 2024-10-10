@@ -2,6 +2,7 @@ package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
+import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
@@ -9,9 +10,9 @@ import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFound
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapper;
+import com.marcomarchionni.strategistapi.services.util.PagingUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,9 +40,8 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public List<PortfolioSummary> findAllWithPaging(int skip, int top) {
-        int pageNumber = skip / top;
-        Pageable pageable = PageRequest.of(pageNumber, top);
+    public List<PortfolioSummary> findAllWithPaging(FindAllReq findReq) {
+        Pageable pageable = PagingUtil.createPageable(findReq);
         Page<Portfolio> portfolios = portfolioAccessService.findAll(pageable);
         return portfolios.stream().map(portfolioMapper::portfolioToPortfolioSummary).toList();
     }

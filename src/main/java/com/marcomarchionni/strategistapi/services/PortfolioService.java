@@ -1,5 +1,6 @@
 package com.marcomarchionni.strategistapi.services;
 
+import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
@@ -17,7 +18,7 @@ public interface PortfolioService extends EntityService<PortfolioSave, Portfolio
 
     void deleteById(Long id);
 
-    List<PortfolioSummary> findAllWithPaging(int skip, int top);
+    List<PortfolioSummary> findAllWithPaging(FindAllReq findReq);
 
     int getTotalCount();
 }
