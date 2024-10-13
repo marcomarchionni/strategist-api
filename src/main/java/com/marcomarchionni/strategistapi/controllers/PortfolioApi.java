@@ -1,10 +1,8 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
-import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.BatchReport;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
-import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public interface PortfolioApi {
     @GetMapping("/")
     @Operation(summary = "Find all user's portfolios")
-    ApiResponse<PortfolioSummary> findAll(FindAllReq findAllReq);
+    Object findAll(FindAllReq findAllReq);
 
     @GetMapping("/{id}")
     @Operation(summary = "Find portfolio by id")

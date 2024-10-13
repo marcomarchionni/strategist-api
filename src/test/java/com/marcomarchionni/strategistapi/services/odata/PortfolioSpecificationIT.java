@@ -51,7 +51,8 @@ public class PortfolioSpecificationIT {
     @Test
     public void testSpecificationFilterByDateRange() {
         // Apply a filter with a date range
-        String filter = "(createdAt gt datetime2024-01-01T00:00:00Z) and (createdAt lt datetime2024-10-02T23:59:59Z)";
+        String filter = "(createdAt gt datetime2024-01-01T00:00:00.000Z) and (createdAt lt " +
+                "datetime2024-10-02T23:59:59.999Z)";
         Specification<Portfolio> spec = portfolioSpecification.fromFilter(filter, "U1111111");
 
         List<Portfolio> results = portfolioRepository.findAll(spec);

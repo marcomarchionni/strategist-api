@@ -3,7 +3,9 @@ package com.marcomarchionni.strategistapi.services;
 import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
+import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
+import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -17,6 +19,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +39,8 @@ class PortfolioServiceImplTest {
     PortfolioAccessService portfolioAccessService;
     @Mock
     PortfolioRepository portfolioRepository;
+    @Mock
+    Specification<Portfolio> spec;
     @Mock
     PortfolioSpecification portfolioSpecification;
     @Mock
@@ -53,20 +61,52 @@ class PortfolioServiceImplTest {
     }
 
     @Test
-    void findAllByUser() {
+    void findAll() {
         // Setup test data
         String accountId = user.getAccountId();
         List<Portfolio> portfolios = getSamplePortfolios();
         portfolios.forEach(portfolio -> portfolio.setAccountId(accountId));
+        FindAllReq findReq = new FindAllReq();
+
+        // Create a mock Page
+        Page<Portfolio> portfolioPage = new PageImpl<>(portfolios);  // Mocked Page
 
         // Setup mocks
-        when(portfolioAccessService.findAll()).thenReturn(portfolios);
+        when(portfolioRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(portfolioPage);
+        when(portfolioSpecification.fromFilter(findReq.getFilter(), accountId)).thenReturn(spec);
+        when(userService.getUserAccountId()).thenReturn(accountId);
 
         // Execute service
-        List<PortfolioSummary> actualPortfolios = portfolioService.findAll();
+        List<PortfolioSummary> actualPortfolios = portfolioService.findAll(findReq);  // Pass findReq if necessary
 
         // Verify results
-        assertEquals(actualPortfolios.size(), portfolios.size());
+        assertEquals(portfolios.size(), actualPortfolios.size());
+    }
+
+    @Test
+    void findAllWithCount() {
+        // Setup test data
+        String accountId = user.getAccountId();
+        List<Portfolio> portfolios = getSamplePortfolios();
+        portfolios.forEach(portfolio -> portfolio.setAccountId(accountId));
+        FindAllReq findReq = new FindAllReq();
+
+        // Create a mock Page
+        Page<Portfolio> portfolioPage = new PageImpl<>(portfolios);  // Mocked Page
+
+        // Setup mocks
+        when(portfolioRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(portfolioPage);
+        when(portfolioRepository.count(spec)).thenReturn((long) portfolios.size());
+        when(portfolioSpecification.fromFilter(findReq.getFilter(), accountId)).thenReturn(spec);
+        when(userService.getUserAccountId()).thenReturn(accountId);
+
+        // Execute service
+        ApiResponse<PortfolioSummary> response = portfolioService.findAllWithCount(findReq);  // Pass findReq if
+        // necessary
+
+        // Verify results
+        assertEquals(portfolios.size(), response.getResult().size());
+        assertEquals(portfolios.size(), response.getCount());
     }
 
     @Test

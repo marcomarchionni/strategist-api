@@ -4,6 +4,7 @@ import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
+import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -32,25 +33,33 @@ public class PortfolioServiceImpl implements PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final PortfolioSpecification portfolioSpecification;
 
-
     @Override
-    public int getTotalCount() {
-        return portfolioAccessService.count();
-    }
-
-    @Override
-    public List<PortfolioSummary> findAll() {
-        List<Portfolio> portfolios = portfolioAccessService.findAll();
-        return portfolios.stream().map(portfolioMapper::portfolioToPortfolioSummary).toList();
-    }
-
-    @Override
-    public List<PortfolioSummary> findAllWithPaging(FindAllReq findReq) {
+    public List<PortfolioSummary> findAll(FindAllReq findReq) {
         String accountId = userService.getUserAccountId();
         Pageable pageable = PagingUtil.createPageable(findReq);
         Specification<Portfolio> spec = portfolioSpecification.fromFilter(findReq.getFilter(), accountId);
+
+        // Fetch filtered results
         Page<Portfolio> portfolios = portfolioRepository.findAll(spec, pageable);
-        return portfolios.stream().map(portfolioMapper::portfolioToPortfolioSummary).toList();
+        return portfolios.map(portfolioMapper::portfolioToPortfolioSummary).toList();
+    }
+
+    @Override
+    public ApiResponse<PortfolioSummary> findAllWithCount(FindAllReq findReq) {
+        String accountId = userService.getUserAccountId();
+        Pageable pageable = PagingUtil.createPageable(findReq);
+        Specification<Portfolio> spec = portfolioSpecification.fromFilter(findReq.getFilter(), accountId);
+
+        // Fetch filtered results
+        Page<Portfolio> portfolios = portfolioRepository.findAll(spec, pageable);
+
+        // Get total count with filter
+        long totalCount = portfolioRepository.count(spec);
+
+        return ApiResponse.<PortfolioSummary>builder()
+                .result(portfolios.stream().map(portfolioMapper::portfolioToPortfolioSummary).toList())
+                .count(totalCount)
+                .build();
     }
 
     @Override

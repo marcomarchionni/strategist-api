@@ -13,12 +13,13 @@ public class ValueParserImpl implements ValueParser {
     public <T> T parse(Class<T> fieldType, String value) {
         return switch (fieldType.getSimpleName()) {
             case "LocalDateTime" -> {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'datetime'yyyy-MM-dd'T'HH:mm:ss'Z'");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'datetime'yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 yield fieldType.cast(LocalDateTime.parse(value, formatter));
             }
             case "LocalDate" -> {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'datetime'yyyy-MM-dd'T'HH:mm:ss'Z'");
-                yield fieldType.cast(LocalDateTime.parse(value, formatter).toLocalDate());
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'datetime'yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                var parsedDateTime = LocalDateTime.parse(value, formatter);
+                yield fieldType.cast(parsedDateTime.toLocalDate());
             }
             case "Integer" -> fieldType.cast(Integer.parseInt(value));
 

@@ -5,6 +5,7 @@ import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.BatchOperation;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
+import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
@@ -78,9 +79,11 @@ class PortfolioControllerTest {
                 .peek(portfolio -> portfolio.setAccountId(accountId))
                 .map(portfolioMapper::portfolioToPortfolioSummary)
                 .toList();
+        ApiResponse response = ApiResponse.<PortfolioSummary>builder().result(portfolioSummaries)
+                .count(portfolioSummaries.size()).build();
 
         // setup mock behavior
-        when(portfolioService.findAllWithPaging(any())).thenReturn(portfolioSummaries);
+        when(portfolioService.findAllWithCount(any())).thenReturn(response);
 
         // Execute test
         mockMvc.perform(get("/portfolios/"))

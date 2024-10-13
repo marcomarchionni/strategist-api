@@ -3,7 +3,6 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.marcomarchionni.strategistapi.dtos.request.BatchOperation;
 import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
-import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.BatchReport;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
@@ -28,13 +27,12 @@ public class PortfolioController implements PortfolioApi {
     private final BatchRequestParser batchRequestParser;
     private final BatchOperationService batchOperationService;
 
-    public ApiResponse<PortfolioSummary> findAll(@Valid FindAllReq findReq) {
-        var results = portfolioService.findAllWithPaging(findReq);
-        var count = portfolioService.getTotalCount();
-        return ApiResponse.<PortfolioSummary>builder()
-                .result(results)
-                .count(count)
-                .build();
+    public Object findAll(@Valid FindAllReq findReq) {
+        if ("allpages".equals(findReq.getInlineCount())) {
+            return portfolioService.findAllWithCount(findReq);
+        } else {
+            return portfolioService.findAll(findReq);
+        }
     }
 
     public PortfolioDetail findById(@PathVariable Long id) {
