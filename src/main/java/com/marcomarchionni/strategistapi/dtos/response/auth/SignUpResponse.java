@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JwtAuthenticationResponse {
-    String token;
+public class SignUpResponse {
+    //TODO: Just respond with 201 Created
+    @SuppressWarnings("unused")
+    String accessToken;
 }

@@ -5,7 +5,9 @@ import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.hibernate.HibernateException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
@@ -108,6 +110,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         pd.setType(URI.create("parameter-type-mismatch"));
         pd.setTitle("Parameter Type Mismatch");
 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(pd);
+    }
+
+    @ExceptionHandler({InvalidDataAccessApiUsageException.class, HibernateException.class})
+    public ResponseEntity<Object> handleInvalidFilterException(Exception ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                "Invalid filter parameter: " + ex.getMessage());
+        pd.setType(URI.create("invalid-filter-parameter"));
+        pd.setTitle("Invalid filter");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(pd);
     }
 

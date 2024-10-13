@@ -1,8 +1,10 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import com.marcomarchionni.strategistapi.dtos.request.RefreshTokenRequest;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
-import com.marcomarchionni.strategistapi.dtos.response.auth.JwtAuthenticationResponse;
+import com.marcomarchionni.strategistapi.dtos.response.auth.RefreshTokenResponse;
+import com.marcomarchionni.strategistapi.dtos.response.auth.SignUpResponse;
 import com.marcomarchionni.strategistapi.dtos.response.auth.SigninResponse;
 import com.marcomarchionni.strategistapi.services.AuthenticationService;
 import jakarta.validation.Valid;
@@ -18,11 +20,18 @@ public class AuthenticationController implements AuthenticationApi {
 
     private final AuthenticationService authenticationService;
 
-    public ResponseEntity<JwtAuthenticationResponse> signup(@Valid @RequestBody SignUpReq request) {
+    @Override
+    public ResponseEntity<SignUpResponse> signup(@Valid @RequestBody SignUpReq request) {
         return ResponseEntity.ok(authenticationService.signUp(request));
     }
 
+    @Override
     public ResponseEntity<SigninResponse> signin(@Valid @RequestBody SignInReq request) {
         return ResponseEntity.ok(authenticationService.signIn(request));
+    }
+
+    @Override
+    public ResponseEntity<RefreshTokenResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authenticationService.refreshToken(request));
     }
 }

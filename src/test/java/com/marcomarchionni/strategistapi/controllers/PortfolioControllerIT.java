@@ -9,7 +9,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleUser;
 import static org.hamcrest.Matchers.hasSize;
@@ -61,14 +64,39 @@ class PortfolioControllerIT {
         SecurityContextHolder.clearContext();
     }
 
-    @Test
-    void findAllSuccess() throws Exception {
-        int expectedSize = portfolioRepository.findAllByAccountId(user.getAccountId()).size();
+    static Stream<Arguments> provideQueryParameters() {
+        return Stream.of(
+                Arguments.of("?$inlinecount=allpages&top=10", "$.result", 4),
+                Arguments.of("?$inlinecount=allpages&$top=2&skip=2", "$.result", 2),
+                Arguments.of("?$inlinecount=allpages&$sort=asc", "$.result", 4),
+                Arguments.of("?$inlinecount=allpages&$filter=substringof('er', tolower(name))", "$.result", 2),
+                Arguments.of("?$top=1&$skip=2", "$", 1)
+        );
+    }
 
-        mockMvc.perform(get("/portfolios/"))
+    static Stream<Arguments> provideBadQueryParameters() {
+        return Stream.of(
+                Arguments.of("?$inlinecount=allpages&$filter=substringof('er', lower(name))", "$.result", 2),
+                Arguments.of("?$inlinecount=allpages&$filter=substringof(tolower(name), 'er)", "$.result", 2)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideQueryParameters")
+    void findAllParameterizedTest(String queryParams, String expression, int expectedSize) throws Exception {
+        mockMvc.perform(get("/portfolios/" + queryParams))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.result", hasSize(expectedSize)));
+                .andExpect(jsonPath(expression, hasSize(expectedSize)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideBadQueryParameters")
+    void findAllParameterizedTestBadRequest(String queryParams) throws Exception {
+        mockMvc.perform(get("/portfolios/" + queryParams))
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type", is("invalid-filter-parameter")));
     }
 
     @ParameterizedTest

@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
-import com.marcomarchionni.strategistapi.dtos.response.auth.JwtAuthenticationResponse;
+import com.marcomarchionni.strategistapi.dtos.response.auth.RefreshTokenResponse;
+import com.marcomarchionni.strategistapi.dtos.response.auth.SignUpResponse;
 import com.marcomarchionni.strategistapi.dtos.response.auth.SigninResponse;
 import com.marcomarchionni.strategistapi.mappers.UserMapper;
 import com.marcomarchionni.strategistapi.mappers.UserMapperImpl;
@@ -42,7 +43,7 @@ class AuthenticationControllerTest {
 
     @SuppressWarnings("unused")
     @MockBean
-    private JwtService jwtService;
+    JwtService jwtService;
 
     UserMapper userMapper = new UserMapperImpl();
 
@@ -50,15 +51,17 @@ class AuthenticationControllerTest {
 
     User user;
 
+
     @BeforeEach
     void setUp() {
         user = getSampleUser();
         var userSummary = userMapper.toUserSummary(user);
         mapper = new ObjectMapper();
-        var authToken = JwtAuthenticationResponse.builder().token("token").build();
-        var signInResponse = SigninResponse.builder().user(userSummary).token("token").build();
+        var authToken = SignUpResponse.builder().accessToken("token").build();
+        var signInResponse = SigninResponse.builder().user(userSummary).accessToken("token").build();
         when(authenticationService.signUp(any())).thenReturn(authToken);
         when(authenticationService.signIn(any())).thenReturn(signInResponse);
+
     }
 
     @AfterEach
@@ -144,6 +147,21 @@ class AuthenticationControllerTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(content().json("{\"type\":\"invalid-parameter\"}"));
+    }
+
+    @Test
+    void refresh() throws Exception {
+        var refreshTokenResponse = new RefreshTokenResponse("accessTokenaaaaaaa", "refreshTokenbbbbbbb");
+        when(authenticationService.refreshToken(any())).thenReturn(refreshTokenResponse);
+
+        mockMvc.perform(post("/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"refreshToken\":\"refreshToken\"}"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"accessToken\":\"accessTokenaaaaaaa\"," +
+                        "\"refreshToken\":\"refreshTokenbbbbbbb\"}"));
     }
 }
 

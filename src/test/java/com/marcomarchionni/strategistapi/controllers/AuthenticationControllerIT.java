@@ -71,7 +71,7 @@ class AuthenticationControllerIT {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.token", is(notNullValue())));
+                .andExpect(jsonPath("$.accessToken", is(notNullValue())));
     }
 
     @Test
@@ -96,7 +96,9 @@ class AuthenticationControllerIT {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.token", is(notNullValue())));
+                .andExpect(jsonPath("$.accessToken", is(notNullValue())))
+                .andExpect(jsonPath("$.refreshToken", is(notNullValue())))
+                .andExpect(jsonPath("$.user", is(notNullValue())));
     }
 
     @Test

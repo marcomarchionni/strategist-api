@@ -33,15 +33,39 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateToken(UserDetails userDetails) {
+    public String generateAccessToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
     @Override
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    public String generateRefreshToken(UserDetails userDetails) {
+        // Set a longer expiration time for refresh tokens
+        long refreshTokenExpirationInMs = jwtExpirationInMs * 5;
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("tokenType", "refresh");
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpirationInMs))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
+
+    @Override
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUserName(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    @Override
+    public boolean isRefreshTokenValid(String token) {
+        String tokenType = extractClaim(token, claims -> claims.get("tokenType", String.class));
+        return "refresh".equals(tokenType) && !isTokenExpired(token);
+    }
+
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
         final Claims claims = extractAllClaims(token);
@@ -55,6 +79,7 @@ public class JwtServiceImpl implements JwtService {
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }

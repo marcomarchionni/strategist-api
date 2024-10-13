@@ -79,6 +79,26 @@ class PortfolioControllerTest {
                 .peek(portfolio -> portfolio.setAccountId(accountId))
                 .map(portfolioMapper::portfolioToPortfolioSummary)
                 .toList();
+
+        // setup mock behavior
+        when(portfolioService.findAll(any())).thenReturn(portfolioSummaries);
+
+        // Execute test
+        mockMvc.perform(get("/portfolios/"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(portfolioSummaries.size())));
+    }
+
+    @Test
+    void findPortfoliosWithCount() throws Exception {
+        // setup test data
+        String accountId = user.getAccountId();
+        List<PortfolioSummary> portfolioSummaries = getSamplePortfolios()
+                .stream()
+                .peek(portfolio -> portfolio.setAccountId(accountId))
+                .map(portfolioMapper::portfolioToPortfolioSummary)
+                .toList();
         ApiResponse response = ApiResponse.<PortfolioSummary>builder().result(portfolioSummaries)
                 .count(portfolioSummaries.size()).build();
 
@@ -86,10 +106,11 @@ class PortfolioControllerTest {
         when(portfolioService.findAllWithCount(any())).thenReturn(response);
 
         // Execute test
-        mockMvc.perform(get("/portfolios/"))
+        mockMvc.perform(get("/portfolios/?$inlinecount=allpages"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.result", hasSize(portfolioSummaries.size())));
+                .andExpect(jsonPath("$.result", hasSize(portfolioSummaries.size())))
+                .andExpect(jsonPath("$.count", is(portfolioSummaries.size())));
     }
 
     @Test
