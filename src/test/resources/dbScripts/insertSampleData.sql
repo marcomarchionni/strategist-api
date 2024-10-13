@@ -31,10 +31,10 @@ VALUES ('U2222222', '2022-06-01', '2022-07-09', 'Custom', '2022-07-08 13:04:33')
 
 INSERT INTO `portfolio` (`created_at`, `name`, `description`, `account_id`)
 VALUES ('2021-01-01', 'Saver Portfolio', 'This is a Savers Portfolio', 'U1111111'),
-       ('2021-01-01', 'Trader Portfolio', 'This is a Traders Portfolio', 'U1111111'),
-       ('2021-01-01', 'Millionaire Portfolio', 'This is a Millionaires Portfolio', 'U1111111'),
-       ('2021-01-01', 'Saver Portfolio', 'This is a Savers Portfolio', 'U2222222'),
-       ('2021-01-01', 'Option Portfolio', 'This is a Traders Portfolio', 'U1111111');
+       ('2021-02-01', 'Trader Portfolio', 'This is a Traders Portfolio', 'U1111111'),
+       ('2022-03-01', 'Millionaire Portfolio', 'This is a Millionaires Portfolio', 'U1111111'),
+       ('2023-04-01', 'Saver Portfolio', 'This is a Savers Portfolio', 'U2222222'),
+       ('2024-05-01', 'Option Portfolio', 'This is a Traders Portfolio', 'U1111111');
 
 SELECT @SaverId1 := id
 FROM `portfolio`

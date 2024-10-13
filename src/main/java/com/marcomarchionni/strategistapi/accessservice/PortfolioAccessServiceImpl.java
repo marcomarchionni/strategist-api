@@ -7,6 +7,7 @@ import com.marcomarchionni.strategistapi.validators.AccountIdValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,9 +27,8 @@ public class PortfolioAccessServiceImpl implements PortfolioAccessService {
     }
 
     @Override
-    public Page<Portfolio> findAll(Pageable pageable) {
-        String accountId = userService.getUserAccountId();
-        return portfolioRepository.findAllByAccountId(accountId, pageable);
+    public Page<Portfolio> findAll(Specification<Portfolio> spec, Pageable pageable) {
+        return portfolioRepository.findAllBy(spec, pageable);
     }
 
     @Override

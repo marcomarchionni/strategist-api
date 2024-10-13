@@ -9,6 +9,8 @@ import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapper;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapperImpl;
+import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
+import com.marcomarchionni.strategistapi.services.odata.PortfolioSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +32,10 @@ class PortfolioServiceImplTest {
     @Mock
     PortfolioAccessService portfolioAccessService;
     @Mock
+    PortfolioRepository portfolioRepository;
+    @Mock
+    PortfolioSpecification portfolioSpecification;
+    @Mock
     UserService userService;
     PortfolioMapper portfolioMapper;
     PortfolioService portfolioService;
@@ -39,7 +45,8 @@ class PortfolioServiceImplTest {
     @BeforeEach
     void setup() {
         portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
-        portfolioService = new PortfolioServiceImpl(portfolioAccessService, userService, portfolioMapper);
+        portfolioService = new PortfolioServiceImpl(portfolioAccessService, userService, portfolioMapper,
+                portfolioRepository, portfolioSpecification);
 
         user = getSampleUser();
         userPortfolio = getSamplePortfolio("MFStockAdvisor");

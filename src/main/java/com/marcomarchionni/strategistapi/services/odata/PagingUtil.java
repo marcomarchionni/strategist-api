@@ -1,4 +1,4 @@
-package com.marcomarchionni.strategistapi.services.util;
+package com.marcomarchionni.strategistapi.services.odata;
 
 import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import org.springframework.data.domain.PageRequest;

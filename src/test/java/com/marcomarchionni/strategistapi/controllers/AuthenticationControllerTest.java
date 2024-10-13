@@ -9,6 +9,7 @@ import com.marcomarchionni.strategistapi.dtos.response.auth.SigninResponse;
 import com.marcomarchionni.strategistapi.mappers.UserMapper;
 import com.marcomarchionni.strategistapi.mappers.UserMapperImpl;
 import com.marcomarchionni.strategistapi.services.AuthenticationService;
+import com.marcomarchionni.strategistapi.services.JwtService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,10 @@ class AuthenticationControllerTest {
 
     @MockBean
     AuthenticationService authenticationService;
+
+    @SuppressWarnings("unused")
+    @MockBean
+    private JwtService jwtService;
 
     UserMapper userMapper = new UserMapperImpl();
 

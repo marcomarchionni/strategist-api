@@ -10,10 +10,13 @@ import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFound
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapper;
-import com.marcomarchionni.strategistapi.services.util.PagingUtil;
+import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
+import com.marcomarchionni.strategistapi.services.odata.PagingUtil;
+import com.marcomarchionni.strategistapi.services.odata.PortfolioSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,8 @@ public class PortfolioServiceImpl implements PortfolioService {
     private final PortfolioAccessService portfolioAccessService;
     private final UserService userService;
     private final PortfolioMapper portfolioMapper;
+    private final PortfolioRepository portfolioRepository;
+    private final PortfolioSpecification portfolioSpecification;
 
 
     @Override
@@ -41,8 +46,10 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public List<PortfolioSummary> findAllWithPaging(FindAllReq findReq) {
+        String accountId = userService.getUserAccountId();
         Pageable pageable = PagingUtil.createPageable(findReq);
-        Page<Portfolio> portfolios = portfolioAccessService.findAll(pageable);
+        Specification<Portfolio> spec = portfolioSpecification.fromFilter(findReq.getFilter(), accountId);
+        Page<Portfolio> portfolios = portfolioRepository.findAll(spec, pageable);
         return portfolios.stream().map(portfolioMapper::portfolioToPortfolioSummary).toList();
     }
 

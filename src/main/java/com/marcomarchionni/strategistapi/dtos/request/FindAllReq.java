@@ -22,6 +22,7 @@ public class FindAllReq {
     @Builder.Default
     private int top = 5;
     private String orderBy;
+    private String filter;
 
     public void set$inlinecount(String $inlineCount) {
         this.inlineCount = $inlineCount;
@@ -37,5 +38,9 @@ public class FindAllReq {
 
     public void set$orderby(String $orderby) {
         this.orderBy = $orderby;
+    }
+
+    public void set$filter(String $filter) {
+        this.filter = $filter;
     }
 }

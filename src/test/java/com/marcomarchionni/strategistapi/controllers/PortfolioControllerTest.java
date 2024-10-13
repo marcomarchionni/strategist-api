@@ -44,12 +44,14 @@ class PortfolioControllerTest {
     @MockBean
     BatchRequestParser batchRequestParser;
 
+    @SuppressWarnings("unused")
     @MockBean
     BatchOperationService batchOperationService;
 
     @Autowired
     MockMvc mockMvc;
 
+    @SuppressWarnings("unused")
     @MockBean
     JwtService jwtService;
 
@@ -78,7 +80,7 @@ class PortfolioControllerTest {
                 .toList();
 
         // setup mock behavior
-        when(portfolioService.findAll()).thenReturn(portfolioSummaries);
+        when(portfolioService.findAllWithPaging(any())).thenReturn(portfolioSummaries);
 
         // Execute test
         mockMvc.perform(get("/portfolios/"))
