@@ -5,7 +5,6 @@ import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
 import com.marcomarchionni.strategistapi.dtos.response.auth.RefreshTokenResponse;
-import com.marcomarchionni.strategistapi.dtos.response.auth.SignUpResponse;
 import com.marcomarchionni.strategistapi.dtos.response.auth.SigninResponse;
 import com.marcomarchionni.strategistapi.mappers.UserMapper;
 import com.marcomarchionni.strategistapi.mappers.UserMapperImpl;
@@ -57,9 +56,7 @@ class AuthenticationControllerTest {
         user = getSampleUser();
         var userSummary = userMapper.toUserSummary(user);
         mapper = new ObjectMapper();
-        var authToken = SignUpResponse.builder().accessToken("token").build();
         var signInResponse = SigninResponse.builder().user(userSummary).accessToken("token").build();
-        when(authenticationService.signUp(any())).thenReturn(authToken);
         when(authenticationService.signIn(any())).thenReturn(signInResponse);
 
     }
@@ -83,8 +80,7 @@ class AuthenticationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(signUpReq)))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(status().is2xxSuccessful());
     }
 
     @ParameterizedTest

@@ -5,7 +5,6 @@ import com.marcomarchionni.strategistapi.dtos.request.RefreshTokenRequest;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
 import com.marcomarchionni.strategistapi.dtos.response.auth.RefreshTokenResponse;
-import com.marcomarchionni.strategistapi.dtos.response.auth.SignUpResponse;
 import com.marcomarchionni.strategistapi.dtos.response.auth.SigninResponse;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.InvalidTokenException;
 import com.marcomarchionni.strategistapi.mappers.UserMapper;
@@ -29,7 +28,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserDetailsService userDetailsService;
 
     @Override
-    public SignUpResponse signUp(SignUpReq request) {
+    public void signUp(SignUpReq request) {
         var role = determineRole(request.getRole());
         var user = User.builder()
                 .firstName(request.getFirstName())
@@ -39,8 +38,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .accountId(request.getAccountId())
                 .role(role).build();
         userRepository.save(user);
-        var jwt = jwtService.generateAccessToken(user);
-        return SignUpResponse.builder().accessToken(jwt).build();
     }
 
     @Override

@@ -62,18 +62,17 @@ class AuthenticationServiceImplTest {
                 .password("password").build();
 
         when(passwordEncoder.encode(any(String.class))).thenReturn("encodedPassword");
-        when(jwtService.generateAccessToken(any(User.class))).thenReturn("jwtToken");
         when(userRepository.save(any(User.class))).thenReturn(null);
 
         // execute
-        var jwtAuthenticationResponse = authenticationServiceImpl.signUp(signUpReq);
+        authenticationServiceImpl.signUp(signUpReq);
 
         // verify
         verify(userRepository).save(userArgumentCaptor.capture());
         assertEquals("Marco", userArgumentCaptor.getValue().getFirstName());
         assertEquals("Marchionni", userArgumentCaptor.getValue().getLastName());
         assertEquals(User.Role.USER, userArgumentCaptor.getValue().getRole());
-        assertEquals("jwtToken", jwtAuthenticationResponse.getAccessToken());
+
     }
 
     @Test
@@ -83,18 +82,16 @@ class AuthenticationServiceImplTest {
                 .password("password").role("ADMIN").build();
 
         when(passwordEncoder.encode(any(String.class))).thenReturn("encodedPassword");
-        when(jwtService.generateAccessToken(any(User.class))).thenReturn("jwtToken");
         // Intercept and save the argument of userRepository.save() to verify the role
         when(userRepository.save(any(User.class))).thenReturn(null);
         // execute
-        var jwtAuthenticationResponse = authenticationServiceImpl.signUp(signUpReq);
+        authenticationServiceImpl.signUp(signUpReq);
 
         // verify
         verify(userRepository).save(userArgumentCaptor.capture());
         assertEquals("Marco", userArgumentCaptor.getValue().getFirstName());
         assertEquals("Marchionni", userArgumentCaptor.getValue().getLastName());
         assertEquals(User.Role.ADMIN, userArgumentCaptor.getValue().getRole());
-        assertEquals("jwtToken", jwtAuthenticationResponse.getAccessToken());
     }
 
     @Test

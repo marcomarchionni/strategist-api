@@ -69,9 +69,7 @@ class AuthenticationControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(signUpReq)))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.accessToken", is(notNullValue())));
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test
