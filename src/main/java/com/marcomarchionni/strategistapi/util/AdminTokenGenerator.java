@@ -30,7 +30,7 @@ public class AdminTokenGenerator {
                     .build();
 
             // Generate token
-            String token = jwtService.generateToken(user);
+            String token = jwtService.generateAccessToken(user);
             System.out.println(token);
         } catch (Exception e) {
             e.printStackTrace();

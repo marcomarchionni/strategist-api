@@ -1,8 +1,9 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import com.marcomarchionni.strategistapi.dtos.request.RefreshTokenRequest;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
-import com.marcomarchionni.strategistapi.dtos.response.auth.JwtAuthenticationResponse;
+import com.marcomarchionni.strategistapi.dtos.response.auth.RefreshTokenResponse;
 import com.marcomarchionni.strategistapi.dtos.response.auth.SigninResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,17 +27,13 @@ public interface AuthenticationApi {
     @PostMapping("/signup")
     @Operation(summary = "Create a new user (not for test users)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType =
-                    "application/json", examples = @ExampleObject(value = "{\"token\": \"eyJhbGciOiJIUzI1NiJ9" +
-                    ".eyJzdWIiOiJtYXJjbzk5QGdtYWlsLmNvbSIsImlhdCI6MTcwMjQ4OTQxNSwiZXhwIjoxNzAyNTc1ODE1fQ" +
-                    ".IVEjC7C3lH3B2FPrESFHzwJzZ_emWoQa52-3CqjH9Dc\"}"))),
+            @ApiResponse(responseCode = "201", description = "User created"),
             @ApiResponse(responseCode = "400", description = "Invalid request body", content = @Content(mediaType =
-                    "application/json", examples = {@ExampleObject(value = "{\"type\": \"invalid-query-parameter\", " +
+                    "application/json", examples = @ExampleObject(value = "{\"type\": \"invalid-query-parameter\", " +
                     "\"title\": \"Invalid query parameter(s)\", \"status\": 400, \"detail\": \"Password size must be " +
-                    "between 8" +
-                    " and 20\", \"instance\": \"/api/v1/auth/signup\"}")})),
+                    "between 8 and 20\", \"instance\": \"/api/v1/auth/signup\"}")))
     })
-    ResponseEntity<JwtAuthenticationResponse> signup(@Valid @RequestBody SignUpReq request);
+    ResponseEntity<Void> signup(@Valid @RequestBody SignUpReq request);
 
     @PostMapping("/signin")
     @Operation(summary = "Signin with an existing user (not for test users)")
@@ -52,4 +49,19 @@ public interface AuthenticationApi {
                     " and 20\", \"instance\": \"/api/v1/auth/signin\"}")})),
     })
     ResponseEntity<SigninResponse> signin(@Valid @RequestBody SignInReq request);
+
+    @PostMapping("/refresh")
+    @Operation(summary = "Refresh token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType =
+                    "application/json", examples = {@ExampleObject(value = "{\"accessToken\": \"eyJhbGciOiJIUzI1NiJ9" +
+                    ".eyJzdWIiOiJtYXJjbzk5QGdtYWlsLmNvbSIsImlhdCI6MTcwMjQ4OTQxNSwiZXhwIjoxNzAyNTc1ODE1fQ" +
+                    ".IVEjC7C3lH3B2FPrESFHzwJzZ_emWoQa52-3CqjH9Dc\"}")})),
+            @ApiResponse(responseCode = "400", description = "Invalid request body", content = @Content(mediaType =
+                    "application/json", examples = {@ExampleObject(value = "{\"type\": \"invalid-query-parameter\", " +
+                    "\"title\": \"Invalid query parameter(s)\", \"status\": 400, \"detail\": \"Password size must be " +
+                    "between 8" +
+                    " and 20\", \"instance\": \"/api/v1/auth/refresh\"}")})),
+    })
+    ResponseEntity<RefreshTokenResponse> refresh(@Valid @RequestBody RefreshTokenRequest request);
 }

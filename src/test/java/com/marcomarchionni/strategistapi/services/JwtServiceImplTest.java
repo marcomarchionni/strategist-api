@@ -25,7 +25,7 @@ class JwtServiceImplTest {
                 .email("marco99@gmail.com").password("password").role(User.Role.USER).build();
 
         // execute
-        token = jwtService.generateToken(user);
+        token = jwtService.generateAccessToken(user);
     }
 
     @Test
@@ -41,7 +41,7 @@ class JwtServiceImplTest {
     }
 
     @Test
-    void generateToken() {
+    void generateAccessToken() {
         // setup
         User user = User.builder()
                 .id(1L)
@@ -50,7 +50,7 @@ class JwtServiceImplTest {
                 .email("marco99@gmail.com").password("password").role(User.Role.USER).build();
 
         // execute
-        String token = jwtService.generateToken(user);
+        String token = jwtService.generateAccessToken(user);
         String userName = jwtService.extractUserName(token);
 
         // verify
@@ -66,7 +66,7 @@ class JwtServiceImplTest {
     @Test
     void tokenInvalid() {
         JwtService invalidService = new JwtServiceImpl("secretsecretsecretsecretsecretsecretsecretsecret", 0);
-        String expiredToken = invalidService.generateToken(user);
+        String expiredToken = invalidService.generateAccessToken(user);
         assertThrows(ExpiredJwtException.class, () -> invalidService.isTokenValid(expiredToken, user));
     }
 
@@ -81,7 +81,7 @@ class JwtServiceImplTest {
                 .email("test.admin").password("test.admin").role(User.Role.ADMIN).build();
 
         // execute
-        String token = jwtService.generateToken(testAdmin);
+        String token = jwtService.generateAccessToken(testAdmin);
         String userName = jwtService.extractUserName(token);
 
         // verify
