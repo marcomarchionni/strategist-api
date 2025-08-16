@@ -12,16 +12,14 @@ import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDelete
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapper;
 import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
-import com.marcomarchionni.strategistapi.services.odata.PagingUtil;
-import com.marcomarchionni.strategistapi.services.odata.PortfolioSpecification;
+import com.marcomarchionni.strategistapi.services.specifications.PagingUtil;
+import com.marcomarchionni.strategistapi.services.specifications.SimplePortfolioSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,24 +29,20 @@ public class PortfolioServiceImpl implements PortfolioService {
     private final UserService userService;
     private final PortfolioMapper portfolioMapper;
     private final PortfolioRepository portfolioRepository;
-    private final PortfolioSpecification portfolioSpecification;
-
-    @Override
-    public List<PortfolioSummary> findAll(FindAllReq findReq) {
-        String accountId = userService.getUserAccountId();
-        Pageable pageable = PagingUtil.createPageable(findReq);
-        Specification<Portfolio> spec = portfolioSpecification.fromFilter(findReq.getFilter(), accountId);
-
-        // Fetch filtered results
-        Page<Portfolio> portfolios = portfolioRepository.findAll(spec, pageable);
-        return portfolios.map(portfolioMapper::portfolioToPortfolioSummary).toList();
-    }
+    private final SimplePortfolioSpecification portfolioSpecification;
 
     @Override
     public ApiResponse<PortfolioSummary> findAllWithCount(FindAllReq findReq) {
         String accountId = userService.getUserAccountId();
         Pageable pageable = PagingUtil.createPageable(findReq);
-        Specification<Portfolio> spec = portfolioSpecification.fromFilter(findReq.getFilter(), accountId);
+
+        // Use simple specification with filter parameters from FindAllReq
+        Specification<Portfolio> spec = portfolioSpecification.buildSpecification(
+                accountId,
+                findReq.getName(),
+                findReq.getDescription(),
+                findReq.getCreatedAfter(),
+                findReq.getCreatedBefore());
 
         // Fetch filtered results
         Page<Portfolio> portfolios = portfolioRepository.findAll(spec, pageable);
@@ -65,8 +59,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public PortfolioDetail findById(Long portfolioId) {
         Portfolio portfolio = portfolioAccessService.findById(portfolioId).orElseThrow(
-                () -> new EntityNotFoundException(Portfolio.class, portfolioId)
-        );
+                () -> new EntityNotFoundException(Portfolio.class, portfolioId));
         return portfolioMapper.toPortfolioDetailDto(portfolio);
     }
 
@@ -78,14 +71,12 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public void deleteById(Long portfolioId) {
         Portfolio portfolioToDelete = portfolioAccessService.findById(portfolioId).orElseThrow(
-                () -> new EntityNotFoundException(Portfolio.class, portfolioId)
-        );
+                () -> new EntityNotFoundException(Portfolio.class, portfolioId));
         if (!portfolioToDelete.getStrategies().isEmpty()) {
             throw new UnableToDeleteEntitiesException("Portfolio contains strategies and cannot be deleted");
         }
         portfolioAccessService.delete(portfolioToDelete);
     }
-
 
     @Override
     @Transactional
@@ -108,8 +99,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
         // Check if the portfolio to update exists
         Portfolio portfolio = portfolioAccessService.findById(portfolioId).orElseThrow(
-                () -> new EntityNotFoundException(Portfolio.class, portfolioId)
-        );
+                () -> new EntityNotFoundException(Portfolio.class, portfolioId));
         // Check if a portfolio with the same name already exists
         checkIfPortfolioNameExists(portfolioDto.getName());
 

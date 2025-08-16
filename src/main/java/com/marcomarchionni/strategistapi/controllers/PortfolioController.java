@@ -3,6 +3,7 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.marcomarchionni.strategistapi.dtos.request.BatchOperation;
 import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
+import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.BatchReport;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
@@ -10,10 +11,11 @@ import com.marcomarchionni.strategistapi.services.BatchOperationService;
 import com.marcomarchionni.strategistapi.services.PortfolioService;
 import com.marcomarchionni.strategistapi.services.parsers.BatchRequestParser;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,18 +23,40 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class PortfolioController implements PortfolioApi {
 
     private final PortfolioService portfolioService;
     private final BatchRequestParser batchRequestParser;
     private final BatchOperationService batchOperationService;
 
-    public Object findAll(@Valid FindAllReq findReq) {
-        if ("allpages".equals(findReq.getInlineCount())) {
-            return portfolioService.findAllWithCount(findReq);
-        } else {
-            return portfolioService.findAll(findReq);
-        }
+    public ApiResponse<PortfolioSummary> findAll(
+            @RequestParam(defaultValue = "0") int skip,
+
+            @RequestParam(defaultValue = "10") int top,
+
+            @RequestParam(required = false) String orderBy,
+
+            @RequestParam(required = false) String name,
+
+            @RequestParam(required = false) String description,
+
+            @RequestParam(required = false) String createdAfter,
+
+            @RequestParam(required = false) String createdBefore) {
+
+        // Build FindAllReq object from query parameters
+        FindAllReq findReq = FindAllReq.builder()
+                .skip(skip)
+                .top(top)
+                .orderBy(orderBy)
+                .name(name)
+                .description(description)
+                .createdAfter(createdAfter)
+                .createdBefore(createdBefore)
+                .build();
+
+        return portfolioService.findAllWithCount(findReq);
     }
 
     public PortfolioDetail findById(@PathVariable Long id) {
