@@ -39,147 +39,155 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class PortfolioControllerTest {
 
-    @MockBean
-    PortfolioService portfolioService;
+        @MockBean
+        PortfolioService portfolioService;
 
-    @MockBean
-    BatchRequestParser batchRequestParser;
+        @MockBean
+        BatchRequestParser batchRequestParser;
 
-    @SuppressWarnings("unused")
-    @MockBean
-    BatchOperationService batchOperationService;
+        @SuppressWarnings("unused")
+        @MockBean
+        BatchOperationService batchOperationService;
 
-    @Autowired
-    MockMvc mockMvc;
+        @Autowired
+        MockMvc mockMvc;
 
-    @SuppressWarnings("unused")
-    @MockBean
-    JwtService jwtService;
+        @SuppressWarnings("unused")
+        @MockBean
+        JwtService jwtService;
 
-    ObjectMapper mapper;
-    PortfolioMapper portfolioMapper;
-    Portfolio userPortfolio;
-    User user;
+        ObjectMapper mapper;
+        PortfolioMapper portfolioMapper;
+        Portfolio userPortfolio;
+        User user;
 
-    @BeforeEach
-    void setup() {
-        mapper = new ObjectMapper();
-        portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
+        @BeforeEach
+        void setup() {
+                mapper = new ObjectMapper();
+                portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
 
-        userPortfolio = getSamplePortfolio("MFStockAdvisor");
-        user = getSampleUser();
-    }
+                userPortfolio = getSamplePortfolio("MFStockAdvisor");
+                user = getSampleUser();
+        }
 
-    @Test
-    void findPortfolios() throws Exception {
-        // setup test data
-        String accountId = user.getAccountId();
-        List<PortfolioSummary> portfolioSummaries = getSamplePortfolios()
-                .stream()
-                .peek(portfolio -> portfolio.setAccountId(accountId))
-                .map(portfolioMapper::portfolioToPortfolioSummary)
-                .toList();
+        @Test
+        void findPortfolios() throws Exception {
+                // setup test data
+                String accountId = user.getAccountId();
+                List<PortfolioSummary> portfolioSummaries = getSamplePortfolios()
+                                .stream()
+                                .peek(portfolio -> portfolio.setAccountId(accountId))
+                                .map(portfolioMapper::portfolioToPortfolioSummary)
+                                .toList();
+                ApiResponse<PortfolioSummary> response = ApiResponse.<PortfolioSummary>builder()
+                                .result(portfolioSummaries)
+                                .count(portfolioSummaries.size())
+                                .build();
 
-        // setup mock behavior
-        when(portfolioService.findAll(any())).thenReturn(portfolioSummaries);
+                // setup mock behavior
+                when(portfolioService.findAllWithCount(any())).thenReturn(response);
 
-        // Execute test
-        mockMvc.perform(get("/portfolios/"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(portfolioSummaries.size())));
-    }
+                // Execute test
+                mockMvc.perform(get("/portfolios/"))
+                                .andExpect(status().isOk())
+                                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(jsonPath("$.result", hasSize(portfolioSummaries.size())))
+                                .andExpect(jsonPath("$.count", is(portfolioSummaries.size())));
+        }
 
-    @Test
-    void findPortfoliosWithCount() throws Exception {
-        // setup test data
-        String accountId = user.getAccountId();
-        List<PortfolioSummary> portfolioSummaries = getSamplePortfolios()
-                .stream()
-                .peek(portfolio -> portfolio.setAccountId(accountId))
-                .map(portfolioMapper::portfolioToPortfolioSummary)
-                .toList();
-        ApiResponse response = ApiResponse.<PortfolioSummary>builder().result(portfolioSummaries)
-                .count(portfolioSummaries.size()).build();
+        @Test
+        void findPortfoliosWithCount() throws Exception {
+                // setup test data
+                String accountId = user.getAccountId();
+                List<PortfolioSummary> portfolioSummaries = getSamplePortfolios()
+                                .stream()
+                                .peek(portfolio -> portfolio.setAccountId(accountId))
+                                .map(portfolioMapper::portfolioToPortfolioSummary)
+                                .toList();
+                ApiResponse<PortfolioSummary> response = ApiResponse.<PortfolioSummary>builder()
+                                .result(portfolioSummaries)
+                                .count(portfolioSummaries.size())
+                                .build();
 
-        // setup mock behavior
-        when(portfolioService.findAllWithCount(any())).thenReturn(response);
+                // setup mock behavior
+                when(portfolioService.findAllWithCount(any())).thenReturn(response);
 
-        // Execute test
-        mockMvc.perform(get("/portfolios/?$inlinecount=allpages"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.result", hasSize(portfolioSummaries.size())))
-                .andExpect(jsonPath("$.count", is(portfolioSummaries.size())));
-    }
+                // Execute test
+                mockMvc.perform(get("/portfolios/?skip=0&top=10"))
+                                .andExpect(status().isOk())
+                                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(jsonPath("$.result", hasSize(portfolioSummaries.size())))
+                                .andExpect(jsonPath("$.count", is(portfolioSummaries.size())));
+        }
 
-    @Test
-    void findPortfolioSuccess() throws Exception {
-        // setup test data
-        Long portfolioId = userPortfolio.getId();
-        PortfolioDetail portfolioDetail = portfolioMapper.toPortfolioDetailDto(userPortfolio);
+        @Test
+        void findPortfolioSuccess() throws Exception {
+                // setup test data
+                Long portfolioId = userPortfolio.getId();
+                PortfolioDetail portfolioDetail = portfolioMapper.toPortfolioDetailDto(userPortfolio);
 
-        // setup mock behavior
-        when(portfolioService.findById(portfolioId)).thenReturn(portfolioDetail);
+                // setup mock behavior
+                when(portfolioService.findById(portfolioId)).thenReturn(portfolioDetail);
 
-        // Execute test
-        mockMvc.perform(get("/portfolios/{id}", 1L))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(userPortfolio.getName())))
-                .andExpect(jsonPath("$.id", is(userPortfolio.getId().intValue())))
-                .andExpect(jsonPath("$.accountId", is(userPortfolio.getAccountId())))
-                .andExpect(jsonPath("$.strategies", hasSize(userPortfolio.getStrategies().size())));
-    }
+                // Execute test
+                mockMvc.perform(get("/portfolios/{id}", 1L))
+                                .andDo(print())
+                                .andExpect(status().isOk())
+                                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(jsonPath("$.name", is(userPortfolio.getName())))
+                                .andExpect(jsonPath("$.id", is(userPortfolio.getId().intValue())))
+                                .andExpect(jsonPath("$.accountId", is(userPortfolio.getAccountId())))
+                                .andExpect(jsonPath("$.strategies", hasSize(userPortfolio.getStrategies().size())));
+        }
 
-    @Test
-    void findPortfolioException() throws Exception {
-        // setup test data
-        Long unknownPortfolioId = 3L;
+        @Test
+        void findPortfolioException() throws Exception {
+                // setup test data
+                Long unknownPortfolioId = 3L;
 
-        // setup mock behavior
-        when(portfolioService.findById(unknownPortfolioId)).thenThrow(
-                new EntityNotFoundException(Portfolio.class, unknownPortfolioId));
+                // setup mock behavior
+                when(portfolioService.findById(unknownPortfolioId)).thenThrow(
+                                new EntityNotFoundException(Portfolio.class, unknownPortfolioId));
 
-        // Execute test
-        mockMvc.perform(get("/portfolios/{id}", unknownPortfolioId))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-    }
+                // Execute test
+                mockMvc.perform(get("/portfolios/{id}", unknownPortfolioId))
+                                .andDo(print())
+                                .andExpect(status().isNotFound())
+                                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+        }
 
-    @Test
-    void batchRequest() throws Exception {
-        // setup test data
-        PortfolioSave portfolioSave = PortfolioSave.builder().name(userPortfolio.getName()).build();
-        List<BatchOperation<PortfolioSave>> operations = List.of(BatchOperation.<PortfolioSave>builder().method("POST")
-                .dto(portfolioSave).build());
+        @Test
+        void batchRequest() throws Exception {
+                // setup test data
+                PortfolioSave portfolioSave = PortfolioSave.builder().name(userPortfolio.getName()).build();
+                List<BatchOperation<PortfolioSave>> operations = List
+                                .of(BatchOperation.<PortfolioSave>builder().method("POST")
+                                                .dto(portfolioSave).build());
 
-        // setup mock behavior
-        when(batchRequestParser.parseRequest(any(), eq(PortfolioSave.class))).thenReturn(operations);
+                // setup mock behavior
+                when(batchRequestParser.parseRequest(any(), eq(PortfolioSave.class))).thenReturn(operations);
 
-        // Execute test
-        mockMvc.perform(post("/portfolios/$batch")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(portfolioSave)))
-                .andExpect(status().isOk());
-    }
+                // Execute test
+                mockMvc.perform(post("/portfolios/$batch")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(portfolioSave)))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    void deletePortfolioSuccess() throws Exception {
-        // setup test data
-        Long portfolioId = userPortfolio.getId();
+        @Test
+        void deletePortfolioSuccess() throws Exception {
+                // setup test data
+                Long portfolioId = userPortfolio.getId();
 
-        // setup mock behavior
-        doNothing().when(portfolioService).deleteById(portfolioId);
+                // setup mock behavior
+                doNothing().when(portfolioService).deleteById(portfolioId);
 
-        // Execute test
-        mockMvc.perform(delete("/portfolios/{id}", portfolioId))
-                .andDo(print())
-                .andExpect(status().isOk());
+                // Execute test
+                mockMvc.perform(delete("/portfolios/{id}", portfolioId))
+                                .andDo(print())
+                                .andExpect(status().isOk());
 
-        // Verify results
-        verify(portfolioService, times(1)).deleteById(portfolioId);
-    }
+                // Verify results
+                verify(portfolioService, times(1)).deleteById(portfolioId);
+        }
 }

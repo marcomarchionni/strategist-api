@@ -1,6 +1,8 @@
 package com.marcomarchionni.strategistapi.services.odata;
 
 import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
+import com.marcomarchionni.strategistapi.services.specifications.PagingUtil;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,7 +19,8 @@ class PagingUtilTest {
     // MethodSource for providing test arguments
     private static Stream<Arguments> providePagingData() {
         return Stream.of(
-                // skip, top, orderBy, expectedPageNumber, expectedPageSize, isSorted, direction, sortField
+                // skip, top, orderBy, expectedPageNumber, expectedPageSize, isSorted,
+                // direction, sortField
                 Arguments.of(0, 10, "", 0, 10, false, null, null), // No sorting
                 Arguments.of(20, 10, "name asc", 2, 10, true, Sort.Direction.ASC, "name"), // Ascending order
                 Arguments.of(30, 10, "createdAt desc", 3, 10, true, Sort.Direction.DESC, "createdAt"), // Descending
@@ -30,7 +33,7 @@ class PagingUtilTest {
     @ParameterizedTest
     @MethodSource("providePagingData")
     void testCreatePageable(int skip, int top, String orderBy, int expectedPageNumber, int expectedPageSize,
-                            boolean isSorted, Sort.Direction direction, String sortField) {
+            boolean isSorted, Sort.Direction direction, String sortField) {
         // Arrange
         var findAllReq = FindAllReq.builder().skip(skip).top(top).orderBy(orderBy).build();
 
