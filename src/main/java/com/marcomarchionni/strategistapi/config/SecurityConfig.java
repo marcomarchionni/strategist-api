@@ -53,15 +53,15 @@ public class SecurityConfig {
                         .requestMatchers(mvc.pattern(HttpMethod.OPTIONS, "/**"))
                         .permitAll() // Allow all OPTIONS requests globally
                         .requestMatchers(
-                                mvc.pattern("/admin/**")
-                        )
+                                mvc.pattern("/admin/**"))
                         .hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(httpConfigurer -> httpConfigurer.authenticationEntryPoint(delegatedAuthenticationEntryPoint));
+                .exceptionHandling(
+                        httpConfigurer -> httpConfigurer.authenticationEntryPoint(delegatedAuthenticationEntryPoint));
 
         return http.build();
     }
@@ -69,7 +69,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:4200"); // Your Angular frontend
+        configuration.addAllowedOrigin("http://localhost:5173"); // Your React frontend
         configuration.addAllowedMethod("*"); // Allow all methods (GET, POST, PUT, DELETE, etc.)
         configuration.addAllowedHeader("*"); // Allow all headers
         configuration.setAllowCredentials(true); // Allow credentials (cookies, etc.)

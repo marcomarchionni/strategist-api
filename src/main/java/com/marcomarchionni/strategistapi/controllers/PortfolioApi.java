@@ -1,5 +1,6 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.BatchReport;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/portfolios")
 @SecurityRequirement(name = "bearerAuth")
 public interface PortfolioApi {
-    @GetMapping("/")
+    @GetMapping("")
     @Operation(summary = "Find all user's portfolios")
     ApiResponse<PortfolioSummary> findAll(
             @Parameter(description = "Number of records to skip for pagination") @RequestParam(defaultValue = "0") @Min(value = 0, message = "Skip must be greater or equal to 0") int skip,
@@ -44,4 +46,8 @@ public interface PortfolioApi {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete portfolio by id")
     void deletePortfolio(@PathVariable Long id);
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update portfolio by id")
+    PortfolioSummary updatePortfolio(@PathVariable Long id, @RequestBody @Valid PortfolioSave portfolioSave);
 }

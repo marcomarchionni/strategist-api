@@ -21,6 +21,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PortfolioServiceImpl implements PortfolioService {
@@ -98,16 +100,29 @@ public class PortfolioServiceImpl implements PortfolioService {
         Long portfolioId = portfolioDto.getId();
 
         // Check if the portfolio to update exists
-        Portfolio portfolio = portfolioAccessService.findById(portfolioId).orElseThrow(
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId));
-        // Check if a portfolio with the same name already exists
-        checkIfPortfolioNameExists(portfolioDto.getName());
+        // Check if a portfolio with the same name already exists (excluding current
+        // portfolio)
+        checkIfPortfolioNameExists(portfolioDto.getName(), portfolioId);
 
         return mergeAndSave(portfolioDto, portfolio);
     }
 
     private void checkIfPortfolioNameExists(String name) {
-        if (portfolioAccessService.existsByName(name)) {
+        checkIfPortfolioNameExists(name, null);
+    }
+
+    private void checkIfPortfolioNameExists(String name, Long excludePortfolioId) {
+        String accountId = userService.getUserAccountId();
+
+        // Find portfolio with the same name
+        Optional<Portfolio> existingPortfolio = portfolioRepository.findByAccountIdAndName(accountId, name);
+
+        // If a portfolio with this name exists and it's not the one we're updating,
+        // throw exception
+        if (existingPortfolio.isPresent()
+                && (excludePortfolioId == null || !existingPortfolio.get().getId().equals(excludePortfolioId))) {
             throw new UnableToSaveEntitiesException("Portfolio with name: " + name + " already exists.");
         }
     }

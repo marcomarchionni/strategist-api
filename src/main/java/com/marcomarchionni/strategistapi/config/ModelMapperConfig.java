@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 
 @Configuration
 public class ModelMapperConfig {
-    private static final Converter<BigDecimal, BigDecimal> absValue =
-            ctx -> ctx.getSource() == null ? null : ctx.getSource().abs();
+    private static final Converter<BigDecimal, BigDecimal> absValue = ctx -> ctx.getSource() == null ? null
+            : ctx.getSource().abs();
 
     public static ModelMapper configureModelMapper() {
         ModelMapper modelMapper = new ModelMapper();
@@ -68,7 +68,8 @@ public class ModelMapperConfig {
         };
     }
 
-    // Extract a unique dividend id from the flex query dto to avoid duplicates in the update process
+    // Extract a unique dividend id from the flex query dto to avoid duplicates in
+    // the update process
     private static PropertyMap<FlexQueryResponseDto.ChangeInDividendAccrual, Dividend> getClosedDividendPropertyMap() {
         return new PropertyMap<>() {
             protected void configure() {
@@ -106,6 +107,7 @@ public class ModelMapperConfig {
         return new PropertyMap<>() {
             protected void configure() {
                 skip().setId(null);
+                skip().setCreatedAt(null);
             }
         };
     }

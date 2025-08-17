@@ -10,7 +10,10 @@ import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.services.BatchOperationService;
 import com.marcomarchionni.strategistapi.services.PortfolioService;
 import com.marcomarchionni.strategistapi.services.parsers.BatchRequestParser;
+
+import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -71,5 +74,10 @@ public class PortfolioController implements PortfolioApi {
 
     public void deletePortfolio(@PathVariable Long id) {
         portfolioService.deleteById(id);
+    }
+
+    public PortfolioSummary updatePortfolio(@PathVariable Long id, @RequestBody @Valid PortfolioSave portfolioSave) {
+        portfolioSave.setId(id); // Ensure the ID is set from the path
+        return portfolioService.update(portfolioSave);
     }
 }
