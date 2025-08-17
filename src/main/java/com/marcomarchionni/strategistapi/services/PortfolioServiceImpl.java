@@ -21,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -88,7 +89,8 @@ public class PortfolioServiceImpl implements PortfolioService {
         checkIfPortfolioNameExists(portfolioSave.getName());
 
         // Save portfolio
-        var portfolio = Portfolio.builder().accountId(userService.getUserAccountId()).build();
+        var portfolio = Portfolio.builder().accountId(userService.getUserAccountId()).createdAt(LocalDate.now())
+                .build();
         return mergeAndSave(portfolioSave, portfolio);
     }
 
@@ -129,7 +131,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     private PortfolioSummary mergeAndSave(PortfolioSave dto, Portfolio portfolio) {
         portfolioMapper.mergePortfolioSaveToPortfolio(dto, portfolio);
-        Portfolio savedPortfolio = portfolioAccessService.save(portfolio);
+        Portfolio savedPortfolio = portfolioRepository.save(portfolio);
         return portfolioMapper.portfolioToPortfolioSummary(savedPortfolio);
     }
 }

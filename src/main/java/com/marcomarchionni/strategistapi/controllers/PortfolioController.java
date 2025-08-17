@@ -66,6 +66,10 @@ public class PortfolioController implements PortfolioApi {
         return portfolioService.findById(id);
     }
 
+    public PortfolioSummary createPortfolio(@RequestBody @Valid PortfolioSave portfolioSave) {
+        return portfolioService.create(portfolioSave);
+    }
+
     public BatchReport<PortfolioSummary> handleBatchRequest(HttpServletRequest request) throws Exception {
         List<BatchOperation<PortfolioSave>> operations = batchRequestParser.parseRequest(request, PortfolioSave.class);
         log.info("Operations: {}", operations);

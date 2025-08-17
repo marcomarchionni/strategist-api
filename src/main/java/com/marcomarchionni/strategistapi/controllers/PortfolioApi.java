@@ -39,8 +39,12 @@ public interface PortfolioApi {
     @Operation(summary = "Find portfolio by id")
     PortfolioDetail findById(@PathVariable Long id);
 
-    @PostMapping("/$batch")
+    @PostMapping("")
     @Operation(summary = "Create a new portfolio")
+    PortfolioSummary createPortfolio(@RequestBody @Valid PortfolioSave portfolioSave);
+
+    @PostMapping("/$batch")
+    @Operation(summary = "Handle batch operations")
     BatchReport handleBatchRequest(HttpServletRequest request) throws Exception;
 
     @DeleteMapping("/{id}")
