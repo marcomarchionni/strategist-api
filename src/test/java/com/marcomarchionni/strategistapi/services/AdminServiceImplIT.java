@@ -1,7 +1,10 @@
 package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.domain.User;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.repositories.*;
+import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,7 +42,6 @@ class AdminServiceImplIT {
 
     @Autowired
     DividendRepository dividendRepository;
-
 
     @Test
     void deleteUserAndUserData() {

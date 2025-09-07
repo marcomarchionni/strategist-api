@@ -2,7 +2,7 @@ package com.marcomarchionni.strategistapi.accessservice;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.InvalidUserDataException;
-import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.services.UserService;
 import com.marcomarchionni.strategistapi.validators.AccountIdEntityValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;

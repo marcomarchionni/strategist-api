@@ -1,4 +1,4 @@
-package com.marcomarchionni.strategistapi.repositories;
+package com.marcomarchionni.strategistapi.portfolios.repo;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import org.springframework.data.domain.Page;

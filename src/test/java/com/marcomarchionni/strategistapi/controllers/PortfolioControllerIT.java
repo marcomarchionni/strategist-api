@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
-import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,15 +71,13 @@ class PortfolioControllerIT {
                 Arguments.of("?$inlinecount=allpages&$top=2&skip=2", "$.result", 2),
                 Arguments.of("?$inlinecount=allpages&$sort=asc", "$.result", 4),
                 Arguments.of("?$inlinecount=allpages&$filter=substringof('er', tolower(name))", "$.result", 2),
-                Arguments.of("?$top=1&$skip=2", "$", 1)
-        );
+                Arguments.of("?$top=1&$skip=2", "$", 1));
     }
 
     static Stream<Arguments> provideBadQueryParameters() {
         return Stream.of(
                 Arguments.of("?$inlinecount=allpages&$filter=substringof('er', lower(name))", "$.result", 2),
-                Arguments.of("?$inlinecount=allpages&$filter=substringof(tolower(name), 'er)", "$.result", 2)
-        );
+                Arguments.of("?$inlinecount=allpages&$filter=substringof(tolower(name), 'er)", "$.result", 2));
     }
 
     @ParameterizedTest
@@ -100,7 +99,7 @@ class PortfolioControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"U1111111,Saver Portfolio,5", "U1111111,Trader Portfolio,2"})
+    @CsvSource({ "U1111111,Saver Portfolio,5", "U1111111,Trader Portfolio,2" })
     void findByIdSuccess(String accountId, String portfolioName, int expectedSize) throws Exception {
         Optional<Portfolio> portfolio = portfolioRepository.findByAccountIdAndName(accountId, portfolioName);
         assertTrue(portfolio.isPresent());
@@ -115,13 +114,13 @@ class PortfolioControllerIT {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Saver Portfolio", ","})
+    @ValueSource(strings = { "Saver Portfolio", "," })
     void createPortfolioException(String portfolioName) throws Exception {
         NameUpdate badNameUpdate = NameUpdate.builder().name(portfolioName).build();
 
         mockMvc.perform(post("/portfolios")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(badNameUpdate)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(badNameUpdate)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));

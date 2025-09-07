@@ -1,7 +1,10 @@
 package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.domain.User;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.repositories.*;
+import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

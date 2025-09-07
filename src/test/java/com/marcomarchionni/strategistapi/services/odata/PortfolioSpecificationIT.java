@@ -1,7 +1,8 @@
 package com.marcomarchionni.strategistapi.services.odata;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
-import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -31,8 +32,7 @@ public class PortfolioSpecificationIT {
     static Stream<Arguments> sourceOne() {
         return Stream.of(
                 Arguments.of("startswith(tolower(name),'saver')", "U1111111", 1),
-                Arguments.of("endswith(tolower(name),'portfolio')", "U1111111", 4)
-        );
+                Arguments.of("endswith(tolower(name),'portfolio')", "U1111111", 4));
     }
 
     @ParameterizedTest

@@ -3,6 +3,9 @@ package com.marcomarchionni.strategistapi.mappers;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
+import com.marcomarchionni.strategistapi.strategies.mapper.StrategyMapper;
+import com.marcomarchionni.strategistapi.strategies.mapper.StrategyMapperImpl;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;

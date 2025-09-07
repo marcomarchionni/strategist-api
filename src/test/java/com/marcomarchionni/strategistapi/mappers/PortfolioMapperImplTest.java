@@ -5,6 +5,9 @@ import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.Trade;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
+import com.marcomarchionni.strategistapi.portfolios.mapper.PortfolioMapper;
+import com.marcomarchionni.strategistapi.portfolios.mapper.PortfolioMapperImpl;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

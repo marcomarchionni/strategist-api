@@ -2,8 +2,8 @@ package com.marcomarchionni.strategistapi.accessservice;
 
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.InvalidUserDataException;
-import com.marcomarchionni.strategistapi.repositories.StrategyRepository;
 import com.marcomarchionni.strategistapi.services.UserService;
+import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
 import com.marcomarchionni.strategistapi.validators.AccountIdEntityValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,6 @@ class StrategyAccessServiceImplTest {
     StrategyAccessService strategyAccessService;
     List<Strategy> expectedStrategies;
     Strategy expectedStrategy;
-
 
     @BeforeEach
     void setUp() {

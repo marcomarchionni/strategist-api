@@ -1,4 +1,4 @@
-package com.marcomarchionni.strategistapi.mappers;
+package com.marcomarchionni.strategistapi.portfolios.mapper;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;

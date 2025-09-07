@@ -3,6 +3,9 @@ package com.marcomarchionni.strategistapi.mappers;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
+import com.marcomarchionni.strategistapi.strategies.mapper.StrategyMapper;
+import com.marcomarchionni.strategistapi.strategies.mapper.StrategyMapperImpl;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +23,7 @@ class StrategyMapperTest {
     void setup() {
         strategyMapper = new StrategyMapperImpl(new ModelMapper());
     }
+
     @Test
     void toEntitySuccess() {
         StrategyCreate strategyCreate = StrategyCreate.builder().name("ZM long").portfolioId(2L).build();

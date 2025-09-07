@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.accessservice;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
-import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.services.UserService;
 import com.marcomarchionni.strategistapi.validators.AccountIdValidator;
 import lombok.RequiredArgsConstructor;
@@ -63,4 +63,3 @@ public class PortfolioAccessServiceImpl implements PortfolioAccessService {
         return portfolioRepository.countByAccountId(accountId);
     }
 }
-

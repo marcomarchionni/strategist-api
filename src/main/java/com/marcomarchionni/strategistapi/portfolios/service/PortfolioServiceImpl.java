@@ -1,4 +1,4 @@
-package com.marcomarchionni.strategistapi.services;
+package com.marcomarchionni.strategistapi.portfolios.service;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
@@ -9,8 +9,9 @@ import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
-import com.marcomarchionni.strategistapi.mappers.PortfolioMapper;
-import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
+import com.marcomarchionni.strategistapi.portfolios.mapper.PortfolioMapper;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
+import com.marcomarchionni.strategistapi.services.UserService;
 import com.marcomarchionni.strategistapi.services.specifications.PagingUtil;
 import com.marcomarchionni.strategistapi.services.specifications.SimplePortfolioSpecification;
 import lombok.RequiredArgsConstructor;

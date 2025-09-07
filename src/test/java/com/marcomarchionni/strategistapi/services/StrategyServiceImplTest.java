@@ -10,14 +10,25 @@ import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
-import com.marcomarchionni.strategistapi.mappers.StrategyMapper;
-import com.marcomarchionni.strategistapi.mappers.StrategyMapperImpl;
+import com.marcomarchionni.strategistapi.strategies.mapper.StrategyMapper;
+import com.marcomarchionni.strategistapi.strategies.mapper.StrategyMapperImpl;
+import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
+import com.marcomarchionni.strategistapi.strategies.service.StrategyServiceImpl;
+import com.marcomarchionni.strategistapi.strategies.spec.SimpleStrategySpecification;
+import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
+import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.mockito.ArgumentMatchers;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +45,12 @@ class StrategyServiceImplTest {
     StrategyAccessService strategyAccessService;
     @Mock
     PortfolioAccessService portfolioAccessService;
+    @Mock
+    StrategyRepository strategyRepository;
+    @Mock
+    UserService userService;
+    @Mock
+    SimpleStrategySpecification strategySpecification;
     StrategyMapper strategyMapper;
     StrategyServiceImpl strategyService;
     List<Strategy> userStrategies;
@@ -43,7 +60,8 @@ class StrategyServiceImplTest {
     @BeforeEach
     void setup() {
         strategyMapper = new StrategyMapperImpl(new ModelMapper());
-        strategyService = new StrategyServiceImpl(strategyAccessService, portfolioAccessService, strategyMapper);
+        strategyService = new StrategyServiceImpl(strategyAccessService, portfolioAccessService, strategyMapper,
+                strategyRepository, userService, strategySpecification);
 
         user = getSampleUser();
         userStrategy = getSampleStrategy();
@@ -116,6 +134,39 @@ class StrategyServiceImplTest {
         assertNotNull(renamedStrategy);
         assertEquals(userStrategy.getId(), renamedStrategy.getId());
         assertEquals(nameUpdate.getName(), renamedStrategy.getName());
+    }
+
+    @Test
+    void findAllWithCount_returnsPagedStrategies() {
+        // setup
+        FindAllReq findReq = FindAllReq.builder()
+                .skip(0)
+                .top(10)
+                .orderBy("name")
+                .name(null)
+                .description(null) // portfolioName carrier
+                .build();
+
+        when(userService.getUserAccountId()).thenReturn(user.getAccountId());
+        Specification<Strategy> spec = (root, query, cb) -> cb.conjunction();
+        when(strategySpecification.buildSpecification(any(String.class), any(), any()))
+                .thenReturn(spec);
+
+        List<Strategy> strategies = List.of(userStrategy);
+        Page<Strategy> page = new PageImpl<>(strategies);
+        when(strategyRepository.findAll(ArgumentMatchers.<Specification<Strategy>>any(),
+                any(Pageable.class))).thenReturn(page);
+        when(strategyRepository.count(ArgumentMatchers.<Specification<Strategy>>any()))
+                .thenReturn((long) strategies.size());
+
+        // execute
+        ApiResponse<StrategySummary> response = strategyService.findAllWithCount(findReq);
+
+        // verify
+        assertNotNull(response);
+        assertEquals(1, response.getResult().size());
+        assertEquals(1, response.getCount());
+        assertEquals(userStrategy.getId(), response.getResult().get(0).getId());
     }
 
     @Test

@@ -1,7 +1,10 @@
 package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.domain.User;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.repositories.*;
+import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

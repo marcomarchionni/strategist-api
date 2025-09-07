@@ -1,11 +1,11 @@
-package com.marcomarchionni.strategistapi.controllers;
+package com.marcomarchionni.strategistapi.portfolios.web;
 
 import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
-import com.marcomarchionni.strategistapi.services.PortfolioService;
+import com.marcomarchionni.strategistapi.portfolios.service.PortfolioService;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;

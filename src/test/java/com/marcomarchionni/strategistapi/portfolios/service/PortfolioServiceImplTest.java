@@ -1,4 +1,4 @@
-package com.marcomarchionni.strategistapi.services;
+package com.marcomarchionni.strategistapi.portfolios.service;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
@@ -8,9 +8,10 @@ import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
-import com.marcomarchionni.strategistapi.mappers.PortfolioMapper;
-import com.marcomarchionni.strategistapi.mappers.PortfolioMapperImpl;
-import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
+import com.marcomarchionni.strategistapi.portfolios.mapper.PortfolioMapper;
+import com.marcomarchionni.strategistapi.portfolios.mapper.PortfolioMapperImpl;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
+import com.marcomarchionni.strategistapi.services.UserService;
 import com.marcomarchionni.strategistapi.services.specifications.SimplePortfolioSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.mockito.ArgumentMatchers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -72,8 +74,10 @@ class PortfolioServiceImplTest {
         Page<Portfolio> portfolioPage = new PageImpl<>(portfolios); // Mocked Page
 
         // Setup mocks
-        when(portfolioRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(portfolioPage);
-        when(portfolioRepository.count(any(Specification.class))).thenReturn((long) portfolios.size());
+        when(portfolioRepository.findAll(ArgumentMatchers.<Specification<Portfolio>>any(), any(Pageable.class)))
+                .thenReturn(portfolioPage);
+        when(portfolioRepository.count(ArgumentMatchers.<Specification<Portfolio>>any()))
+                .thenReturn((long) portfolios.size());
         when(portfolioSpecification.buildSpecification(accountId, null, null, null, null)).thenReturn(spec);
         when(userService.getUserAccountId()).thenReturn(accountId);
 

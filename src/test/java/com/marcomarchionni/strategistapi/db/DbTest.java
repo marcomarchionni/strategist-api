@@ -1,10 +1,12 @@
 package com.marcomarchionni.strategistapi.db;
 
-
 import com.marcomarchionni.strategistapi.domain.Dividend;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.repositories.*;
+import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

@@ -2,7 +2,10 @@ package com.marcomarchionni.strategistapi.services;
 
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.repositories.*;
+import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

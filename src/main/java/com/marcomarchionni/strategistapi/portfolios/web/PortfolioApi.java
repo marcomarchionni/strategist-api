@@ -1,4 +1,4 @@
-package com.marcomarchionni.strategistapi.controllers;
+package com.marcomarchionni.strategistapi.portfolios.web;
 
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;

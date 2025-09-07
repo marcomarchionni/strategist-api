@@ -7,8 +7,9 @@ import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
-import com.marcomarchionni.strategistapi.repositories.PortfolioRepository;
-import com.marcomarchionni.strategistapi.repositories.StrategyRepository;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
+import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,12 +70,12 @@ class StrategyControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"ZM long,1", ",7", "ADBE long,0"})
+    @CsvSource({ "ZM long,1", ",7", "ADBE long,0" })
     void findByParamsSuccess(String strategyName, int expectedSize) throws Exception {
         StrategyFind strategyFind = StrategyFind.builder().name(strategyName).build();
 
         mockMvc.perform(get("/strategies")
-                        .param("name", strategyFind.getName()))
+                .param("name", strategyFind.getName()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -82,19 +83,19 @@ class StrategyControllerIT {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"   ", ""})
+    @ValueSource(strings = { "   ", "" })
     void findByParamsException(String strategyName) throws Exception {
         StrategyFind strategyFind = StrategyFind.builder().name(strategyName).build();
 
         mockMvc.perform(get("/strategies")
-                        .param("name", strategyFind.getName()))
+                .param("name", strategyFind.getName()))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @ParameterizedTest
-    @CsvSource({"ZM long", "IBKR put"})
+    @CsvSource({ "ZM long", "IBKR put" })
     void findByIdSuccess(String expectedName) throws Exception {
 
         Optional<Strategy> strategy = strategyRepository.findByAccountIdAndName(user.getAccountId(), expectedName);
@@ -118,8 +119,8 @@ class StrategyControllerIT {
                 .build();
 
         mockMvc.perform(post("/strategies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(strategyCreate)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(strategyCreate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -133,8 +134,8 @@ class StrategyControllerIT {
         NameUpdate nameUpdate = NameUpdate.builder().id(strategyId).name("ZM leap").build();
 
         mockMvc.perform(put("/strategies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(nameUpdate)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(nameUpdate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -148,8 +149,8 @@ class StrategyControllerIT {
         NameUpdate nameUpdate = NameUpdate.builder().id(1L).name("12NewName").build();
 
         mockMvc.perform(put("/strategies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(nameUpdate)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(nameUpdate)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));

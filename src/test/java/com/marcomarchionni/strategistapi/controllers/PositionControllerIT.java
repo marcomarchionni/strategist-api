@@ -5,7 +5,8 @@ import com.marcomarchionni.strategistapi.config.WebMvcConfig;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.repositories.PositionRepository;
-import com.marcomarchionni.strategistapi.repositories.StrategyRepository;
+import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,26 +78,26 @@ class PositionControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({",ZM,,0", ",DIS,STK,1", "true,,,3"})
+    @CsvSource({ ",ZM,,0", ",DIS,STK,1", "true,,,3" })
     void findByParamsSuccess(String tagged, String symbol, String assetCategory, int expectedSize) throws Exception {
 
         mockMvc.perform(get("/positions")
-                        .param("tagged", tagged)
-                        .param("symbol", symbol)
-                        .param("assetCategory", assetCategory))
+                .param("tagged", tagged)
+                .param("symbol", symbol)
+                .param("assetCategory", assetCategory))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(expectedSize)));
     }
 
     @ParameterizedTest
-    @CsvSource({"farse,,", ",,GOLD"})
+    @CsvSource({ "farse,,", ",,GOLD" })
     void findByParamsBadRequest(String tagged, String symbol, String assetCategory) throws Exception {
 
         mockMvc.perform(get("/positions")
-                        .param("tagged", tagged)
-                        .param("symbol", symbol)
-                        .param("assetCategory", assetCategory))
+                .param("tagged", tagged)
+                .param("symbol", symbol)
+                .param("assetCategory", assetCategory))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
@@ -104,7 +105,7 @@ class PositionControllerIT {
     }
 
     @ParameterizedTest
-    @CsvSource({"ZM long,AAPL", "IBKR put,ADBE"})
+    @CsvSource({ "ZM long,AAPL", "IBKR put,ADBE" })
     void updateStrategyIdSuccess(String strategyName, String expectedSymbol) throws Exception {
         Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), strategyName).get().getId();
         Long positionId = positionRepository.findByAccountIdAndSymbol(user.getAccountId(), expectedSymbol).get()
@@ -113,8 +114,8 @@ class PositionControllerIT {
         StrategyAssign positionUpdate = StrategyAssign.builder().id(positionId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/positions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(positionUpdate)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(positionUpdate)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -122,16 +123,15 @@ class PositionControllerIT {
                 .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategyId))));
     }
 
-
     @ParameterizedTest
-    @CsvSource({"265598, 3455", "20, 1", ",,"})
+    @CsvSource({ "265598, 3455", "20, 1", ",," })
     void updateStrategyIdExceptions(Long positionId, Long strategyId) throws Exception {
 
         StrategyAssign positionUpdate = StrategyAssign.builder().id(positionId).strategyId(strategyId).build();
 
         mockMvc.perform(put("/positions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(positionUpdate)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(positionUpdate)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
@@ -142,7 +142,7 @@ class PositionControllerIT {
     void updateStrategyIdEmptyBodyException() throws Exception {
 
         mockMvc.perform(put("/positions")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))

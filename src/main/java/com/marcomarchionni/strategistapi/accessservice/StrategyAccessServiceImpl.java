@@ -1,8 +1,8 @@
 package com.marcomarchionni.strategistapi.accessservice;
 
 import com.marcomarchionni.strategistapi.domain.Strategy;
-import com.marcomarchionni.strategistapi.repositories.StrategyRepository;
 import com.marcomarchionni.strategistapi.services.UserService;
+import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
 import com.marcomarchionni.strategistapi.validators.AccountIdValidator;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
