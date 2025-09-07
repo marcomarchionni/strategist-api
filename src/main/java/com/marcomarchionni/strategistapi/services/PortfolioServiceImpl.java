@@ -1,6 +1,5 @@
 package com.marcomarchionni.strategistapi.services;
 
-import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
@@ -28,7 +27,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PortfolioServiceImpl implements PortfolioService {
 
-    private final PortfolioAccessService portfolioAccessService;
     private final UserService userService;
     private final PortfolioMapper portfolioMapper;
     private final PortfolioRepository portfolioRepository;
@@ -61,7 +59,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public PortfolioDetail findById(Long portfolioId) {
-        Portfolio portfolio = portfolioAccessService.findById(portfolioId).orElseThrow(
+        Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId));
         return portfolioMapper.toPortfolioDetailDto(portfolio);
     }
@@ -73,12 +71,12 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public void deleteById(Long portfolioId) {
-        Portfolio portfolioToDelete = portfolioAccessService.findById(portfolioId).orElseThrow(
+        Portfolio portfolioToDelete = portfolioRepository.findById(portfolioId).orElseThrow(
                 () -> new EntityNotFoundException(Portfolio.class, portfolioId));
         if (!portfolioToDelete.getStrategies().isEmpty()) {
             throw new UnableToDeleteEntitiesException("Portfolio contains strategies and cannot be deleted");
         }
-        portfolioAccessService.delete(portfolioToDelete);
+        portfolioRepository.delete(portfolioToDelete);
     }
 
     @Override

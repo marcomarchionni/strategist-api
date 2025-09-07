@@ -3,18 +3,14 @@ package com.marcomarchionni.strategistapi.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.BatchOperation;
-import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapper;
 import com.marcomarchionni.strategistapi.mappers.PortfolioMapperImpl;
-import com.marcomarchionni.strategistapi.services.BatchOperationService;
 import com.marcomarchionni.strategistapi.services.JwtService;
 import com.marcomarchionni.strategistapi.services.PortfolioService;
-import com.marcomarchionni.strategistapi.services.parsers.BatchRequestParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -41,13 +37,6 @@ class PortfolioControllerTest {
 
         @MockBean
         PortfolioService portfolioService;
-
-        @MockBean
-        BatchRequestParser batchRequestParser;
-
-        @SuppressWarnings("unused")
-        @MockBean
-        BatchOperationService batchOperationService;
 
         @Autowired
         MockMvc mockMvc;
@@ -88,7 +77,7 @@ class PortfolioControllerTest {
                 when(portfolioService.findAllWithCount(any())).thenReturn(response);
 
                 // Execute test
-                mockMvc.perform(get("/portfolios/"))
+                mockMvc.perform(get("/portfolios"))
                                 .andExpect(status().isOk())
                                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(jsonPath("$.result", hasSize(portfolioSummaries.size())))
@@ -113,7 +102,7 @@ class PortfolioControllerTest {
                 when(portfolioService.findAllWithCount(any())).thenReturn(response);
 
                 // Execute test
-                mockMvc.perform(get("/portfolios/?skip=0&top=10"))
+                mockMvc.perform(get("/portfolios?skip=0&top=10"))
                                 .andExpect(status().isOk())
                                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(jsonPath("$.result", hasSize(portfolioSummaries.size())))
@@ -154,24 +143,6 @@ class PortfolioControllerTest {
                                 .andDo(print())
                                 .andExpect(status().isNotFound())
                                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-        }
-
-        @Test
-        void batchRequest() throws Exception {
-                // setup test data
-                PortfolioSave portfolioSave = PortfolioSave.builder().name(userPortfolio.getName()).build();
-                List<BatchOperation<PortfolioSave>> operations = List
-                                .of(BatchOperation.<PortfolioSave>builder().method("POST")
-                                                .dto(portfolioSave).build());
-
-                // setup mock behavior
-                when(batchRequestParser.parseRequest(any(), eq(PortfolioSave.class))).thenReturn(operations);
-
-                // Execute test
-                mockMvc.perform(post("/portfolios/$batch")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(mapper.writeValueAsString(portfolioSave)))
-                                .andExpect(status().isOk());
         }
 
         @Test

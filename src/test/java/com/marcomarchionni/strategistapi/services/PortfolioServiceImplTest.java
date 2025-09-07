@@ -1,6 +1,5 @@
 package com.marcomarchionni.strategistapi.services;
 
-import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
@@ -36,8 +35,6 @@ import static org.mockito.Mockito.*;
 class PortfolioServiceImplTest {
 
     @Mock
-    PortfolioAccessService portfolioAccessService;
-    @Mock
     PortfolioRepository portfolioRepository;
     @Mock
     Specification<Portfolio> spec;
@@ -53,7 +50,7 @@ class PortfolioServiceImplTest {
     @BeforeEach
     void setup() {
         portfolioMapper = new PortfolioMapperImpl(new ModelMapper());
-        portfolioService = new PortfolioServiceImpl(portfolioAccessService, userService, portfolioMapper,
+        portfolioService = new PortfolioServiceImpl(userService, portfolioMapper,
                 portfolioRepository, portfolioSpecification);
 
         user = getSampleUser();
@@ -94,7 +91,7 @@ class PortfolioServiceImplTest {
         Long portfolioId = userPortfolio.getId();
 
         // Setup mocks
-        when(portfolioAccessService.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
+        when(portfolioRepository.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
 
         // Execute service
         PortfolioDetail actualPortfolioDto = portfolioService.findById(portfolioId);
@@ -110,7 +107,7 @@ class PortfolioServiceImplTest {
         Long unknownPortfolioId = 1L;
 
         // Setup mocks
-        when(portfolioAccessService.findById(unknownPortfolioId)).thenReturn(Optional.empty());
+        when(portfolioRepository.findById(unknownPortfolioId)).thenReturn(Optional.empty());
 
         // Execute service and verify exception
         assertThrows(EntityNotFoundException.class, () -> portfolioService.findById(unknownPortfolioId));
@@ -121,11 +118,12 @@ class PortfolioServiceImplTest {
         // Setup test data
         PortfolioSave portfolioSave = PortfolioSave.builder().name("NewPortfolioName").build();
         String portfolioName = portfolioSave.getName();
+        String accountId = user.getAccountId();
 
         // Setup mocks
-        when(portfolioAccessService.existsByName(portfolioName)).thenReturn(false);
-        when(portfolioAccessService.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(userService.getUserAccountId()).thenReturn(user.getAccountId());
+        when(portfolioRepository.findByAccountIdAndName(accountId, portfolioName)).thenReturn(Optional.empty());
+        when(portfolioRepository.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userService.getUserAccountId()).thenReturn(accountId);
 
         // Execute service
         PortfolioSummary createdPortfolioDto = portfolioService.create(portfolioSave);
@@ -145,9 +143,10 @@ class PortfolioServiceImplTest {
                 .build();
 
         // Setup mocks
-        when(portfolioAccessService.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
-        when(portfolioAccessService.existsByName("NewName")).thenReturn(false);
-        when(portfolioAccessService.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(portfolioRepository.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
+        when(userService.getUserAccountId()).thenReturn(accountId);
+        when(portfolioRepository.findByAccountIdAndName(accountId, "NewName")).thenReturn(Optional.empty());
+        when(portfolioRepository.save(any(Portfolio.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Execute service
         PortfolioSummary actualPortfolioDto = portfolioService.update(portfolioUpdate);
@@ -166,15 +165,15 @@ class PortfolioServiceImplTest {
         Long portfolioId = userPortfolio.getId();
 
         // setup mocks
-        when(portfolioAccessService.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
-        doNothing().when(portfolioAccessService).delete(userPortfolio);
+        when(portfolioRepository.findById(portfolioId)).thenReturn(Optional.of(userPortfolio));
+        doNothing().when(portfolioRepository).delete(userPortfolio);
 
         // execute service
         assertDoesNotThrow(() -> portfolioService.deleteById(portfolioId));
 
         // verify results
-        verify(portfolioAccessService).findById(portfolioId);
-        verify(portfolioAccessService).delete(userPortfolio);
+        verify(portfolioRepository).findById(portfolioId);
+        verify(portfolioRepository).delete(userPortfolio);
     }
 
     @Test
@@ -183,7 +182,7 @@ class PortfolioServiceImplTest {
         Long unknownPortfolioId = 1L;
 
         // setup mocks
-        when(portfolioAccessService.findById(unknownPortfolioId)).thenReturn(Optional.empty());
+        when(portfolioRepository.findById(unknownPortfolioId)).thenReturn(Optional.empty());
 
         // execute service and verify exception
         assertThrows(EntityNotFoundException.class, () -> portfolioService.deleteById(unknownPortfolioId));

@@ -15,6 +15,7 @@ import static com.marcomarchionni.strategistapi.config.ModelMapperConfig.configu
 import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleTrades;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class PortfolioMapperImplTest {
 
@@ -54,7 +55,9 @@ class PortfolioMapperImplTest {
 
         assertNotNull(portfolio);
         assertEquals(portfolioSave.getName(), portfolio.getName());
-        assertEquals(portfolioSave.getCreatedAt(), portfolio.getCreatedAt());
+        // createdAt is intentionally not mapped by ModelMapperConfig; service sets it
+        // on create
+        assertNull(portfolio.getCreatedAt());
         assertEquals(portfolioSave.getDescription(), portfolio.getDescription());
         assertEquals("U1111111", portfolio.getAccountId(), "accountId should not be updated");
         assertEquals(1L, portfolio.getId(), "id should not be updated");

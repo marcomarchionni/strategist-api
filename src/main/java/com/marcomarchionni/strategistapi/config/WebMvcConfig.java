@@ -3,7 +3,7 @@ package com.marcomarchionni.strategistapi.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -29,10 +29,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     // Remove XML converter from the list of converters
     @Override
-    public void extendMessageConverters(@NotNull List<HttpMessageConverter<?>> converters) {
+    public void extendMessageConverters(@NonNull List<HttpMessageConverter<?>> converters) {
         log.info("Message converters before: {}", converters);
         converters.removeIf(c -> c instanceof MappingJackson2XmlHttpMessageConverter);
         log.info("Message converters after: {}", converters);
     }
 }
-

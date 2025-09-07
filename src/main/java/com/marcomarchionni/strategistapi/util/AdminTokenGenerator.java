@@ -50,8 +50,8 @@ public class AdminTokenGenerator {
                 return;
             }
 
-            // Setup JwtService
-            JwtService jwtService = new JwtServiceImpl(jwtSecret, 1000 * 60 * 60 * 24 * 7);
+            // Setup JwtService - 6 months expiration (1000ms * 60s * 60m * 24h * 180d)
+            JwtService jwtService = new JwtServiceImpl(jwtSecret, 1000L * 60 * 60 * 24 * 180);
 
             // Setup AdminUser
             User user = User.builder()

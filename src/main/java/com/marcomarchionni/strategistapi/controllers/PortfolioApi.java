@@ -2,14 +2,13 @@ package com.marcomarchionni.strategistapi.controllers;
 
 import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
-import com.marcomarchionni.strategistapi.dtos.response.BatchReport;
+
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioDetail;
 import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.*;
@@ -42,10 +41,6 @@ public interface PortfolioApi {
     @PostMapping("")
     @Operation(summary = "Create a new portfolio")
     PortfolioSummary createPortfolio(@RequestBody @Valid PortfolioSave portfolioSave);
-
-    @PostMapping("/$batch")
-    @Operation(summary = "Handle batch operations")
-    BatchReport handleBatchRequest(HttpServletRequest request) throws Exception;
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete portfolio by id")
