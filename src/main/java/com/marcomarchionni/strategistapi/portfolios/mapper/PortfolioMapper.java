@@ -7,9 +7,9 @@ import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 
 public interface PortfolioMapper {
 
-    PortfolioSummary portfolioToPortfolioSummary(Portfolio portfolio);
+  PortfolioSummary portfolioToPortfolioSummary(Portfolio portfolio);
 
-    PortfolioDetail toPortfolioDetailDto(Portfolio portfolio);
+  PortfolioDetail toPortfolioDetailDto(Portfolio portfolio);
 
-    void mergePortfolioSaveToPortfolio(PortfolioSave portfolioSave, Portfolio portfolio);
+  void mergePortfolioSaveToPortfolio(PortfolioSave portfolioSave, Portfolio portfolio);
 }

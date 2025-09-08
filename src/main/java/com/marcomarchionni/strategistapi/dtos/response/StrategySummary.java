@@ -14,25 +14,31 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StrategySummary {
 
-    @NotNull
-    @Schema(description = "Strategy id", example = "1")
-    private Long id;
+  @NotNull
+  @Schema(description = "Strategy id", example = "1")
+  private Long id;
 
-    @EntityName
-    @Schema(description = "Strategy name must start with capital letter, contain 3-30 characters. Letters, numbers, " +
-            "spaces, underscore and apostrophe allowed", example = "AAPL bullcall Jan26")
-    private String name;
+  @EntityName
+  @Schema(
+      description =
+          "Strategy name must start with capital letter, contain 3-30 characters. Letters, numbers, "
+              + "spaces, underscore and apostrophe allowed",
+      example = "AAPL bullcall Jan26")
+  private String name;
 
-    @NotNull
-    @Schema(description = "Portfolio id", example = "1")
-    private Long portfolioId;
+  @NotNull
+  @Schema(description = "Portfolio id", example = "1")
+  private Long portfolioId;
 
-    @NotNull
-    @Schema(description = "Account id", example = "U1111111")
-    private String accountId;
+  @NotNull
+  @Schema(description = "Account id", example = "U1111111")
+  private String accountId;
 
-    @EntityName
-    @Schema(description = "Portfolio name must start with capital letter, contain 3-30 characters. Letters, numbers, " +
-            "spaces, underscore and apostrophe allowed", example = "Rule Makers")
-    private String portfolioName;
+  @EntityName
+  @Schema(
+      description =
+          "Portfolio name must start with capital letter, contain 3-30 characters. Letters, numbers, "
+              + "spaces, underscore and apostrophe allowed",
+      example = "Rule Makers")
+  private String portfolioName;
 }

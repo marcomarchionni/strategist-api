@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class FlexStatementMapperImpl implements FlexStatementMapper {
 
-    ModelMapper modelMapper;
+  ModelMapper modelMapper;
 
-    public FlexStatementMapperImpl(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
+  public FlexStatementMapperImpl(ModelMapper modelMapper) {
+    this.modelMapper = modelMapper;
+  }
 
-    @Override
-    public FlexStatement toFlexStatement(FlexQueryResponseDto.FlexStatement flexStatementDto) {
-        return modelMapper.map(flexStatementDto, FlexStatement.class);
-    }
+  @Override
+  public FlexStatement toFlexStatement(FlexQueryResponseDto.FlexStatement flexStatementDto) {
+    return modelMapper.map(flexStatementDto, FlexStatement.class);
+  }
 }

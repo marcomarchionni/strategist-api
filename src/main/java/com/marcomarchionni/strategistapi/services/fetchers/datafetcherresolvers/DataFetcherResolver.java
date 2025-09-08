@@ -5,5 +5,5 @@ import com.marcomarchionni.strategistapi.services.fetchers.DataFetcher;
 
 public interface DataFetcherResolver {
 
-    DataFetcher resolve(UpdateContext.SourceType type);
+  DataFetcher resolve(UpdateContext.SourceType type);
 }

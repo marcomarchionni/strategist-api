@@ -1,5 +1,3 @@
 package com.marcomarchionni.strategistapi.dtos.request;
 
-
-public interface EntitySave {
-}
+public interface EntitySave {}

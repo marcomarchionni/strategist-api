@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DtoValidatorImpl<T> implements DtoValidator<T> {
 
-    private final Validator validator;
+  private final Validator validator;
 
-    @Override
-    public Validator getValidator() {
-        return validator;
-    }
+  @Override
+  public Validator getValidator() {
+    return validator;
+  }
 }

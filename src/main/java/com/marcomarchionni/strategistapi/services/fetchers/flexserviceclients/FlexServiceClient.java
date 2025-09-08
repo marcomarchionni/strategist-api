@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 
 public interface FlexServiceClient {
 
-    ResponseEntity<FlexStatementResponseDto> fetchFlexStatementResponse(String queryId, String token);
+  ResponseEntity<FlexStatementResponseDto> fetchFlexStatementResponse(String queryId, String token);
 
-    ResponseEntity<FlexQueryResponseDto> fetchFlexQueryResponse(FlexStatementResponseDto flexStatementResponseDto,
-                                                                String token);
+  ResponseEntity<FlexQueryResponseDto> fetchFlexQueryResponse(
+      FlexStatementResponseDto flexStatementResponseDto, String token);
 }

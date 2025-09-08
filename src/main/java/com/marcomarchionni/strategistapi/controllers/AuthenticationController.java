@@ -13,26 +13,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationController implements AuthenticationApi {
 
-    private final AuthenticationService authenticationService;
+  private final AuthenticationService authenticationService;
 
-    @Override
-    public ResponseEntity<Void> signup(@Valid @RequestBody SignUpReq request) {
-        authenticationService.signUp(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+  @Override
+  public ResponseEntity<Void> signup(@Valid @RequestBody SignUpReq request) {
+    authenticationService.signUp(request);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
 
-    @Override
-    public ResponseEntity<SigninResponse> signin(@Valid @RequestBody SignInReq request) {
-        return ResponseEntity.ok(authenticationService.signIn(request));
-    }
+  @Override
+  public ResponseEntity<SigninResponse> signin(@Valid @RequestBody SignInReq request) {
+    return ResponseEntity.ok(authenticationService.signIn(request));
+  }
 
-    @Override
-    public ResponseEntity<RefreshTokenResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
-        return ResponseEntity.ok(authenticationService.refreshToken(request));
-    }
+  @Override
+  public ResponseEntity<RefreshTokenResponse> refresh(
+      @Valid @RequestBody RefreshTokenRequest request) {
+    return ResponseEntity.ok(authenticationService.refreshToken(request));
+  }
 }

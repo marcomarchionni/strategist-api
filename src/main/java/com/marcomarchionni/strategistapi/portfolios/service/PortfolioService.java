@@ -8,9 +8,9 @@ import com.marcomarchionni.strategistapi.dtos.response.PortfolioSummary;
 import com.marcomarchionni.strategistapi.services.EntityService;
 
 public interface PortfolioService extends EntityService<PortfolioSave, PortfolioSummary> {
-    ApiResponse<PortfolioSummary> findAllWithCount(FindAllReq findReq);
+  ApiResponse<PortfolioSummary> findAllWithCount(FindAllReq findReq);
 
-    PortfolioDetail findById(Long portfolioId);
+  PortfolioDetail findById(Long portfolioId);
 
-    void deleteById(Long portfolioId);
+  void deleteById(Long portfolioId);
 }

@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapperImpl implements UserMapper {
-    @Override
-    public UserSummary toUserSummary(User user) {
-        return UserSummary.builder()
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .accountId(user.getAccountId())
-                .build();
-    }
+  @Override
+  public UserSummary toUserSummary(User user) {
+    return UserSummary.builder()
+        .firstName(user.getFirstName())
+        .lastName(user.getLastName())
+        .email(user.getEmail())
+        .accountId(user.getAccountId())
+        .build();
+  }
 }

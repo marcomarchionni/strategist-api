@@ -1,46 +1,46 @@
 package com.marcomarchionni.strategistapi.mappers;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.marcomarchionni.strategistapi.config.ModelMapperConfig;
 import com.marcomarchionni.strategistapi.domain.FlexStatement;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class FlexStatementMapperImplTest {
-    FlexStatementMapperImpl flexStatementMapper;
+  FlexStatementMapperImpl flexStatementMapper;
 
-    @BeforeEach
-    void init() {
-        ModelMapperConfig mapperConfig = new ModelMapperConfig();
-        ModelMapper mapper = mapperConfig.modelMapper();
-        flexStatementMapper = new FlexStatementMapperImpl(mapper);
+  @BeforeEach
+  void init() {
+    ModelMapperConfig mapperConfig = new ModelMapperConfig();
+    ModelMapper mapper = mapperConfig.modelMapper();
+    flexStatementMapper = new FlexStatementMapperImpl(mapper);
+  }
 
-    }
+  @Test
+  void toFlexStatement() {
+    FlexQueryResponseDto.FlexStatement flexDto =
+        FlexQueryResponseDto.FlexStatement.builder()
+            .accountId("U7169936")
+            .fromDate(LocalDate.of(2022, 6, 1))
+            .toDate(LocalDate.of(2022, 6, 30))
+            .whenGenerated(LocalDateTime.of(2022, 12, 28, 12, 48, 35))
+            .build();
 
-    @Test
-    void toFlexStatement() {
-        FlexQueryResponseDto.FlexStatement flexDto = FlexQueryResponseDto.FlexStatement.builder()
-                .accountId("U7169936")
-                .fromDate(LocalDate.of(2022, 6, 1))
-                .toDate(LocalDate.of(2022, 6, 30))
-                .whenGenerated(LocalDateTime.of(2022, 12, 28, 12, 48, 35))
-                .build();
-
-        assertDoesNotThrow(() -> {
-            flexStatementMapper.toFlexStatement(flexDto);
+    assertDoesNotThrow(
+        () -> {
+          flexStatementMapper.toFlexStatement(flexDto);
         });
 
-        FlexStatement flexStatement = flexStatementMapper.toFlexStatement(flexDto);
+    FlexStatement flexStatement = flexStatementMapper.toFlexStatement(flexDto);
 
-        assertEquals(flexDto.getAccountId(), flexStatement.getAccountId());
-        assertEquals(flexDto.getFromDate(), flexStatement.getFromDate());
-        assertEquals(flexDto.getToDate(), flexStatement.getToDate());
-        assertNull(flexStatement.getId());
-    }
+    assertEquals(flexDto.getAccountId(), flexStatement.getAccountId());
+    assertEquals(flexDto.getFromDate(), flexStatement.getFromDate());
+    assertEquals(flexDto.getToDate(), flexStatement.getToDate());
+    assertNull(flexStatement.getId());
+  }
 }

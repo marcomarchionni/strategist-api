@@ -9,30 +9,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class DividendMapperImpl implements DividendMapper {
 
-    ModelMapper mapper;
+  ModelMapper mapper;
 
-    public DividendMapperImpl(ModelMapper mapper) {
-        this.mapper = mapper;
-    }
+  public DividendMapperImpl(ModelMapper mapper) {
+    this.mapper = mapper;
+  }
 
-    @Override
-    public DividendSummary toDividendSummary(Dividend dividend) {
-        return mapper.map(dividend, DividendSummary.class);
-    }
+  @Override
+  public DividendSummary toDividendSummary(Dividend dividend) {
+    return mapper.map(dividend, DividendSummary.class);
+  }
 
-    @Override
-    public Dividend mergeFlexProperties(Dividend source, Dividend target) {
-        mapper.map(source, target);
-        return target;
-    }
+  @Override
+  public Dividend mergeFlexProperties(Dividend source, Dividend target) {
+    mapper.map(source, target);
+    return target;
+  }
 
-    @Override
-    public Dividend toClosedDividend(FlexQueryResponseDto.ChangeInDividendAccrual closedDividendDto) {
-        return mapper.map(closedDividendDto, Dividend.class);
-    }
+  @Override
+  public Dividend toClosedDividend(FlexQueryResponseDto.ChangeInDividendAccrual closedDividendDto) {
+    return mapper.map(closedDividendDto, Dividend.class);
+  }
 
-    @Override
-    public Dividend toOpenDividend(FlexQueryResponseDto.OpenDividendAccrual openDividendDto) {
-        return mapper.map(openDividendDto, Dividend.class);
-    }
+  @Override
+  public Dividend toOpenDividend(FlexQueryResponseDto.OpenDividendAccrual openDividendDto) {
+    return mapper.map(openDividendDto, Dividend.class);
+  }
 }

@@ -1,99 +1,101 @@
 package com.marcomarchionni.strategistapi.accessservice;
 
-import com.marcomarchionni.strategistapi.domain.Dividend;
-import com.marcomarchionni.strategistapi.errorhandling.exceptions.InvalidUserDataException;
-import com.marcomarchionni.strategistapi.repositories.DividendRepository;
-import com.marcomarchionni.strategistapi.services.UserService;
-import com.marcomarchionni.strategistapi.validators.AccountIdEntityValidatorImpl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-
 import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleDividends;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import com.marcomarchionni.strategistapi.domain.Dividend;
+import com.marcomarchionni.strategistapi.errorhandling.exceptions.InvalidUserDataException;
+import com.marcomarchionni.strategistapi.repositories.DividendRepository;
+import com.marcomarchionni.strategistapi.services.UserService;
+import com.marcomarchionni.strategistapi.validators.AccountIdEntityValidatorImpl;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 @ExtendWith(MockitoExtension.class)
 class DividendAccessServiceImplTest {
 
-    @Mock
-    DividendRepository dividendRepository;
+  @Mock DividendRepository dividendRepository;
 
-    @Mock
-    UserService userService;
+  @Mock UserService userService;
 
-    DividendAccessService dividendAccessService;
+  DividendAccessService dividendAccessService;
 
-    List<Dividend> dividends;
-    Dividend dividend;
+  List<Dividend> dividends;
+  Dividend dividend;
 
-    @BeforeEach
-    void setUp() {
-        dividends = getSampleDividends();
-        dividend = dividends.get(0);
-        var accountIdValidator = new AccountIdEntityValidatorImpl<Dividend>();
-        dividendAccessService = new DividendAccessServiceImpl(dividendRepository, userService, accountIdValidator);
+  @BeforeEach
+  void setUp() {
+    dividends = getSampleDividends();
+    dividend = dividends.get(0);
+    var accountIdValidator = new AccountIdEntityValidatorImpl<Dividend>();
+    dividendAccessService =
+        new DividendAccessServiceImpl(dividendRepository, userService, accountIdValidator);
 
-        when(userService.getUserAccountId()).thenReturn("U1111111");
-    }
+    when(userService.getUserAccountId()).thenReturn("U1111111");
+  }
 
-    @Test
-    void findByParams() {
-        when(dividendRepository.findByParams(eq("U1111111"), any(), any(), any(), any(), any(), any())).thenReturn(dividends);
-        List<Dividend> foundDividends = dividendAccessService.findByParams(null, null, null, null, null, "AAPL");
+  @Test
+  void findByParams() {
+    when(dividendRepository.findByParams(eq("U1111111"), any(), any(), any(), any(), any(), any()))
+        .thenReturn(dividends);
+    List<Dividend> foundDividends =
+        dividendAccessService.findByParams(null, null, null, null, null, "AAPL");
 
-        assertEquals(dividends, foundDividends);
-    }
+    assertEquals(dividends, foundDividends);
+  }
 
-    @Test
-    void findById() {
-        when(dividendRepository.findByIdAndAccountId(eq(1L), eq("U1111111"))).thenReturn(java.util.Optional.ofNullable(dividend));
-        var foundDividend = dividendAccessService.findById(1L);
+  @Test
+  void findById() {
+    when(dividendRepository.findByIdAndAccountId(eq(1L), eq("U1111111")))
+        .thenReturn(java.util.Optional.ofNullable(dividend));
+    var foundDividend = dividendAccessService.findById(1L);
 
-        assertEquals(dividend, foundDividend.get());
-    }
+    assertEquals(dividend, foundDividend.get());
+  }
 
-    @Test
-    void findBySymbol() {
-        when(dividendRepository.findByAccountIdAndSymbol(eq("U1111111"), eq("AAPL"))).thenReturn(dividends);
-        var foundDividends = dividendAccessService.findBySymbol("AAPL");
+  @Test
+  void findBySymbol() {
+    when(dividendRepository.findByAccountIdAndSymbol(eq("U1111111"), eq("AAPL")))
+        .thenReturn(dividends);
+    var foundDividends = dividendAccessService.findBySymbol("AAPL");
 
-        assertEquals(dividends, foundDividends);
-    }
+    assertEquals(dividends, foundDividends);
+  }
 
-    @Test
-    void existsByActionId() {
-        when(dividendRepository.existsByAccountIdAndActionId(eq("U1111111"), eq(1L))).thenReturn(true);
-        var exists = dividendAccessService.existsByActionId(1L);
+  @Test
+  void existsByActionId() {
+    when(dividendRepository.existsByAccountIdAndActionId(eq("U1111111"), eq(1L))).thenReturn(true);
+    var exists = dividendAccessService.existsByActionId(1L);
 
-        assertTrue(exists);
-    }
+    assertTrue(exists);
+  }
 
-    @Test
-    void save() {
-        when(dividendRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        var savedDividend = dividendAccessService.save(dividend);
+  @Test
+  void save() {
+    when(dividendRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+    var savedDividend = dividendAccessService.save(dividend);
 
-        assertEquals(dividend, savedDividend);
-    }
+    assertEquals(dividend, savedDividend);
+  }
 
-    @Test
-    void saveAll() {
-        when(dividendRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        var savedDividends = dividendAccessService.saveAll(dividends);
+  @Test
+  void saveAll() {
+    when(dividendRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
+    var savedDividends = dividendAccessService.saveAll(dividends);
 
-        assertEquals(dividends, savedDividends);
-    }
+    assertEquals(dividends, savedDividends);
+  }
 
-    @Test
-    void saveException() {
-        dividend.setAccountId("U2222222");
-        assertThrows(InvalidUserDataException.class, () -> dividendAccessService.save(dividend));
-    }
+  @Test
+  void saveException() {
+    dividend.setAccountId("U2222222");
+    assertThrows(InvalidUserDataException.class, () -> dividendAccessService.save(dividend));
+  }
 }

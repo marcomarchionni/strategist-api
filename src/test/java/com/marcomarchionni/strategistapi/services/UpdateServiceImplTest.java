@@ -5,11 +5,9 @@ import org.junit.jupiter.api.Test;
 
 class UpdateServiceImplTest {
 
-    @BeforeEach
-    void setUp() {
-    }
+  @BeforeEach
+  void setUp() {}
 
-    @Test
-    void update() {
-    }
+  @Test
+  void update() {}
 }

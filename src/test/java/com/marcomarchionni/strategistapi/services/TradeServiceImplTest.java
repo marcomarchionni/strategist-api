@@ -1,5 +1,10 @@
 package com.marcomarchionni.strategistapi.services;
 
+import static com.marcomarchionni.strategistapi.util.TestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.accessservice.TradeAccessService;
 import com.marcomarchionni.strategistapi.domain.Strategy;
@@ -13,6 +18,8 @@ import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFound
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.strategistapi.mappers.TradeMapper;
 import com.marcomarchionni.strategistapi.mappers.TradeMapperImpl;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,127 +27,115 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import java.util.List;
-import java.util.Optional;
-
-import static com.marcomarchionni.strategistapi.util.TestUtils.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class TradeServiceImplTest {
-    @Mock
-    TradeAccessService tradeAccessService;
-    @Mock
-    StrategyAccessService strategyAccessService;
-    TradeService tradeService;
-    List<Trade> trades;
-    Trade trade;
-    Strategy strategy;
-    StrategyAssign tradeUpdate;
-    TradeFind tradeCriteria;
-    User user;
+  @Mock TradeAccessService tradeAccessService;
+  @Mock StrategyAccessService strategyAccessService;
+  TradeService tradeService;
+  List<Trade> trades;
+  Trade trade;
+  Strategy strategy;
+  StrategyAssign tradeUpdate;
+  TradeFind tradeCriteria;
+  User user;
 
-    @BeforeEach
-    void setup() {
-        user = getSampleUser();
-        trades = getSampleTrades();
-        trade = getSampleTrade();
-        strategy = getSampleStrategy();
-        tradeCriteria = getSampleTradeCriteria();
-        TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
-        tradeService = new TradeServiceImpl(tradeAccessService, strategyAccessService, tradeMapper);
-    }
+  @BeforeEach
+  void setup() {
+    user = getSampleUser();
+    trades = getSampleTrades();
+    trade = getSampleTrade();
+    strategy = getSampleStrategy();
+    tradeCriteria = getSampleTradeCriteria();
+    TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
+    tradeService = new TradeServiceImpl(tradeAccessService, strategyAccessService, tradeMapper);
+  }
 
-    @Test
-    void saveAllSuccess() {
-        assertDoesNotThrow(() -> tradeService.saveAll(trades));
-    }
+  @Test
+  void saveAllSuccess() {
+    assertDoesNotThrow(() -> tradeService.saveAll(trades));
+  }
 
-    @Test
-    void saveAllException() {
-        doThrow(new RuntimeException()).when(tradeAccessService).saveAll(any());
+  @Test
+  void saveAllException() {
+    doThrow(new RuntimeException()).when(tradeAccessService).saveAll(any());
 
-        assertThrows(UnableToSaveEntitiesException.class, () -> tradeService.saveAll(trades));
-    }
+    assertThrows(UnableToSaveEntitiesException.class, () -> tradeService.saveAll(trades));
+  }
 
-    @Test
-    void updateStrategyIdSuccess() {
-        tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
+  @Test
+  void updateStrategyIdSuccess() {
+    tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
 
-        when(tradeAccessService.findById(trade.getId())).thenReturn(Optional.of(trade));
-        when(strategyAccessService.findById(strategy.getId())).thenReturn(Optional.of(strategy));
-        when(tradeAccessService.save(trade)).thenReturn(trade);
+    when(tradeAccessService.findById(trade.getId())).thenReturn(Optional.of(trade));
+    when(strategyAccessService.findById(strategy.getId())).thenReturn(Optional.of(strategy));
+    when(tradeAccessService.save(trade)).thenReturn(trade);
 
-        TradeSummary updatedTrade = tradeService.updateStrategyId(tradeUpdate);
+    TradeSummary updatedTrade = tradeService.updateStrategyId(tradeUpdate);
 
-        verify(tradeAccessService).save(trade);
-        assertEquals(tradeUpdate.getId(), updatedTrade.getId());
-        assertEquals(tradeUpdate.getStrategyId(), updatedTrade.getStrategyId());
-    }
+    verify(tradeAccessService).save(trade);
+    assertEquals(tradeUpdate.getId(), updatedTrade.getId());
+    assertEquals(tradeUpdate.getStrategyId(), updatedTrade.getStrategyId());
+  }
 
-    @Test
-    void updateStrategyIdNullSuccess() {
-        tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(null).build();
+  @Test
+  void updateStrategyIdNullSuccess() {
+    tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(null).build();
 
-        when(tradeAccessService.findById(trade.getId())).thenReturn(Optional.of(trade));
-        when(tradeAccessService.save(trade)).thenReturn(trade);
+    when(tradeAccessService.findById(trade.getId())).thenReturn(Optional.of(trade));
+    when(tradeAccessService.save(trade)).thenReturn(trade);
 
-        TradeSummary updatedTrade = tradeService.updateStrategyId(tradeUpdate);
-        verify(tradeAccessService).save(trade);
-        assertEquals(tradeUpdate.getId(), updatedTrade.getId());
-        assertNull(updatedTrade.getStrategyId());
-    }
+    TradeSummary updatedTrade = tradeService.updateStrategyId(tradeUpdate);
+    verify(tradeAccessService).save(trade);
+    assertEquals(tradeUpdate.getId(), updatedTrade.getId());
+    assertNull(updatedTrade.getStrategyId());
+  }
 
+  @Test
+  void updateStrategyIdException() {
 
+    tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
 
-    @Test
-    void updateStrategyIdException() {
+    when(tradeAccessService.findById(trade.getId())).thenReturn(Optional.of(trade));
+    when(strategyAccessService.findById(strategy.getId())).thenReturn(Optional.empty());
 
-        tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
+    assertThrows(EntityNotFoundException.class, () -> tradeService.updateStrategyId(tradeUpdate));
+  }
 
-        when(tradeAccessService.findById(trade.getId())).thenReturn(Optional.of(trade));
-        when(strategyAccessService.findById(strategy.getId())).thenReturn(Optional.empty());
+  @Test
+  void findWithParametersSuccess() {
 
-        assertThrows(EntityNotFoundException.class, () -> tradeService.updateStrategyId(tradeUpdate));
-    }
+    when(tradeAccessService.findByParams(any(), any(), any(), any(), any())).thenReturn(trades);
+    int expectedSize = trades.size();
 
-    @Test
-    void findWithParametersSuccess() {
+    List<TradeSummary> actualTrades = tradeService.findByFilter(tradeCriteria);
 
-        when(tradeAccessService.findByParams(any(), any(), any(), any(), any())).thenReturn(trades);
-        int expectedSize = trades.size();
+    assertEquals(expectedSize, actualTrades.size());
+  }
 
-        List<TradeSummary> actualTrades = tradeService.findByFilter(tradeCriteria);
+  @Test
+  void updateTradesSuccess() {
+    // setup new trades
+    List<Trade> newTrades = List.of(getTTWO1Trade(), getTTWO2Trade(), getEURUSDTrade());
 
-        assertEquals(expectedSize, actualTrades.size());
-    }
+    // setup mock, assuming that TTWO1 and TTWO2 already exist in the database
+    when(tradeAccessService.existsByIbOrderId(getTTWO1Trade().getIbOrderId())).thenReturn(true);
+    when(tradeAccessService.existsByIbOrderId(getTTWO2Trade().getIbOrderId())).thenReturn(true);
+    when(tradeAccessService.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-    @Test
-    void updateTradesSuccess() {
-        // setup new trades
-        List<Trade> newTrades = List.of(getTTWO1Trade(), getTTWO2Trade(), getEURUSDTrade());
+    // execute method
+    UpdateReport<TradeSummary> result = tradeService.updateTrades(newTrades);
 
-        // setup mock, assuming that TTWO1 and TTWO2 already exist in the database
-        when(tradeAccessService.existsByIbOrderId(getTTWO1Trade().getIbOrderId())).thenReturn(true);
-        when(tradeAccessService.existsByIbOrderId(getTTWO2Trade().getIbOrderId())).thenReturn(true);
-        when(tradeAccessService.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+    // assertions
+    assertEquals(1, result.getAdded().size());
+    assertEquals(2, result.getSkipped().size());
+    assertEquals("EUR.USD", result.getAdded().get(0).getSymbol());
+  }
 
-        // execute method
-        UpdateReport<TradeSummary> result = tradeService.updateTrades(newTrades);
-
-        // assertions
-        assertEquals(1, result.getAdded().size());
-        assertEquals(2, result.getSkipped().size());
-        assertEquals("EUR.USD", result.getAdded().get(0).getSymbol());
-    }
-
-    @Test
-    void updateTradesEmptyList() {
-        UpdateReport<TradeSummary> result = tradeService.updateTrades(List.of());
-        assertEquals(0, result.getAdded().size());
-        assertEquals(0, result.getSkipped().size());
-        assertEquals(0, result.getMerged().size());
-    }
+  @Test
+  void updateTradesEmptyList() {
+    UpdateReport<TradeSummary> result = tradeService.updateTrades(List.of());
+    assertEquals(0, result.getAdded().size());
+    assertEquals(0, result.getSkipped().size());
+    assertEquals(0, result.getMerged().size());
+  }
 }

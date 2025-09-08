@@ -4,45 +4,42 @@ import com.marcomarchionni.strategistapi.dtos.request.UpdateContext;
 import com.marcomarchionni.strategistapi.dtos.response.update.CombinedUpdateReport;
 import com.marcomarchionni.strategistapi.services.UpdateOrchestrator;
 import com.marcomarchionni.strategistapi.validators.DtoValidator;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
-
 @RestController
 @RequiredArgsConstructor
 public class UpdateController implements UpdateApi {
 
-    private final UpdateOrchestrator updateOrchestrator;
-    private final DtoValidator<UpdateContext> contextValidator;
+  private final UpdateOrchestrator updateOrchestrator;
+  private final DtoValidator<UpdateContext> contextValidator;
 
-    public CombinedUpdateReport updateWithFile(
-            @RequestParam("sourceType") UpdateContext.SourceType sourceType,
-            @RequestParam(value = "file", required = false) MultipartFile file,
-            @RequestParam(value = "queryId", required = false) String queryId,
-            @RequestParam(value = "token", required = false) String token
-    ) throws Exception {
-        return update(UpdateContext.builder()
-                .sourceType(sourceType)
-                .file(file)
-                .queryId(queryId)
-                .token(token)
-                .build());
-    }
+  public CombinedUpdateReport updateWithFile(
+      @RequestParam("sourceType") UpdateContext.SourceType sourceType,
+      @RequestParam(value = "file", required = false) MultipartFile file,
+      @RequestParam(value = "queryId", required = false) String queryId,
+      @RequestParam(value = "token", required = false) String token)
+      throws Exception {
+    return update(
+        UpdateContext.builder()
+            .sourceType(sourceType)
+            .file(file)
+            .queryId(queryId)
+            .token(token)
+            .build());
+  }
 
-    public CombinedUpdateReport updateWithoutFile(UpdateContext.SourceType sourceType, String queryId, String token) throws Exception {
-        return update(UpdateContext.builder()
-                .sourceType(sourceType)
-                .queryId(queryId)
-                .token(token)
-                .build());
-    }
+  public CombinedUpdateReport updateWithoutFile(
+      UpdateContext.SourceType sourceType, String queryId, String token) throws Exception {
+    return update(
+        UpdateContext.builder().sourceType(sourceType).queryId(queryId).token(token).build());
+  }
 
-    private CombinedUpdateReport update(UpdateContext context) throws IOException {
-        contextValidator.validate(context);
-        return updateOrchestrator.update(context);
-    }
+  private CombinedUpdateReport update(UpdateContext context) throws IOException {
+    contextValidator.validate(context);
+    return updateOrchestrator.update(context);
+  }
 }

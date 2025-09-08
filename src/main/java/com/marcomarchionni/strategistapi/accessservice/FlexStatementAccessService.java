@@ -1,11 +1,10 @@
 package com.marcomarchionni.strategistapi.accessservice;
 
 import com.marcomarchionni.strategistapi.domain.FlexStatement;
-
 import java.util.Optional;
 
 public interface FlexStatementAccessService {
-    Optional<FlexStatement> findFirstOrderByToDateDesc();
+  Optional<FlexStatement> findFirstOrderByToDateDesc();
 
-    FlexStatement save(FlexStatement flexStatement);
+  FlexStatement save(FlexStatement flexStatement);
 }

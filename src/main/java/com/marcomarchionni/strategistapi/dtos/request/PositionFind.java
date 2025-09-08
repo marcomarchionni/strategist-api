@@ -14,12 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PositionFind {
 
-    private Boolean tagged;
+  private Boolean tagged;
 
-    @Size(max = 20)
-    @NullOrNotBlank
-    private String symbol;
+  @Size(max = 20)
+  @NullOrNotBlank
+  private String symbol;
 
-    @AssetCategory
-    private String assetCategory;
+  @AssetCategory private String assetCategory;
 }

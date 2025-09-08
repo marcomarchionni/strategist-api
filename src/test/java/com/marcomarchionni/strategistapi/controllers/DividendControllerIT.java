@@ -1,5 +1,13 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleUser;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
@@ -7,7 +15,6 @@ import com.marcomarchionni.strategistapi.repositories.DividendRepository;
 import com.marcomarchionni.strategistapi.repositories.UserRepository;
 import com.marcomarchionni.strategistapi.services.JwtService;
 import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,134 +32,145 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleUser;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 @Sql("classpath:db/changelog/001-test-seed.sql")
 class DividendControllerIT {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper mapper;
+  @Autowired ObjectMapper mapper;
 
-    @Autowired
-    DividendRepository dividendRepository;
+  @Autowired DividendRepository dividendRepository;
 
-    @Autowired
-    StrategyRepository strategyRepository;
+  @Autowired StrategyRepository strategyRepository;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+  @Autowired PasswordEncoder passwordEncoder;
 
-    @Autowired
-    JwtService jwtService;
+  @Autowired JwtService jwtService;
 
-    @Autowired
-    UserRepository userRepository;
-    User user;
+  @Autowired UserRepository userRepository;
+  User user;
 
-    @BeforeEach
-    void setUp() {
-        user = getSampleUser();
-        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-    }
+  @BeforeEach
+  void setUp() {
+    user = getSampleUser();
+    Authentication auth =
+        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(auth);
+  }
 
-    @AfterEach
-    void tearDown() {
-        SecurityContextHolder.clearContext();
-    }
+  @AfterEach
+  void tearDown() {
+    SecurityContextHolder.clearContext();
+  }
 
-    @ParameterizedTest
-    @CsvSource({ "2022-06-01,,,,,,2", ",,2022-07-01,2022-07-15,,FDX,1", ",,,,true,,1" })
-    void findDividendsSuccess(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo, String tagged,
-            String symbol, int expectedSize) throws Exception {
+  @ParameterizedTest
+  @CsvSource({"2022-06-01,,,,,,2", ",,2022-07-01,2022-07-15,,FDX,1", ",,,,true,,1"})
+  void findDividendsSuccess(
+      String exDateFrom,
+      String exDateTo,
+      String payDateFrom,
+      String payDateTo,
+      String tagged,
+      String symbol,
+      int expectedSize)
+      throws Exception {
 
-        mockMvc.perform(get("/dividends")
+    mockMvc
+        .perform(
+            get("/dividends")
                 .param("exDateAfter", exDateFrom)
                 .param("exDateBefore", exDateTo)
                 .param("payDateAfter", payDateFrom)
                 .param("payDateBefore", payDateTo)
                 .param("tagged", tagged)
                 .param("symbol", symbol))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(expectedSize)));
-    }
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$", hasSize(expectedSize)));
+  }
 
-    @ParameterizedTest
-    @CsvSource({ "pippo,,,,,", ",,,,farse,", ",,2022-06-02,2022-06-01,,," })
-    void findDividendsBadRequest(String exDateFrom, String exDateTo, String payDateFrom, String payDateTo,
-            String tagged, String symbol) throws Exception {
+  @ParameterizedTest
+  @CsvSource({"pippo,,,,,", ",,,,farse,", ",,2022-06-02,2022-06-01,,,"})
+  void findDividendsBadRequest(
+      String exDateFrom,
+      String exDateTo,
+      String payDateFrom,
+      String payDateTo,
+      String tagged,
+      String symbol)
+      throws Exception {
 
-        mockMvc.perform(get("/dividends")
+    mockMvc
+        .perform(
+            get("/dividends")
                 .param("exDateAfter", exDateFrom)
                 .param("exDateBefore", exDateTo)
                 .param("payDateAfter", payDateFrom)
                 .param("payDateBefore", payDateTo)
                 .param("tagged", tagged)
                 .param("symbol", symbol))
-                .andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.status", is(400)))
-                .andExpect(jsonPath("$.type", is("invalid-parameter")));
-    }
+        .andDo(print())
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status", is(400)))
+        .andExpect(jsonPath("$.type", is("invalid-parameter")));
+  }
 
-    @ParameterizedTest
-    @CsvSource({ "ZM long,FDX", "IBKR put,CGNX" })
-    void updateStrategyIdSuccess(String strategyName, String expectedSymbol) throws Exception {
-        // set up data
-        Long dividendId = dividendRepository.findAll().stream().filter(d -> d.getSymbol().equals(expectedSymbol))
-                .findFirst().get().getId();
+  @ParameterizedTest
+  @CsvSource({"ZM long,FDX", "IBKR put,CGNX"})
+  void updateStrategyIdSuccess(String strategyName, String expectedSymbol) throws Exception {
+    // set up data
+    Long dividendId =
+        dividendRepository.findAll().stream()
+            .filter(d -> d.getSymbol().equals(expectedSymbol))
+            .findFirst()
+            .get()
+            .getId();
 
-        Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), strategyName).get().getId();
+    Long strategyId =
+        strategyRepository.findByAccountIdAndName(user.getAccountId(), strategyName).get().getId();
 
-        StrategyAssign dividendUpdate = StrategyAssign.builder().id(dividendId).strategyId(strategyId).build();
+    StrategyAssign dividendUpdate =
+        StrategyAssign.builder().id(dividendId).strategyId(strategyId).build();
 
-        // execute request
-        mockMvc.perform(put("/dividends")
+    // execute request
+    mockMvc
+        .perform(
+            put("/dividends")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(dividendUpdate)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.symbol", is(expectedSymbol)))
-                .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategyId))));
-    }
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.symbol", is(expectedSymbol)))
+        .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategyId))));
+  }
 
-    @ParameterizedTest
-    @CsvSource({ "1029120220603, 20", "20, 1", ",,", "\"r\",1" })
-    void updateStrategyIdExceptions(String dividendId, String strategyId) throws Exception {
+  @ParameterizedTest
+  @CsvSource({"1029120220603, 20", "20, 1", ",,", "\"r\",1"})
+  void updateStrategyIdExceptions(String dividendId, String strategyId) throws Exception {
 
-        String payload = String.format("{\"id\": %s, \"strategyId\": %s}", dividendId, strategyId);
+    String payload = String.format("{\"id\": %s, \"strategyId\": %s}", dividendId, strategyId);
 
-        mockMvc.perform(put("/dividends")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(payload))
-                .andDo(print()).andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type").isNotEmpty());
-    }
+    mockMvc
+        .perform(put("/dividends").contentType(MediaType.APPLICATION_JSON).content(payload))
+        .andDo(print())
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.type").isNotEmpty());
+  }
 
-    @Test
-    void updateStrategyIdEmptyBody() throws Exception {
+  @Test
+  void updateStrategyIdEmptyBody() throws Exception {
 
-        mockMvc.perform(put("/dividends")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-    }
+    mockMvc
+        .perform(put("/dividends").contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+  }
 }

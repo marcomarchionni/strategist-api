@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StrategyFind {
 
-    @NullOrNotBlank
-    @Schema(description = "Name", example = "AAPL bullcall Jan26")
-    private String name;
+  @NullOrNotBlank
+  @Schema(description = "Name", example = "AAPL bullcall Jan26")
+  private String name;
 }

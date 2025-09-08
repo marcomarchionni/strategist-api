@@ -7,9 +7,9 @@ import com.marcomarchionni.strategistapi.dtos.response.auth.RefreshTokenResponse
 import com.marcomarchionni.strategistapi.dtos.response.auth.SigninResponse;
 
 public interface AuthenticationService {
-    void signUp(SignUpReq request);
+  void signUp(SignUpReq request);
 
-    SigninResponse signIn(SignInReq request);
+  SigninResponse signIn(SignInReq request);
 
-    RefreshTokenResponse refreshToken(RefreshTokenRequest request);
+  RefreshTokenResponse refreshToken(RefreshTokenRequest request);
 }

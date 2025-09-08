@@ -7,20 +7,19 @@ import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
-
 import java.util.List;
 
 public interface StrategyService {
 
-    List<StrategySummary> findByFilter(StrategyFind strategyFind);
+  List<StrategySummary> findByFilter(StrategyFind strategyFind);
 
-    ApiResponse<StrategySummary> findAllWithCount(FindAllReq findReq);
+  ApiResponse<StrategySummary> findAllWithCount(FindAllReq findReq);
 
-    StrategyDetail updateName(NameUpdate nameUpdate);
+  StrategyDetail updateName(NameUpdate nameUpdate);
 
-    void deleteById(Long id);
+  void deleteById(Long id);
 
-    StrategyDetail findById(Long id);
+  StrategyDetail findById(Long id);
 
-    StrategyDetail create(StrategyCreate strategyCreate);
+  StrategyDetail create(StrategyCreate strategyCreate);
 }

@@ -14,12 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NameUpdate {
 
-    @NotNull
-    @Schema(description = "id", example = "1")
-    private Long id;
+  @NotNull
+  @Schema(description = "id", example = "1")
+  private Long id;
 
-    @EntityName
-    @Schema(description = "Name must start with capital letter, contain 3-30 characters. Letters, numbers, " +
-            "spaces, underscore and apostrophe allowed.", example = "Stock Long")
-    private String name;
+  @EntityName
+  @Schema(
+      description =
+          "Name must start with capital letter, contain 3-30 characters. Letters, numbers, "
+              + "spaces, underscore and apostrophe allowed.",
+      example = "Stock Long")
+  private String name;
 }

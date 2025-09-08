@@ -1,5 +1,12 @@
 package com.marcomarchionni.strategistapi.services.fetchers;
 
+import static com.marcomarchionni.strategistapi.util.TestUtils.getPopulatedFlexQueryResponseDto;
+import static com.marcomarchionni.strategistapi.util.TestUtils.getPopulatedFlexStatementResponseDto;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.strategistapi.dtos.request.UpdateContext;
@@ -10,45 +17,41 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.marcomarchionni.strategistapi.util.TestUtils.getPopulatedFlexQueryResponseDto;
-import static com.marcomarchionni.strategistapi.util.TestUtils.getPopulatedFlexStatementResponseDto;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class ServerDataFetcherTest {
-    @Mock
-    FlexServiceClientManager clientManager;
+  @Mock FlexServiceClientManager clientManager;
 
-    ServerDataFetcher serverDataFetcher;
+  ServerDataFetcher serverDataFetcher;
 
-    UpdateContext updateContext;
+  UpdateContext updateContext;
 
-    FlexStatementResponseDto flexStatementResponseDto;
-    FlexQueryResponseDto flexQueryResponseDto;
+  FlexStatementResponseDto flexStatementResponseDto;
+  FlexQueryResponseDto flexQueryResponseDto;
 
-    @BeforeEach
-    void setUp() {
-        updateContext = UpdateContext.builder().sourceType(UpdateContext.SourceType.SERVER).queryId("queryId")
-                .token("token").build();
-        flexStatementResponseDto = getPopulatedFlexStatementResponseDto();
-        flexQueryResponseDto = getPopulatedFlexQueryResponseDto();
-        serverDataFetcher = new ServerDataFetcher(clientManager);
-    }
+  @BeforeEach
+  void setUp() {
+    updateContext =
+        UpdateContext.builder()
+            .sourceType(UpdateContext.SourceType.SERVER)
+            .queryId("queryId")
+            .token("token")
+            .build();
+    flexStatementResponseDto = getPopulatedFlexStatementResponseDto();
+    flexQueryResponseDto = getPopulatedFlexQueryResponseDto();
+    serverDataFetcher = new ServerDataFetcher(clientManager);
+  }
 
-    @Test
-    void fetch() {
-        // setup mock
-        when(clientManager.fetchFlexStatementResponseWithRetry(any(), any()))
-                .thenReturn(flexStatementResponseDto);
-        when(clientManager.fetchFlexQueryResponseWithRetry(any(), any()))
-                .thenReturn(flexQueryResponseDto);
+  @Test
+  void fetch() {
+    // setup mock
+    when(clientManager.fetchFlexStatementResponseWithRetry(any(), any()))
+        .thenReturn(flexStatementResponseDto);
+    when(clientManager.fetchFlexQueryResponseWithRetry(any(), any()))
+        .thenReturn(flexQueryResponseDto);
 
-        FlexQueryResponseDto responseDto = serverDataFetcher.fetch(updateContext);
+    FlexQueryResponseDto responseDto = serverDataFetcher.fetch(updateContext);
 
-        assertNotNull(responseDto);
-        assertEquals(flexQueryResponseDto, responseDto);
-    }
+    assertNotNull(responseDto);
+    assertEquals(flexQueryResponseDto, responseDto);
+  }
 }

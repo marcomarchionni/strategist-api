@@ -10,24 +10,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class PortfolioMapperImpl implements PortfolioMapper {
 
-    ModelMapper modelMapper;
+  ModelMapper modelMapper;
 
-    public PortfolioMapperImpl(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
+  public PortfolioMapperImpl(ModelMapper modelMapper) {
+    this.modelMapper = modelMapper;
+  }
 
-    @Override
-    public PortfolioSummary portfolioToPortfolioSummary(Portfolio portfolio) {
-        return modelMapper.map(portfolio, PortfolioSummary.class);
-    }
+  @Override
+  public PortfolioSummary portfolioToPortfolioSummary(Portfolio portfolio) {
+    return modelMapper.map(portfolio, PortfolioSummary.class);
+  }
 
-    @Override
-    public PortfolioDetail toPortfolioDetailDto(Portfolio portfolio) {
-        return modelMapper.map(portfolio, PortfolioDetail.class);
-    }
+  @Override
+  public PortfolioDetail toPortfolioDetailDto(Portfolio portfolio) {
+    return modelMapper.map(portfolio, PortfolioDetail.class);
+  }
 
-    @Override
-    public void mergePortfolioSaveToPortfolio(PortfolioSave portfolioSave, Portfolio portfolio) {
-        modelMapper.map(portfolioSave, portfolio);
-    }
+  @Override
+  public void mergePortfolioSaveToPortfolio(PortfolioSave portfolioSave, Portfolio portfolio) {
+    modelMapper.map(portfolioSave, portfolio);
+  }
 }

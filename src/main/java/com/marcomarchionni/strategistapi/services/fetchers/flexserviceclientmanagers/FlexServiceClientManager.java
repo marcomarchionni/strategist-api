@@ -5,7 +5,8 @@ import com.marcomarchionni.strategistapi.dtos.flex.FlexStatementResponseDto;
 
 public interface FlexServiceClientManager {
 
-    FlexStatementResponseDto fetchFlexStatementResponseWithRetry(String queryId, String token);
+  FlexStatementResponseDto fetchFlexStatementResponseWithRetry(String queryId, String token);
 
-    FlexQueryResponseDto fetchFlexQueryResponseWithRetry(FlexStatementResponseDto statementResponse, String token);
+  FlexQueryResponseDto fetchFlexQueryResponseWithRetry(
+      FlexStatementResponseDto statementResponse, String token);
 }

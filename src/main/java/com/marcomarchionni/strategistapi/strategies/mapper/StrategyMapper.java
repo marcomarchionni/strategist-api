@@ -7,9 +7,9 @@ import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 
 public interface StrategyMapper {
 
-    Strategy toEntity(StrategyCreate strategyCreate);
+  Strategy toEntity(StrategyCreate strategyCreate);
 
-    StrategySummary toStrategySummaryDto(Strategy strategy);
+  StrategySummary toStrategySummaryDto(Strategy strategy);
 
-    StrategyDetail toStrategyDetailDto(Strategy strategy);
+  StrategyDetail toStrategyDetailDto(Strategy strategy);
 }

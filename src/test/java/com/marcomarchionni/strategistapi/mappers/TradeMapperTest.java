@@ -1,5 +1,9 @@
 package com.marcomarchionni.strategistapi.mappers;
 
+import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleStrategy;
+import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleTrade;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.marcomarchionni.strategistapi.config.ModelMapperConfig;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.Trade;
@@ -9,64 +13,61 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
-import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleStrategy;
-import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleTrade;
-import static org.junit.jupiter.api.Assertions.*;
-
 class TradeMapperTest {
 
-    ModelMapper mapper;
+  ModelMapper mapper;
 
-    TradeMapperImpl tradeMapper;
+  TradeMapperImpl tradeMapper;
 
-    @BeforeEach
-    void setup() {
-        ModelMapperConfig mapperConfig = new ModelMapperConfig();
-        mapper = mapperConfig.modelMapper();
-        tradeMapper = new TradeMapperImpl(mapper);
-    }
+  @BeforeEach
+  void setup() {
+    ModelMapperConfig mapperConfig = new ModelMapperConfig();
+    mapper = mapperConfig.modelMapper();
+    tradeMapper = new TradeMapperImpl(mapper);
+  }
 
-    @Test
-    void toTradeSummary() {
-        Strategy strategy = getSampleStrategy();
-        Trade trade = getSampleTrade();
-        trade.setStrategy(strategy);
+  @Test
+  void toTradeSummary() {
+    Strategy strategy = getSampleStrategy();
+    Trade trade = getSampleTrade();
+    trade.setStrategy(strategy);
 
-        TradeSummary tradeSummary = tradeMapper.toTradeSummary(trade);
+    TradeSummary tradeSummary = tradeMapper.toTradeSummary(trade);
 
-        assertEquals(trade.getId(), tradeSummary.getId());
-        assertEquals(trade.getStrategy().getId(), tradeSummary.getStrategyId());
-        assertEquals(trade.getStrategy().getName(), tradeSummary.getStrategyName());
-    }
+    assertEquals(trade.getId(), tradeSummary.getId());
+    assertEquals(trade.getStrategy().getId(), tradeSummary.getStrategyId());
+    assertEquals(trade.getStrategy().getName(), tradeSummary.getStrategyName());
+  }
 
-    @Test
-    void toTradeSummaryNullStrategy() {
-        Trade trade = getSampleTrade();
-        trade.setStrategy(null);
+  @Test
+  void toTradeSummaryNullStrategy() {
+    Trade trade = getSampleTrade();
+    trade.setStrategy(null);
 
-        TradeSummary tradeSummary = tradeMapper.toTradeSummary(trade);
+    TradeSummary tradeSummary = tradeMapper.toTradeSummary(trade);
 
-        assertEquals(trade.getId(), tradeSummary.getId());
-        assertEquals(trade.getSymbol(), tradeSummary.getSymbol());
-        assertNull(tradeSummary.getStrategyId());
-        assertNull(tradeSummary.getStrategyName());
-    }
+    assertEquals(trade.getId(), tradeSummary.getId());
+    assertEquals(trade.getSymbol(), tradeSummary.getSymbol());
+    assertNull(tradeSummary.getStrategyId());
+    assertNull(tradeSummary.getStrategyName());
+  }
 
-    @Test
-    void toTrade() {
-        FlexQueryResponseDto.Order order = FlexQueryResponseDto.Order.builder()
-                .currency("USD")
-                .assetCategory("STK")
-                .symbol("CGNX")
-                .conid(370695082L)
-                .ibOrderID(339580463L)
-                .build();
+  @Test
+  void toTrade() {
+    FlexQueryResponseDto.Order order =
+        FlexQueryResponseDto.Order.builder()
+            .currency("USD")
+            .assetCategory("STK")
+            .symbol("CGNX")
+            .conid(370695082L)
+            .ibOrderID(339580463L)
+            .build();
 
-        Trade trade = mapper.map(order, Trade.class);
+    Trade trade = mapper.map(order, Trade.class);
 
-        assertNotNull(trade);
-        assertNull(trade.getId());
-        assertEquals(order.getIbOrderID(), trade.getIbOrderId());
-        assertNull(trade.getStrategy());
-    }
+    assertNotNull(trade);
+    assertNull(trade.getId());
+    assertEquals(order.getIbOrderID(), trade.getIbOrderId());
+    assertNull(trade.getStrategy());
+  }
 }

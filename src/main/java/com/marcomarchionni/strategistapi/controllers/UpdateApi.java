@@ -16,27 +16,35 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/update")
 @SecurityRequirement(name = "bearerAuth")
 public interface UpdateApi {
-    @PostMapping(consumes = {"multipart/form-data"})
-    @Operation(summary = "Update data from an external source")
-    CombinedUpdateReport updateWithFile(
-            @Parameter(description =
-                    "SERVER: fetch data online from Interactive Brokers WebFlexService, " +
-                            "FILE: fetch data from a flex query xml file, " +
-                            "SAMPLEDATA: fetch sample data for testing purposes."
-            )
-            @RequestParam("sourceType") UpdateContext.SourceType sourceType,
-            @Parameter(description = "Flex Query xml file generated from an Interactive Brokers user's account " +
-                    "(ignored if sourceType is not FILE)")
-            @RequestParam(value = "file", required = false) MultipartFile file,
-            @Parameter(description = "Query id (ignored if sourceType is not SERVER)")
-            @RequestParam(value = "queryId", required = false) String queryId,
-            @Parameter(description = "Token (ignored if sourceType is not SERVER)")
-            @RequestParam(value = "token", required = false) String token) throws Exception;
+  @PostMapping(consumes = {"multipart/form-data"})
+  @Operation(summary = "Update data from an external source")
+  CombinedUpdateReport updateWithFile(
+      @Parameter(
+              description =
+                  "SERVER: fetch data online from Interactive Brokers WebFlexService, "
+                      + "FILE: fetch data from a flex query xml file, "
+                      + "SAMPLEDATA: fetch sample data for testing purposes.")
+          @RequestParam("sourceType")
+          UpdateContext.SourceType sourceType,
+      @Parameter(
+              description =
+                  "Flex Query xml file generated from an Interactive Brokers user's account "
+                      + "(ignored if sourceType is not FILE)")
+          @RequestParam(value = "file", required = false)
+          MultipartFile file,
+      @Parameter(description = "Query id (ignored if sourceType is not SERVER)")
+          @RequestParam(value = "queryId", required = false)
+          String queryId,
+      @Parameter(description = "Token (ignored if sourceType is not SERVER)")
+          @RequestParam(value = "token", required = false)
+          String token)
+      throws Exception;
 
-    @PostMapping()
-    @Hidden
-    CombinedUpdateReport updateWithoutFile(
-            @RequestParam("sourceType") UpdateContext.SourceType sourceType,
-            @RequestParam(value = "queryId", required = false) String queryId,
-            @RequestParam(value = "token", required = false) String token) throws Exception;
+  @PostMapping()
+  @Hidden
+  CombinedUpdateReport updateWithoutFile(
+      @RequestParam("sourceType") UpdateContext.SourceType sourceType,
+      @RequestParam(value = "queryId", required = false) String queryId,
+      @RequestParam(value = "token", required = false) String token)
+      throws Exception;
 }

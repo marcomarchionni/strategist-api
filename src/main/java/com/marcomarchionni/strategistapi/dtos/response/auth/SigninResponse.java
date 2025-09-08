@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SigninResponse {
-    private UserSummary user;
-    private String accessToken;
-    private String refreshToken;
+  private UserSummary user;
+  private String accessToken;
+  private String refreshToken;
 }

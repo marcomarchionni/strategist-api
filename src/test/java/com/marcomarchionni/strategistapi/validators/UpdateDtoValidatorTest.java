@@ -1,5 +1,9 @@
 package com.marcomarchionni.strategistapi.validators;
 
+import static com.marcomarchionni.strategistapi.util.TestUtils.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.marcomarchionni.strategistapi.domain.Position;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateDto;
 import jakarta.validation.ConstraintViolationException;
@@ -9,49 +13,45 @@ import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.marcomarchionni.strategistapi.util.TestUtils.*;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 class UpdateDtoValidatorTest {
 
-    UpdateDtoValidator dtoValidator;
-    UpdateDto dto;
+  UpdateDtoValidator dtoValidator;
+  UpdateDto dto;
 
-
-    @BeforeEach
-    void setUp() {
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            Validator validator = factory.getValidator();
-            dtoValidator = new UpdateDtoValidator(validator);
-        }
-
-        dto = UpdateDto.builder()
-                .flexStatement(getSampleFlexStatement())
-                .positions(getSamplePositions())
-                .trades(getSampleTrades())
-                .dividends(getSampleDividends())
-                .build();
+  @BeforeEach
+  void setUp() {
+    try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+      Validator validator = factory.getValidator();
+      dtoValidator = new UpdateDtoValidator(validator);
     }
 
-    @Test
-    void isValid() {
-        assertDoesNotThrow(() -> dtoValidator.validate(dto));
-    }
+    dto =
+        UpdateDto.builder()
+            .flexStatement(getSampleFlexStatement())
+            .positions(getSamplePositions())
+            .trades(getSampleTrades())
+            .dividends(getSampleDividends())
+            .build();
+  }
 
-    @Test
-    void invalidData() {
-        dto.setPositions(null);
-        // Act
-        assertThrows(ConstraintViolationException.class, () -> dtoValidator.validate(dto));
-    }
+  @Test
+  void isValid() {
+    assertDoesNotThrow(() -> dtoValidator.validate(dto));
+  }
 
-    @Test
-    void invalidAccountId() {
-        Position position = getSamplePosition();
-        position.setAccountId("U22222");
-        dto.getPositions().add(position);
-        // Act
-        assertThrows(ConstraintViolationException.class, () -> dtoValidator.validate(dto));
-    }
+  @Test
+  void invalidData() {
+    dto.setPositions(null);
+    // Act
+    assertThrows(ConstraintViolationException.class, () -> dtoValidator.validate(dto));
+  }
+
+  @Test
+  void invalidAccountId() {
+    Position position = getSamplePosition();
+    position.setAccountId("U22222");
+    dto.getPositions().add(position);
+    // Act
+    assertThrows(ConstraintViolationException.class, () -> dtoValidator.validate(dto));
+  }
 }

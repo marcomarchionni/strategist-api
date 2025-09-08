@@ -11,17 +11,15 @@ import lombok.NoArgsConstructor;
 @Getter
 public class FindAllReq {
 
-    @Builder.Default
-    private int skip = 0;
+  @Builder.Default private int skip = 0;
 
-    @Builder.Default
-    private int top = 10;
+  @Builder.Default private int top = 10;
 
-    private String orderBy;
+  private String orderBy;
 
-    // Simple filter parameters
-    private String name;
-    private String description;
-    private String createdAfter;
-    private String createdBefore;
+  // Simple filter parameters
+  private String name;
+  private String description;
+  private String createdAfter;
+  private String createdBefore;
 }

@@ -1,5 +1,10 @@
 package com.marcomarchionni.strategistapi.services;
 
+import static com.marcomarchionni.strategistapi.util.TestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.marcomarchionni.strategistapi.accessservice.PositionAccessService;
 import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.config.ModelMapperConfig;
@@ -14,6 +19,10 @@ import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDelete
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.strategistapi.mappers.PositionMapper;
 import com.marcomarchionni.strategistapi.mappers.PositionMapperImpl;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,161 +30,156 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import static com.marcomarchionni.strategistapi.util.TestUtils.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class PositionServiceImplTest {
 
-    @Mock
-    PositionAccessService positionAccessService;
+  @Mock PositionAccessService positionAccessService;
 
-    @Mock
-    StrategyAccessService strategyAccessService;
+  @Mock StrategyAccessService strategyAccessService;
 
-    PositionMapper positionMapper;
+  PositionMapper positionMapper;
 
-    PositionServiceImpl positionService;
+  PositionServiceImpl positionService;
 
-    List<Position> samplePositions;
-    Position samplePosition;
-    Strategy sampleStrategy;
-    PositionFind positionFind;
-    User user;
+  List<Position> samplePositions;
+  Position samplePosition;
+  Strategy sampleStrategy;
+  PositionFind positionFind;
+  User user;
 
-    @BeforeEach
-    void setup() {
-        user = getSampleUser();
-        samplePositions = getSamplePositions();
-        samplePosition = getSamplePosition();
-        sampleStrategy = getSampleStrategy();
-        positionFind = getSamplePositionCriteria();
-        ModelMapperConfig modelMapperConfig = new ModelMapperConfig();
-        ModelMapper mapper = modelMapperConfig.modelMapper();
-        positionMapper = new PositionMapperImpl(mapper);
-        positionService = new PositionServiceImpl(positionAccessService, strategyAccessService, positionMapper);
-    }
+  @BeforeEach
+  void setup() {
+    user = getSampleUser();
+    samplePositions = getSamplePositions();
+    samplePosition = getSamplePosition();
+    sampleStrategy = getSampleStrategy();
+    positionFind = getSamplePositionCriteria();
+    ModelMapperConfig modelMapperConfig = new ModelMapperConfig();
+    ModelMapper mapper = modelMapperConfig.modelMapper();
+    positionMapper = new PositionMapperImpl(mapper);
+    positionService =
+        new PositionServiceImpl(positionAccessService, strategyAccessService, positionMapper);
+  }
 
-    @Test
-    void saveAll() {
-        assertDoesNotThrow(() -> positionService.saveAll(samplePositions));
-    }
+  @Test
+  void saveAll() {
+    assertDoesNotThrow(() -> positionService.saveAll(samplePositions));
+  }
 
-    @Test
-    void saveAllException() {
-        doThrow(new RuntimeException()).when(positionAccessService).saveAll(any());
+  @Test
+  void saveAllException() {
+    doThrow(new RuntimeException()).when(positionAccessService).saveAll(any());
 
-        assertThrows(UnableToSaveEntitiesException.class, () -> positionService.saveAll(samplePositions));
-    }
+    assertThrows(
+        UnableToSaveEntitiesException.class, () -> positionService.saveAll(samplePositions));
+  }
 
-    @Test
-    void deleteAllPositions() {
-        assertDoesNotThrow(() -> positionService.deleteAll(samplePositions));
-    }
+  @Test
+  void deleteAllPositions() {
+    assertDoesNotThrow(() -> positionService.deleteAll(samplePositions));
+  }
 
-    @Test
-    void deleteAllPositionsException() {
-        doThrow(new RuntimeException()).when(positionAccessService).deleteAll(anyList());
+  @Test
+  void deleteAllPositionsException() {
+    doThrow(new RuntimeException()).when(positionAccessService).deleteAll(anyList());
 
-        assertThrows(UnableToDeleteEntitiesException.class,
-                () -> positionService.deleteAll(List.of(getAMZNPosition())));
-    }
+    assertThrows(
+        UnableToDeleteEntitiesException.class,
+        () -> positionService.deleteAll(List.of(getAMZNPosition())));
+  }
 
-    @Test
-    void findWithParameters() {
-        when(positionAccessService.findByParams(any(), any(), any())).thenReturn(samplePositions);
+  @Test
+  void findWithParameters() {
+    when(positionAccessService.findByParams(any(), any(), any())).thenReturn(samplePositions);
 
-        List<PositionSummary> positions = positionService.findByFilter(positionFind);
+    List<PositionSummary> positions = positionService.findByFilter(positionFind);
 
-        assertNotNull(positions);
-        assertEquals(positions.size(), samplePositions.size());
-    }
+    assertNotNull(positions);
+    assertEquals(positions.size(), samplePositions.size());
+  }
 
-    @Test
-    void updateStrategyId() {
-        StrategyAssign positionUpdate = StrategyAssign.builder()
-                .id(samplePosition.getId()).strategyId(sampleStrategy.getId()).build();
+  @Test
+  void updateStrategyId() {
+    StrategyAssign positionUpdate =
+        StrategyAssign.builder()
+            .id(samplePosition.getId())
+            .strategyId(sampleStrategy.getId())
+            .build();
 
-        when(positionAccessService.findById(any())).thenReturn(Optional.of(samplePosition));
-        when(strategyAccessService.findById(any())).thenReturn(Optional.of(sampleStrategy));
-        samplePosition.setStrategy(sampleStrategy);
-        when(positionAccessService.save(any())).thenReturn(samplePosition);
+    when(positionAccessService.findById(any())).thenReturn(Optional.of(samplePosition));
+    when(strategyAccessService.findById(any())).thenReturn(Optional.of(sampleStrategy));
+    samplePosition.setStrategy(sampleStrategy);
+    when(positionAccessService.save(any())).thenReturn(samplePosition);
 
-        PositionSummary actualPositionSummary = positionService.updateStrategyId(positionUpdate);
+    PositionSummary actualPositionSummary = positionService.updateStrategyId(positionUpdate);
 
-        assertNotNull(actualPositionSummary);
-        assertEquals(samplePosition.getId(), actualPositionSummary.getId());
-        assertEquals(sampleStrategy.getId(), actualPositionSummary.getStrategyId());
-    }
+    assertNotNull(actualPositionSummary);
+    assertEquals(samplePosition.getId(), actualPositionSummary.getId());
+    assertEquals(sampleStrategy.getId(), actualPositionSummary.getStrategyId());
+  }
 
-    @Test
-    void updateStrategyIdNullSuccess() {
-        StrategyAssign positionUpdate = StrategyAssign.builder()
-                .id(samplePosition.getId()).strategyId(null).build();
+  @Test
+  void updateStrategyIdNullSuccess() {
+    StrategyAssign positionUpdate =
+        StrategyAssign.builder().id(samplePosition.getId()).strategyId(null).build();
 
-        when(positionAccessService.findById(any())).thenReturn(Optional.of(samplePosition));
-        when(positionAccessService.save(any())).thenReturn(samplePosition);
+    when(positionAccessService.findById(any())).thenReturn(Optional.of(samplePosition));
+    when(positionAccessService.save(any())).thenReturn(samplePosition);
 
-        PositionSummary actualPositionSummary = positionService.updateStrategyId(positionUpdate);
+    PositionSummary actualPositionSummary = positionService.updateStrategyId(positionUpdate);
 
-        assertNotNull(actualPositionSummary);
-        assertEquals(samplePosition.getId(), actualPositionSummary.getId());
-        assertNull(actualPositionSummary.getStrategyId());
-    }
+    assertNotNull(actualPositionSummary);
+    assertEquals(samplePosition.getId(), actualPositionSummary.getId());
+    assertNull(actualPositionSummary.getStrategyId());
+  }
 
-    @Test
-    void updatePositionsTest() {
-        // data setup
-        Position existingADYENposition = getADYENPosition();
-        existingADYENposition.setReportDate(LocalDate.of(2022, 6, 30));
-        existingADYENposition.setQuantity(BigDecimal.valueOf(1));
-        existingADYENposition.setStrategy(sampleStrategy);
+  @Test
+  void updatePositionsTest() {
+    // data setup
+    Position existingADYENposition = getADYENPosition();
+    existingADYENposition.setReportDate(LocalDate.of(2022, 6, 30));
+    existingADYENposition.setQuantity(BigDecimal.valueOf(1));
+    existingADYENposition.setStrategy(sampleStrategy);
 
-        Position existingADBEposition = getADBEPosition();
-        existingADBEposition.setReportDate(LocalDate.of(2022, 6, 30));
+    Position existingADBEposition = getADBEPosition();
+    existingADBEposition.setReportDate(LocalDate.of(2022, 6, 30));
 
-        Position newADYENposition = getADYENPosition();
-        newADYENposition.setReportDate(LocalDate.of(2022, 7, 7));
-        newADYENposition.setQuantity(BigDecimal.valueOf(2));
-        newADYENposition.setId(null);
+    Position newADYENposition = getADYENPosition();
+    newADYENposition.setReportDate(LocalDate.of(2022, 7, 7));
+    newADYENposition.setQuantity(BigDecimal.valueOf(2));
+    newADYENposition.setId(null);
 
-        Position newAMZNposition = getAMZNPosition();
-        newAMZNposition.setId(null);
-        newAMZNposition.setReportDate(LocalDate.of(2022, 7, 7));
+    Position newAMZNposition = getAMZNPosition();
+    newAMZNposition.setId(null);
+    newAMZNposition.setReportDate(LocalDate.of(2022, 7, 7));
 
-        List<Position> existingPositions = List.of(existingADYENposition, existingADBEposition);
-        List<Position> newPositions = List.of(newADYENposition, newAMZNposition);
+    List<Position> existingPositions = List.of(existingADYENposition, existingADBEposition);
+    List<Position> newPositions = List.of(newADYENposition, newAMZNposition);
 
-        // mock
-        when(positionAccessService.findAll()).thenReturn(existingPositions);
-        when(positionAccessService.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+    // mock
+    when(positionAccessService.findAll()).thenReturn(existingPositions);
+    when(positionAccessService.saveAll(anyList()))
+        .thenAnswer(invocation -> invocation.getArgument(0));
 
-        // test
-        UpdateReport<PositionSummary> result = positionService.updatePositions(newPositions);
+    // test
+    UpdateReport<PositionSummary> result = positionService.updatePositions(newPositions);
 
-        // verify
-        assertEquals(1, result.getAdded().size());
-        assertEquals(1, result.getDeleted().size());
-        assertEquals(1, result.getMerged().size());
-        assertEquals(result.getAdded().get(0).getSymbol(), "AMZN");
-        assertEquals(result.getDeleted().get(0).getSymbol(), "ADBE");
-        assertEquals(LocalDate.of(2022, 7, 7), result.getMerged().get(0).getReportDate());
-        assertEquals(sampleStrategy.getId(), result.getMerged().get(0).getStrategyId());
-    }
+    // verify
+    assertEquals(1, result.getAdded().size());
+    assertEquals(1, result.getDeleted().size());
+    assertEquals(1, result.getMerged().size());
+    assertEquals(result.getAdded().get(0).getSymbol(), "AMZN");
+    assertEquals(result.getDeleted().get(0).getSymbol(), "ADBE");
+    assertEquals(LocalDate.of(2022, 7, 7), result.getMerged().get(0).getReportDate());
+    assertEquals(sampleStrategy.getId(), result.getMerged().get(0).getStrategyId());
+  }
 
-    @Test
-    void updatePositionsEmptyList() {
-        UpdateReport<PositionSummary> result = positionService.updatePositions(List.of());
+  @Test
+  void updatePositionsEmptyList() {
+    UpdateReport<PositionSummary> result = positionService.updatePositions(List.of());
 
-        assertEquals(0, result.getAdded().size());
-        assertEquals(0, result.getDeleted().size());
-        assertEquals(0, result.getMerged().size());
-    }
+    assertEquals(0, result.getAdded().size());
+    assertEquals(0, result.getDeleted().size());
+    assertEquals(0, result.getMerged().size());
+  }
 }

@@ -11,25 +11,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class StrategyMapperImpl implements StrategyMapper {
 
-    ModelMapper modelMapper;
+  ModelMapper modelMapper;
 
-    public StrategyMapperImpl(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
+  public StrategyMapperImpl(ModelMapper modelMapper) {
+    this.modelMapper = modelMapper;
+  }
 
-    @Override
-    public Strategy toEntity(StrategyCreate strategyCreate) {
-        Portfolio portfolio = Portfolio.builder().id(strategyCreate.getPortfolioId()).build();
-        return Strategy.builder().name(strategyCreate.getName()).portfolio(portfolio).build();
-    }
+  @Override
+  public Strategy toEntity(StrategyCreate strategyCreate) {
+    Portfolio portfolio = Portfolio.builder().id(strategyCreate.getPortfolioId()).build();
+    return Strategy.builder().name(strategyCreate.getName()).portfolio(portfolio).build();
+  }
 
-    @Override
-    public StrategySummary toStrategySummaryDto(Strategy strategy) {
-        return modelMapper.map(strategy, StrategySummary.class);
-    }
+  @Override
+  public StrategySummary toStrategySummaryDto(Strategy strategy) {
+    return modelMapper.map(strategy, StrategySummary.class);
+  }
 
-    @Override
-    public StrategyDetail toStrategyDetailDto(Strategy strategy) {
-        return modelMapper.map(strategy, StrategyDetail.class);
-    }
+  @Override
+  public StrategyDetail toStrategyDetailDto(Strategy strategy) {
+    return modelMapper.map(strategy, StrategyDetail.class);
+  }
 }

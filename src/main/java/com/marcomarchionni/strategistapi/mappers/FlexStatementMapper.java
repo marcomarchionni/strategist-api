@@ -5,5 +5,5 @@ import com.marcomarchionni.strategistapi.dtos.flex.FlexQueryResponseDto;
 
 public interface FlexStatementMapper {
 
-    FlexStatement toFlexStatement(FlexQueryResponseDto.FlexStatement flexStatementDto);
+  FlexStatement toFlexStatement(FlexQueryResponseDto.FlexStatement flexStatementDto);
 }

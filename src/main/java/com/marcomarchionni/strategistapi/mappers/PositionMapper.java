@@ -6,9 +6,9 @@ import com.marcomarchionni.strategistapi.dtos.response.PositionSummary;
 
 public interface PositionMapper {
 
-    PositionSummary toPositionSummary(Position position);
+  PositionSummary toPositionSummary(Position position);
 
-    Position toPosition(FlexQueryResponseDto.OpenPosition openPosition);
+  Position toPosition(FlexQueryResponseDto.OpenPosition openPosition);
 
-    Position mergeFlexProperties(Position newPosition, Position existingPosition);
+  Position mergeFlexProperties(Position newPosition, Position existingPosition);
 }

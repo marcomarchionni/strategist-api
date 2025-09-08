@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,22 +16,22 @@ import lombok.NoArgsConstructor;
 @JacksonXmlRootElement(localName = "FlexStatementResponse")
 public class FlexStatementResponseDto implements FlexResponse {
 
-    @JsonProperty("Status")
-    private String status;
+  @JsonProperty("Status")
+  private String status;
 
-    @NotNull
-    @JsonProperty("ReferenceCode")
-    private String referenceCode;
+  @NotNull
+  @JsonProperty("ReferenceCode")
+  private String referenceCode;
 
-    @NotNull
-    @JsonProperty("Url")
-    private String url;
+  @NotNull
+  @JsonProperty("Url")
+  private String url;
 
-    @JacksonXmlProperty(isAttribute = true)
-    private String timestamp;
+  @JacksonXmlProperty(isAttribute = true)
+  private String timestamp;
 
-    @Override
-    public boolean isPopulated() {
-        return getUrl() != null && getReferenceCode() != null;
-    }
+  @Override
+  public boolean isPopulated() {
+    return getUrl() != null && getReferenceCode() != null;
+  }
 }

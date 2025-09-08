@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignInReq {
-    @Email
-    @Schema(description = "Email", example = "joe.smith@gmail.com")
-    private String email;
+  @Email
+  @Schema(description = "Email", example = "joe.smith@gmail.com")
+  private String email;
 
-    @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters")
-    @Schema(description = "Password", example = "password")
-    private String password;
+  @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters")
+  @Schema(description = "Password", example = "password")
+  private String password;
 }

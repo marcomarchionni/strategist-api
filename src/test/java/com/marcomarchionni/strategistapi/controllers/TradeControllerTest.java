@@ -1,5 +1,16 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleStrategy;
+import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleTrade;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.marcomarchionni.strategistapi.domain.Strategy;
@@ -14,6 +25,7 @@ import com.marcomarchionni.strategistapi.services.JwtService;
 import com.marcomarchionni.strategistapi.services.TradeService;
 import com.marcomarchionni.strategistapi.services.UserService;
 import com.marcomarchionni.strategistapi.util.TestUtils;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,112 +38,104 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-
-import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleStrategy;
-import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleTrade;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @WebMvcTest(TradeController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class TradeControllerTest {
 
-    @MockBean
-    TradeService tradeService;
+  @MockBean TradeService tradeService;
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired MockMvc mockMvc;
 
-    @MockBean
-    JwtService jwtService;
+  @MockBean JwtService jwtService;
 
-    @MockBean
-    UserService userService;
-    ObjectMapper objectMapper = new ObjectMapper();
-    TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
-    Trade trade = getSampleTrade();
-    Strategy strategy = getSampleStrategy();
-    List<TradeSummary> tradeSummaries;
+  @MockBean UserService userService;
+  ObjectMapper objectMapper = new ObjectMapper();
+  TradeMapper tradeMapper = new TradeMapperImpl(new ModelMapper());
+  Trade trade = getSampleTrade();
+  Strategy strategy = getSampleStrategy();
+  List<TradeSummary> tradeSummaries;
 
-    User user;
+  User user;
 
-    @BeforeEach
-    void setUp() {
-        user = TestUtils.getSampleUser();
-        objectMapper.registerModule(new JavaTimeModule());
-        tradeMapper = new TradeMapperImpl(new ModelMapper());
-        tradeSummaries = TestUtils.getSampleTrades()
-                .stream()
-                .map(tradeMapper::toTradeSummary)
-                .toList();
-        when(userService.getAuthenticatedUser()).thenReturn(user);
-    }
+  @BeforeEach
+  void setUp() {
+    user = TestUtils.getSampleUser();
+    objectMapper.registerModule(new JavaTimeModule());
+    tradeMapper = new TradeMapperImpl(new ModelMapper());
+    tradeSummaries = TestUtils.getSampleTrades().stream().map(tradeMapper::toTradeSummary).toList();
+    when(userService.getAuthenticatedUser()).thenReturn(user);
+  }
 
-    @Test
-    void getTrades() throws Exception {
+  @Test
+  void getTrades() throws Exception {
 
-        when(tradeService.findByFilter(any(TradeFind.class))).thenReturn(tradeSummaries);
+    when(tradeService.findByFilter(any(TradeFind.class))).thenReturn(tradeSummaries);
 
-        mockMvc.perform(get("/trades"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(tradeSummaries.size())));
-    }
+    mockMvc
+        .perform(get("/trades"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$", hasSize(tradeSummaries.size())));
+  }
 
-    @ParameterizedTest
-    @CsvSource({",,,ZM,", ",2022-06-14,true,,"})
-    void findTradesSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
+  @ParameterizedTest
+  @CsvSource({",,,ZM,", ",2022-06-14,true,,"})
+  void findTradesSuccess(
+      String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory)
+      throws Exception {
 
-        when(tradeService.findByFilter(any(TradeFind.class))).thenReturn(tradeSummaries);
+    when(tradeService.findByFilter(any(TradeFind.class))).thenReturn(tradeSummaries);
 
-        mockMvc.perform(get("/trades")
-                        .param("tradeDateFrom", tradeDateFrom)
-                        .param("tradeDateTo", tradeDateTo)
-                        .param("tagged", tagged)
-                        .param("symbol", symbol)
-                        .param("assetCategory", assetCategory))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(tradeSummaries.size())));
-    }
+    mockMvc
+        .perform(
+            get("/trades")
+                .param("tradeDateFrom", tradeDateFrom)
+                .param("tradeDateTo", tradeDateTo)
+                .param("tagged", tagged)
+                .param("symbol", symbol)
+                .param("assetCategory", assetCategory))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$", hasSize(tradeSummaries.size())));
+  }
 
-    @ParameterizedTest
-    @CsvSource({"pippo,,,,", ",,farse,ZM,", "1200-01-01,1350-02-12,,,"})
-    void findTradesBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory) throws Exception {
+  @ParameterizedTest
+  @CsvSource({"pippo,,,,", ",,farse,ZM,", "1200-01-01,1350-02-12,,,"})
+  void findTradesBadRequest(
+      String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory)
+      throws Exception {
 
-        mockMvc.perform(get("/trades")
-                        .param("tradeDateAfter", tradeDateFrom)
-                        .param("tradeDateBefore", tradeDateTo)
-                        .param("tagged", tagged)
-                        .param("symbol", symbol)
-                        .param("assetCategory", assetCategory))
-                .andDo(print())
-                .andExpect(status().is4xxClientError());
-    }
+    mockMvc
+        .perform(
+            get("/trades")
+                .param("tradeDateAfter", tradeDateFrom)
+                .param("tradeDateBefore", tradeDateTo)
+                .param("tagged", tagged)
+                .param("symbol", symbol)
+                .param("assetCategory", assetCategory))
+        .andDo(print())
+        .andExpect(status().is4xxClientError());
+  }
 
-    @Test
-    void updateStrategyIdTest() throws Exception {
+  @Test
+  void updateStrategyIdTest() throws Exception {
 
-        StrategyAssign tradeUpdate = StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
-        trade.setStrategy(strategy);
-        TradeSummary tradeSummary = tradeMapper.toTradeSummary(trade);
+    StrategyAssign tradeUpdate =
+        StrategyAssign.builder().id(trade.getId()).strategyId(strategy.getId()).build();
+    trade.setStrategy(strategy);
+    TradeSummary tradeSummary = tradeMapper.toTradeSummary(trade);
 
-        when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(tradeSummary);
+    when(tradeService.updateStrategyId(tradeUpdate)).thenReturn(tradeSummary);
 
-        mockMvc.perform(put("/trades")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(tradeUpdate)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(Math.toIntExact(trade.getId()))))
-                .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategy.getId()))));
-    }
+    mockMvc
+        .perform(
+            put("/trades")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(tradeUpdate)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id", is(Math.toIntExact(trade.getId()))))
+        .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategy.getId()))));
+  }
 }

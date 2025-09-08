@@ -6,11 +6,11 @@ import com.marcomarchionni.strategistapi.dtos.response.DividendSummary;
 
 public interface DividendMapper {
 
-    DividendSummary toDividendSummary(Dividend dividend);
+  DividendSummary toDividendSummary(Dividend dividend);
 
-    Dividend mergeFlexProperties(Dividend source, Dividend target);
+  Dividend mergeFlexProperties(Dividend source, Dividend target);
 
-    Dividend toClosedDividend(FlexQueryResponseDto.ChangeInDividendAccrual closedDividendDto);
+  Dividend toClosedDividend(FlexQueryResponseDto.ChangeInDividendAccrual closedDividendDto);
 
-    Dividend toOpenDividend(FlexQueryResponseDto.OpenDividendAccrual openDividendDto);
+  Dividend toOpenDividend(FlexQueryResponseDto.OpenDividendAccrual openDividendDto);
 }

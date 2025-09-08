@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserSummary {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String accountId;
+  private String firstName;
+  private String lastName;
+  private String email;
+  private String accountId;
 }

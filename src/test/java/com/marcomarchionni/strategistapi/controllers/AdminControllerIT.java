@@ -1,10 +1,18 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.repositories.*;
 import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
-
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,84 +25,70 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 @Sql("classpath:db/changelog/001-test-seed.sql")
 class AdminControllerIT {
 
-    @Autowired
-    MockMvc mockMvc;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    FlexStatementRepository flexStatementRepository;
-    @Autowired
-    PortfolioRepository portfolioRepository;
-    @Autowired
-    StrategyRepository strategyRepository;
-    @Autowired
-    TradeRepository tradeRepository;
-    @Autowired
-    PositionRepository positionRepository;
-    @Autowired
-    DividendRepository dividendRepository;
+  @Autowired MockMvc mockMvc;
+  @Autowired UserRepository userRepository;
+  @Autowired FlexStatementRepository flexStatementRepository;
+  @Autowired PortfolioRepository portfolioRepository;
+  @Autowired StrategyRepository strategyRepository;
+  @Autowired TradeRepository tradeRepository;
+  @Autowired PositionRepository positionRepository;
+  @Autowired DividendRepository dividendRepository;
 
-    @BeforeEach
-    void setUp() {
-        User user = User.builder()
-                .firstName("test-admin")
-                .lastName("test-admin")
-                .email("test.admin")
-                .password("test.admin")
-                .role(User.Role.ADMIN)
-                .build();
-        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-    }
+  @BeforeEach
+  void setUp() {
+    User user =
+        User.builder()
+            .firstName("test-admin")
+            .lastName("test-admin")
+            .email("test.admin")
+            .password("test.admin")
+            .role(User.Role.ADMIN)
+            .build();
+    Authentication auth =
+        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(auth);
+  }
 
-    @Test
-    void findAllUsers() throws Exception {
-        List<User> users = userRepository.findAll();
-        String userEmail = users.get(0).getEmail();
+  @Test
+  void findAllUsers() throws Exception {
+    List<User> users = userRepository.findAll();
+    String userEmail = users.get(0).getEmail();
 
-        mockMvc.perform(get("/admin/users"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$", hasSize(users.size())))
-                .andExpect(jsonPath("$[0].email", is(userEmail)));
-    }
+    mockMvc
+        .perform(get("/admin/users"))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(jsonPath("$", hasSize(users.size())))
+        .andExpect(jsonPath("$[0].email", is(userEmail)));
+  }
 
-    @Test
-    void deleteUser() throws Exception {
-        List<User> users = userRepository.findAll();
-        assertEquals(2, users.size());
-        String email = users.get(0).getEmail();
-        String accountId = users.get(0).getAccountId();
+  @Test
+  void deleteUser() throws Exception {
+    List<User> users = userRepository.findAll();
+    assertEquals(2, users.size());
+    String email = users.get(0).getEmail();
+    String accountId = users.get(0).getAccountId();
 
-        mockMvc.perform(delete("/admin/users/{email}", email))
-                .andDo(print())
-                .andExpect(status().isOk());
+    mockMvc
+        .perform(delete("/admin/users/{email}", email))
+        .andDo(print())
+        .andExpect(status().isOk());
 
-        List<User> usersAfterDelete = userRepository.findAll();
+    List<User> usersAfterDelete = userRepository.findAll();
 
-        assertEquals(users.size() - 1, usersAfterDelete.size());
-        assertEquals(0, flexStatementRepository.findAllByAccountId(accountId).size());
-        assertEquals(0, portfolioRepository.findAllByAccountId(accountId).size());
-        assertEquals(0, strategyRepository.findAllByAccountId(accountId).size());
-        assertEquals(0, positionRepository.findAllByAccountId(accountId).size());
-        assertEquals(0, tradeRepository.findAllByAccountId(accountId).size());
-        assertEquals(0, dividendRepository.findAllByAccountId(accountId).size());
-    }
+    assertEquals(users.size() - 1, usersAfterDelete.size());
+    assertEquals(0, flexStatementRepository.findAllByAccountId(accountId).size());
+    assertEquals(0, portfolioRepository.findAllByAccountId(accountId).size());
+    assertEquals(0, strategyRepository.findAllByAccountId(accountId).size());
+    assertEquals(0, positionRepository.findAllByAccountId(accountId).size());
+    assertEquals(0, tradeRepository.findAllByAccountId(accountId).size());
+    assertEquals(0, dividendRepository.findAllByAccountId(accountId).size());
+  }
 }

@@ -12,8 +12,8 @@ import lombok.ToString;
 @Getter
 @ToString
 public class CombinedUpdateReport {
-    private final UpdateReport<FlexStatement> flexStatements;
-    private final UpdateReport<TradeSummary> trades;
-    private final UpdateReport<PositionSummary> positions;
-    private final UpdateReport<DividendSummary> dividends;
+  private final UpdateReport<FlexStatement> flexStatements;
+  private final UpdateReport<TradeSummary> trades;
+  private final UpdateReport<PositionSummary> positions;
+  private final UpdateReport<DividendSummary> dividends;
 }

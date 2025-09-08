@@ -1,11 +1,15 @@
 package com.marcomarchionni.strategistapi.services.fetchers;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.marcomarchionni.strategistapi.config.WebMvcConfig;
 import com.marcomarchionni.strategistapi.config.XMLConfig;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.SampleDataFileNotAvailableException;
 import com.marcomarchionni.strategistapi.services.UserService;
+import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,66 +18,60 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class SampleDataFetcherTest {
 
-    SampleDataFetcher sampleDataFetcher;
+  SampleDataFetcher sampleDataFetcher;
 
-    @Mock
-    UserService userService;
+  @Mock UserService userService;
 
-    XmlMapper xmlMapper;
+  XmlMapper xmlMapper;
 
-    ResourceLoader resourceLoader;
+  ResourceLoader resourceLoader;
 
-    ObjectMapper objectMapper;
+  ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp() {
-        // Configure ObjectMapper
-        WebMvcConfig webMvcConfig = new WebMvcConfig();
-        objectMapper = webMvcConfig.objectMapper();
+  @BeforeEach
+  void setUp() {
+    // Configure ObjectMapper
+    WebMvcConfig webMvcConfig = new WebMvcConfig();
+    objectMapper = webMvcConfig.objectMapper();
 
-        // Configure dependencies
-        XMLConfig xmlConfig = new XMLConfig();
-        xmlMapper = xmlConfig.XmlMapper();
-        resourceLoader = new DefaultResourceLoader();
-    }
+    // Configure dependencies
+    XMLConfig xmlConfig = new XMLConfig();
+    xmlMapper = xmlConfig.XmlMapper();
+    resourceLoader = new DefaultResourceLoader();
+  }
 
-    @Test
-    void fetch() throws IOException {
+  @Test
+  void fetch() throws IOException {
 
-        // Path to the sample data file
-        String path = "classpath:flex/Flex.xml";
+    // Path to the sample data file
+    String path = "classpath:flex/Flex.xml";
 
-        // build the fetcher
-        sampleDataFetcher = new SampleDataFetcher(path, xmlMapper, userService, resourceLoader);
+    // build the fetcher
+    sampleDataFetcher = new SampleDataFetcher(path, xmlMapper, userService, resourceLoader);
 
-        // Mock the user service
-        when(userService.getUserAccountId()).thenReturn("U0000000");
+    // Mock the user service
+    when(userService.getUserAccountId()).thenReturn("U0000000");
 
-        // Execute the fetcher
-        var dto = sampleDataFetcher.fetch(null);
+    // Execute the fetcher
+    var dto = sampleDataFetcher.fetch(null);
 
-        // Assert the result
-        assertNotNull(dto);
-        assertEquals("U0000000", dto.getFlexStatements().getFlexStatement().getAccountId());
-        String dtoString = objectMapper.writeValueAsString(dto);
-        assertFalse(dtoString.contains("U1111111"));
-    }
+    // Assert the result
+    assertNotNull(dto);
+    assertEquals("U0000000", dto.getFlexStatements().getFlexStatement().getAccountId());
+    String dtoString = objectMapper.writeValueAsString(dto);
+    assertFalse(dtoString.contains("U1111111"));
+  }
 
-    @Test
-    void fetchException() {
+  @Test
+  void fetchException() {
 
-        String path = "classpath:wrongPath.xml";
+    String path = "classpath:wrongPath.xml";
 
-        sampleDataFetcher = new SampleDataFetcher(path, xmlMapper, userService, resourceLoader);
+    sampleDataFetcher = new SampleDataFetcher(path, xmlMapper, userService, resourceLoader);
 
-        assertThrows(SampleDataFileNotAvailableException.class, () -> sampleDataFetcher.fetch(null));
-    }
+    assertThrows(SampleDataFileNotAvailableException.class, () -> sampleDataFetcher.fetch(null));
+  }
 }

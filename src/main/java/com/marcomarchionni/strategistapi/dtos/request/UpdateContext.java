@@ -1,6 +1,5 @@
 package com.marcomarchionni.strategistapi.dtos.request;
 
-
 import com.marcomarchionni.strategistapi.validators.ValidUpdateContext;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -16,19 +15,31 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @ValidUpdateContext
 public class UpdateContext {
-    @NotNull
-    @Schema(description = "Allowed values: SERVER (fetch data from Interactive Brokers WebFlexService), " +
-            "FILE (fetch data from a flex query xml file), SAMPLEDATA (fetch sample data for testing " +
-            "purposes)", example = "SAMPLEDATA")
-    SourceType sourceType;
-    @Schema(description = "Query id (ignored if sourceType is not SERVER)")
-    String queryId;
-    @Schema(description = "Token (ignored if sourceType is not SERVER)")
-    String token;
-    @Schema(name = "file", description = "File (ignored if sourceType is not FILE)", type = "string", format = "binary")
-    MultipartFile file;
+  @NotNull
+  @Schema(
+      description =
+          "Allowed values: SERVER (fetch data from Interactive Brokers WebFlexService), "
+              + "FILE (fetch data from a flex query xml file), SAMPLEDATA (fetch sample data for testing "
+              + "purposes)",
+      example = "SAMPLEDATA")
+  SourceType sourceType;
 
-    public enum SourceType {
-        SERVER, FILE, SAMPLEDATA
-    }
+  @Schema(description = "Query id (ignored if sourceType is not SERVER)")
+  String queryId;
+
+  @Schema(description = "Token (ignored if sourceType is not SERVER)")
+  String token;
+
+  @Schema(
+      name = "file",
+      description = "File (ignored if sourceType is not FILE)",
+      type = "string",
+      format = "binary")
+  MultipartFile file;
+
+  public enum SourceType {
+    SERVER,
+    FILE,
+    SAMPLEDATA
+  }
 }

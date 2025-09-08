@@ -18,32 +18,42 @@ import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "bearerAuth")
 public interface StrategyApi {
 
-        @GetMapping("")
-        @Operation(summary = "Find all user's strategies")
-        ApiResponse<StrategySummary> findAll(
-                        @Parameter(description = "Number of records to skip for pagination") @RequestParam(defaultValue = "0") @Min(value = 0, message = "Skip must be greater or equal to 0") int skip,
+  @GetMapping("")
+  @Operation(summary = "Find all user's strategies")
+  ApiResponse<StrategySummary> findAll(
+      @Parameter(description = "Number of records to skip for pagination")
+          @RequestParam(defaultValue = "0")
+          @Min(value = 0, message = "Skip must be greater or equal to 0")
+          int skip,
+      @Parameter(description = "Number of records to return")
+          @RequestParam(defaultValue = "10")
+          @Min(value = 1, message = "Top must be greater or equal to 1")
+          int top,
+      @Parameter(
+              description =
+                  "Sort field and direction (e.g., 'name', 'name desc', 'portfolioName desc')")
+          @RequestParam(required = false)
+          String orderBy,
+      @Parameter(description = "Filter by strategy name (case-insensitive contains)")
+          @RequestParam(required = false)
+          String name,
+      @Parameter(description = "Filter by portfolio name (case-insensitive contains)")
+          @RequestParam(required = false)
+          String portfolioName);
 
-                        @Parameter(description = "Number of records to return") @RequestParam(defaultValue = "10") @Min(value = 1, message = "Top must be greater or equal to 1") int top,
+  @GetMapping("/{id}")
+  @Operation(summary = "Find strategy by id")
+  StrategyDetail findById(@PathVariable Long id);
 
-                        @Parameter(description = "Sort field and direction (e.g., 'name', 'name desc', 'portfolioName desc')") @RequestParam(required = false) String orderBy,
+  @PostMapping
+  @Operation(summary = "Create a new strategy")
+  StrategyDetail create(@RequestBody @Valid StrategyCreate strategyCreate);
 
-                        @Parameter(description = "Filter by strategy name (case-insensitive contains)") @RequestParam(required = false) String name,
+  @PutMapping
+  @Operation(summary = "Update strategy name")
+  StrategyDetail updateName(@RequestBody @Valid NameUpdate nameUpdate);
 
-                        @Parameter(description = "Filter by portfolio name (case-insensitive contains)") @RequestParam(required = false) String portfolioName);
-
-        @GetMapping("/{id}")
-        @Operation(summary = "Find strategy by id")
-        StrategyDetail findById(@PathVariable Long id);
-
-        @PostMapping
-        @Operation(summary = "Create a new strategy")
-        StrategyDetail create(@RequestBody @Valid StrategyCreate strategyCreate);
-
-        @PutMapping
-        @Operation(summary = "Update strategy name")
-        StrategyDetail updateName(@RequestBody @Valid NameUpdate nameUpdate);
-
-        @DeleteMapping("/{id}")
-        @Operation(summary = "Delete strategy by id")
-        void delete(@PathVariable Long id);
+  @DeleteMapping("/{id}")
+  @Operation(summary = "Delete strategy by id")
+  void delete(@PathVariable Long id);
 }

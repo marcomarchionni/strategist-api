@@ -1,5 +1,12 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleUser;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
@@ -9,7 +16,7 @@ import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
 import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
-
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,146 +34,143 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleUser;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 @Sql("classpath:db/changelog/001-test-seed.sql")
 class StrategyControllerIT {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired MockMvc mockMvc;
 
-    @Autowired
-    StrategyRepository strategyRepository;
+  @Autowired StrategyRepository strategyRepository;
 
-    @Autowired
-    PortfolioRepository portfolioRepository;
+  @Autowired PortfolioRepository portfolioRepository;
 
-    @Autowired
-    ObjectMapper mapper;
+  @Autowired ObjectMapper mapper;
 
-    User user;
+  User user;
 
-    @BeforeEach
-    void setup() {
-        // Setup authenticated user for testing
-        user = getSampleUser();
-        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-    }
+  @BeforeEach
+  void setup() {
+    // Setup authenticated user for testing
+    user = getSampleUser();
+    Authentication auth =
+        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(auth);
+  }
 
-    @AfterEach
-    void tearDown() {
-        SecurityContextHolder.clearContext();
-    }
+  @AfterEach
+  void tearDown() {
+    SecurityContextHolder.clearContext();
+  }
 
-    @ParameterizedTest
-    @CsvSource({ "ZM long,1", ",7", "ADBE long,0" })
-    void findByParamsSuccess(String strategyName, int expectedSize) throws Exception {
-        StrategyFind strategyFind = StrategyFind.builder().name(strategyName).build();
+  @ParameterizedTest
+  @CsvSource({"ZM long,1", ",7", "ADBE long,0"})
+  void findByParamsSuccess(String strategyName, int expectedSize) throws Exception {
+    StrategyFind strategyFind = StrategyFind.builder().name(strategyName).build();
 
-        mockMvc.perform(get("/strategies")
-                .param("name", strategyFind.getName()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(expectedSize)));
-    }
+    mockMvc
+        .perform(get("/strategies").param("name", strategyFind.getName()))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$", hasSize(expectedSize)));
+  }
 
-    @ParameterizedTest
-    @ValueSource(strings = { "   ", "" })
-    void findByParamsException(String strategyName) throws Exception {
-        StrategyFind strategyFind = StrategyFind.builder().name(strategyName).build();
+  @ParameterizedTest
+  @ValueSource(strings = {"   ", ""})
+  void findByParamsException(String strategyName) throws Exception {
+    StrategyFind strategyFind = StrategyFind.builder().name(strategyName).build();
 
-        mockMvc.perform(get("/strategies")
-                .param("name", strategyFind.getName()))
-                .andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-    }
+    mockMvc
+        .perform(get("/strategies").param("name", strategyFind.getName()))
+        .andDo(print())
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+  }
 
-    @ParameterizedTest
-    @CsvSource({ "ZM long", "IBKR put" })
-    void findByIdSuccess(String expectedName) throws Exception {
+  @ParameterizedTest
+  @CsvSource({"ZM long", "IBKR put"})
+  void findByIdSuccess(String expectedName) throws Exception {
 
-        Optional<Strategy> strategy = strategyRepository.findByAccountIdAndName(user.getAccountId(), expectedName);
-        assertTrue(strategy.isPresent());
-        Long strategyId = strategy.get().getId();
+    Optional<Strategy> strategy =
+        strategyRepository.findByAccountIdAndName(user.getAccountId(), expectedName);
+    assertTrue(strategy.isPresent());
+    Long strategyId = strategy.get().getId();
 
-        mockMvc.perform(get("/strategies/{id}", strategyId))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is(expectedName)))
-                .andExpect(jsonPath("$.trades", not(empty())));
-    }
+    mockMvc
+        .perform(get("/strategies/{id}", strategyId))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.name", is(expectedName)))
+        .andExpect(jsonPath("$.trades", not(empty())));
+  }
 
-    @Test
-    void createSuccess() throws Exception {
-        Optional<Portfolio> portfolio = portfolioRepository.findByAccountIdAndName("U1111111", "Saver Portfolio");
-        assertTrue(portfolio.isPresent());
-        Long portfolioId = portfolio.get().getId();
-        StrategyCreate strategyCreate = StrategyCreate.builder().name("AAPL long").portfolioId(portfolioId)
-                .build();
+  @Test
+  void createSuccess() throws Exception {
+    Optional<Portfolio> portfolio =
+        portfolioRepository.findByAccountIdAndName("U1111111", "Saver Portfolio");
+    assertTrue(portfolio.isPresent());
+    Long portfolioId = portfolio.get().getId();
+    StrategyCreate strategyCreate =
+        StrategyCreate.builder().name("AAPL long").portfolioId(portfolioId).build();
 
-        mockMvc.perform(post("/strategies")
+    mockMvc
+        .perform(
+            post("/strategies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(strategyCreate)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", notNullValue()));
-    }
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id", notNullValue()));
+  }
 
-    @Test
-    void updateNameSuccess() throws Exception {
-        Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), "ZM long").get().getId();
+  @Test
+  void updateNameSuccess() throws Exception {
+    Long strategyId =
+        strategyRepository.findByAccountIdAndName(user.getAccountId(), "ZM long").get().getId();
 
-        NameUpdate nameUpdate = NameUpdate.builder().id(strategyId).name("ZM leap").build();
+    NameUpdate nameUpdate = NameUpdate.builder().id(strategyId).name("ZM leap").build();
 
-        mockMvc.perform(put("/strategies")
+    mockMvc
+        .perform(
+            put("/strategies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(nameUpdate)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(Math.toIntExact(nameUpdate.getId()))))
-                .andExpect(jsonPath("$.name", is(nameUpdate.getName())));
-    }
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id", is(Math.toIntExact(nameUpdate.getId()))))
+        .andExpect(jsonPath("$.name", is(nameUpdate.getName())));
+  }
 
-    @Test
-    void updateNameException() throws Exception {
+  @Test
+  void updateNameException() throws Exception {
 
-        NameUpdate nameUpdate = NameUpdate.builder().id(1L).name("12NewName").build();
+    NameUpdate nameUpdate = NameUpdate.builder().id(1L).name("12NewName").build();
 
-        mockMvc.perform(put("/strategies")
+    mockMvc
+        .perform(
+            put("/strategies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(nameUpdate)))
-                .andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-    }
+        .andDo(print())
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+  }
 
-    @Test
-    void deleteSuccess() throws Exception {
-        Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), "IRBT long").get().getId();
-        mockMvc.perform(delete("/strategies/{id}", strategyId))
-                .andExpect(status().isOk());
-    }
+  @Test
+  void deleteSuccess() throws Exception {
+    Long strategyId =
+        strategyRepository.findByAccountIdAndName(user.getAccountId(), "IRBT long").get().getId();
+    mockMvc.perform(delete("/strategies/{id}", strategyId)).andExpect(status().isOk());
+  }
 
-    @Test
-    void deleteException() throws Exception {
-        Long id = 12988347222L;
-        mockMvc.perform(delete("/strategies/{id}", id))
-                .andExpect(status().is4xxClientError());
-    }
+  @Test
+  void deleteException() throws Exception {
+    Long id = 12988347222L;
+    mockMvc.perform(delete("/strategies/{id}", id)).andExpect(status().is4xxClientError());
+  }
 }

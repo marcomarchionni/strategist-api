@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StrategyAssign {
 
-    @NotNull(message = "'id' cannot be null.")
-    @Schema(description = "Trade id", example = "1")
-    private Long id;
+  @NotNull(message = "'id' cannot be null.")
+  @Schema(description = "Trade id", example = "1")
+  private Long id;
 
-    @Schema(description = "Strategy id", example = "1")
-    private Long strategyId;
+  @Schema(description = "Strategy id", example = "1")
+  private Long strategyId;
 }

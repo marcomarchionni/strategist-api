@@ -5,16 +5,15 @@ import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.dtos.request.TradeFind;
 import com.marcomarchionni.strategistapi.dtos.response.TradeSummary;
 import com.marcomarchionni.strategistapi.dtos.response.update.UpdateReport;
-
 import java.util.List;
 
 public interface TradeService {
 
-    List<TradeSummary> saveAll(List<Trade> trades);
+  List<TradeSummary> saveAll(List<Trade> trades);
 
-    TradeSummary updateStrategyId(StrategyAssign trade);
+  TradeSummary updateStrategyId(StrategyAssign trade);
 
-    List<TradeSummary> findByFilter(TradeFind tradeCriteria);
+  List<TradeSummary> findByFilter(TradeFind tradeCriteria);
 
-    UpdateReport<TradeSummary> updateTrades(List<Trade> trades);
+  UpdateReport<TradeSummary> updateTrades(List<Trade> trades);
 }

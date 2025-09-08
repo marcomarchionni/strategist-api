@@ -1,11 +1,18 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleUser;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyAssign;
 import com.marcomarchionni.strategistapi.repositories.TradeRepository;
 import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,119 +29,128 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleUser;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 class TradeControllerIT {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper mapper;
+  @Autowired ObjectMapper mapper;
 
-    @Autowired
-    TradeRepository tradeRepository;
+  @Autowired TradeRepository tradeRepository;
 
-    @Autowired
-    StrategyRepository strategyRepository;
+  @Autowired StrategyRepository strategyRepository;
 
-    User user;
+  User user;
 
-    @BeforeEach
-    void setup() {
-        // Setup authenticated user for testing
-        user = getSampleUser();
-        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-    }
+  @BeforeEach
+  void setup() {
+    // Setup authenticated user for testing
+    user = getSampleUser();
+    Authentication auth =
+        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(auth);
+  }
 
-    @AfterEach
-    void tearDown() {
-        SecurityContextHolder.clearContext();
-    }
+  @AfterEach
+  void tearDown() {
+    SecurityContextHolder.clearContext();
+  }
 
-    @ParameterizedTest
-    @CsvSource({ ",,,ZM,,1", ",,,TTWO,STK,2", ",2022-06-14,true,,,1" })
-    @Sql("classpath:db/changelog/001-test-seed.sql")
-    void findByFilterSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol,
-            String assetCategory, int expectedSize) throws Exception {
+  @ParameterizedTest
+  @CsvSource({",,,ZM,,1", ",,,TTWO,STK,2", ",2022-06-14,true,,,1"})
+  @Sql("classpath:db/changelog/001-test-seed.sql")
+  void findByFilterSuccess(
+      String tradeDateFrom,
+      String tradeDateTo,
+      String tagged,
+      String symbol,
+      String assetCategory,
+      int expectedSize)
+      throws Exception {
 
-        mockMvc.perform(get("/trades")
+    mockMvc
+        .perform(
+            get("/trades")
                 .param("tradeDateAfter", tradeDateFrom)
                 .param("tradeDateBefore", tradeDateTo)
                 .param("tagged", tagged)
                 .param("symbol", symbol)
                 .param("assetCategory", assetCategory))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(expectedSize)));
-    }
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$", hasSize(expectedSize)));
+  }
 
-    @ParameterizedTest
-    @CsvSource({ "pippo,,,,STK", ",,farse,ZM,", "1969-01-01,,,,,", "2022-06-14,2022-06-13,,,," })
-    void findByFilterBadRequest(String tradeDateFrom, String tradeDateTo, String tagged, String symbol,
-            String assetCategory) throws Exception {
+  @ParameterizedTest
+  @CsvSource({"pippo,,,,STK", ",,farse,ZM,", "1969-01-01,,,,,", "2022-06-14,2022-06-13,,,,"})
+  void findByFilterBadRequest(
+      String tradeDateFrom, String tradeDateTo, String tagged, String symbol, String assetCategory)
+      throws Exception {
 
-        mockMvc.perform(get("/trades")
+    mockMvc
+        .perform(
+            get("/trades")
                 .param("tradeDateAfter", tradeDateFrom)
                 .param("tradeDateBefore", tradeDateTo)
                 .param("tagged", tagged)
                 .param("symbol", symbol)
                 .param("assetCategory", assetCategory))
-                .andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.status", is(400)));
-    }
+        .andDo(print())
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.status", is(400)));
+  }
 
-    @Sql("classpath:db/changelog/001-test-seed.sql")
-    @ParameterizedTest
-    @CsvSource({ "339578772,ZM long,ZM", "339580463,IBKR put,FVRR" })
-    void updateStrategyIdSuccess(Long ibOrderId, String strategyName, String expectedSymbol) throws Exception {
-        Long strategyId = strategyRepository.findByAccountIdAndName(user.getAccountId(), strategyName).get().getId();
-        Long tradeId = tradeRepository.findByAccountIdAndIbOrderId(user.getAccountId(), ibOrderId).get().getId();
+  @Sql("classpath:db/changelog/001-test-seed.sql")
+  @ParameterizedTest
+  @CsvSource({"339578772,ZM long,ZM", "339580463,IBKR put,FVRR"})
+  void updateStrategyIdSuccess(Long ibOrderId, String strategyName, String expectedSymbol)
+      throws Exception {
+    Long strategyId =
+        strategyRepository.findByAccountIdAndName(user.getAccountId(), strategyName).get().getId();
+    Long tradeId =
+        tradeRepository.findByAccountIdAndIbOrderId(user.getAccountId(), ibOrderId).get().getId();
 
-        StrategyAssign tradeUpdate = StrategyAssign.builder().id(tradeId).strategyId(strategyId).build();
+    StrategyAssign tradeUpdate =
+        StrategyAssign.builder().id(tradeId).strategyId(strategyId).build();
 
-        mockMvc.perform(put("/trades")
+    mockMvc
+        .perform(
+            put("/trades")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(tradeUpdate)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.symbol", is(expectedSymbol)))
-                .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategyId))));
-    }
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.symbol", is(expectedSymbol)))
+        .andExpect(jsonPath("$.strategyId", is(Math.toIntExact(strategyId))));
+  }
 
-    @ParameterizedTest
-    @CsvSource({ "1180780161, 20", "20, 1", ",," })
-    void updateStrategyIdExceptions(Long tradeId, Long strategyId) throws Exception {
+  @ParameterizedTest
+  @CsvSource({"1180780161, 20", "20, 1", ",,"})
+  void updateStrategyIdExceptions(Long tradeId, Long strategyId) throws Exception {
 
-        StrategyAssign tradeUpdate = StrategyAssign.builder().id(tradeId).strategyId(strategyId).build();
+    StrategyAssign tradeUpdate =
+        StrategyAssign.builder().id(tradeId).strategyId(strategyId).build();
 
-        mockMvc.perform(put("/trades")
+    mockMvc
+        .perform(
+            put("/trades")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(tradeUpdate)))
-                .andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-    }
+        .andDo(print())
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+  }
 
-    @Test
-    void updateStrategyIdEmptyBody() throws Exception {
+  @Test
+  void updateStrategyIdEmptyBody() throws Exception {
 
-        mockMvc.perform(put("/trades")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-    }
+    mockMvc
+        .perform(put("/trades").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+  }
 }

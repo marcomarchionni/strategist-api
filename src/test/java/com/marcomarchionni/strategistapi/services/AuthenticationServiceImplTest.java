@@ -1,5 +1,10 @@
 package com.marcomarchionni.strategistapi.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.SignInReq;
 import com.marcomarchionni.strategistapi.dtos.request.SignUpReq;
@@ -17,96 +22,101 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceImplTest {
-    @Mock
-    UserRepository userRepository;
+  @Mock UserRepository userRepository;
 
-    @Mock
-    PasswordEncoder passwordEncoder;
+  @Mock PasswordEncoder passwordEncoder;
 
-    @Mock
-    JwtService jwtService;
+  @Mock JwtService jwtService;
 
-    @Mock
-    AuthenticationManager authenticationManager;
+  @Mock AuthenticationManager authenticationManager;
 
-    UserMapper userMapper = new UserMapperImpl();
+  UserMapper userMapper = new UserMapperImpl();
 
-    AuthenticationServiceImpl authenticationServiceImpl;
+  AuthenticationServiceImpl authenticationServiceImpl;
 
-    @Mock
-    UserDetailsService userDetailsService;
+  @Mock UserDetailsService userDetailsService;
 
-    @Captor
-    ArgumentCaptor<User> userArgumentCaptor;
+  @Captor ArgumentCaptor<User> userArgumentCaptor;
 
-    @BeforeEach
-    void setUp() {
+  @BeforeEach
+  void setUp() {
 
-        authenticationServiceImpl = new AuthenticationServiceImpl(userRepository, passwordEncoder,
-                jwtService,
-                authenticationManager, userMapper, userDetailsService);
-    }
+    authenticationServiceImpl =
+        new AuthenticationServiceImpl(
+            userRepository,
+            passwordEncoder,
+            jwtService,
+            authenticationManager,
+            userMapper,
+            userDetailsService);
+  }
 
+  @Test
+  void signUp() {
+    // set up
+    SignUpReq signUpReq =
+        SignUpReq.builder()
+            .firstName("Marco")
+            .lastName("Marchionni")
+            .email("marco99@gmail.com")
+            .password("password")
+            .build();
 
-    @Test
-    void signUp() {
-        // set up
-        SignUpReq signUpReq = SignUpReq.builder().firstName("Marco").lastName("Marchionni").email("marco99@gmail.com")
-                .password("password").build();
+    when(passwordEncoder.encode(any(String.class))).thenReturn("encodedPassword");
+    when(userRepository.save(any(User.class))).thenReturn(null);
 
-        when(passwordEncoder.encode(any(String.class))).thenReturn("encodedPassword");
-        when(userRepository.save(any(User.class))).thenReturn(null);
+    // execute
+    authenticationServiceImpl.signUp(signUpReq);
 
-        // execute
-        authenticationServiceImpl.signUp(signUpReq);
+    // verify
+    verify(userRepository).save(userArgumentCaptor.capture());
+    assertEquals("Marco", userArgumentCaptor.getValue().getFirstName());
+    assertEquals("Marchionni", userArgumentCaptor.getValue().getLastName());
+    assertEquals(User.Role.USER, userArgumentCaptor.getValue().getRole());
+  }
 
-        // verify
-        verify(userRepository).save(userArgumentCaptor.capture());
-        assertEquals("Marco", userArgumentCaptor.getValue().getFirstName());
-        assertEquals("Marchionni", userArgumentCaptor.getValue().getLastName());
-        assertEquals(User.Role.USER, userArgumentCaptor.getValue().getRole());
+  @Test
+  void adminSignUp() {
+    // set up
+    SignUpReq signUpReq =
+        SignUpReq.builder()
+            .firstName("Marco")
+            .lastName("Marchionni")
+            .email("marco99@gmail.com")
+            .password("password")
+            .role("ADMIN")
+            .build();
 
-    }
+    when(passwordEncoder.encode(any(String.class))).thenReturn("encodedPassword");
+    // Intercept and save the argument of userRepository.save() to verify the role
+    when(userRepository.save(any(User.class))).thenReturn(null);
+    // execute
+    authenticationServiceImpl.signUp(signUpReq);
 
-    @Test
-    void adminSignUp() {
-        // set up
-        SignUpReq signUpReq = SignUpReq.builder().firstName("Marco").lastName("Marchionni").email("marco99@gmail.com")
-                .password("password").role("ADMIN").build();
+    // verify
+    verify(userRepository).save(userArgumentCaptor.capture());
+    assertEquals("Marco", userArgumentCaptor.getValue().getFirstName());
+    assertEquals("Marchionni", userArgumentCaptor.getValue().getLastName());
+    assertEquals(User.Role.ADMIN, userArgumentCaptor.getValue().getRole());
+  }
 
-        when(passwordEncoder.encode(any(String.class))).thenReturn("encodedPassword");
-        // Intercept and save the argument of userRepository.save() to verify the role
-        when(userRepository.save(any(User.class))).thenReturn(null);
-        // execute
-        authenticationServiceImpl.signUp(signUpReq);
+  @Test
+  void signIn() {
+    // set up
+    SignInReq signInReq =
+        SignInReq.builder().email("marco99@gmail.com").password("password").build();
 
-        // verify
-        verify(userRepository).save(userArgumentCaptor.capture());
-        assertEquals("Marco", userArgumentCaptor.getValue().getFirstName());
-        assertEquals("Marchionni", userArgumentCaptor.getValue().getLastName());
-        assertEquals(User.Role.ADMIN, userArgumentCaptor.getValue().getRole());
-    }
+    when(authenticationManager.authenticate(any())).thenReturn(null);
+    when(userRepository.findByEmail(any(String.class)))
+        .thenReturn(java.util.Optional.of(new User()));
+    when(jwtService.generateAccessToken(any(User.class))).thenReturn("jwtToken");
 
-    @Test
-    void signIn() {
-        // set up
-        SignInReq signInReq = SignInReq.builder().email("marco99@gmail.com").password("password").build();
+    // execute
+    var jwtAuthenticationResponse = authenticationServiceImpl.signIn(signInReq);
 
-        when(authenticationManager.authenticate(any())).thenReturn(null);
-        when(userRepository.findByEmail(any(String.class))).thenReturn(java.util.Optional.of(new User()));
-        when(jwtService.generateAccessToken(any(User.class))).thenReturn("jwtToken");
-
-        // execute
-        var jwtAuthenticationResponse = authenticationServiceImpl.signIn(signInReq);
-
-        // verify
-        assertEquals("jwtToken", jwtAuthenticationResponse.getAccessToken());
-    }
+    // verify
+    assertEquals("jwtToken", jwtAuthenticationResponse.getAccessToken());
+  }
 }

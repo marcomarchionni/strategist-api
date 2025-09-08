@@ -6,5 +6,5 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 public interface PredicateBuilder {
-    Predicate build(Root<Portfolio> root, CriteriaBuilder criteriaBuilder, ParsedFilter filter);
+  Predicate build(Root<Portfolio> root, CriteriaBuilder criteriaBuilder, ParsedFilter filter);
 }

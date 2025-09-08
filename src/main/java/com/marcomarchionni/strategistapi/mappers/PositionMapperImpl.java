@@ -9,26 +9,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class PositionMapperImpl implements PositionMapper {
 
-    ModelMapper modelMapper;
+  ModelMapper modelMapper;
 
-    public PositionMapperImpl(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
+  public PositionMapperImpl(ModelMapper modelMapper) {
+    this.modelMapper = modelMapper;
+  }
 
-    @Override
-    public PositionSummary toPositionSummary(Position position) {
-        return modelMapper.map(position, PositionSummary.class);
-    }
+  @Override
+  public PositionSummary toPositionSummary(Position position) {
+    return modelMapper.map(position, PositionSummary.class);
+  }
 
-    @Override
-    public Position toPosition(FlexQueryResponseDto.OpenPosition positionDto) {
-        return modelMapper.map(positionDto, Position.class);
-    }
+  @Override
+  public Position toPosition(FlexQueryResponseDto.OpenPosition positionDto) {
+    return modelMapper.map(positionDto, Position.class);
+  }
 
-    @Override
-    public Position mergeFlexProperties(Position source, Position target) {
-        modelMapper.map(source, target);
-        return target;
-    }
+  @Override
+  public Position mergeFlexProperties(Position source, Position target) {
+    modelMapper.map(source, target);
+    return target;
+  }
 }
-

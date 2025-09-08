@@ -1,11 +1,20 @@
 package com.marcomarchionni.strategistapi.controllers;
 
+import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleUser;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
-
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,130 +34,131 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static com.marcomarchionni.strategistapi.util.TestUtils.getSampleUser;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 @Sql("classpath:db/changelog/001-test-seed.sql")
 class PortfolioControllerIT {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired MockMvc mockMvc;
 
-    @Autowired
-    PortfolioRepository portfolioRepository;
+  @Autowired PortfolioRepository portfolioRepository;
 
-    @Autowired
-    ObjectMapper mapper;
-    User user;
+  @Autowired ObjectMapper mapper;
+  User user;
 
-    @BeforeEach
-    void setup() {
-        // Setup authenticated user for testing
-        user = getSampleUser();
-        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-    }
+  @BeforeEach
+  void setup() {
+    // Setup authenticated user for testing
+    user = getSampleUser();
+    Authentication auth =
+        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(auth);
+  }
 
-    @AfterEach
-    void tearDown() {
-        SecurityContextHolder.clearContext();
-    }
+  @AfterEach
+  void tearDown() {
+    SecurityContextHolder.clearContext();
+  }
 
-    static Stream<Arguments> provideQueryParameters() {
-        return Stream.of(
-                Arguments.of("?$inlinecount=allpages&top=10", "$.result", 4),
-                Arguments.of("?$inlinecount=allpages&$top=2&skip=2", "$.result", 2),
-                Arguments.of("?$inlinecount=allpages&$sort=asc", "$.result", 4),
-                Arguments.of("?$inlinecount=allpages&$filter=substringof('er', tolower(name))", "$.result", 2),
-                Arguments.of("?$top=1&$skip=2", "$", 1));
-    }
+  static Stream<Arguments> provideQueryParameters() {
+    return Stream.of(
+        Arguments.of("?$inlinecount=allpages&top=10", "$.result", 4),
+        Arguments.of("?$inlinecount=allpages&$top=2&skip=2", "$.result", 2),
+        Arguments.of("?$inlinecount=allpages&$sort=asc", "$.result", 4),
+        Arguments.of(
+            "?$inlinecount=allpages&$filter=substringof('er', tolower(name))", "$.result", 2),
+        Arguments.of("?$top=1&$skip=2", "$", 1));
+  }
 
-    static Stream<Arguments> provideBadQueryParameters() {
-        return Stream.of(
-                Arguments.of("?$inlinecount=allpages&$filter=substringof('er', lower(name))", "$.result", 2),
-                Arguments.of("?$inlinecount=allpages&$filter=substringof(tolower(name), 'er)", "$.result", 2));
-    }
+  static Stream<Arguments> provideBadQueryParameters() {
+    return Stream.of(
+        Arguments.of(
+            "?$inlinecount=allpages&$filter=substringof('er', lower(name))", "$.result", 2),
+        Arguments.of(
+            "?$inlinecount=allpages&$filter=substringof(tolower(name), 'er)", "$.result", 2));
+  }
 
-    @ParameterizedTest
-    @MethodSource("provideQueryParameters")
-    void findAllParameterizedTest(String queryParams, String expression, int expectedSize) throws Exception {
-        mockMvc.perform(get("/portfolios/" + queryParams))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(expression, hasSize(expectedSize)));
-    }
+  @ParameterizedTest
+  @MethodSource("provideQueryParameters")
+  void findAllParameterizedTest(String queryParams, String expression, int expectedSize)
+      throws Exception {
+    mockMvc
+        .perform(get("/portfolios/" + queryParams))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath(expression, hasSize(expectedSize)));
+  }
 
-    @ParameterizedTest
-    @MethodSource("provideBadQueryParameters")
-    void findAllParameterizedTestBadRequest(String queryParams) throws Exception {
-        mockMvc.perform(get("/portfolios/" + queryParams))
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type", is("invalid-filter-parameter")));
-    }
+  @ParameterizedTest
+  @MethodSource("provideBadQueryParameters")
+  void findAllParameterizedTestBadRequest(String queryParams) throws Exception {
+    mockMvc
+        .perform(get("/portfolios/" + queryParams))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.type", is("invalid-filter-parameter")));
+  }
 
-    @ParameterizedTest
-    @CsvSource({ "U1111111,Saver Portfolio,5", "U1111111,Trader Portfolio,2" })
-    void findByIdSuccess(String accountId, String portfolioName, int expectedSize) throws Exception {
-        Optional<Portfolio> portfolio = portfolioRepository.findByAccountIdAndName(accountId, portfolioName);
-        assertTrue(portfolio.isPresent());
-        Long portfolioId = portfolio.get().getId();
+  @ParameterizedTest
+  @CsvSource({"U1111111,Saver Portfolio,5", "U1111111,Trader Portfolio,2"})
+  void findByIdSuccess(String accountId, String portfolioName, int expectedSize) throws Exception {
+    Optional<Portfolio> portfolio =
+        portfolioRepository.findByAccountIdAndName(accountId, portfolioName);
+    assertTrue(portfolio.isPresent());
+    Long portfolioId = portfolio.get().getId();
 
-        mockMvc.perform(get("/portfolios/{id}", portfolioId))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(Math.toIntExact(portfolioId))))
-                .andExpect(jsonPath("$.strategies", hasSize(expectedSize)));
-    }
+    mockMvc
+        .perform(get("/portfolios/{id}", portfolioId))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id", is(Math.toIntExact(portfolioId))))
+        .andExpect(jsonPath("$.strategies", hasSize(expectedSize)));
+  }
 
-    @ParameterizedTest
-    @ValueSource(strings = { "Saver Portfolio", "," })
-    void createPortfolioException(String portfolioName) throws Exception {
-        NameUpdate badNameUpdate = NameUpdate.builder().name(portfolioName).build();
+  @ParameterizedTest
+  @ValueSource(strings = {"Saver Portfolio", ","})
+  void createPortfolioException(String portfolioName) throws Exception {
+    NameUpdate badNameUpdate = NameUpdate.builder().name(portfolioName).build();
 
-        mockMvc.perform(post("/portfolios")
+    mockMvc
+        .perform(
+            post("/portfolios")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(badNameUpdate)))
-                .andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
-    }
+        .andDo(print())
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+  }
 
-    @Test
-    void deleteByIdSuccess() throws Exception {
-        Optional<Portfolio> portfolio = portfolioRepository.findByAccountIdAndName("U1111111", "Millionaire Portfolio");
-        assertTrue(portfolio.isPresent());
-        Long portfolioId = portfolio.get().getId();
+  @Test
+  void deleteByIdSuccess() throws Exception {
+    Optional<Portfolio> portfolio =
+        portfolioRepository.findByAccountIdAndName("U1111111", "Millionaire Portfolio");
+    assertTrue(portfolio.isPresent());
+    Long portfolioId = portfolio.get().getId();
 
-        mockMvc.perform(delete("/portfolios/{id}", portfolioId))
-                .andDo(print())
-                .andExpect(status().isOk());
+    mockMvc
+        .perform(delete("/portfolios/{id}", portfolioId))
+        .andDo(print())
+        .andExpect(status().isOk());
 
-        assertTrue(portfolioRepository.findById(portfolioId).isEmpty());
-    }
+    assertTrue(portfolioRepository.findById(portfolioId).isEmpty());
+  }
 
-    @Test
-    void deleteByIdUnableToDeleteEntitiesException() throws Exception {
-        Optional<Portfolio> portfolio = portfolioRepository.findByAccountIdAndName("U1111111", "Saver Portfolio");
-        assertTrue(portfolio.isPresent());
-        Long portfolioId = portfolio.get().getId();
+  @Test
+  void deleteByIdUnableToDeleteEntitiesException() throws Exception {
+    Optional<Portfolio> portfolio =
+        portfolioRepository.findByAccountIdAndName("U1111111", "Saver Portfolio");
+    assertTrue(portfolio.isPresent());
+    Long portfolioId = portfolio.get().getId();
 
-        mockMvc.perform(delete("/portfolios/{id}", portfolioId))
-                .andDo(print())
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.type", is("unable-to-delete-entities")));
-    }
+    mockMvc
+        .perform(delete("/portfolios/{id}", portfolioId))
+        .andDo(print())
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+        .andExpect(jsonPath("$.type", is("unable-to-delete-entities")));
+  }
 }

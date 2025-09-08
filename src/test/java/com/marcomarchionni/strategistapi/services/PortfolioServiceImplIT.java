@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 class PortfolioServiceImplIT {
 
-    @Test
-    void findAllWithCount() {
-    }
+  @Test
+  void findAllWithCount() {}
 }
