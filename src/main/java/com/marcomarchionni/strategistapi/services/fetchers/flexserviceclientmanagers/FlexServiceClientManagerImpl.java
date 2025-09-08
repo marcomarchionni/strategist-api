@@ -5,6 +5,7 @@ import com.marcomarchionni.strategistapi.dtos.flex.FlexResponse;
 import com.marcomarchionni.strategistapi.dtos.flex.FlexStatementResponseDto;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.IbServerErrorException;
 import com.marcomarchionni.strategistapi.services.fetchers.flexserviceclients.FlexServiceClient;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class FlexServiceClientManagerImpl implements FlexServiceClientManager {
     if (hasErrors(statementResponse)) {
       throw new IbServerErrorException(statementResponse, FlexStatementResponseDto.class);
     }
-    return statementResponse.getBody();
+    return Objects.requireNonNull(statementResponse.getBody());
   }
 
   @Override
@@ -38,12 +39,17 @@ public class FlexServiceClientManagerImpl implements FlexServiceClientManager {
     if (hasErrors(queryResponse)) {
       throw new IbServerErrorException(queryResponse, FlexQueryResponseDto.class);
     }
-    return queryResponse.getBody();
+    return Objects.requireNonNull(queryResponse.getBody());
   }
 
   private <T extends FlexResponse> boolean hasErrors(ResponseEntity<T> response) {
-    return response.getStatusCode() != HttpStatus.OK
-        || response.getBody() == null
-        || !response.getBody().isPopulated();
+    if (response.getStatusCode() != HttpStatus.OK) {
+      return true;
+    }
+    T body = response.getBody();
+    if (body == null) {
+      return true;
+    }
+    return !body.isPopulated();
   }
 }

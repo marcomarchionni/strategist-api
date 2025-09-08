@@ -27,6 +27,13 @@ public class ServiceResolverImpl implements ServiceResolver {
     if (rawService == null) {
       throw new IllegalArgumentException("No service registered for type: " + serviceType);
     }
-    return (EntityService<T, R>) rawService;
+    return unchecked(rawService);
+  }
+
+  private static <T extends EntitySave, R> EntityService<T, R> unchecked(
+      EntityService<?, ?> service) {
+    @SuppressWarnings("unchecked")
+    EntityService<T, R> cast = (EntityService<T, R>) service;
+    return cast;
   }
 }

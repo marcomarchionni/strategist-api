@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class DateIntervalValidator implements ConstraintValidator<DateInterval, Object> {
   final LocalDate MIN_DATE = LocalDate.EPOCH;
@@ -38,10 +39,12 @@ public class DateIntervalValidator implements ConstraintValidator<DateInterval, 
       boolean validBothNull = (fromDate == null) && (toDate == null);
       boolean validOneDateNullOtherDateInRange =
           ((fromDate == null) && toDateInRange) || (fromDateInRange && (toDate == null));
-      boolean validInterval =
-          fromDateInRange
-              && toDateInRange
-              && (fromDate.isEqual(toDate) || fromDate.isBefore(toDate));
+      boolean validInterval = false;
+      if (fromDateInRange && toDateInRange) {
+        LocalDate from = Objects.requireNonNull(fromDate);
+        LocalDate to = Objects.requireNonNull(toDate);
+        validInterval = !from.isAfter(to);
+      }
 
       return validBothNull || validOneDateNullOtherDateInRange || validInterval;
     } catch (Exception e) {
