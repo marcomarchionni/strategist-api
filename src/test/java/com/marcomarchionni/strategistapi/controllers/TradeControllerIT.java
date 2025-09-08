@@ -64,7 +64,7 @@ class TradeControllerIT {
 
     @ParameterizedTest
     @CsvSource({ ",,,ZM,,1", ",,,TTWO,STK,2", ",2022-06-14,true,,,1" })
-    @Sql("classpath:dbScripts/insertSampleData.sql")
+    @Sql("classpath:db/changelog/001-test-seed.sql")
     void findByFilterSuccess(String tradeDateFrom, String tradeDateTo, String tagged, String symbol,
             String assetCategory, int expectedSize) throws Exception {
 
@@ -96,7 +96,7 @@ class TradeControllerIT {
                 .andExpect(jsonPath("$.status", is(400)));
     }
 
-    @Sql("classpath:dbScripts/insertSampleData.sql")
+    @Sql("classpath:db/changelog/001-test-seed.sql")
     @ParameterizedTest
     @CsvSource({ "339578772,ZM long,ZM", "339580463,IBKR put,FVRR" })
     void updateStrategyIdSuccess(Long ibOrderId, String strategyName, String expectedSymbol) throws Exception {

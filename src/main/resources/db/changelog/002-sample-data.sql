@@ -1,5 +1,6 @@
--- Delete any existing data in ibTestDb
+-- liquibase formatted sql
 
+-- changeset strategist:002-sample-data context:dev
 -- noinspection SqlWithoutWhereForFile
 DELETE FROM `flex_statement`;
 DELETE FROM `dividend`;
@@ -8,8 +9,6 @@ DELETE FROM `trade`;
 DELETE FROM `strategy`;
 DELETE FROM `portfolio`;
 DELETE FROM `user_details`;
-
--- Insert sample data in ibTestDb
 
 -- Insert test user
 INSERT INTO `user_details` (`first_name`, `last_name`, `email`, `password`, `role`, `account_id`) 
@@ -80,3 +79,5 @@ VALUES
 (434708620220617,4347086,@EBAYId,'EBAY','EBAY INC','2022-05-31','2022-06-17',0.2200,100,22.0000,3.3000,18.7000,'OPEN', 'U1111111'),
 (510058320220711,5100583,NULL,'FDX','FEDEX CORPORATION','2022-06-24','2022-07-11',1.1500,47,54.0500,8.1100,45.9400,'OPEN', 'U1111111'),
 (4512773920220627,45127739,NULL,'CME','CME GROUP INC','2022-06-09','2022-06-27',1.0000,10,10.0000,1.5000,8.5000,'CLOSED', 'U1111111');
+
+

@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@Sql("classpath:dbScripts/insertSampleData.sql")
+@Sql("classpath:db/changelog/001-test-seed.sql")
 class StrategyControllerIT {
 
     @Autowired

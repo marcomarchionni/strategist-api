@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-@Sql("classpath:dbScripts/insertSampleData.sql")
+@Sql("classpath:db/changelog/001-test-seed.sql")
 public class PortfolioSpecificationIT {
     @Autowired
     private PortfolioRepository portfolioRepository;

@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Sql("classpath:dbScripts/insertSampleData.sql")
+@Sql("classpath:db/changelog/001-test-seed.sql")
 @Transactional
 public class JsonConverterTest {
 

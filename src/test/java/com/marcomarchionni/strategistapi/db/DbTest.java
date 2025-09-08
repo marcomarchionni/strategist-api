@@ -21,7 +21,7 @@ import static com.marcomarchionni.strategistapi.util.TestUtils.getSamplePortfoli
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-@Sql("classpath:dbScripts/insertSampleData.sql")
+@Sql("classpath:db/changelog/001-test-seed.sql")
 @DataJpaTest
 public class DbTest {
 
@@ -56,6 +56,8 @@ public class DbTest {
 
         Portfolio portfolio = getSamplePortfolio("New Portfolio");
         portfolio.setId(null);
+        portfolio.setAccountId("U1111111");
+        portfolio.setCreatedAt(LocalDate.of(2024, 1, 1));
 
         // execute
         Portfolio savedPortfolio = portfolioRepository.save(portfolio);
@@ -78,6 +80,7 @@ public class DbTest {
     public static Dividend getFDXDividend() {
         Dividend div = new Dividend();
         div.setId(510058320220624L);
+        div.setAccountId("U1111111");
         div.setSymbol("FDX");
         div.setDescription("FEDEX CORPORATION");
         div.setConId(5100583L);

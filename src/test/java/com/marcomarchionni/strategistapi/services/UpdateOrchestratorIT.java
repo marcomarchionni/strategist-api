@@ -121,7 +121,7 @@ public class UpdateOrchestratorIT {
         }
 
         @Test
-        @Sql("classpath:dbScripts/insertSampleData.sql")
+        @Sql("classpath:db/changelog/001-test-seed.sql")
         void updateFromFilePopulatedDbTest() throws IOException {
 
                 // assess db state before update

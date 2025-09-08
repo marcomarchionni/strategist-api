@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import(WebMvcConfig.class)
-@Sql("classpath:dbScripts/insertSampleData.sql")
+@Sql("classpath:db/changelog/001-test-seed.sql")
 @Transactional
 class PositionControllerIT {
 

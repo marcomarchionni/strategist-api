@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/changelog/001-create-schema.sql
+  - include:
+      file: 001-test-seed.sql
+      relativeToChangelogFile: true

@@ -1,8 +1,6 @@
-CREATE DATABASE IF NOT EXISTS `strategistdb`;
--- Init Database
-USE `strategistdb`;
-DROP TABLE IF EXISTS `flex_statement`, `portfolio`, `strategy`, `trade`, `position`, `dividend`, `user_details`;
+-- liquibase formatted sql
 
+-- changeset strategist:001-create-schema-user-details
 CREATE TABLE `user_details`
 (
 	`id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -16,6 +14,7 @@ CREATE TABLE `user_details`
     UNIQUE(`account_id`)
 );
 
+-- changeset strategist:001-create-schema-flex-statement
 CREATE TABLE `flex_statement`
 (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -26,6 +25,7 @@ CREATE TABLE `flex_statement`
     `when_generated` DATETIME NOT NULL
 );
 
+-- changeset strategist:001-create-schema-portfolio
 CREATE TABLE `portfolio`
 (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -33,22 +33,25 @@ CREATE TABLE `portfolio`
     `name` VARCHAR(50) NOT NULL,
     `description` VARCHAR(255),
     `account_id` VARCHAR(50) NOT NULL,
-    UNIQUE (`name`)
+    UNIQUE (`name`, `account_id`)
 );
 
+-- changeset strategist:001-create-schema-strategy
 CREATE TABLE `strategy`
 (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `account_id` VARCHAR(50) NOT NULL,
-    `name` VARCHAR(50) NOT NULL UNIQUE,
+    `name` VARCHAR(50) NOT NULL,
     `strategy_portfolio_id` BIGINT NOT NULL,
+    UNIQUE (`name`, `account_id`),
     CONSTRAINT `FK_strategy_portfolio` FOREIGN KEY (`strategy_portfolio_id`)
         REFERENCES `portfolio` (`id`)
 );
 
+-- changeset strategist:001-create-schema-trade
 CREATE TABLE `trade`
 (
-    `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, -- Primary Key column
+    `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `account_id` VARCHAR(50) NOT NULL,
     `trade_id` BIGINT,
     `con_id` BIGINT NOT NULL,
@@ -58,12 +61,12 @@ CREATE TABLE `trade`
     `date_time` DATETIME,
     `symbol` VARCHAR(50) NOT NULL,
     `description` VARCHAR(255),
-    `asset_category` VARCHAR(50), --     CONSTRAINT `CHK_trade_asset_category` CHECK (`asset_category` IN ('STK','OPT','FUT','CASH')),
+    `asset_category` VARCHAR(50),
     `multiplier` INT NOT NULL,
-    `put_call` VARCHAR(50), --     CONSTRAINT `CHK_put_call` CHECK (`put_call` IN ('PUT','CALL',NULL)),
+    `put_call` VARCHAR(50),
     `strike` DECIMAL(15,4),
     `expiry` DATE,
-    `buy_sell` VARCHAR(50) NOT NULL, --     CONSTRAINT `CHK_buy_sell` CHECK (`buy_sell` IN('BUY','SELL')),
+    `buy_sell` VARCHAR(50) NOT NULL,
     `quantity` DECIMAL(15,4) NOT NULL,
     `trade_price` DECIMAL(15,4) NOT NULL,
     `trade_money` DECIMAL(15,4) NOT NULL,
@@ -73,16 +76,17 @@ CREATE TABLE `trade`
         REFERENCES `strategy` (`id`)
 );
 
+-- changeset strategist:001-create-schema-position
 CREATE TABLE `position`
 (
-    `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, -- Primary Key column,
+    `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `account_id` VARCHAR(50) NOT NULL,
     `con_id` BIGINT NOT NULL,
     `report_date` DATE,
     `position_strategy_id` BIGINT,
     `symbol` VARCHAR(50) NOT NULL,
     `description` VARCHAR(255),
-    `asset_category` VARCHAR(50), --     CONSTRAINT `CHK_position_asset_category` CHECK (`asset_category` IN('STK','OPT','FUT', 'CASH')),
+    `asset_category` VARCHAR(50),
     `put_call` VARCHAR(50),
     `strike` DECIMAL(15,4),
     `expiry` DATE,
@@ -97,9 +101,10 @@ CREATE TABLE `position`
         REFERENCES `strategy` (`id`)
 );
 
+-- changeset strategist:001-create-schema-dividend
 CREATE TABLE `dividend`
 (
-    `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, -- Primary Key column
+    `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `account_id` VARCHAR(50) NOT NULL,
     `con_id` BIGINT NOT NULL,
     `action_id` BIGINT,
@@ -117,3 +122,5 @@ CREATE TABLE `dividend`
     CONSTRAINT `FK_dividend_strategy` FOREIGN KEY (`dividend_strategy_id`)
         REFERENCES `strategy` (`id`)
 );
+
+
