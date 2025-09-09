@@ -14,7 +14,6 @@ import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.services.UserService;
 import com.marcomarchionni.strategistapi.services.specifications.PagingUtil;
 import com.marcomarchionni.strategistapi.services.specifications.SimplePortfolioSpecification;
-import java.time.LocalDate;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -93,11 +92,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     checkIfPortfolioNameExists(portfolioSave.getName());
 
     // Save portfolio
-    var portfolio =
-        Portfolio.builder()
-            .accountId(userService.getUserAccountId())
-            .createdAt(LocalDate.now())
-            .build();
+    var portfolio = Portfolio.builder().accountId(userService.getUserAccountId()).build();
     return mergeAndSave(portfolioSave, portfolio);
   }
 

@@ -4,10 +4,10 @@ import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
-import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyFindAllReq;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
@@ -46,20 +46,21 @@ public class StrategyServiceImpl implements StrategyService {
   }
 
   @Override
-  public ApiResponse<StrategySummary> findAllWithCount(FindAllReq findReq) {
+  public ApiResponse<StrategySummary> findAllWithCount(StrategyFindAllReq findReq) {
     String accountId = userService.getUserAccountId();
     // Map portfolioName to JPA sort property portfolio.name if present
     String orderBy = findReq.getOrderBy();
     if (orderBy != null && orderBy.toLowerCase().startsWith("portfolioname")) {
       orderBy = orderBy.replaceFirst("(?i)portfolioname", "portfolio.name");
     }
-    FindAllReq pageReq =
-        FindAllReq.builder()
+    StrategyFindAllReq pageReq =
+        StrategyFindAllReq.builder()
             .skip(findReq.getSkip())
             .top(findReq.getTop())
             .orderBy(orderBy)
             .name(findReq.getName())
             .description(findReq.getDescription())
+            .portfolioName(findReq.getPortfolioName())
             .createdAfter(findReq.getCreatedAfter())
             .createdBefore(findReq.getCreatedBefore())
             .build();
@@ -69,8 +70,10 @@ public class StrategyServiceImpl implements StrategyService {
         strategySpecification.buildSpecification(
             accountId,
             findReq.getName(),
-            findReq.getDescription() // using description to carry portfolioName filter
-            );
+            findReq.getDescription(),
+            findReq.getPortfolioName(),
+            findReq.getCreatedAfter(),
+            findReq.getCreatedBefore());
 
     Page<Strategy> page = strategyRepository.findAll(spec, pageable);
     long totalCount = strategyRepository.count(spec);

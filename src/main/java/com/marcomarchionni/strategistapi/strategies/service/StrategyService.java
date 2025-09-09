@@ -1,9 +1,9 @@
 package com.marcomarchionni.strategistapi.strategies.service;
 
-import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyFindAllReq;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
@@ -13,7 +13,7 @@ public interface StrategyService {
 
   List<StrategySummary> findByFilter(StrategyFind strategyFind);
 
-  ApiResponse<StrategySummary> findAllWithCount(FindAllReq findReq);
+  ApiResponse<StrategySummary> findAllWithCount(StrategyFindAllReq findReq);
 
   StrategyDetail updateName(NameUpdate nameUpdate);
 

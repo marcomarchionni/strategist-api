@@ -38,4 +38,11 @@ public class Portfolio implements AccountIdEntity {
   @OneToMany(mappedBy = "portfolio", fetch = FetchType.LAZY)
   @Builder.Default
   private List<Strategy> strategies = new ArrayList<>();
+
+  @PrePersist
+  protected void onCreate() {
+    if (createdAt == null) {
+      createdAt = LocalDate.now();
+    }
+  }
 }

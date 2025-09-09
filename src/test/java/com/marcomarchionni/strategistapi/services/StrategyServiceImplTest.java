@@ -10,10 +10,10 @@ import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyFindAllReq;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
@@ -143,18 +143,22 @@ class StrategyServiceImplTest {
   @Test
   void findAllWithCount_returnsPagedStrategies() {
     // setup
-    FindAllReq findReq =
-        FindAllReq.builder()
+    StrategyFindAllReq findReq =
+        StrategyFindAllReq.builder()
             .skip(0)
             .top(10)
             .orderBy("name")
             .name(null)
-            .description(null) // portfolioName carrier
+            .description(null)
+            .portfolioName(null)
+            .createdAfter(null)
+            .createdBefore(null)
             .build();
 
     when(userService.getUserAccountId()).thenReturn(user.getAccountId());
     Specification<Strategy> spec = (root, query, cb) -> cb.conjunction();
-    when(strategySpecification.buildSpecification(any(String.class), any(), any()))
+    when(strategySpecification.buildSpecification(
+            any(String.class), any(), any(), any(), any(), any()))
         .thenReturn(spec);
 
     List<Strategy> strategies = List.of(userStrategy);

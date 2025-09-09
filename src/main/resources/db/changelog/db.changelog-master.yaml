@@ -1,7 +1,13 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/001-create-schema.sql
+      file: 001-create-schema.sql
       relativeToChangelogFile: true
   - include:
-      file: db/changelog/002-sample-data.sql
+      file: 002-sample-data.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 003-add-strategy-properties.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 004-add-strategy-descriptions.sql
       relativeToChangelogFile: true

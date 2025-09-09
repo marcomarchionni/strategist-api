@@ -3,6 +3,7 @@ package com.marcomarchionni.strategistapi.domain;
 import com.marcomarchionni.strategistapi.validators.EntityName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
@@ -34,6 +35,12 @@ public class Strategy implements AccountIdEntity {
   @Column(name = "name")
   private String name;
 
+  @Column(name = "created_at")
+  private LocalDate createdAt;
+
+  @Column(name = "description")
+  private String description;
+
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
   @NotNull
@@ -60,6 +67,8 @@ public class Strategy implements AccountIdEntity {
       String accountId,
       Portfolio portfolio,
       String name,
+      LocalDate createdAt,
+      String description,
       List<Position> positions,
       List<Trade> trades,
       List<Dividend> dividends) {
@@ -67,8 +76,17 @@ public class Strategy implements AccountIdEntity {
     this.accountId = accountId;
     this.name = name;
     this.portfolio = portfolio;
+    this.createdAt = createdAt;
+    this.description = description;
     if (trades != null) this.trades = trades;
     if (positions != null) this.positions = positions;
     if (dividends != null) this.dividends = dividends;
+  }
+
+  @PrePersist
+  protected void onCreate() {
+    if (createdAt == null) {
+      createdAt = LocalDate.now();
+    }
   }
 }

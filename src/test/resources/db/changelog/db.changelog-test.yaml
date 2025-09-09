@@ -2,5 +2,11 @@ databaseChangeLog:
   - include:
       file: classpath:db/changelog/001-create-schema.sql
   - include:
+      file: classpath:db/changelog/002-sample-data.sql
+  - include:
+      file: classpath:db/changelog/003-add-strategy-properties.sql
+  - include:
+      file: classpath:db/changelog/004-add-strategy-descriptions.sql
+  - include:
       file: 001-test-seed.sql
       relativeToChangelogFile: true

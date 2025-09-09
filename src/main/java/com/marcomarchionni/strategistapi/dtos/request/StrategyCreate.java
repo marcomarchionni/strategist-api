@@ -25,4 +25,9 @@ public class StrategyCreate {
   @NotNull
   @Schema(description = "Portfolio id. Should refer to an existing portfolio", example = "1")
   private Long portfolioId;
+
+  @Schema(
+      description = "Strategy description",
+      example = "Long-term bullish strategy on Apple stock")
+  private String description;
 }

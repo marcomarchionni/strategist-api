@@ -1,8 +1,8 @@
 package com.marcomarchionni.strategistapi.strategies.web;
 
-import com.marcomarchionni.strategistapi.dtos.request.FindAllReq;
 import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyFindAllReq;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
@@ -25,15 +25,21 @@ public class StrategyController implements StrategyApi {
       @RequestParam(defaultValue = "10") int top,
       @RequestParam(required = false) String orderBy,
       @RequestParam(required = false) String name,
-      @RequestParam(required = false) String portfolioName) {
+      @RequestParam(required = false) String description,
+      @RequestParam(required = false) String portfolioName,
+      @RequestParam(required = false) String createdAfter,
+      @RequestParam(required = false) String createdBefore) {
 
-    FindAllReq findReq =
-        FindAllReq.builder()
+    StrategyFindAllReq findReq =
+        StrategyFindAllReq.builder()
             .skip(skip)
             .top(top)
             .orderBy(orderBy)
             .name(name)
-            .description(portfolioName) // reusing description field to transport portfolioName
+            .description(description)
+            .portfolioName(portfolioName)
+            .createdAfter(createdAfter)
+            .createdBefore(createdBefore)
             .build();
 
     return strategyService.findAllWithCount(findReq);

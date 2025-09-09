@@ -5,6 +5,7 @@ import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
+import java.time.LocalDate;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,12 @@ public class StrategyMapperImpl implements StrategyMapper {
   @Override
   public Strategy toEntity(StrategyCreate strategyCreate) {
     Portfolio portfolio = Portfolio.builder().id(strategyCreate.getPortfolioId()).build();
-    return Strategy.builder().name(strategyCreate.getName()).portfolio(portfolio).build();
+    return Strategy.builder()
+        .name(strategyCreate.getName())
+        .portfolio(portfolio)
+        .createdAt(LocalDate.now())
+        .description(strategyCreate.getDescription())
+        .build();
   }
 
   @Override

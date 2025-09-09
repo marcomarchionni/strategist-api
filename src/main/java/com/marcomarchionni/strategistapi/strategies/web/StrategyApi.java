@@ -37,9 +37,18 @@ public interface StrategyApi {
       @Parameter(description = "Filter by strategy name (case-insensitive contains)")
           @RequestParam(required = false)
           String name,
+      @Parameter(description = "Filter by strategy description (case-insensitive contains)")
+          @RequestParam(required = false)
+          String description,
       @Parameter(description = "Filter by portfolio name (case-insensitive contains)")
           @RequestParam(required = false)
-          String portfolioName);
+          String portfolioName,
+      @Parameter(description = "Filter strategies created after this date (YYYY-MM-DD)")
+          @RequestParam(required = false)
+          String createdAfter,
+      @Parameter(description = "Filter strategies created before this date (YYYY-MM-DD)")
+          @RequestParam(required = false)
+          String createdBefore);
 
   @GetMapping("/{id}")
   @Operation(summary = "Find strategy by id")
