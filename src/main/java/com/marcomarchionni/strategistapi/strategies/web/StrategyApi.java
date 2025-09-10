@@ -1,7 +1,7 @@
 package com.marcomarchionni.strategistapi.strategies.web;
 
-import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyUpdate;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
@@ -59,8 +59,8 @@ public interface StrategyApi {
   StrategyDetail create(@RequestBody @Valid StrategyCreate strategyCreate);
 
   @PutMapping
-  @Operation(summary = "Update strategy name")
-  StrategyDetail updateName(@RequestBody @Valid NameUpdate nameUpdate);
+  @Operation(summary = "Update strategy name and description")
+  StrategyDetail update(@RequestBody @Valid StrategyUpdate strategyUpdate);
 
   @DeleteMapping("/{id}")
   @Operation(summary = "Delete strategy by id")

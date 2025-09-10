@@ -11,9 +11,9 @@ import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDelete
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
 import com.marcomarchionni.strategistapi.portfolios.mapper.PortfolioMapper;
 import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
+import com.marcomarchionni.strategistapi.portfolios.spec.SimplePortfolioSpecification;
 import com.marcomarchionni.strategistapi.services.UserService;
 import com.marcomarchionni.strategistapi.services.specifications.PagingUtil;
-import com.marcomarchionni.strategistapi.services.specifications.SimplePortfolioSpecification;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

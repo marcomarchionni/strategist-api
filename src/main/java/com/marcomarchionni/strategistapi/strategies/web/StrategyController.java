@@ -1,8 +1,8 @@
 package com.marcomarchionni.strategistapi.strategies.web;
 
-import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFindAllReq;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyUpdate;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
@@ -53,8 +53,8 @@ public class StrategyController implements StrategyApi {
     return strategyService.create(strategyCreate);
   }
 
-  public StrategyDetail updateName(@RequestBody @Valid NameUpdate nameUpdate) {
-    return strategyService.updateName(nameUpdate);
+  public StrategyDetail update(@RequestBody @Valid StrategyUpdate strategyUpdate) {
+    return strategyService.update(strategyUpdate);
   }
 
   public void delete(@PathVariable Long id) {

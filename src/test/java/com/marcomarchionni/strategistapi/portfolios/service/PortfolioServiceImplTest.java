@@ -16,8 +16,8 @@ import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFound
 import com.marcomarchionni.strategistapi.portfolios.mapper.PortfolioMapper;
 import com.marcomarchionni.strategistapi.portfolios.mapper.PortfolioMapperImpl;
 import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
+import com.marcomarchionni.strategistapi.portfolios.spec.SimplePortfolioSpecification;
 import com.marcomarchionni.strategistapi.services.UserService;
-import com.marcomarchionni.strategistapi.services.specifications.SimplePortfolioSpecification;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;

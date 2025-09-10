@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
+import com.marcomarchionni.strategistapi.dtos.request.PortfolioSave;
 import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -63,20 +63,15 @@ class PortfolioControllerIT {
 
   static Stream<Arguments> provideQueryParameters() {
     return Stream.of(
-        Arguments.of("?$inlinecount=allpages&top=10", "$.result", 4),
-        Arguments.of("?$inlinecount=allpages&$top=2&skip=2", "$.result", 2),
-        Arguments.of("?$inlinecount=allpages&$sort=asc", "$.result", 4),
-        Arguments.of(
-            "?$inlinecount=allpages&$filter=substringof('er', tolower(name))", "$.result", 2),
-        Arguments.of("?$top=1&$skip=2", "$", 1));
+        Arguments.of("?top=10", "$.result", 4),
+        Arguments.of("?top=2&skip=2", "$.result", 2),
+        Arguments.of("?orderBy=name", "$.result", 4),
+        Arguments.of("?name=er", "$.result", 2),
+        Arguments.of("?top=1&skip=2", "$.result", 1));
   }
 
   static Stream<Arguments> provideBadQueryParameters() {
-    return Stream.of(
-        Arguments.of(
-            "?$inlinecount=allpages&$filter=substringof('er', lower(name))", "$.result", 2),
-        Arguments.of(
-            "?$inlinecount=allpages&$filter=substringof(tolower(name), 'er)", "$.result", 2));
+    return Stream.of(Arguments.of("?top=-1"), Arguments.of("?skip=-1"));
   }
 
   @ParameterizedTest
@@ -84,7 +79,7 @@ class PortfolioControllerIT {
   void findAllParameterizedTest(String queryParams, String expression, int expectedSize)
       throws Exception {
     mockMvc
-        .perform(get("/portfolios/" + queryParams))
+        .perform(get("/portfolios" + queryParams))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath(expression, hasSize(expectedSize)));
@@ -94,10 +89,10 @@ class PortfolioControllerIT {
   @MethodSource("provideBadQueryParameters")
   void findAllParameterizedTestBadRequest(String queryParams) throws Exception {
     mockMvc
-        .perform(get("/portfolios/" + queryParams))
+        .perform(get("/portfolios" + queryParams))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-        .andExpect(jsonPath("$.type", is("invalid-filter-parameter")));
+        .andExpect(jsonPath("$.type", is("invalid-parameter")));
   }
 
   @ParameterizedTest
@@ -120,13 +115,13 @@ class PortfolioControllerIT {
   @ParameterizedTest
   @ValueSource(strings = {"Saver Portfolio", ","})
   void createPortfolioException(String portfolioName) throws Exception {
-    NameUpdate badNameUpdate = NameUpdate.builder().name(portfolioName).build();
+    PortfolioSave badPortfolioSave = PortfolioSave.builder().name(portfolioName).build();
 
     mockMvc
         .perform(
             post("/portfolios")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(badNameUpdate)))
+                .content(mapper.writeValueAsString(badPortfolioSave)))
         .andDo(print())
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));

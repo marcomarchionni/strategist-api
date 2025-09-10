@@ -12,14 +12,13 @@ import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-@Sql("classpath:db/changelog/001-test-seed.sql")
 @DataJpaTest
 public class DbTest {
 
@@ -34,6 +33,69 @@ public class DbTest {
   @Autowired StrategyRepository strategyRepository;
 
   @Autowired FlexStatementRepository flexStatementRepository;
+
+  @BeforeEach
+  void setUp() {
+    // Create test portfolios
+    Portfolio portfolio1 = new Portfolio();
+    portfolio1.setName("Saver Portfolio");
+    portfolio1.setDescription("This is a Savers Portfolio");
+    portfolio1.setAccountId("U1111111");
+    portfolio1.setCreatedAt(LocalDate.of(2021, 1, 1));
+    portfolioRepository.save(portfolio1);
+
+    Portfolio portfolio2 = new Portfolio();
+    portfolio2.setName("Trader Portfolio");
+    portfolio2.setDescription("This is a Traders Portfolio");
+    portfolio2.setAccountId("U1111111");
+    portfolio2.setCreatedAt(LocalDate.of(2021, 2, 1));
+    portfolioRepository.save(portfolio2);
+
+    Portfolio portfolio3 = new Portfolio();
+    portfolio3.setName("Millionaire Portfolio");
+    portfolio3.setDescription("This is a Millionaires Portfolio");
+    portfolio3.setAccountId("U1111111");
+    portfolio3.setCreatedAt(LocalDate.of(2022, 3, 1));
+    portfolioRepository.save(portfolio3);
+
+    Portfolio portfolio4 = new Portfolio();
+    portfolio4.setName("Option Portfolio");
+    portfolio4.setDescription("This is a Traders Portfolio");
+    portfolio4.setAccountId("U1111111");
+    portfolio4.setCreatedAt(LocalDate.of(2024, 5, 1));
+    portfolioRepository.save(portfolio4);
+
+    // Create test strategies
+    Strategy strategy1 = new Strategy();
+    strategy1.setName("ZM long");
+    strategy1.setAccountId("U1111111");
+    strategy1.setPortfolio(portfolio1);
+    strategyRepository.save(strategy1);
+
+    Strategy strategy2 = new Strategy();
+    strategy2.setName("IBKR put");
+    strategy2.setAccountId("U1111111");
+    strategy2.setPortfolio(portfolio2);
+    strategyRepository.save(strategy2);
+
+    // Create test dividend
+    Dividend dividend = new Dividend();
+    dividend.setId(510058320220624L);
+    dividend.setAccountId("U1111111");
+    dividend.setSymbol("FDX");
+    dividend.setDescription("FEDEX CORPORATION");
+    dividend.setConId(5100583L);
+    dividend.setExDate(LocalDate.of(2022, 6, 24));
+    dividend.setPayDate(LocalDate.of(2022, 7, 11));
+    dividend.setQuantity(new BigDecimal("47"));
+    dividend.setTax(BigDecimal.valueOf(0.11));
+    dividend.setGrossRate(BigDecimal.valueOf(1.15));
+    dividend.setGrossAmount(BigDecimal.valueOf(54.05));
+    dividend.setNetAmount(BigDecimal.valueOf(45.94));
+    dividend.setOpenClosed(Dividend.OpenClosed.OPEN);
+    dividend.setStrategy(strategy1);
+    dividendRepository.save(dividend);
+  }
 
   @Test
   void dbFindPortfoliosTest() {

@@ -4,10 +4,10 @@ import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
-import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFindAllReq;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyUpdate;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
@@ -109,13 +109,23 @@ public class StrategyServiceImpl implements StrategyService {
   }
 
   @Override
-  public StrategyDetail updateName(NameUpdate nameUpdate) {
-    Long strategyId = nameUpdate.getId();
+  public StrategyDetail update(StrategyUpdate strategyUpdate) {
+    Long strategyId = strategyUpdate.getId();
     Strategy strategy =
         strategyAccessService
             .findById(strategyId)
             .orElseThrow(() -> new EntityNotFoundException(Strategy.class, strategyId));
-    strategy.setName(nameUpdate.getName());
+
+    // Update name if provided
+    if (strategyUpdate.getName() != null) {
+      strategy.setName(strategyUpdate.getName());
+    }
+
+    // Update description if provided
+    if (strategyUpdate.getDescription() != null) {
+      strategy.setDescription(strategyUpdate.getDescription());
+    }
+
     return strategyMapper.toStrategyDetailDto(this.save(strategy));
   }
 

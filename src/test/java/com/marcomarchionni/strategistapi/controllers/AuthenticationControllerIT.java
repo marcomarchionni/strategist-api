@@ -61,7 +61,7 @@ class AuthenticationControllerIT {
             .lastName("Marchionni")
             .email("marco99@gmail.com")
             .password("password")
-            .accountId("U1111111")
+            .accountId("U9999999")
             .build();
 
     mockMvc
@@ -82,7 +82,7 @@ class AuthenticationControllerIT {
             .lastName("Marchionni")
             .email("marco99@gmail.com")
             .password(passwordEncoder.encode("password"))
-            .accountId("U1111111")
+            .accountId("U8888888")
             .role(User.Role.USER)
             .build();
 

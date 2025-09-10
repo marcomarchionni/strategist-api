@@ -10,10 +10,10 @@ import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFind;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyFindAllReq;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyUpdate;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
@@ -121,9 +121,10 @@ class StrategyServiceImplTest {
   }
 
   @Test
-  void updateName() {
+  void update() {
     // setup test data
-    NameUpdate nameUpdate = NameUpdate.builder().id(userStrategy.getId()).name("NewName").build();
+    StrategyUpdate strategyUpdate =
+        StrategyUpdate.builder().id(userStrategy.getId()).name("NewName").build();
 
     // setup mocks
     when(strategyAccessService.findById(userStrategy.getId()))
@@ -132,12 +133,12 @@ class StrategyServiceImplTest {
         .thenAnswer(invocation -> invocation.getArgument(0));
 
     // execute
-    StrategyDetail renamedStrategy = strategyService.updateName(nameUpdate);
+    StrategyDetail renamedStrategy = strategyService.update(strategyUpdate);
 
     // verify
     assertNotNull(renamedStrategy);
     assertEquals(userStrategy.getId(), renamedStrategy.getId());
-    assertEquals(nameUpdate.getName(), renamedStrategy.getName());
+    assertEquals(strategyUpdate.getName(), renamedStrategy.getName());
   }
 
   @Test

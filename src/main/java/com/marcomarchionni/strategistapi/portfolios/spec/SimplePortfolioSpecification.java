@@ -1,4 +1,4 @@
-package com.marcomarchionni.strategistapi.services.specifications;
+package com.marcomarchionni.strategistapi.portfolios.spec;
 
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import jakarta.persistence.criteria.Predicate;

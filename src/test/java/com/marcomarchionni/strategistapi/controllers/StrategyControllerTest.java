@@ -12,8 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
 import com.marcomarchionni.strategistapi.domain.User;
-import com.marcomarchionni.strategistapi.dtos.request.NameUpdate;
 import com.marcomarchionni.strategistapi.dtos.request.StrategyCreate;
+import com.marcomarchionni.strategistapi.dtos.request.StrategyUpdate;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
@@ -106,27 +106,27 @@ class StrategyControllerTest {
   }
 
   @Test
-  void updateNameSuccess() throws Exception {
+  void updateSuccess() throws Exception {
     // setup test data
     Long strategyId = userStrategy.getId();
-    NameUpdate nameUpdate = NameUpdate.builder().id(strategyId).name("NewName").build();
-    userStrategy.setName(nameUpdate.getName());
+    StrategyUpdate strategyUpdate = StrategyUpdate.builder().id(strategyId).name("NewName").build();
+    userStrategy.setName(strategyUpdate.getName());
     StrategyDetail strategyDetail = strategyMapper.toStrategyDetailDto(userStrategy);
 
     // mock service calls
-    when(strategyService.updateName(nameUpdate)).thenReturn(strategyDetail);
+    when(strategyService.update(strategyUpdate)).thenReturn(strategyDetail);
 
     // execute
     mockMvc
         .perform(
             put("/strategies")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(nameUpdate)))
+                .content(mapper.writeValueAsString(strategyUpdate)))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id", is(Math.toIntExact(strategyId))))
-        .andExpect(jsonPath("$.name", is(nameUpdate.getName())))
+        .andExpect(jsonPath("$.name", is(strategyUpdate.getName())))
         .andExpect(jsonPath("$.accountId", is(user.getAccountId())));
   }
 
