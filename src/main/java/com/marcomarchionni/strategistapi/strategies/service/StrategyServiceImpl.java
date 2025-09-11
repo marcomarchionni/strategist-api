@@ -1,6 +1,5 @@
 package com.marcomarchionni.strategistapi.strategies.service;
 
-import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
@@ -14,6 +13,7 @@ import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.EntityNotFoundException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToDeleteEntitiesException;
 import com.marcomarchionni.strategistapi.errorhandling.exceptions.UnableToSaveEntitiesException;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.services.UserService;
 import com.marcomarchionni.strategistapi.services.specifications.PagingUtil;
 import com.marcomarchionni.strategistapi.strategies.mapper.StrategyMapper;
@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StrategyServiceImpl implements StrategyService {
   private final StrategyAccessService strategyAccessService;
-  private final PortfolioAccessService portfolioAccessService;
+  private final PortfolioRepository portfolioRepository;
   private final StrategyMapper strategyMapper;
   private final StrategyRepository strategyRepository;
   private final UserService userService;
@@ -126,15 +126,27 @@ public class StrategyServiceImpl implements StrategyService {
       strategy.setDescription(strategyUpdate.getDescription());
     }
 
+    // Update portfolio if provided
+    if (strategyUpdate.getPortfolioId() != null) {
+      Long portfolioId = strategyUpdate.getPortfolioId();
+      String accountId = userService.getUserAccountId();
+      Portfolio portfolio =
+          portfolioRepository
+              .findByIdAndAccountId(portfolioId, accountId)
+              .orElseThrow(() -> new EntityNotFoundException(Portfolio.class, portfolioId));
+      strategy.setPortfolio(portfolio);
+    }
+
     return strategyMapper.toStrategyDetailDto(this.save(strategy));
   }
 
   @Override
   public StrategyDetail create(StrategyCreate strategyCreate) {
     long portfolioId = strategyCreate.getPortfolioId();
+    String accountId = userService.getUserAccountId();
     Portfolio portfolio =
-        portfolioAccessService
-            .findById(portfolioId)
+        portfolioRepository
+            .findByIdAndAccountId(portfolioId, accountId)
             .orElseThrow(() -> new EntityNotFoundException(Portfolio.class, portfolioId));
     Strategy createdStrategy =
         Strategy.builder()

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 public class UpdateOrchestratorIT {
@@ -41,16 +41,6 @@ public class UpdateOrchestratorIT {
   @Autowired DividendMapper dividendMapper;
   UpdateContext updateContext;
   User user = getSampleUser();
-
-  @AfterEach
-  public void cleanDb() {
-    positionRepository.deleteAll();
-    tradeRepository.deleteAll();
-    dividendRepository.deleteAll();
-    flexStatementRepository.deleteAll();
-    strategyRepository.deleteAll();
-    portfolioRepository.deleteAll();
-  }
 
   @BeforeEach
   public void setUp() throws IOException {
@@ -76,6 +66,7 @@ public class UpdateOrchestratorIT {
   }
 
   @Test
+  @Transactional
   void updateFromFileEmptyDbTest() throws IOException {
 
     // Execute update
@@ -115,6 +106,7 @@ public class UpdateOrchestratorIT {
   }
 
   @Test
+  @Transactional
   @Sql("classpath:db/changelog/001-test-seed.sql")
   void updateFromFilePopulatedDbTest() throws IOException {
 

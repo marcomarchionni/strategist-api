@@ -30,4 +30,7 @@ public class StrategyUpdate {
       description = "Strategy description",
       example = "Long-term bullish strategy on Apple stock")
   private String description;
+
+  @Schema(description = "Portfolio id to assign the strategy to", example = "1")
+  private Long portfolioId;
 }

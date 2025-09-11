@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import com.marcomarchionni.strategistapi.accessservice.PortfolioAccessService;
 import com.marcomarchionni.strategistapi.accessservice.StrategyAccessService;
 import com.marcomarchionni.strategistapi.domain.Portfolio;
 import com.marcomarchionni.strategistapi.domain.Strategy;
@@ -17,6 +16,7 @@ import com.marcomarchionni.strategistapi.dtos.request.StrategyUpdate;
 import com.marcomarchionni.strategistapi.dtos.response.ApiResponse;
 import com.marcomarchionni.strategistapi.dtos.response.StrategyDetail;
 import com.marcomarchionni.strategistapi.dtos.response.StrategySummary;
+import com.marcomarchionni.strategistapi.portfolios.repo.PortfolioRepository;
 import com.marcomarchionni.strategistapi.strategies.mapper.StrategyMapper;
 import com.marcomarchionni.strategistapi.strategies.mapper.StrategyMapperImpl;
 import com.marcomarchionni.strategistapi.strategies.repo.StrategyRepository;
@@ -40,7 +40,7 @@ import org.springframework.data.jpa.domain.Specification;
 class StrategyServiceImplTest {
 
   @Mock StrategyAccessService strategyAccessService;
-  @Mock PortfolioAccessService portfolioAccessService;
+  @Mock PortfolioRepository portfolioRepository;
   @Mock StrategyRepository strategyRepository;
   @Mock UserService userService;
   @Mock SimpleStrategySpecification strategySpecification;
@@ -56,7 +56,7 @@ class StrategyServiceImplTest {
     strategyService =
         new StrategyServiceImpl(
             strategyAccessService,
-            portfolioAccessService,
+            portfolioRepository,
             strategyMapper,
             strategyRepository,
             userService,
@@ -106,7 +106,8 @@ class StrategyServiceImplTest {
         StrategyCreate.builder().name("ZM long").portfolioId(userPortfolio.getId()).build();
 
     // setup mocks
-    when(portfolioAccessService.findById(userPortfolio.getId()))
+    when(userService.getUserAccountId()).thenReturn(user.getAccountId());
+    when(portfolioRepository.findByIdAndAccountId(userPortfolio.getId(), user.getAccountId()))
         .thenReturn(Optional.of(userPortfolio));
     when(strategyAccessService.save(any(Strategy.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
